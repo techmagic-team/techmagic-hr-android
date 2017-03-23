@@ -1,7 +1,9 @@
-package co.techmagic.hr;
+package co.techmagic.hr.presentation.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import co.techmagic.hr.R;
 
 public class MainActivity extends AppCompatActivity {
 
