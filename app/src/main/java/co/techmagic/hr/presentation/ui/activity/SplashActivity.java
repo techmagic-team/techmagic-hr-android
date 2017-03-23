@@ -6,17 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
+import android.view.View;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.presentation.ui.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
     private static final long ANIM_DURATION = 700;
     private static final long DELAY = 1400; // To show 2 animations
 
-    private ImageView ivLogo;
+    private View animatedLogo;
     private ObjectAnimator animX;
     private ObjectAnimator animY;
 
@@ -27,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ivLogo = (ImageView) findViewById(R.id.ivAnimatedLogo);
+        animatedLogo = findViewById(R.id.animatedLogo);
         setupLogoAnimation();
         initHandler();
         initRunnableWithPostDelay();
@@ -60,8 +59,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void setupLogoAnimation() {
-        animX = ObjectAnimator.ofFloat(ivLogo, "rotationX", 180f, 0f);
-        animY = ObjectAnimator.ofFloat(ivLogo, "rotationY", 180f, 0f);
+        animX = ObjectAnimator.ofFloat(animatedLogo, "rotationX", 180f, 0f);
+        animY = ObjectAnimator.ofFloat(animatedLogo, "rotationY", 180f, 0f);
 
         animX.setDuration(ANIM_DURATION);
         animY.setDuration(ANIM_DURATION);
@@ -84,7 +83,9 @@ public class SplashActivity extends AppCompatActivity {
     private void initRunnableWithPostDelay() {
         if (runnable == null) {
             runnable = () -> {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
                 finish();
             };
         }
