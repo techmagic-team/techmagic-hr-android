@@ -10,4 +10,6 @@
     <dimen name="activity_tm_logo_width">300dp</dimen>
     <dimen name="activity_tm_logo_height">120dp</dimen>
 
+    <dimen name="activity_tm_logo_margin_bottom">48dp</dimen>
+
 </resources>

@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">TechMagic HR</string>
 
+    <!-- Messages -->
+    <string name="message_loading">Loading</string>
+    <string name="message_connection_error">Please check your internet connection</string>
+
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
     <string name="tm_hr_login_activity_text_forgot_password">Forgot Password</string>
     <string name="tm_hr_login_activity_hint_email">Email</string>
     <string name="tm_hr_login_activity_hint_password">Password</string>
+    <string name="tm_hr_login_activity_text_send">Send</string>
+    <string name="tm_hr_login_activity_text_go_to_sign_in">Go To Sign In</string>
 
 </resources>
