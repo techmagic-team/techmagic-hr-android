@@ -98,9 +98,12 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/tvForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:padding="@dimen/activity_text_padding_top"
             android:text="@string/tm_hr_login_activity_text_forgot_password"
             android:textColor="@color/colorPrimaryDark" />
 
