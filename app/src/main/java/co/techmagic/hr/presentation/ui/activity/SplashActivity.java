@@ -11,11 +11,13 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final long ANIM_DURATION = 700;
-    private static final long DELAY = 1400; // To show 2 animations
+    private static final long ANIM_DURATION = 500;
+    private static final long DELAY = 1000; // To show 2 animations
 
     @BindView(R.id.animatedLogo)
     View animatedLogo;
@@ -24,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private Handler handler;
     private Runnable runnable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +93,24 @@ public class SplashActivity extends AppCompatActivity {
 
     private void initRunnableWithPostDelay() {
         if (runnable == null) {
-            runnable = () -> {
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                finish();
-            };
+            runnable = this::startNextScreen;
         }
         handler.postDelayed(runnable, DELAY);
+    }
+
+
+    private void startNextScreen() {
+        final User user = SharedPreferencesUtil.readUser();
+        Intent i;
+        if (user == null) {
+            i = new Intent(SplashActivity.this, LoginActivity.class);
+        } else {
+            i = new Intent(SplashActivity.this, MainActivity.class);
+        }
+
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        finish();
     }
 
 

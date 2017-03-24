@@ -1,12 +1,9 @@
 package co.techmagic.hr.data.store.client;
 
-import android.content.Context;
-
 import java.util.concurrent.TimeUnit;
 
-import co.techmagic.hr.data.manager.IAuthenticationManager;
-import co.techmagic.hr.data.manager.impl.AuthenticationManagerImpl;
 import co.techmagic.hr.data.store.IUserApi;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -24,20 +21,15 @@ public class ApiClient {
     private static ApiClient apiClient;
     private Retrofit retrofit;
 
-    private IAuthenticationManager authenticationManager;
-    private Context context;
 
-
-    public static void initApiClient(Context context) {
+    public static void initApiClient() {
         if (apiClient == null) {
-            apiClient = new ApiClient(context);
+            apiClient = new ApiClient();
         }
     }
 
 
-    private ApiClient(Context context) {
-        this.context = context;
-        authenticationManager = new AuthenticationManagerImpl();
+    private ApiClient() {
         OkHttpClient client = buildClient();
         retrofit = new Retrofit.Builder()
                 .baseUrl(HOST)
@@ -59,7 +51,7 @@ public class ApiClient {
         builder.writeTimeout(30, TimeUnit.SECONDS);
         builder.connectTimeout(30, TimeUnit.SECONDS);
         builder.addInterceptor(chain -> {
-            String accessToken = authenticationManager.readAccessToken(context);
+            String accessToken = SharedPreferencesUtil.getAccessToken();
             Request.Builder request = chain.request().newBuilder().addHeader("Accept", "application/json");
             if (accessToken != null) {
                 // TODO: 3/24/17 add needed headers

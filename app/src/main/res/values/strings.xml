@@ -4,6 +4,8 @@
     <!-- Messages -->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
+    <string name="message_invalid_email">Invalid Email</string>
+    <string name="message_invalid_password">Invalid Password</string>
 
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>

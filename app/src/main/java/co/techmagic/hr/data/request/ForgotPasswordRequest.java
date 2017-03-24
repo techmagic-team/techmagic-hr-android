@@ -1,12 +1,9 @@
 package co.techmagic.hr.data.request;
 
+
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by techmagic on 3/24/17.
- */
-
-public class LoginRequest {
+public class ForgotPasswordRequest {
 
     @SerializedName("_company")
     private String company;
@@ -14,13 +11,9 @@ public class LoginRequest {
     @SerializedName("email")
     private String email;
 
-    @SerializedName("password")
-    private String password;
-
-    public LoginRequest(String company, String email, String password) {
+    public ForgotPasswordRequest(String company, String email) {
         this.company = company;
         this.email = email;
-        this.password = password;
     }
 
     public String getCompany() {
@@ -33,5 +26,9 @@ public class LoginRequest {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

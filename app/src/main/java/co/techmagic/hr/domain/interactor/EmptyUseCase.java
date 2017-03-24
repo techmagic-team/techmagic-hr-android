@@ -3,8 +3,7 @@ package co.techmagic.hr.domain.interactor;
 import rx.Observable;
 import rx.Subscriber;
 
-public abstract class EmptyUseCase<RESPONSE_DATA, REPOSITORY> extends
-        DataUseCase<Void, RESPONSE_DATA, REPOSITORY> {
+public abstract class EmptyUseCase<RESPONSE_DATA, REPOSITORY> extends DataUseCase<Void, RESPONSE_DATA, REPOSITORY> {
 
 
     public EmptyUseCase(REPOSITORY repository) {
