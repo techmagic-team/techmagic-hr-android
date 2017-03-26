@@ -46,7 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         if (ValidatingCredentilsUtil.isValidEmail(email)) {
             performForgotPasswordRequest(email);
         } else {
-            view.onForgotPassEmailError(R.string.message_invalid_password);
+            view.onForgotPassEmailError(R.string.message_invalid_email);
         }
     }
 

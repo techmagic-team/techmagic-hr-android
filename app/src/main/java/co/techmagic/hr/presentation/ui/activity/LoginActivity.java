@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -19,10 +19,10 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
-    @BindView(R.id.llLogin)
-    LinearLayout loginView;
-    @BindView(R.id.llForgotPass)
-    LinearLayout forgotView;
+    @BindView(R.id.cvLogin)
+    View loginView;
+    @BindView(R.id.cvForgotPass)
+    View forgotView;
     @BindView(R.id.tilEmail)
     TextInputLayout tilEmail;
     @BindView(R.id.tilPassword)
@@ -35,6 +35,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     TextView tvGoToSignIn;
 
     private LoginPresenter loginPresenter;
+    private boolean isLoginSelected = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,16 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        if (isLoginSelected) {
+            super.onBackPressed();
+        } else {
+            handleGoToSignIn();
+        }
+    }
+
+
     private void handleOnLoginClick() {
         hideErrorStates();
         KeyboardUtil.hideKeyboard(this, getCurrentFocus());
@@ -124,6 +135,8 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
         tilForgotPassEmail.setErrorEnabled(false);
         loginView.setVisibility(android.view.View.GONE);
         forgotView.setVisibility(android.view.View.VISIBLE);
+        tilForgotPassEmail.requestFocus();
+        isLoginSelected = false;
     }
 
 
@@ -139,6 +152,8 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
         hideErrorStates();
         forgotView.setVisibility(android.view.View.GONE);
         loginView.setVisibility(android.view.View.VISIBLE);
+        tilEmail.requestFocus();
+        isLoginSelected = true;
     }
 
 
