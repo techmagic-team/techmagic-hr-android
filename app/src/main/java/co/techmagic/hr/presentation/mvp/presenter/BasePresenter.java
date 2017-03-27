@@ -4,9 +4,6 @@ import android.support.annotation.NonNull;
 
 import co.techmagic.hr.presentation.mvp.view.View;
 
-/**
- * Created by ruslankuziak on 3/24/17.
- */
 
 public abstract class BasePresenter<VIEW extends View> {
 

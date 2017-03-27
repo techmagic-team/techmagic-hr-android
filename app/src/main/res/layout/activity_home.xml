@@ -8,6 +8,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="co.techmagic.hr.presentation.ui.activity.MainActivity">
+    tools:context="co.techmagic.hr.presentation.ui.activity.HomeActivity">
 
 </RelativeLayout>

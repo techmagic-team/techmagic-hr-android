@@ -177,12 +177,12 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     private void saveUserAndStartNextScreen(@NonNull User user) {
         SharedPreferencesUtil.saveAccessToken(user.getAccessToken());
         SharedPreferencesUtil.saveUser(user);
-        startNextScreen();
+        startHomeScreen();
     }
 
 
-    private void startNextScreen() {
-        Intent i = new Intent(this, MainActivity.class);
+    private void startHomeScreen() {
+        Intent i = new Intent(this, HomeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
