@@ -28,7 +28,7 @@
             android:theme="@style/NoActionBarTheme" />
 
         <activity
-            android:name=".presentation.ui.activity.MainActivity"
+            android:name=".presentation.ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
 
         <meta-data

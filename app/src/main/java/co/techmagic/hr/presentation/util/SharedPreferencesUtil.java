@@ -34,7 +34,7 @@ public class SharedPreferencesUtil {
 
 
     public static void saveUser(final User user) {
-        String u  = new Gson().toJson(user);
+        String u = new Gson().toJson(user);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(SharedPreferencesKeys.LOGGED_ID_USER_KEY, u);
         editor.apply();
@@ -46,6 +46,13 @@ public class SharedPreferencesUtil {
         return new Gson().fromJson(u, User.class);
     }
 
+
+    public static void clearPreferences() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
+        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
+        editor.apply();
+    }
 
     interface SharedPreferencesKeys {
         String SHARED_PREFS_NAME = "appPrefs";

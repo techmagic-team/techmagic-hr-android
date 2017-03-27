@@ -105,7 +105,7 @@ public class SplashActivity extends AppCompatActivity {
         if (user == null) {
             i = new Intent(SplashActivity.this, LoginActivity.class);
         } else {
-            i = new Intent(SplashActivity.this, MainActivity.class);
+            i = new Intent(SplashActivity.this, HomeActivity.class);
         }
 
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

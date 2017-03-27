@@ -9,6 +9,9 @@
     <string name="message_invalid_password">Invalid Password</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <!--HomeActivity-->
+    <string name="message_alert_dialog_title_log_out">Log Out</string>
+    <string name="message_alert_dialog_message_are_you_sure_you_want_to_log_out">Are you sure you want to Log Out?</string>
 
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
@@ -19,5 +22,8 @@
     <string name="tm_hr_login_activity_text_send">Send</string>
     <string name="tm_hr_login_activity_text_go_to_sign_in">Go To Sign In</string>
     <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
+
+    <!-- HomeActivity -->
+    <string name="tm_hr_home_activity_text_logout">Logout</string>
 
 </resources>
