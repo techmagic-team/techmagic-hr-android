@@ -2,7 +2,7 @@
     <string name="app_name">TechMagic HR</string>
 
     <!-- Messages -->
-    <!-- LoginActivity -->
+    <!--LoginActivity-->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
     <string name="message_invalid_email">Invalid Email</string>
@@ -24,6 +24,10 @@
     <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
 
     <!-- HomeActivity -->
+    <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_2">Item 2</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_4">Item 4</string>
     <string name="tm_hr_home_activity_text_logout">Logout</string>
 
 </resources>

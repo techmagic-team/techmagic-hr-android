@@ -19,7 +19,7 @@
             android:id="@+id/tilEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_login_activity_hint_email"
             android:textColorHint="@color/colorAccent">
 
@@ -37,7 +37,7 @@
             android:id="@+id/tilPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_login_activity_hint_password"
             android:textColorHint="@color/colorAccent">
 
@@ -55,7 +55,7 @@
             android:id="@+id/flLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:background="@color/colorGreenButton"
             android:foreground="?attr/selectableItemBackground">
 
@@ -78,9 +78,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:padding="@dimen/activity_text_padding_top"
+            android:layout_marginTop="@dimen/activity_login_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_login_vertical_margin"
+            android:padding="@dimen/activity_login_text_padding_top"
             android:text="@string/tm_hr_login_activity_text_forgot_password"
             android:textColor="@color/colorPrimaryDark" />
 
