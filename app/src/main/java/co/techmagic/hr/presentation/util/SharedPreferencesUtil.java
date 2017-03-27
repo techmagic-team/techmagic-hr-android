@@ -50,7 +50,7 @@ public class SharedPreferencesUtil {
     public static void clearPreferences() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
-        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
+        editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
         editor.apply();
     }
 
