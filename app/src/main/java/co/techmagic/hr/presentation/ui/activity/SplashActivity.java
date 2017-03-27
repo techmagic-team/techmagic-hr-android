@@ -8,29 +8,36 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final long ANIM_DURATION = 700;
-    private static final long DELAY = 1400; // To show 2 animations
+    private static final long ANIM_DURATION = 500;
+    private static final long DELAY = 1000; // To show 2 animations
 
-    private View animatedLogo;
+    @BindView(R.id.animatedLogo)
+    View animatedLogo;
     private ObjectAnimator animX;
     private ObjectAnimator animY;
 
     private Handler handler;
     private Runnable runnable;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        animatedLogo = findViewById(R.id.animatedLogo);
+        ButterKnife.bind(this);
         setupLogoAnimation();
         initHandler();
         initRunnableWithPostDelay();
     }
+
 
     @Override
     protected void onPause() {
@@ -45,6 +52,7 @@ public class SplashActivity extends AppCompatActivity {
         animY.cancel();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -57,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
             handler.postDelayed(runnable, DELAY);
         }
     }
+
 
     private void setupLogoAnimation() {
         animX = ObjectAnimator.ofFloat(animatedLogo, "rotationX", 180f, 0f);
@@ -74,23 +83,36 @@ public class SplashActivity extends AppCompatActivity {
         animY.addListener(getAnimationByYListener());
     }
 
+
     private void initHandler() {
         if (handler == null) {
             handler = new Handler();
         }
     }
 
+
     private void initRunnableWithPostDelay() {
         if (runnable == null) {
-            runnable = () -> {
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                finish();
-            };
+            runnable = this::startNextScreen;
         }
         handler.postDelayed(runnable, DELAY);
     }
+
+
+    private void startNextScreen() {
+        final User user = SharedPreferencesUtil.readUser();
+        Intent i;
+        if (user == null) {
+            i = new Intent(SplashActivity.this, LoginActivity.class);
+        } else {
+            i = new Intent(SplashActivity.this, MainActivity.class);
+        }
+
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        finish();
+    }
+
 
     private Animator.AnimatorListener getAnimationByXListener() {
         return new Animator.AnimatorListener() {
@@ -116,6 +138,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
     }
+
 
     private Animator.AnimatorListener getAnimationByYListener() {
         return new Animator.AnimatorListener() {

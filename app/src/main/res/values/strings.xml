@@ -1,11 +1,23 @@
 <resources>
     <string name="app_name">TechMagic HR</string>
 
+    <!-- Messages -->
+    <!-- LoginActivity -->
+    <string name="message_loading">Loading</string>
+    <string name="message_connection_error">Please check your internet connection</string>
+    <string name="message_invalid_email">Invalid Email</string>
+    <string name="message_invalid_password">Invalid Password</string>
+    <string name="message_wrong_password_or_email">Wrong password or email</string>
+    <string name="message_wrong_company_or_email">Wrong company or email</string>
+
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
     <string name="tm_hr_login_activity_text_forgot_password">Forgot Password</string>
     <string name="tm_hr_login_activity_hint_email">Email</string>
     <string name="tm_hr_login_activity_hint_password">Password</string>
+    <string name="tm_hr_login_activity_text_send">Send</string>
+    <string name="tm_hr_login_activity_text_go_to_sign_in">Go To Sign In</string>
+    <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
 
 </resources>

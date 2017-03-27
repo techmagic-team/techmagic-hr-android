@@ -1,6 +1,7 @@
 package co.techmagic.hr.data.repository;
 
 import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.LoginRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IUserRepository;
@@ -22,5 +23,11 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public Observable<User> login(LoginRequest loginRequest) {
         return client.getUserApiClient().login(loginRequest);
+    }
+
+
+    @Override
+    public Observable<Void> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        return client.getUserApiClient().forgotPassword(forgotPasswordRequest);
     }
 }

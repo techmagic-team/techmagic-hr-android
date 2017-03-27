@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cvLogin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorCardViewBgGrey"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/activity_login_card_view_margin_horizontal"
+        android:paddingLeft="@dimen/activity_login_card_view_margin_horizontal"
+        android:paddingRight="@dimen/activity_login_card_view_margin_horizontal"
+        android:paddingStart="@dimen/activity_login_card_view_margin_horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/tm_hr_login_activity_hint_email"
+            android:textColorHint="@color/colorAccent">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/colorAccent" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:hint="@string/tm_hr_login_activity_hint_password"
+            android:textColorHint="@color/colorAccent">
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:textColor="@color/colorAccent" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/flLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/colorGreenButton"
+            android:foreground="?attr/selectableItemBackground">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:drawableLeft="@drawable/ic_input_white"
+                android:drawableStart="@drawable/ic_input_white"
+                android:gravity="center"
+                android:text="@string/tm_hr_login_activity_text_log_in"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:padding="@dimen/activity_text_padding_top"
+            android:text="@string/tm_hr_login_activity_text_forgot_password"
+            android:textColor="@color/colorPrimaryDark" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
