@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.mvp.view.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
@@ -13,13 +14,15 @@ import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
 
 public abstract class ViewImpl implements View {
 
+    private android.view.View contentView;
     private Activity activity;
     private Fragment fragment;
     private ProgressDialogHelper progressDialogHelper;
 
 
-    public ViewImpl(Activity activity) {
+    public ViewImpl(Activity activity, android.view.View contentView) {
         this.activity = activity;
+        this.contentView = contentView;
         init();
     }
 
@@ -88,6 +91,23 @@ public abstract class ViewImpl implements View {
         progressDialogHelper.hideProgress();
     }
 
+
+    @Override
+    public void showSnackBarMessage(String message) {
+        Snackbar.make(contentView, message, Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void showSnackBarWrongLoginCredentialsError() {
+        Snackbar.make(contentView, getContext().getString(R.string.message_wrong_password_or_email), Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void showSnackBarWrongCompanyOrEmailError() {
+        Snackbar.make(contentView, getContext().getString(R.string.message_wrong_company_or_email), Snackbar.LENGTH_LONG).show();
+    }
 
 
     public void initSwipeToRefresh(SwipeRefreshLayout swipeRefreshLayout, BasePresenter presenter) {

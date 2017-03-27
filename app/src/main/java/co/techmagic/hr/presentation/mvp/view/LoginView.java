@@ -14,5 +14,5 @@ public interface LoginView extends View {
 
     void onLoginSuccess(@NonNull User user);
 
-    void onForgotPassWordRequestSent();
+    void onForgotPasswordRequestSent();
 }

@@ -39,4 +39,6 @@
 
     <include layout="@layout/forgot_pass_view" />
 
+    <include layout="@layout/forgot_pass_success_view" />
+
 </LinearLayout>

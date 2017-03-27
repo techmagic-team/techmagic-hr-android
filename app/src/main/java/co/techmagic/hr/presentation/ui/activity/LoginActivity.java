@@ -21,8 +21,10 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
     @BindView(R.id.cvLogin)
     View loginView;
-    @BindView(R.id.cvForgotPass)
+    @BindView(R.id.llForgotPass)
     View forgotView;
+    @BindView(R.id.llSuccessView)
+    View successView;
     @BindView(R.id.tilEmail)
     TextInputLayout tilEmail;
     @BindView(R.id.tilPassword)
@@ -36,6 +38,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
     private LoginPresenter loginPresenter;
     private boolean isLoginSelected = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
     @Override
     protected LoginViewImpl initView() {
-        return new LoginViewImpl(this) {
+        return new LoginViewImpl(this, findViewById(android.R.id.content)) {
             @Override
             public void onEmailError(int resId) {
                 tilEmail.setError(getString(resId));
@@ -74,7 +77,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
             }
 
             @Override
-            public void onForgotPassWordRequestSent() {
+            public void onForgotPasswordRequestSent() {
                 showCheckEmailView();
             }
         };
@@ -133,8 +136,8 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
     private void handleOnForgotPasswordClick() {
         tilForgotPassEmail.setErrorEnabled(false);
-        loginView.setVisibility(android.view.View.GONE);
-        forgotView.setVisibility(android.view.View.VISIBLE);
+        loginView.setVisibility(View.GONE);
+        forgotView.setVisibility(View.VISIBLE);
         tilForgotPassEmail.requestFocus();
         isLoginSelected = false;
     }
@@ -150,8 +153,9 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
     private void handleGoToSignIn() {
         hideErrorStates();
-        forgotView.setVisibility(android.view.View.GONE);
-        loginView.setVisibility(android.view.View.VISIBLE);
+        forgotView.setVisibility(View.GONE);
+        successView.setVisibility(View.GONE);
+        loginView.setVisibility(View.VISIBLE);
         tilEmail.requestFocus();
         isLoginSelected = true;
     }
@@ -164,7 +168,9 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
 
 
     private void showCheckEmailView() {
-        // todo add and show success view
+        tilForgotPassEmail.getEditText().setText("");
+        tilForgotPassEmail.clearFocus();
+        successView.setVisibility(View.VISIBLE);
     }
 
 

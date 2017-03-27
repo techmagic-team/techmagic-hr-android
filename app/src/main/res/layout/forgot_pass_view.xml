@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cvForgotPass"
+    android:id="@+id/llForgotPass"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:orientation="vertical"
     android:visibility="gone">
 
     <LinearLayout
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:padding="@dimen/activity_text_padding_top"
             android:text="@string/tm_hr_login_activity_text_go_to_sign_in"
             android:textColor="@color/colorPrimaryDark" />

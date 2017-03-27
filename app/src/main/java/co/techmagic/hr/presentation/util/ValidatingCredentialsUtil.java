@@ -2,7 +2,7 @@ package co.techmagic.hr.presentation.util;
 
 import java.util.regex.Pattern;
 
-public class ValidatingCredentilsUtil {
+public class ValidatingCredentialsUtil {
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private static final int PASSWORD_MINIMUM_LENGTH = 6;

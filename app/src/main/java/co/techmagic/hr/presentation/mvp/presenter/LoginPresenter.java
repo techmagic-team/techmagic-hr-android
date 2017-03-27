@@ -12,7 +12,7 @@ import co.techmagic.hr.domain.interactor.user.LoginUser;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.LoginView;
-import co.techmagic.hr.presentation.util.ValidatingCredentilsUtil;
+import co.techmagic.hr.presentation.util.ValidatingCredentialsUtil;
 
 public class LoginPresenter extends BasePresenter<LoginView> {
 
@@ -43,7 +43,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     public void onSendClick(String email) {
-        if (ValidatingCredentilsUtil.isValidEmail(email)) {
+        if (ValidatingCredentialsUtil.isValidEmail(email)) {
             performForgotPasswordRequest(email);
         } else {
             view.onForgotPassEmailError(R.string.message_invalid_email);
@@ -53,18 +53,20 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     private boolean isValidCredentials(String email, String password) {
         boolean isValid = false;
-        if (ValidatingCredentilsUtil.isValidEmail(email)) {
+        if (ValidatingCredentialsUtil.isValidEmail(email)) {
             isValid = true;
         } else {
             isValid = false;
             view.onEmailError(R.string.message_invalid_email);
         }
 
-        if (ValidatingCredentilsUtil.isValidPassword(password)) {
-            isValid = true;
-        } else {
-            isValid = false;
-            view.onPasswordError(R.string.message_invalid_password);
+        if (isValid) {
+            if (ValidatingCredentialsUtil.isValidPassword(password)) {
+                isValid = true;
+            } else {
+                isValid = false;
+                view.onPasswordError(R.string.message_invalid_password);
+            }
         }
 
         return isValid;
@@ -85,7 +87,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             public void onError(Throwable e) {
                 super.onError(e);
                 view.hideProgress();
-                view.showMessage(e.getMessage());
             }
         });
         userRepository.login(request);
@@ -99,15 +100,15 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             public void onNext(Void aVoid) {
                 super.onNext(aVoid);
                 view.hideProgress();
-                view.onForgotPassWordRequestSent();
+                view.onForgotPasswordRequestSent();
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
                 view.hideProgress();
-                view.showMessage(e.getMessage());
             }
         });
+        userRepository.forgotPassword(request);
     }
 }
