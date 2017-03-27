@@ -27,6 +27,10 @@ android {
         versionCode 1
         versionName "1.0"
 
+        ndk {
+            moduleName "keys"
+        }
+
         jackOptions {
             enabled true
         }
@@ -55,11 +59,18 @@ android {
         debug {
 
         }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
+        }
+
+        externalNativeBuild {
+            ndkBuild {
+                path 'src/main/jni/Android.mk'
+            }
         }
     }
 
