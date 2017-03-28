@@ -2,8 +2,11 @@ package co.techmagic.hr;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
+
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by ruslankuziak on 3/22/17.
@@ -16,6 +19,6 @@ public class TechMagicHrApplication extends Application {
         super.onCreate();
         ApiClient.initApiClient();
         SharedPreferencesUtil.init(this);
-       // Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
     }
 }
