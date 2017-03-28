@@ -77,7 +77,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void logOut() {
+    private void logOut() {
         SharedPreferencesUtil.clearPreferences();
         startLoginScreen();
     }

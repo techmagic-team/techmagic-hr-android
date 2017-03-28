@@ -20,6 +20,7 @@
         app:itemBackground="@color/colorPrimary"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
+        app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationBehavior"
         app:menu="@menu/menu_bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>
