@@ -17,6 +17,7 @@ import co.techmagic.hr.presentation.util.JniUtils;
 
 public class YealieCryptoManager {
 
+
     public String encrypt(String data) {
         byte[] input = data.getBytes();
         String key = JniUtils.getInstance().getKey();
@@ -27,6 +28,7 @@ public class YealieCryptoManager {
         return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
     }
 
+
     public String decrypt(String data, int tokenLength) {
         byte[] input = Base64.decode(data, Base64.DEFAULT);
         String key = JniUtils.getInstance().getKey();
@@ -36,6 +38,7 @@ public class YealieCryptoManager {
         byte[] decryptedBytes = processData(Cipher.DECRYPT_MODE, input, keyBytes, ivBytes);
         return decryptedBytes == null ? null : new String(Arrays.copyOf(decryptedBytes, tokenLength));
     }
+
 
     private byte[] processData(int mode, byte[] input, byte[] keyBytes, byte[] ivBytes) {
         byte[] processed = null;

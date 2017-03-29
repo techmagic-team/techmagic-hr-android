@@ -26,6 +26,7 @@ public class SharedPreferencesUtil {
 
 
     public static void saveAccessToken(String token) {
+        saveAccessTokenLength(token.length());
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, yealieCryptoManager.encrypt(token));
         editor.apply();
@@ -34,7 +35,7 @@ public class SharedPreferencesUtil {
 
     public static String getAccessToken() {
         String encodedAuthToken = prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
-        return encodedAuthToken == null ? null : yealieCryptoManager.decrypt(encodedAuthToken, encodedAuthToken.length());
+        return encodedAuthToken == null ? null : yealieCryptoManager.decrypt(encodedAuthToken, getAccessTokenLength());
     }
 
 
@@ -59,9 +60,24 @@ public class SharedPreferencesUtil {
         editor.apply();
     }
 
+
+    private static void saveAccessTokenLength(int tokenLength) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, tokenLength);
+        editor.apply();
+    }
+
+
+    private static int getAccessTokenLength() {
+        int tokenLength = prefs.getInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, 0);
+        return tokenLength;
+    }
+
+
     interface SharedPreferencesKeys {
         String SHARED_PREFS_NAME = "appPrefs";
         String ACCESS_TOKEN_KEY = "access_token_key";
+        String ACCESS_TOKEN_KEY_LENGTH = "access_token_key_length";
         String LOGGED_ID_USER_KEY = "logged_in_user_key";
     }
 }
