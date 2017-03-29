@@ -15,7 +15,7 @@ import co.techmagic.hr.presentation.util.JniUtils;
  * Created by techmagic on 3/27/17.
  */
 
-public class YealieCryptoManager {
+public class HrCryptoManager {
 
 
     public String encrypt(String data) {

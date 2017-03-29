@@ -7,20 +7,20 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
-import co.techmagic.hr.data.manager.YealieCryptoManager;
+import co.techmagic.hr.data.manager.HrCryptoManager;
 
 public class SharedPreferencesUtil {
 
     private static SharedPreferences prefs;
-    private static YealieCryptoManager yealieCryptoManager;
+    private static HrCryptoManager hrCryptoManager;
 
     private SharedPreferencesUtil() {}
 
 
     public static void init(@NonNull Context appContext) {
-        if (prefs == null && yealieCryptoManager == null) {
+        if (prefs == null && hrCryptoManager == null) {
             prefs = appContext.getSharedPreferences(SharedPreferencesKeys.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-            yealieCryptoManager = new YealieCryptoManager();
+            hrCryptoManager = new HrCryptoManager();
         }
     }
 
@@ -28,14 +28,14 @@ public class SharedPreferencesUtil {
     public static void saveAccessToken(String token) {
         saveAccessTokenLength(token.length());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, yealieCryptoManager.encrypt(token));
+        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, hrCryptoManager.encrypt(token));
         editor.apply();
     }
 
 
     public static String getAccessToken() {
         String encodedAuthToken = prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
-        return encodedAuthToken == null ? null : yealieCryptoManager.decrypt(encodedAuthToken, getAccessTokenLength());
+        return encodedAuthToken == null ? null : hrCryptoManager.decrypt(encodedAuthToken, getAccessTokenLength());
     }
 
 
@@ -69,8 +69,7 @@ public class SharedPreferencesUtil {
 
 
     private static int getAccessTokenLength() {
-        int tokenLength = prefs.getInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, 0);
-        return tokenLength;
+        return prefs.getInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, 0);
     }
 
 
