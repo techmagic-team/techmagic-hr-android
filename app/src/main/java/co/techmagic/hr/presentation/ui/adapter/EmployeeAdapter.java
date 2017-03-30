@@ -61,7 +61,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
 
             case LOADING_ITEM:
-                setupLoadingItem((LoadingItemHolder) holder);
+                // Just shows loading for now.
                 break;
         }
     }
@@ -111,11 +111,6 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         holder.item.setTag(docs);
-    }
-
-
-    private void setupLoadingItem(LoadingItemHolder holder) {
-
     }
 
 
