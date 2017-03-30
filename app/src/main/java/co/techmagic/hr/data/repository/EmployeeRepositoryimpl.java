@@ -16,7 +16,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<Employee> getEmployees() {
-        return client.getEmployeeClient().getEmployees();
+    public Observable<Employee> getEmployees(int offset, int limit) {
+        return client.getEmployeeClient().getEmployees(offset, limit);
     }
 }

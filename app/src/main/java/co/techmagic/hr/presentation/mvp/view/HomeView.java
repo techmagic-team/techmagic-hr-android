@@ -6,5 +6,9 @@ import co.techmagic.hr.data.entity.Docs;
 
 public interface HomeView extends View {
 
+    void addLoadingProgress();
+
+    void hideLoadingProgress();
+
     void showEmployeesList(List<Docs> docs);
 }

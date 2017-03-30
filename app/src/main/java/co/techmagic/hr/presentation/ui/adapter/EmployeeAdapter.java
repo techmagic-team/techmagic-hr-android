@@ -18,10 +18,14 @@ import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.Lead;
 
-public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.EmployeeViewHolder> {
+public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int EMPLOYEE_ITEM = 1;
+    private static final int LOADING_ITEM = 2;
 
     private List<Docs> allDocs = new ArrayList<>();
     private OnEmployeeItemClickListener clickListener;
+    private boolean isLoadingItemAdded = false;
 
 
     public EmployeeAdapter(OnEmployeeItemClickListener clickListener) {
@@ -30,16 +34,42 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.Employ
 
 
     @Override
-    public EmployeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_employee, parent, false);
-        return new EmployeeViewHolder(view, clickListener);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+
+        switch (viewType) {
+            case EMPLOYEE_ITEM:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_employee, parent, false);
+                return new EmployeeViewHolder(view, clickListener);
+
+            case LOADING_ITEM:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_employee_loading, parent, false);
+                return new LoadingItemHolder(view);
+
+            default:
+                return null;
+        }
     }
 
 
     @Override
-    public void onBindViewHolder(EmployeeViewHolder holder, int position) {
-        final Docs docs = allDocs.get(position);
-        setupEmployeeItem(holder, docs);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case EMPLOYEE_ITEM:
+                final Docs docs = allDocs.get(position);
+                setupEmployeeItem((EmployeeViewHolder) holder, docs);
+                break;
+
+            case LOADING_ITEM:
+                setupLoadingItem((LoadingItemHolder) holder);
+                break;
+        }
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == getItemCount() - 1 && isLoadingItemAdded) ? LOADING_ITEM : EMPLOYEE_ITEM;
     }
 
 
@@ -84,14 +114,58 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.Employ
     }
 
 
+    private void setupLoadingItem(LoadingItemHolder holder) {
+
+    }
+
+
+    private void add(Docs item) {
+        allDocs.add(item);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
+
+    public void addLoadingProgress() {
+        if (!isLoadingItemAdded) {
+            isLoadingItemAdded = true;
+            add(new Docs());
+        }
+    }
+
+
+    public void removeLoadingProgress() {
+        if (isLoadingItemAdded) {
+            isLoadingItemAdded = false;
+
+            int itemCount = getItemCount();
+            if (itemCount > 0) {
+                int position = itemCount - 1;
+                Docs item = getItem(position);
+
+                if (item != null) {
+                    allDocs.remove(position);
+                    notifyItemRemoved(position);
+                }
+            }
+        }
+    }
+
+
+    private Docs getItem(int position) {
+        if (position >= 0)
+            return allDocs.get(position);
+        else
+            return null;
+    }
+
+
     public void refresh(List<Docs> docs) {
-        allDocs.clear();
         allDocs.addAll(docs);
         notifyDataSetChanged();
     }
 
 
-    static class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private static class EmployeeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         View item;
         ImageView ivAvatar;
@@ -120,6 +194,15 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.Employ
             clickListener.onEmployeeItemClicked((Docs) v.getTag());
         }
     }
+
+
+    private static class LoadingItemHolder extends RecyclerView.ViewHolder {
+
+        LoadingItemHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
 
     public interface OnEmployeeItemClickListener {
 

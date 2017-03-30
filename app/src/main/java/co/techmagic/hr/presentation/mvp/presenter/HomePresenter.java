@@ -7,17 +7,21 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.HomeView;
 
+import static co.techmagic.hr.presentation.ui.activity.HomeActivity.ITEMS_COUNT;
+
 public class HomePresenter extends BasePresenter<HomeView> {
 
     private IEmployeeRepository employeeRepository;
     private GetEmployee getEmployee;
+
+    private boolean isDataLoading = false;
+    private int allItemsCount;
 
 
     public HomePresenter() {
         super();
         employeeRepository = new EmployeeRepositoryImpl();
         getEmployee = new GetEmployee(employeeRepository);
-        performGetEmployeesRequest();
     }
 
 
@@ -27,21 +31,43 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    private void performGetEmployeesRequest() {
+    public void loadEmployees(int offset, int visibleItemsCount) {
+        if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
+            view.addLoadingProgress();
+            performGetEmployeesRequest(offset);
+        }
+    }
+
+
+    private void removeLoading() {
+        isDataLoading = false;
+        view.hideLoadingProgress();
+    }
+
+
+    private void performGetEmployeesRequest(int offset) {
+        isDataLoading = true;
+        getEmployee.setLimit(ITEMS_COUNT);
+        getEmployee.setOffset(offset);
         getEmployee.execute(new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee employee) {
                 super.onNext(employee);
-                view.hideProgress();
-                view.showEmployeesList(employee.getDocs());
+                handleSuccessResponse(employee);
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                view.hideProgress();
+                removeLoading();
             }
         });
-        employeeRepository.getEmployees();
+    }
+
+
+    private void handleSuccessResponse(Employee employee) {
+        removeLoading();
+        allItemsCount = employee.getCount();
+        view.showEmployeesList(employee.getDocs());
     }
 }

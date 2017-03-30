@@ -75,6 +75,8 @@ public class Docs implements Parcelable {
     @SerializedName("trialPeriodEnds")
     private String trialPeriodEnds;
 
+    public Docs() {}
+
     public Docs(Parcel in) {
         department = (Department) in.readValue(Department.class.getClassLoader());
         room = (Room) in.readValue(Room.class.getClassLoader());

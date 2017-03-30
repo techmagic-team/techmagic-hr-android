@@ -21,11 +21,15 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements EmployeeAdapter.OnEmployeeItemClickListener {
 
+    public static final int ITEMS_COUNT = 10;
+
     @BindView(R.id.bottomNavigation)
     BottomNavigationView bottomNavigation;
     @BindView(R.id.rvEmployees)
     RecyclerView rvEmployees;
 
+    private LinearLayoutManager linearLayoutManager;
+    private HomePresenter homePresenter;
     private EmployeeAdapter adapter;
 
     @Override
@@ -46,6 +50,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     protected HomeViewImpl initView() {
         return new HomeViewImpl(this, findViewById(android.R.id.content)) {
             @Override
+            public void addLoadingProgress() {
+                adapter.addLoadingProgress();
+            }
+
+            @Override
+            public void hideLoadingProgress() {
+                adapter.removeLoadingProgress();
+            }
+
+            @Override
             public void showEmployeesList(List<Docs> docs) {
                 adapter.refresh(docs);
             }
@@ -55,7 +69,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     protected HomePresenter initPresenter() {
-        return new HomePresenter();
+        homePresenter = new HomePresenter();
+        return homePresenter;
     }
 
 
@@ -89,6 +104,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private void initUi() {
         setupBottomNavigation();
         setupRecyclerView();
+        loadMoreEmployees(0, 0);
     }
 
 
@@ -105,7 +121,34 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private void setupRecyclerView() {
         adapter = new EmployeeAdapter(this);
-        rvEmployees.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rvEmployees.setLayoutManager(linearLayoutManager);
         rvEmployees.setAdapter(adapter);
+        rvEmployees.addOnScrollListener(getOnScrollListener());
+    }
+
+    /**
+     * @param visibleItemsCount Used to show whether all items are already loaded.
+     * */
+
+    private void loadMoreEmployees(int offset, int visibleItemsCount) {
+        presenter.loadEmployees(offset, visibleItemsCount);
+    }
+
+
+    private RecyclerView.OnScrollListener getOnScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= ITEMS_COUNT) {
+                    loadMoreEmployees(totalItemCount, totalItemCount);
+                }
+            }
+        };
     }
 }
