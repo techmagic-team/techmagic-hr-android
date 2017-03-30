@@ -6,12 +6,7 @@
         android:id="@+id/menu_item_search"
         android:title="@string/tm_hr_home_activity_text_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/menu_item_filters"
-        android:icon="@drawable/ic_filter_list_white"
-        android:title="@string/tm_hr_search_activity_text_filters"
-        app:showAsAction="always" />
+        android:icon="@drawable/ic_search_white"
+        app:showAsAction="collapseActionView|always" />
 
 </menu>

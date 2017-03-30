@@ -25,4 +25,6 @@
     <dimen name="activity_home_card_view_list_text_layout_height">18dp</dimen>
     <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
 
+    <!-- SearchActivity -->
+
 </resources>

@@ -3,26 +3,43 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
+import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
+import co.techmagic.hr.presentation.util.KeyboardUtil;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
+        initUi();
+    }
 
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
+
+    @Override
+    protected void initLayout() {
+        setContentView(R.layout.activity_search);
+    }
+
+
+    @Override
+    protected SearchViewImpl initView() {
+        return null;
+    }
+
+
+    @Override
+    protected SearchPresenter initPresenter() {
+        return new SearchPresenter();
     }
 
 
@@ -44,19 +61,46 @@ public class SearchActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-            case R.id.search:
-                return true;
-
-            case R.id.menu_item_filters:
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+
+    @OnClick(R.id.btnCancel)
+    public void onCancelClick() {
+        handleOnCancelClick();
+    }
+
+
+    @OnClick(R.id.btnApply)
+    public void onApplyClick() {
+        handleOnApplyClick();
+    }
+
+
+    private void handleOnCancelClick() {
+        KeyboardUtil.hideKeyboard(this, getCurrentFocus());
+        startHomeScreen();
+        finish();
+    }
+
+
+    private void handleOnApplyClick() {
+
+    }
+
+
+    private void initUi() {
+        setupActionBar();
+    }
+
+
+    private void setupActionBar() {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("");
+        }
     }
 }
