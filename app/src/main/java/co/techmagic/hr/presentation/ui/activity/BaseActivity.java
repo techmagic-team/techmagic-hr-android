@@ -67,6 +67,11 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
+    protected void startSearchScreen() {
+        startActivity(new Intent(this, SearchActivity.class));
+    }
+
+
     protected void showLogOutDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.message_alert_dialog_title_log_out))

@@ -85,6 +85,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.search:
+                startSearchScreen();
+                return true;
+
             case R.id.menu_item_logout:
                 showLogOutDialog();
                 return true;

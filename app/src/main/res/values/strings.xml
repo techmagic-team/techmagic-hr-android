@@ -27,7 +27,10 @@
     <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
     <string name="tm_hr_home_activity_bottom_navigation_item_2">My Profile</string>
     <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_4">Item 4</string>
-    <string name="tm_hr_home_activity_text_logout">Logout</string>
+    <string name="tm_hr_home_activity_text_search">Search</string>
+    <string name="tm_hr_home_activity_text_logout">LogOut</string>
+
+    <!-- SearchActivity -->
+    <string name="tm_hr_search_activity_text_filters">Filters</string>
 
 </resources>
