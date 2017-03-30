@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -97,16 +98,16 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvName.setText(docs.getFirstName() + " " + docs.getLastName());
 
         if (department == null) {
-            holder.tvPosition.setVisibility(View.GONE);
+            holder.llPosition.setVisibility(View.GONE);
         } else {
-            holder.tvPosition.setVisibility(View.VISIBLE);
+            holder.llPosition.setVisibility(View.VISIBLE);
             holder.tvPosition.setText(department.getName());
         }
 
         if (lead == null) {
-            holder.tvLead.setVisibility(View.GONE);
+            holder.llLead.setVisibility(View.GONE);
         } else {
-            holder.tvLead.setVisibility(View.VISIBLE);
+            holder.llLead.setVisibility(View.VISIBLE);
             holder.tvLead.setText(lead.getFirstName() + " " + lead.getLastName());
         }
 
@@ -164,6 +165,8 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         View item;
         ImageView ivAvatar;
+        LinearLayout llPosition;
+        LinearLayout llLead;
         TextView tvName;
         TextView tvPosition;
         TextView tvLead;
@@ -174,6 +177,8 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.clickListener = clickListener;
             item = itemView.findViewById(R.id.cvItemView);
             ivAvatar = (ImageView) itemView.findViewById(R.id.ivAvatar);
+            llPosition = (LinearLayout) itemView.findViewById(R.id.llPosition);
+            llLead = (LinearLayout) itemView.findViewById(R.id.llLead);
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvPosition = (TextView) itemView.findViewById(R.id.tvPosition);
             tvLead = (TextView) itemView.findViewById(R.id.tvLead);

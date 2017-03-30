@@ -29,8 +29,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     RecyclerView rvEmployees;
 
     private LinearLayoutManager linearLayoutManager;
-    private HomePresenter homePresenter;
     private EmployeeAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +69,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     protected HomePresenter initPresenter() {
-        homePresenter = new HomePresenter();
-        return homePresenter;
+        return new HomePresenter();
     }
 
 
@@ -85,6 +84,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.search:
+                startSearchScreen();
+                return true;
+
             case R.id.menu_item_logout:
                 showLogOutDialog();
                 return true;

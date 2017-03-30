@@ -13,13 +13,18 @@
     <!-- HomeActivity -->
     <!--EmployeeAdapter-->
     <dimen name="activity_home_card_view_list_item_margin_horizontal">16dp</dimen>
-    <dimen name="activity_home_card_view_list_item_content_margin_horizontal">8dp</dimen>
+    <dimen name="activity_home_card_view_list_item_content_margin_horizontal">16dp</dimen>
     <dimen name="activity_home_card_view_list_item_margin_vertical">8dp</dimen>
     <dimen name="activity_home_card_view_list_item_margin">2dp</dimen>
-    <dimen name="activity_home_card_view_list_item_photo_margin_horizontal">8dp</dimen>
+    <dimen name="activity_home_card_view_list_item_photo_margin_horizontal">16dp</dimen>
     <dimen name="activity_home_card_view_list_item_avatar_width">72dp</dimen>
     <dimen name="activity_home_card_view_list_item_avatar_height">96dp</dimen>
     <dimen name="activity_home_card_view_list_item_text_margin_top">8dp</dimen>
     <dimen name="activity_home_card_view_list_loading_margin">16dp</dimen>
+    <dimen name="activity_home_card_view_list_left_drawable_icon_size">12dp</dimen>
+    <dimen name="activity_home_card_view_list_text_layout_height">18dp</dimen>
+    <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
+
+    <!-- SearchActivity -->
 
 </resources>
