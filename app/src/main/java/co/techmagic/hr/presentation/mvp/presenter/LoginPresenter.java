@@ -32,6 +32,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     @Override
     protected void onViewDetached() {
         loginUser.unsubscribe();
+        forgotPassword.unsubscribe();
     }
 
 

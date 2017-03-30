@@ -12,6 +12,7 @@ public class ForgotPassword extends DataUseCase<ForgotPasswordRequest, Void, IUs
         super(repository);
     }
 
+
     @Override
     protected Observable<Void> buildObservable(ForgotPasswordRequest forgotPasswordRequest) {
         return repository.forgotPassword(forgotPasswordRequest);

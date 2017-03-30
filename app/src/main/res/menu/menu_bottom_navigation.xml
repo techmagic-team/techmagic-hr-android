@@ -23,11 +23,4 @@
         android:title="@string/tm_hr_home_activity_bottom_navigation_item_3"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_4"
-        android:enabled="true"
-        android:icon="@drawable/ic_android_white"
-        android:title="@string/tm_hr_home_activity_bottom_navigation_item_3"
-        app:showAsAction="ifRoom" />
-
 </menu>
