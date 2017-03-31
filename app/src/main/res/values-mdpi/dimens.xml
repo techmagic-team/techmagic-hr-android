@@ -2,4 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_login_horizontal_margin">16dp</dimen>
     <dimen name="activity_login_vertical_margin">16dp</dimen>
+
+    <!-- SearchActivity -->
+    <dimen name="search_activity_alert_dialog_filter_rv_height">180dp</dimen>
 </resources>

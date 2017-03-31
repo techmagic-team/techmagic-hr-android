@@ -1,6 +1,10 @@
 package co.techmagic.hr.data.repository;
 
+import java.util.List;
+
 import co.techmagic.hr.data.entity.Employee;
+import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
@@ -18,5 +22,17 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<Employee> getEmployees(int offset, int limit) {
         return client.getEmployeeClient().getEmployees(offset, limit);
+    }
+
+
+    @Override
+    public Observable<List<FilterDepartment>> getFilterDepartments() {
+        return client.getEmployeeClient().getFilterDepartments();
+    }
+
+
+    @Override
+    public Observable<List<FilterLead>> getFilterLeads() {
+        return client.getEmployeeClient().getFilterLeads();
     }
 }
