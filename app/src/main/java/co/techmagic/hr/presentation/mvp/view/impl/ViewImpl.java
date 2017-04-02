@@ -10,6 +10,7 @@ import android.widget.Toast;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
+import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog;
 import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
 
 public abstract class ViewImpl implements View {
@@ -18,6 +19,7 @@ public abstract class ViewImpl implements View {
     private Activity activity;
     private Fragment fragment;
     private ProgressDialogHelper progressDialogHelper;
+    private AnimatedProgressDialog animatedDialog;
 
 
     public ViewImpl(Activity activity, android.view.View contentView) {
@@ -35,6 +37,7 @@ public abstract class ViewImpl implements View {
 
     private void init() {
         progressDialogHelper = new ProgressDialogHelper();
+        animatedDialog = new AnimatedProgressDialog(getContext());
     }
 
 
@@ -58,13 +61,14 @@ public abstract class ViewImpl implements View {
 
     @Override
     public void showProgress() {
-        progressDialogHelper.showProgress(getContext(), getContext().getString(R.string.message_loading));
+        animatedDialog.show();
     }
 
 
     @Override
     public void showProgress(String message) {
-        progressDialogHelper.showProgress(getContext(), message);
+        animatedDialog.setMessage(message);
+        animatedDialog.show();
     }
 
 
@@ -88,7 +92,7 @@ public abstract class ViewImpl implements View {
 
     @Override
     public void hideProgress() {
-        progressDialogHelper.hideProgress();
+        animatedDialog.hide();
     }
 
 

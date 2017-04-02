@@ -75,6 +75,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     private void performLogInRequest(@NonNull String email, @NonNull String password) {
+        view.showProgress();
         final LoginRequest request = new LoginRequest(IUserRepository.STUB_COMPANY_ID, email, password);
         loginUser.execute(request, new DefaultSubscriber<User>(view) {
             @Override
@@ -95,6 +96,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     private void performForgotPasswordRequest(@NonNull String email) {
+        view.showProgress();
         final ForgotPasswordRequest request = new ForgotPasswordRequest(IUserRepository.STUB_COMPANY_ID, email);
         forgotPassword.execute(request, new DefaultSubscriber<Void>(view) {
             @Override

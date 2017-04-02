@@ -66,6 +66,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
 
 
     private void performGetDepartmentFiltersRequest() {
+        view.showProgress();
         getDepartmentFilters.execute(new DefaultSubscriber<List<FilterDepartment>>(view) {
             @Override
             public void onNext(List<FilterDepartment> filterDepartments) {
@@ -92,6 +93,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
 
 
     private void performGetLeadFiltersRequest() {
+        view.showProgress();
         getLeadFilters.execute(new DefaultSubscriber<List<FilterLead>>(view) {
             @Override
             public void onNext(List<FilterLead> filterLeads) {
