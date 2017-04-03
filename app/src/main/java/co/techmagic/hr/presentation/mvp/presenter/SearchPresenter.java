@@ -8,6 +8,7 @@ import java.util.List;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.FilterDepartment;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.domain.interactor.employee.GetDepartmentFilters;
 import co.techmagic.hr.domain.interactor.employee.GetLeadFilters;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
