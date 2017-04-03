@@ -3,7 +3,6 @@ package co.techmagic.hr.presentation.mvp.presenter;
 import android.support.annotation.Nullable;
 
 import co.techmagic.hr.data.entity.Employee;
-import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.domain.interactor.employee.GetEmployee;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
