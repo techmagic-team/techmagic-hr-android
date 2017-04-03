@@ -14,4 +14,9 @@
 
     <style name="NoActionBarTheme" parent="Theme.AppCompat.NoActionBar" />
 
+    <style name="AppTheme.Primary.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

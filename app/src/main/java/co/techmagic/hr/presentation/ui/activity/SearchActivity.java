@@ -2,26 +2,54 @@ package co.techmagic.hr.presentation.ui.activity;
 
 import android.app.SearchManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
-import co.techmagic.hr.presentation.util.KeyboardUtil;
+import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 
-public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter> {
+public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter> implements FilterAdapter.OnFilterSelectionListener {
+
+    @BindView(R.id.tvSelectedDep)
+    TextView tvDepartment;
+    @BindView(R.id.tvSelectedLead)
+    TextView tvLead;
+
+    private FilterTypes filterTypes = FilterTypes.NONE;
+    private AlertDialog dialog;
+
+    private String selDepId;
+    private String selDepName;
+    private String selLeadId;
+    private String selLeadName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
+        presenter.performGetFiltersRequests();
     }
 
 
@@ -33,7 +61,30 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     @Override
     protected SearchViewImpl initView() {
-        return null;
+        return new SearchViewImpl(this, findViewById(android.R.id.content)) {
+
+            @Override
+            public void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments) {
+                filterTypes = FilterTypes.DEPARTMENT;
+                showSelectFilterAlertDialog(departments, null);
+            }
+
+            @Override
+            public void showEmptyDepartmentFilters(int resId) {
+                showSnackBarMessage(getString(resId));
+            }
+
+            @Override
+            public void showFilterByLeadDialog(@NonNull List<FilterLead> leads) {
+                filterTypes = FilterTypes.LEAD;
+                showSelectFilterAlertDialog(null, leads);
+            }
+
+            @Override
+            public void showEmptyLeadFilters(int resId) {
+                showSnackBarMessage(getString(resId));
+            }
+        };
     }
 
 
@@ -67,27 +118,79 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    @OnClick(R.id.btnCancel)
-    public void onCancelClick() {
-        handleOnCancelClick();
+    @Override
+    public void onBackPressed() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @OnClick(R.id.rlFilterByDepartment)
+    public void onFilterByDepartmentClick() {
+        presenter.onDepartmentFilterClick();
+    }
+
+
+    @OnClick(R.id.rlFilterByLead)
+    public void onFilterByLeadClick() {
+        presenter.onLeadFilterClick();
+    }
+
+
+    @OnClick(R.id.btnClear)
+    public void onClearClick() {
+        clearAllFilters();
     }
 
 
     @OnClick(R.id.btnApply)
     public void onApplyClick() {
-        handleOnApplyClick();
+        applyFilters();
     }
 
 
-    private void handleOnCancelClick() {
-        KeyboardUtil.hideKeyboard(this, getCurrentFocus());
-        startHomeScreen();
-        finish();
+    @Override
+    public void onFilterSelected(@NonNull String id, @NonNull String name) {
+        handleSelection(id, name);
     }
 
 
-    private void handleOnApplyClick() {
+    private void handleSelection(String id, String name) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+        switch (filterTypes) {
+            case DEPARTMENT:
+                selDepId = id;
+                selDepName = name;
+                tvDepartment.setText(name);
+                break;
 
+            case LEAD:
+                selLeadId = id;
+                selLeadName = name;
+                tvLead.setText(name);
+                break;
+        }
+    }
+
+
+    private void clearAllFilters() {
+        selDepId = null;
+        selLeadId = null;
+        selDepName = null;
+        selLeadName = null;
+        tvDepartment.setText("");
+        tvLead.setText("");
+        filterTypes = FilterTypes.NONE;
+    }
+
+
+    private void applyFilters() {
+        // TODO apply filters
     }
 
 
@@ -102,5 +205,60 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
+    }
+
+
+    private void showSelectFilterAlertDialog(@Nullable List<FilterDepartment> departments, @Nullable List<FilterLead> leads) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        setupDialogViews(departments, leads, builder);
+        dialog = builder.show();
+        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+
+    private void setupDialogViews(@Nullable List<FilterDepartment> departments, @Nullable List<FilterLead> leads, AlertDialog.Builder builder) {
+        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
+        builder.setView(view);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+
+        setupSelectFilterRecyclerView(view, departments, leads);
+        setupDialogTitle(tvTitle);
+    }
+
+
+    private void setupDialogTitle(@NonNull TextView tvTitle) {
+        switch (filterTypes) {
+            case DEPARTMENT:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
+                break;
+
+            case LEAD:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
+                break;
+        }
+    }
+
+
+    private void setupSelectFilterRecyclerView(View view, @Nullable List<FilterDepartment> results, @Nullable List<FilterLead> leads) {
+        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
+        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        FilterAdapter adapter = new FilterAdapter(this);
+        rvFilters.setAdapter(adapter);
+
+        if (results == null) {
+            adapter.refresh(leads);
+        } else {
+            adapter.refresh(results);
+        }
+    }
+
+
+    private enum FilterTypes {
+        NONE,
+        DEPARTMENT,
+        LEAD
     }
 }

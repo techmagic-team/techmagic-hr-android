@@ -37,6 +37,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
+        loadMoreEmployees(0, 0);
     }
 
 
@@ -107,7 +108,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private void initUi() {
         setupBottomNavigation();
         setupRecyclerView();
-        loadMoreEmployees(0, 0);
     }
 
 

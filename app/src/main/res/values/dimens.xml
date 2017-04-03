@@ -26,5 +26,8 @@
     <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
 
     <!-- SearchActivity -->
+    <!--FilterAdapter-->
+    <dimen name="search_activity_alert_dialog_filter_rv_height">260dp</dimen>
+    <dimen name="search_activity_alert_dialog_filter_list_item_margin">12dp</dimen>
 
 </resources>
