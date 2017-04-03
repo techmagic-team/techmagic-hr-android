@@ -1,13 +1,17 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -21,23 +25,30 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements EmployeeAdapter.OnEmployeeItemClickListener {
 
+    public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
 
     @BindView(R.id.bottomNavigation)
     BottomNavigationView bottomNavigation;
     @BindView(R.id.rvEmployees)
     RecyclerView rvEmployees;
+    @BindView(R.id.tvNoResults)
+    TextView tvNoResults;
 
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
 
+    private String selDepId;
+    private String selDepName;
+    private String selLeadId;
+    private String selLeadName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(0, 0);
+        loadMoreEmployees(selDepId, selLeadId, 0, 0);
     }
 
 
@@ -61,8 +72,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeesList(List<Docs> docs) {
-                adapter.refresh(docs);
+            public void showEmployeesList(List<Docs> docs, boolean shouldClearList) {
+                tvNoResults.setVisibility(View.GONE);
+                rvEmployees.setVisibility(View.VISIBLE);
+                adapter.refresh(docs, shouldClearList);
+            }
+
+            @Override
+            public void showNoResultsView() {
+                rvEmployees.setVisibility(View.GONE);
+                tvNoResults.setVisibility(View.VISIBLE);
             }
         };
     }
@@ -100,6 +119,33 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+                if (data.getStringExtra(SearchActivity.DEP_ID_EXTRA) != null && data.getStringExtra(SearchActivity.DEP_NAME_EXTRA) != null) {
+                    selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
+                    selDepName = data.getStringExtra(SearchActivity.DEP_NAME_EXTRA);
+
+                } else if (data.getStringExtra(SearchActivity.LEAD_ID_EXTRA) != null && data.getStringExtra(SearchActivity.LEAD_NAME_EXTRA) != null) {
+                    selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
+                    selLeadName = data.getStringExtra(SearchActivity.LEAD_NAME_EXTRA);
+                }
+
+                loadMoreEmployees(selDepId, selLeadId, 0, 0);
+
+            } else if (resultCode == RESULT_CANCELED) {
+                selDepId = null;
+                selDepName = null;
+                selLeadId = null;
+                selLeadName = null;
+            }
+        }
+    }
+
+
+    @Override
     public void onEmployeeItemClicked(@NonNull Docs docs) {
         // TODO show employee details
     }
@@ -122,6 +168,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
 
+    private void startSearchScreen() {
+        startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
+
     private void setupRecyclerView() {
         adapter = new EmployeeAdapter(this);
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -130,12 +181,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         rvEmployees.addOnScrollListener(getOnScrollListener());
     }
 
+
     /**
      * @param visibleItemsCount Used to show whether all items are already loaded.
-     * */
+     */
 
-    private void loadMoreEmployees(int offset, int visibleItemsCount) {
-        presenter.loadEmployees(offset, visibleItemsCount);
+    private void loadMoreEmployees(@Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+        presenter.loadEmployees(selDepId, selLeadId, offset, visibleItemsCount);
     }
 
 
@@ -149,7 +201,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= ITEMS_COUNT) {
-                    loadMoreEmployees(totalItemCount, totalItemCount);
+                    loadMoreEmployees(selDepId, selLeadId, totalItemCount, totalItemCount);
                 }
             }
         };
