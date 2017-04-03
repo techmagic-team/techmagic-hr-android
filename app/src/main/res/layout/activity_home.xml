@@ -13,6 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/tvNoResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/message_no_results"
+        android:visibility="gone" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

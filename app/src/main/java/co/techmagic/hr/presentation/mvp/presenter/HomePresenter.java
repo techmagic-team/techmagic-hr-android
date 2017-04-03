@@ -1,7 +1,10 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.support.annotation.Nullable;
+
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
+import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.domain.interactor.employee.GetEmployee;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
@@ -15,6 +18,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
     private GetEmployee getEmployee;
 
     private boolean isDataLoading = false;
+    private boolean isRequestWithFilters = false;
     private int allItemsCount;
 
 
@@ -31,10 +35,20 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void loadEmployees(int offset, int visibleItemsCount) {
+    public void loadEmployees(@Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
         if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
             view.addLoadingProgress();
-            performGetEmployeesRequest(offset);
+            checkForRequestType(selDepId, selLeadId);
+            performGetEmployeesRequest(selDepId, selLeadId, offset);
+        }
+    }
+
+
+    private void checkForRequestType(String selDepId, String selLeadId) {
+        if (selDepId == null && selLeadId == null) {
+            isRequestWithFilters = false;
+        } else {
+            isRequestWithFilters = true;
         }
     }
 
@@ -45,11 +59,10 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    private void performGetEmployeesRequest(int offset) {
+    private void performGetEmployeesRequest(@Nullable String selDepId, @Nullable String selLeadId, int offset) {
         isDataLoading = true;
-        getEmployee.setLimit(ITEMS_COUNT);
-        getEmployee.setOffset(offset);
-        getEmployee.execute(new DefaultSubscriber<Employee>(view) {
+        final EmployeeFiltersRequest request = new EmployeeFiltersRequest(selDepId, selLeadId, offset, ITEMS_COUNT, false);
+        getEmployee.execute(request, new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee employee) {
                 super.onNext(employee);
@@ -62,12 +75,18 @@ public class HomePresenter extends BasePresenter<HomeView> {
                 removeLoading();
             }
         });
+
+        employeeRepository.getEmployees(request);
     }
 
 
     private void handleSuccessResponse(Employee employee) {
         removeLoading();
         allItemsCount = employee.getCount();
-        view.showEmployeesList(employee.getDocs());
+        if (allItemsCount == 0) {
+            view.showNoResultsView();
+        } else {
+            view.showEmployeesList(employee.getDocs(), isRequestWithFilters);
+        }
     }
 }

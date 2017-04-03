@@ -1,6 +1,8 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,8 +29,14 @@ import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
+import co.techmagic.hr.presentation.util.KeyboardUtil;
 
 public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter> implements FilterAdapter.OnFilterSelectionListener {
+
+    public static final String DEP_ID_EXTRA = "dep_id_extra";
+    public static final String DEP_NAME_EXTRA = "dep_name_extra";
+    public static final String LEAD_ID_EXTRA = "lead_id_extra";
+    public static final String LEAD_NAME_EXTRA = "lead_name_extra";
 
     @BindView(R.id.tvSelectedDep)
     TextView tvDepartment;
@@ -101,6 +109,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         final SearchView searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.onActionViewExpanded();
+        searchView.requestFocus();
         return true;
     }
 
@@ -123,7 +133,10 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         } else {
-            super.onBackPressed();
+            KeyboardUtil.hideKeyboard(this, getCurrentFocus());
+            Intent i = new Intent();
+            setResult(RESULT_CANCELED, i);
+            finish();
         }
     }
 
@@ -190,7 +203,18 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void applyFilters() {
-        // TODO apply filters
+        Intent i = new Intent();
+
+        if (selDepId != null && selDepName != null) {
+            i.putExtra(DEP_ID_EXTRA, selDepId);
+            i.putExtra(DEP_NAME_EXTRA, selDepName);
+        } else if (selLeadId != null && selLeadName != null) {
+            i.putExtra(LEAD_ID_EXTRA, selLeadId);
+            i.putExtra(LEAD_NAME_EXTRA, selLeadName);
+        }
+
+        setResult(Activity.RESULT_OK, i);
+        finish();
     }
 
 

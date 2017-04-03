@@ -67,11 +67,6 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void startSearchScreen() {
-        startActivity(new Intent(this, SearchActivity.class));
-    }
-
-
     protected void startHomeScreen() {
         startActivity(new Intent(this, HomeActivity.class));
     }
