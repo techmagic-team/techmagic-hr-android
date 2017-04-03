@@ -14,7 +14,7 @@ public interface HomeView extends View {
 
     void hideLoadingProgress();
 
-    void showEmployeesList(List<Docs> docs, boolean shouldClearList);
+    void showEmployeesList(List<Docs> docs, boolean shouldClearAdapter);
 
     void showNoResultsView(int resId);
 }

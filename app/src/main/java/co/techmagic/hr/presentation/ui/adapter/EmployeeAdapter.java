@@ -165,7 +165,9 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public void clear() {
+        final int size = allDocs.size();
         allDocs.clear();
+        notifyItemRangeRemoved(0, size);
     }
 
 
