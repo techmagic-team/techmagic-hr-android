@@ -22,22 +22,22 @@ public abstract class ViewImpl implements View {
     private AnimatedProgressDialog animatedDialog;
 
 
-    public ViewImpl(Activity activity, android.view.View contentView) {
+    public ViewImpl(Activity activity, android.view.View contentView, boolean isProgressWhiteBackground) {
         this.activity = activity;
         this.contentView = contentView;
-        init();
+        init(isProgressWhiteBackground);
     }
 
 
     public ViewImpl(Fragment fragment) {
         this.fragment = fragment;
-        init();
+        init(false);
     }
 
 
-    private void init() {
+    private void init(boolean isSplash) {
         progressDialogHelper = new ProgressDialogHelper();
-        animatedDialog = new AnimatedProgressDialog(getContext());
+        animatedDialog = new AnimatedProgressDialog(getContext(), isSplash ? R.style.DialogThemeWhite : R.style.DialogThemeDimmed);
     }
 
 
