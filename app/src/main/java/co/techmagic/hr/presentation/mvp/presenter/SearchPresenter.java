@@ -14,6 +14,7 @@ import co.techmagic.hr.domain.interactor.employee.GetLeadFilters;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.SearchView;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class SearchPresenter extends BasePresenter<SearchView> {
 
@@ -86,9 +87,18 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     private void handleSuccessDepartmentFiltersResponse(@NonNull List<FilterDepartment> filterDepartments) {
         view.hideProgress();
         if (filterDepartments.isEmpty()) {
-            view.showEmptyDepartmentFilters(R.string.tm_hr_search_activity_text_empty_department_filters);
+            view.showEmptyDepartmentFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_department_filters);
         }
         departments.addAll(filterDepartments);
+
+        final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
+        if (depId != null) {
+            for (FilterDepartment d : departments) {
+                if (depId.equals(d.getId())) {
+                    view.showSelectedDepartmentFilter(d.getName());
+                }
+            }
+        }
     }
 
 
@@ -113,8 +123,18 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     private void handleSuccessLeadFiltersResponse(@NonNull List<FilterLead> filterLeads) {
         view.hideProgress();
         if (filterLeads.isEmpty()) {
-            view.showEmptyLeadFilters(R.string.tm_hr_search_activity_text_empty_lead_filters);
+            view.showEmptyLeadFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
         }
         leads.addAll(filterLeads);
+
+        final String leadId = SharedPreferencesUtil.getSelectedLeadId();
+        if (leadId != null) {
+            for (FilterLead l : leads) {
+                if (leadId.equals(l.getId())) {
+                    view.showSelectedLeadFilter(l.getName());
+                }
+            }
+        }
+        view.requestSearchViewFocus();
     }
 }

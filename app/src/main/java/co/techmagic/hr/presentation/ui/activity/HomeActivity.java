@@ -17,17 +17,21 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements EmployeeAdapter.OnEmployeeItemClickListener {
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
 
+    @BindView(R.id.flFilters)
+    View flFilters;
     @BindView(R.id.bottomNavigation)
     BottomNavigationView bottomNavigation;
     @BindView(R.id.rvEmployees)
@@ -39,9 +43,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private EmployeeAdapter adapter;
 
     private String selDepId;
-    private String selDepName;
     private String selLeadId;
-    private String selLeadName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         ButterKnife.bind(this);
         initUi();
         loadMoreEmployees(selDepId, selLeadId, 0, 0);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setupFiltersView();
     }
 
 
@@ -61,6 +71,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     protected HomeViewImpl initView() {
         return new HomeViewImpl(this, findViewById(android.R.id.content)) {
+            @Override
+            public void showFiltersView() {
+                flFilters.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void hideFiltersView() {
+                flFilters.setVisibility(View.GONE);
+            }
+
             @Override
             public void addLoadingProgress() {
                 adapter.addLoadingProgress();
@@ -79,9 +99,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showNoResultsView() {
-                rvEmployees.setVisibility(View.GONE);
-                tvNoResults.setVisibility(View.VISIBLE);
+            public void showNoResultsView(int resId) {
+                showNoResults(resId);
             }
         };
     }
@@ -124,22 +143,17 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
         if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK && data != null) {
-                if (data.getStringExtra(SearchActivity.DEP_ID_EXTRA) != null && data.getStringExtra(SearchActivity.DEP_NAME_EXTRA) != null) {
+                if (data.getStringExtra(SearchActivity.DEP_ID_EXTRA) != null) {
                     selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
-                    selDepName = data.getStringExtra(SearchActivity.DEP_NAME_EXTRA);
 
-                } else if (data.getStringExtra(SearchActivity.LEAD_ID_EXTRA) != null && data.getStringExtra(SearchActivity.LEAD_NAME_EXTRA) != null) {
+                } else if (data.getStringExtra(SearchActivity.LEAD_ID_EXTRA) != null) {
                     selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
-                    selLeadName = data.getStringExtra(SearchActivity.LEAD_NAME_EXTRA);
                 }
 
                 loadMoreEmployees(selDepId, selLeadId, 0, 0);
 
             } else if (resultCode == RESULT_CANCELED) {
-                selDepId = null;
-                selDepName = null;
-                selLeadId = null;
-                selLeadName = null;
+                clearFilterIds();
             }
         }
     }
@@ -151,9 +165,18 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
 
+    @OnClick(R.id.btnClearFilters)
+    public void onClearFiltersClick() {
+        handleClearFiltersClick();
+    }
+
+
     private void initUi() {
+        selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
+        selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         setupBottomNavigation();
         setupRecyclerView();
+        presenter.setupFiltersView();
     }
 
 
@@ -170,6 +193,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private void startSearchScreen() {
         startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_ACTIVITY_REQUEST_CODE);
+        clearFilterIds();
     }
 
 
@@ -179,6 +203,30 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         rvEmployees.setLayoutManager(linearLayoutManager);
         rvEmployees.setAdapter(adapter);
         rvEmployees.addOnScrollListener(getOnScrollListener());
+    }
+
+
+    private void showNoResults(int resId) {
+        rvEmployees.setVisibility(View.GONE);
+        tvNoResults.setVisibility(View.VISIBLE);
+        tvNoResults.setText(getString(resId));
+    }
+
+
+    private void handleClearFiltersClick() {
+        clearFilterIds();
+        flFilters.setVisibility(View.GONE);
+        tvNoResults.setVisibility(View.GONE);
+        adapter.clear();
+        SharedPreferencesUtil.saveSelectedDepartmentId(null);
+        SharedPreferencesUtil.saveSelectedLeadId(null);
+        loadMoreEmployees(selDepId, selLeadId, 0, 0);
+    }
+
+
+    private void clearFilterIds() {
+        selDepId = null;
+        selLeadId = null;
     }
 
 

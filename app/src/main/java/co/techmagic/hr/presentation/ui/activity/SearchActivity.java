@@ -30,18 +30,18 @@ import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter> implements FilterAdapter.OnFilterSelectionListener {
 
     public static final String DEP_ID_EXTRA = "dep_id_extra";
-    public static final String DEP_NAME_EXTRA = "dep_name_extra";
     public static final String LEAD_ID_EXTRA = "lead_id_extra";
-    public static final String LEAD_NAME_EXTRA = "lead_name_extra";
 
     @BindView(R.id.tvSelectedDep)
     TextView tvDepartment;
     @BindView(R.id.tvSelectedLead)
     TextView tvLead;
+    SearchView searchView;
 
     private FilterTypes filterTypes = FilterTypes.NONE;
     private AlertDialog dialog;
@@ -70,7 +70,6 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     @Override
     protected SearchViewImpl initView() {
         return new SearchViewImpl(this, findViewById(android.R.id.content)) {
-
             @Override
             public void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
@@ -78,7 +77,12 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             }
 
             @Override
-            public void showEmptyDepartmentFilters(int resId) {
+            public void showSelectedDepartmentFilter(@NonNull String filterName) {
+                tvDepartment.setText(filterName);
+            }
+
+            @Override
+            public void showEmptyDepartmentFiltersErrorMessage(int resId) {
                 showSnackBarMessage(getString(resId));
             }
 
@@ -89,8 +93,20 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             }
 
             @Override
-            public void showEmptyLeadFilters(int resId) {
+            public void showSelectedLeadFilter(@NonNull String filterName) {
+                tvLead.setText(filterName);
+                requestSearchViewFocus();
+            }
+
+            @Override
+            public void showEmptyLeadFiltersErrorMessage(int resId) {
                 showSnackBarMessage(getString(resId));
+            }
+
+            @Override
+            public void requestSearchViewFocus() {
+                searchView.onActionViewExpanded();
+                searchView.requestFocus();
             }
         };
     }
@@ -106,11 +122,9 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     public boolean onCreateOptionsMenu(Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.onActionViewExpanded();
-        searchView.requestFocus();
         return true;
     }
 
@@ -177,12 +191,14 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         }
         switch (filterTypes) {
             case DEPARTMENT:
+                SharedPreferencesUtil.saveSelectedDepartmentId(id);
                 selDepId = id;
                 selDepName = name;
                 tvDepartment.setText(name);
                 break;
 
             case LEAD:
+                SharedPreferencesUtil.saveSelectedLeadId(id);
                 selLeadId = id;
                 selLeadName = name;
                 tvLead.setText(name);
@@ -198,6 +214,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         selLeadName = null;
         tvDepartment.setText("");
         tvLead.setText("");
+        SharedPreferencesUtil.saveSelectedDepartmentId(null);
+        SharedPreferencesUtil.saveSelectedLeadId(null);
         filterTypes = FilterTypes.NONE;
     }
 
@@ -207,10 +225,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
         if (selDepId != null && selDepName != null) {
             i.putExtra(DEP_ID_EXTRA, selDepId);
-            i.putExtra(DEP_NAME_EXTRA, selDepName);
         } else if (selLeadId != null && selLeadName != null) {
             i.putExtra(LEAD_ID_EXTRA, selLeadId);
-            i.putExtra(LEAD_NAME_EXTRA, selLeadName);
         }
 
         setResult(Activity.RESULT_OK, i);

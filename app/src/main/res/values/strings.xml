@@ -13,6 +13,7 @@
     <string name="message_alert_dialog_title_log_out">Logout</string>
     <string name="message_alert_dialog_message_are_you_sure_you_want_to_log_out">Are you sure you want to Logout?</string>
     <string name="message_no_results">No results</string>
+    <string name="message_no_results_for_selected_filters">No results for selected filters</string>
 
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
@@ -30,6 +31,7 @@
     <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
+    <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
 
     <!-- SearchActivity -->
     <string name="tm_hr_search_activity_text_filters">Filters</string>

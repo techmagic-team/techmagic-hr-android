@@ -157,10 +157,15 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void refresh(List<Docs> docs, boolean shouldClearList) {
         if (shouldClearList) {
-            allDocs.clear();
+            clear();
         }
         allDocs.addAll(docs);
         notifyDataSetChanged();
+    }
+
+
+    public void clear() {
+        allDocs.clear();
     }
 
 
