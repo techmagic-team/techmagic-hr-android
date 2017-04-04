@@ -20,7 +20,6 @@ public class HomePresenter extends BasePresenter<HomeView> {
     private GetEmployee getEmployee;
 
     private boolean isDataLoading = false;
-    private boolean isRequestWithFilters = false;
     private int allItemsCount;
 
 
@@ -48,20 +47,16 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void loadEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
-        if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
-            view.addLoadingProgress();
-            checkForRequestType(selDepId, selLeadId);
-            performGetEmployeesRequest(searchQuery, selDepId, selLeadId, offset);
-        }
+    public void loadEmployeesAfterFilters(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+        view.clearAdapter();
+        loadEmployees(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
     }
 
 
-    private void checkForRequestType(String selDepId, String selLeadId) {
-        if (selDepId == null && selLeadId == null) {
-            isRequestWithFilters = false;
-        } else {
-            isRequestWithFilters = true;
+    public void loadEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+        if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
+            view.addLoadingProgress();
+            performGetEmployeesRequest(searchQuery, selDepId, selLeadId, offset);
         }
     }
 
@@ -97,12 +92,10 @@ public class HomePresenter extends BasePresenter<HomeView> {
         removeLoading();
         allItemsCount = employee.getCount();
 
-        if (isRequestWithFilters && allItemsCount == 0) {
-            view.showNoResultsView(R.string.message_no_results_for_selected_filters);
-        } else if (allItemsCount == 0) {
+        if (allItemsCount == 0) {
             view.showNoResultsView(R.string.message_no_results);
         } else {
-            view.showEmployeesList(employee.getDocs(), isRequestWithFilters);
+            view.showEmployeesList(employee.getDocs());
         }
     }
 }

@@ -35,9 +35,9 @@
 
     <!-- SearchActivity -->
     <string name="tm_hr_search_activity_text_filters">Filters</string>
-    <string name="tm_hr_search_activity_text_clear">Clear</string>
+    <string name="tm_hr_search_activity_text_clear">Clear Filters</string>
     <string name="tm_hr_search_activity_text_cancel">Cancel</string>
-    <string name="tm_hr_search_activity_text_apply">Apply</string>
+    <string name="tm_hr_search_activity_text_apply">Apply Filters</string>
     <string name="tm_hr_search_activity_text_filter_by">FILTER BY</string>
     <string name="tm_hr_search_activity_text_filter_by_department">Department</string>
     <string name="tm_hr_search_activity_text_filter_by_lead">Lead</string>
