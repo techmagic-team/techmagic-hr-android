@@ -11,9 +11,20 @@ public interface SearchView extends View {
 
     void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments);
 
-    void showEmptyDepartmentFilters(int resId);
+    void showSelectedDepartmentFilter(@NonNull String id, @NonNull String filterName);
+
+    void showEmptyDepartmentFiltersErrorMessage(int resId);
 
     void showFilterByLeadDialog(@NonNull List<FilterLead> leads);
 
-    void showEmptyLeadFilters(int resId);
+    void showSelectedLeadFilter(@NonNull String id, @NonNull String filterName);
+
+    void showEmptyLeadFiltersErrorMessage(int resId);
+
+    /**
+     * Method should be called only in last response from the server
+     * to avoid overlapping of animation by keyboard.
+     */
+
+    void requestSearchViewFocus();
 }
