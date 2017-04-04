@@ -48,11 +48,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void loadEmployees(@Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+    public void loadEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
         if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
             view.addLoadingProgress();
             checkForRequestType(selDepId, selLeadId);
-            performGetEmployeesRequest(selDepId, selLeadId, offset);
+            performGetEmployeesRequest(searchQuery, selDepId, selLeadId, offset);
         }
     }
 
@@ -72,9 +72,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    private void performGetEmployeesRequest(@Nullable String selDepId, @Nullable String selLeadId, int offset) {
+    private void performGetEmployeesRequest(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset) {
         isDataLoading = true;
-        final EmployeeFiltersRequest request = new EmployeeFiltersRequest(selDepId, selLeadId, offset, ITEMS_COUNT, false);
+        final EmployeeFiltersRequest request = new EmployeeFiltersRequest(searchQuery, selDepId, selLeadId, offset, ITEMS_COUNT, false);
         getEmployee.execute(request, new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee employee) {

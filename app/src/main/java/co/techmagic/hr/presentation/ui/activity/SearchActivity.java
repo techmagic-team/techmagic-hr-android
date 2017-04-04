@@ -36,6 +36,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     public static final String DEP_ID_EXTRA = "dep_id_extra";
     public static final String LEAD_ID_EXTRA = "lead_id_extra";
+    public static final String SEARCH_QUERY_EXTRA = "search_query_extra";
 
     @BindView(R.id.tvSelectedDep)
     TextView tvDepartment;
@@ -47,9 +48,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     private AlertDialog dialog;
 
     private String selDepId;
-    private String selDepName;
     private String selLeadId;
-    private String selLeadName;
+    private String searchQuery = null;
 
 
     @Override
@@ -122,9 +122,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     public boolean onCreateOptionsMenu(Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
-        searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        setupSearchView(menu);
         return true;
     }
 
@@ -193,14 +191,12 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             case DEPARTMENT:
                 SharedPreferencesUtil.saveSelectedDepartmentId(id);
                 selDepId = id;
-                selDepName = name;
                 tvDepartment.setText(name);
                 break;
 
             case LEAD:
                 SharedPreferencesUtil.saveSelectedLeadId(id);
                 selLeadId = id;
-                selLeadName = name;
                 tvLead.setText(name);
                 break;
         }
@@ -210,8 +206,6 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     private void clearAllFilters() {
         selDepId = null;
         selLeadId = null;
-        selDepName = null;
-        selLeadName = null;
         tvDepartment.setText("");
         tvLead.setText("");
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
@@ -223,10 +217,12 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     private void applyFilters() {
         Intent i = new Intent();
 
-        if (selDepId != null && selDepName != null) {
+        if (selDepId != null) {
             i.putExtra(DEP_ID_EXTRA, selDepId);
-        } else if (selLeadId != null && selLeadName != null) {
+        } else if (selLeadId != null) {
             i.putExtra(LEAD_ID_EXTRA, selLeadId);
+        } else if (searchQuery != null) {
+            i.putExtra(SEARCH_QUERY_EXTRA, searchQuery);
         }
 
         setResult(Activity.RESULT_OK, i);
@@ -245,6 +241,26 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("");
         }
+    }
+
+
+    private void setupSearchView(@NonNull Menu menu) {
+        searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query.trim();
+                applyFilters();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
 

@@ -44,6 +44,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private String selDepId;
     private String selLeadId;
+    private String searchQuery = null;
 
 
     @Override
@@ -51,7 +52,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(selDepId, selLeadId, 0, 0);
+        loadMoreEmployees(null, selDepId, selLeadId, 0, 0);
     }
 
 
@@ -148,9 +149,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
                 } else if (data.getStringExtra(SearchActivity.LEAD_ID_EXTRA) != null) {
                     selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
+
+                } else if (data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA) != null) {
+                    searchQuery = data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA);
                 }
 
-                loadMoreEmployees(selDepId, selLeadId, 0, 0);
+                loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0);
 
             } else if (resultCode == RESULT_CANCELED) {
                 clearFilterIds();
@@ -220,7 +224,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         adapter.clear();
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
-        loadMoreEmployees(selDepId, selLeadId, 0, 0);
+        loadMoreEmployees(null, selDepId, selLeadId, 0, 0);
     }
 
 
@@ -234,8 +238,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
      * @param visibleItemsCount Used to show whether all items are already loaded.
      */
 
-    private void loadMoreEmployees(@Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
-        presenter.loadEmployees(selDepId, selLeadId, offset, visibleItemsCount);
+    private void loadMoreEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+        presenter.loadEmployees(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
     }
 
 
@@ -249,7 +253,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= ITEMS_COUNT) {
-                    loadMoreEmployees(selDepId, selLeadId, totalItemCount, totalItemCount);
+                    loadMoreEmployees(searchQuery, selDepId, selLeadId, totalItemCount, totalItemCount);
                 }
             }
         };
