@@ -95,7 +95,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
         if (depId != null) {
             for (FilterDepartment d : departments) {
                 if (depId.equals(d.getId())) {
-                    view.showSelectedDepartmentFilter(d.getName());
+                    view.showSelectedDepartmentFilter(d.getId(), d.getName());
                 }
             }
         }
@@ -131,7 +131,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
         if (leadId != null) {
             for (FilterLead l : leads) {
                 if (leadId.equals(l.getId())) {
-                    view.showSelectedLeadFilter(l.getName());
+                    view.showSelectedLeadFilter(l.getId(), l.getName());
                 }
             }
         }

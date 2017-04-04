@@ -77,7 +77,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             }
 
             @Override
-            public void showSelectedDepartmentFilter(@NonNull String filterName) {
+            public void showSelectedDepartmentFilter(@NonNull String id, @NonNull String filterName) {
+                selDepId = id;
                 tvDepartment.setText(filterName);
             }
 
@@ -93,7 +94,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             }
 
             @Override
-            public void showSelectedLeadFilter(@NonNull String filterName) {
+            public void showSelectedLeadFilter(@NonNull String id, @NonNull String filterName) {
+                selLeadId = id;
                 tvLead.setText(filterName);
                 requestSearchViewFocus();
             }
@@ -107,6 +109,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             public void requestSearchViewFocus() {
                 searchView.onActionViewExpanded();
                 searchView.requestFocus();
+                searchView.setQuery(searchQuery, false);
             }
         };
     }
@@ -173,6 +176,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     @OnClick(R.id.btnApply)
     public void onApplyClick() {
+        searchQuery = searchView.getQuery().toString().trim();
         applyFilters();
     }
 
@@ -216,14 +220,9 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     private void applyFilters() {
         Intent i = new Intent();
-
-        if (selDepId != null) {
-            i.putExtra(DEP_ID_EXTRA, selDepId);
-        } else if (selLeadId != null) {
-            i.putExtra(LEAD_ID_EXTRA, selLeadId);
-        } else if (searchQuery != null) {
-            i.putExtra(SEARCH_QUERY_EXTRA, searchQuery);
-        }
+        i.putExtra(SEARCH_QUERY_EXTRA, searchQuery);
+        i.putExtra(DEP_ID_EXTRA, selDepId);
+        i.putExtra(LEAD_ID_EXTRA, selLeadId);
 
         setResult(Activity.RESULT_OK, i);
         finish();
@@ -231,6 +230,10 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void initUi() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            searchQuery = bundle.getString(HomeActivity.SEARCH_QUERY_EXTRAS);
+        }
         setupActionBar();
     }
 

@@ -27,6 +27,7 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements EmployeeAdapter.OnEmployeeItemClickListener {
 
+    public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
 
@@ -144,21 +145,15 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
         if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK && data != null) {
-                if (data.getStringExtra(SearchActivity.DEP_ID_EXTRA) != null) {
-                    selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
-
-                } else if (data.getStringExtra(SearchActivity.LEAD_ID_EXTRA) != null) {
-                    selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
-
-                } else if (data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA) != null) {
-                    searchQuery = data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA);
-                }
-
-                loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0);
-
-            } else if (resultCode == RESULT_CANCELED) {
-                clearFilterIds();
+                searchQuery = data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA);
+                selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
+                selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
             }
+
+            loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0);
+
+        } else if (resultCode == RESULT_CANCELED) {
+            clearFilterIds();
         }
     }
 
@@ -196,7 +191,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void startSearchScreen() {
-        startActivityForResult(new Intent(this, SearchActivity.class), SEARCH_ACTIVITY_REQUEST_CODE);
+        Intent i = new Intent(this, SearchActivity.class);
+        i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
+        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
         clearFilterIds();
     }
 
