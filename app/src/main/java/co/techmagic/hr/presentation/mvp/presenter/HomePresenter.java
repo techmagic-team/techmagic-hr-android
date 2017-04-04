@@ -10,7 +10,6 @@ import co.techmagic.hr.domain.interactor.employee.GetEmployee;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.HomeView;
-import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 import static co.techmagic.hr.presentation.ui.activity.HomeActivity.ITEMS_COUNT;
 
@@ -36,9 +35,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void setupFiltersView() {
-        final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
-        final String leadId = SharedPreferencesUtil.getSelectedLeadId();
+    public void setupFiltersView(String depId, String leadId) {
         if (depId == null && leadId == null) {
             view.hideFiltersView();
         } else {
