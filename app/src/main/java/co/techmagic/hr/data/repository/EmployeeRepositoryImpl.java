@@ -25,7 +25,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
     @Override
     public Observable<Employee> getEmployees(EmployeeFiltersRequest request) {
-        return client.getEmployeeClient().getEmployees(request.getDepartmentId(), request.isLastWorkingDay(), request.getLeadId(), request.getOffset(), request.getLimit());
+        return client.getEmployeeClient().getEmployees(request.getQuery(), request.getDepartmentId(), request.isLastWorkingDay(), request.getLeadId(), request.getOffset(), request.getLimit());
     }
 
 

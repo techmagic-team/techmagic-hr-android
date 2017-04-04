@@ -53,10 +53,36 @@ public class SharedPreferencesUtil {
     }
 
 
+    public static void saveSelectedDepartmentId(String depId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY, depId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedDepartmentId() {
+        return prefs.getString(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY, null);
+    }
+
+
+    public static void saveSelectedLeadId(String leadId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY, leadId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedLeadId() {
+        return prefs.getString(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY, null);
+    }
+
+
     public static void clearPreferences() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
         editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
+        editor.remove(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY);
         editor.apply();
     }
 
@@ -78,5 +104,7 @@ public class SharedPreferencesUtil {
         String ACCESS_TOKEN_KEY = "access_token_key";
         String ACCESS_TOKEN_KEY_LENGTH = "access_token_key_length";
         String LOGGED_ID_USER_KEY = "logged_in_user_key";
+        String SELECTED_DEPARTMENT_ID_KEY = "selected_department_id_key";
+        String SELECTED_LEAD_ID_KEY = "selected_lead_id_key";
     }
 }

@@ -41,17 +41,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="@string/tm_hr_search_activity_text_filter_by_department" />
+                        android:text="@string/tm_hr_search_activity_text_filter_by_department"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvSelectedDep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                        android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
                         android:layout_toLeftOf="@+id/ivDepArrow"
                         android:layout_toStartOf="@+id/ivDepArrow"
-                        android:ellipsize="end"
                         android:gravity="end"
                         android:maxLines="1" />
 
@@ -85,17 +86,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="@string/tm_hr_search_activity_text_filter_by_lead" />
+                        android:text="@string/tm_hr_search_activity_text_filter_by_lead"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvSelectedLead"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                        android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
                         android:layout_toLeftOf="@+id/ivLeadArrow"
                         android:layout_toStartOf="@+id/ivLeadArrow"
-                        android:ellipsize="end"
                         android:gravity="end"
                         android:maxLines="1" />
 
