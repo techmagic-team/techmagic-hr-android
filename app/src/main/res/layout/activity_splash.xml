@@ -5,11 +5,4 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <View
-        android:id="@+id/animatedLogo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:background="@drawable/shape_logo_bg" />
-
 </FrameLayout>

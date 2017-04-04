@@ -24,8 +24,8 @@ public class AnimatedProgressDialog extends Dialog {
     private ObjectAnimator animY;
 
 
-    public AnimatedProgressDialog(Context context) {
-        super(context);
+    public AnimatedProgressDialog(Context context, int theme) {
+        super(context, theme);
         setupDialogView(context);
     }
 
@@ -50,7 +50,7 @@ public class AnimatedProgressDialog extends Dialog {
     private void setupDialogView(Context context) {
         Window window = getWindow();
         WindowManager.LayoutParams wmlp = window.getAttributes();
-        wmlp.gravity = Gravity.CENTER_HORIZONTAL;
+        wmlp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
         window.setAttributes(wmlp);
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 

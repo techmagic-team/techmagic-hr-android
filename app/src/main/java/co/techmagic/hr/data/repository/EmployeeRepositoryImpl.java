@@ -10,10 +10,13 @@ import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 
+/**
+ * Created by techmagic on 4/3/17.
+ */
+
 public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
     private ApiClient client;
-
 
     public EmployeeRepositoryImpl() {
         client = ApiClient.getApiClient();
