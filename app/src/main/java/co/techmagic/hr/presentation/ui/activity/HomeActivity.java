@@ -60,7 +60,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.setupFiltersView();
+        presenter.setupFiltersView(selDepId, selLeadId);
     }
 
 
@@ -156,9 +156,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0, true);
-
-        } else if (resultCode == RESULT_CANCELED) {
-            clearFilterIds();
         }
     }
 
@@ -180,7 +177,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         setupBottomNavigation();
         setupRecyclerView();
-        presenter.setupFiltersView();
+        presenter.setupFiltersView(selDepId, selLeadId);
     }
 
 
@@ -199,7 +196,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
-        clearFilterIds();
     }
 
 

@@ -193,13 +193,11 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         }
         switch (filterTypes) {
             case DEPARTMENT:
-                SharedPreferencesUtil.saveSelectedDepartmentId(id);
                 selDepId = id;
                 tvDepartment.setText(name);
                 break;
 
             case LEAD:
-                SharedPreferencesUtil.saveSelectedLeadId(id);
                 selLeadId = id;
                 tvLead.setText(name);
                 break;
@@ -219,6 +217,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void applyFilters() {
+        SharedPreferencesUtil.saveSelectedDepartmentId(selDepId);
+        SharedPreferencesUtil.saveSelectedLeadId(selLeadId);
         Intent i = new Intent();
         i.putExtra(SEARCH_QUERY_EXTRA, searchQuery);
         i.putExtra(DEP_ID_EXTRA, selDepId);
