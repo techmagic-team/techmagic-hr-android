@@ -44,4 +44,7 @@
     <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
     <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

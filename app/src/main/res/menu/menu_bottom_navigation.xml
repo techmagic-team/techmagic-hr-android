@@ -10,9 +10,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_2"
+        android:id="@+id/action_my_profile"
         android:enabled="true"
-        android:icon="@drawable/ic_android_white"
+        android:icon="@drawable/ic_person"
         android:title="@string/tm_hr_home_activity_bottom_navigation_item_2"
         app:showAsAction="ifRoom" />
 

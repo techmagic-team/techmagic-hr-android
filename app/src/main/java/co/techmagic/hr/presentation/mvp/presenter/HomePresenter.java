@@ -35,8 +35,8 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void setupFiltersView(String depId, String leadId) {
-        if (depId == null && leadId == null) {
+    public void setupFiltersView(String depId, String leadId, String searchQuery) {
+        if (depId == null && leadId == null && searchQuery == null) {
             view.hideFiltersView();
         } else {
             view.showFiltersView();

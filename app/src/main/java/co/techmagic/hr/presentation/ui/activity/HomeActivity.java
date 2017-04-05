@@ -23,10 +23,14 @@ import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
+import co.techmagic.hr.presentation.ui.fragment.EmployeeDetailsFragment;
+import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.fragment.MyProfileFragment;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements EmployeeAdapter.OnEmployeeItemClickListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
 
+    public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -60,7 +64,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.setupFiltersView(selDepId, selLeadId);
+        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
     }
 
 
@@ -162,7 +166,25 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     public void onEmployeeItemClicked(@NonNull Docs docs) {
-        // TODO show employee details
+        addEmployeeDetailsFragment(docs);
+    }
+
+
+    @Override
+    public void addEmployeeDetailsFragment(@NonNull Docs docs) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
+
+        EmployeeDetailsFragment fragment = EmployeeDetailsFragment.newInstance();
+        fragment.setArguments(bundle);
+        addFragmentToBackStack(fragment, true);
+    }
+
+
+    @Override
+    public void addMyProfileFragment() {
+        MyProfileFragment fragment = MyProfileFragment.newInstance();
+        addFragmentToBackStack(fragment, true);
     }
 
 
@@ -177,7 +199,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         setupBottomNavigation();
         setupRecyclerView();
-        presenter.setupFiltersView(selDepId, selLeadId);
+        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
     }
 
 
@@ -185,6 +207,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
+                    clearFragmentsBackStack(this);
+                    break;
+
+                case R.id.action_my_profile:
+                    addMyProfileFragment();
                     break;
             }
             return true;
