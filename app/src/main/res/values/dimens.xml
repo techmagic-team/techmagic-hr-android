@@ -31,4 +31,12 @@
     <dimen name="search_activity_alert_dialog_filter_list_item_margin">12dp</dimen>
     <dimen name="search_activity_card_view_selected_filter_margin_left">80dp</dimen>
 
+    <!-- EmployeeDetailsFragment -->
+    <dimen name="fragment_employee_details_margin">16dp</dimen>
+    <dimen name="fragment_employee_details_photo_size">200dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_left">16dp</dimen>
+
 </resources>

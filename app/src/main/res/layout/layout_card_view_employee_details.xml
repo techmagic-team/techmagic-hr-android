@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/fragment_employee_details_margin"
+    android:background="@color/colorCardViewBgGrey"
+    tools:showIn="@layout/fragment_employee_details">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_mail_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_email" />
+
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSkype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_skype_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_skype" />
+
+                <TextView
+                    android:id="@+id/tvSkype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_phone_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_phone_number" />
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llRoom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_location_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_room" />
+
+                <TextView
+                    android:id="@+id/tvRoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llDepartment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_department_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_department" />
+
+                <TextView
+                    android:id="@+id/tvDepartment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_lead_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_lead" />
+
+                <TextView
+                    android:id="@+id/tvLead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_birthday_cake_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_date_of_birth" />
+
+                <TextView
+                    android:id="@+id/tvBirthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llRelocationCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_truck_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_date_of_city_of_relocation" />
+
+                <TextView
+                    android:id="@+id/tvRelCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llFirstDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_calendar_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_first_working_day" />
+
+                <TextView
+                    android:id="@+id/tvFirstDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llEmergencyPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_phone_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_emergency_phone_number" />
+
+                <TextView
+                    android:id="@+id/tvEmergPhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llEmergencyContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_user_circle_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_emergency_contact" />
+
+                <TextView
+                    android:id="@+id/tvEmergContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                style="@style/EmployeeDetailsLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_employee_details_text_layout_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_info_black" />
+
+                <TextView
+                    style="@style/EmployeeDetailsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_employee_details_card_view_text_about_me" />
+
+                <TextView
+                    android:id="@+id/tvAbout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_grey" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

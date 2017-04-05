@@ -44,7 +44,20 @@
     <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
     <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- EmployeeDetailsFragment -->
+    <string name="fragment_employee_details_card_view_text_email">"Email: "</string>
+    <string name="fragment_employee_details_card_view_text_skype">"Skype: "</string>
+    <string name="fragment_employee_details_card_view_text_phone_number">"Phone number: "</string>
+    <string name="fragment_employee_details_card_view_text_room">"Room: "</string>
+    <string name="fragment_employee_details_card_view_text_emergency_phone_number">"Emergency phone number: "</string>
+    <string name="fragment_employee_details_card_view_text_emergency_contact">"Emergency contact: "</string>
+    <string name="fragment_employee_details_card_view_text_department">"Department: "</string>
+    <string name="fragment_employee_details_card_view_text_lead">"Lead: "</string>
+    <string name="fragment_employee_details_card_view_text_date_of_birth">"Date of birth: "</string>
+    <string name="fragment_employee_details_card_view_text_date_of_city_of_relocation">"City of relocation: "</string>
+    <string name="fragment_employee_details_card_view_text_first_working_day">"First working day: "</string>
+    <string name="fragment_employee_details_card_view_text_trial_ends_date">"Trial period ends date: "</string>
+    <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day.: "</string>
+    <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
 
 </resources>

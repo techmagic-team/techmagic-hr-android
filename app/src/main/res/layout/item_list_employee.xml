@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_fa_tags" />
+                    android:src="@drawable/ic_department_black" />
 
                 <TextView
                     android:id="@+id/tvPosition"
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_user_secret" />
+                    android:src="@drawable/ic_lead_black" />
 
                 <TextView
                     android:id="@+id/tvLead"
