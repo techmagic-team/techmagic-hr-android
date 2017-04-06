@@ -12,9 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by techmagic on 8/29/16.
- */
+
 public class ApiClient {
 
     public static final String HOST = "http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com";
@@ -23,10 +21,11 @@ public class ApiClient {
     private Retrofit retrofit;
 
 
-    public static void initApiClient() {
+    public static synchronized ApiClient getApiClient() {
         if (apiClient == null) {
             apiClient = new ApiClient();
         }
+        return apiClient;
     }
 
 
@@ -38,11 +37,6 @@ public class ApiClient {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-    }
-
-
-    public static ApiClient getApiClient() {
-        return apiClient;
     }
 
 

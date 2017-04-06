@@ -55,7 +55,7 @@ public abstract class ViewImpl implements View {
 
     @Override
     public void showConnectionErrorMessage() {
-        showMessage(getContext().getString(R.string.message_connection_error));
+        Snackbar.make(contentView, getContext().getString(R.string.message_connection_error), Snackbar.LENGTH_LONG).show();
     }
 
 
