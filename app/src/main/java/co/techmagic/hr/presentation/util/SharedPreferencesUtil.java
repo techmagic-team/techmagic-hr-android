@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
-import co.techmagic.hr.data.manager.HrCryptoManager;
+import co.techmagic.hr.data.manager.impl.HrCryptoManager;
 
 public class SharedPreferencesUtil {
 

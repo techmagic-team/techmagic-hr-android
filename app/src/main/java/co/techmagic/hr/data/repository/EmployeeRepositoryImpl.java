@@ -5,6 +5,9 @@ import java.util.List;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.FilterDepartment;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.exception.NetworkConnectionException;
+import co.techmagic.hr.data.manager.NetworkManager;
+import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
@@ -17,26 +20,41 @@ import rx.Observable;
 public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
     private ApiClient client;
+    private NetworkManager networkManager;
+
 
     public EmployeeRepositoryImpl() {
         client = ApiClient.getApiClient();
+        this.networkManager = NetworkManagerImpl.getNetworkManager();
     }
 
 
     @Override
     public Observable<Employee> getEmployees(EmployeeFiltersRequest request) {
-        return client.getEmployeeClient().getEmployees(request.getQuery(), request.getDepartmentId(), request.isLastWorkingDay(), request.getLeadId(), request.getOffset(), request.getLimit());
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getEmployees(request.getQuery(), request.getDepartmentId(), request.isLastWorkingDay(), request.getLeadId(), request.getOffset(), request.getLimit());
+        }
+
+        return Observable.error(new NetworkConnectionException());
     }
 
 
     @Override
     public Observable<List<FilterDepartment>> getFilterDepartments() {
-        return client.getEmployeeClient().getFilterDepartments();
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getFilterDepartments();
+        }
+
+        return Observable.error(new NetworkConnectionException());
     }
 
 
     @Override
     public Observable<List<FilterLead>> getFilterLeads() {
-        return client.getEmployeeClient().getFilterLeads();
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getFilterLeads();
+        }
+
+        return Observable.error(new NetworkConnectionException());
     }
 }
