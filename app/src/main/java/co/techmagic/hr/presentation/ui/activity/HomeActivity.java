@@ -177,14 +177,14 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
         EmployeeDetailsFragment fragment = EmployeeDetailsFragment.newInstance();
         fragment.setArguments(bundle);
-        addFragmentToBackStack(fragment, true);
+        replaceFragment(fragment);
     }
 
 
     @Override
     public void addMyProfileFragment() {
         MyProfileFragment fragment = MyProfileFragment.newInstance();
-        addFragmentToBackStack(fragment, true);
+        replaceFragment(fragment);
     }
 
 

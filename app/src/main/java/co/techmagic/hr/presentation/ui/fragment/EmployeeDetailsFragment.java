@@ -109,73 +109,73 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
             @Override
             public void showEmail(@NonNull String email) {
                 llEmail.setVisibility(View.VISIBLE);
-                tvEmail.setText(email);
+                tvEmail.setText(getString(R.string.fragment_employee_details_card_view_text_email) + email);
             }
 
             @Override
             public void showSkype(@NonNull String skype) {
                 llSkype.setVisibility(View.VISIBLE);
-                tvSkype.setText(skype);
+                tvSkype.setText(getString(R.string.fragment_employee_details_card_view_text_skype) + skype);
             }
 
             @Override
             public void showPhone(@NonNull String phone) {
                 llPhone.setVisibility(View.VISIBLE);
-                tvPhone.setText(phone);
+                tvPhone.setText(getString(R.string.fragment_employee_details_card_view_text_phone_number) + phone);
             }
 
             @Override
             public void showRoom(@NonNull String room) {
                 llRoom.setVisibility(View.VISIBLE);
-                tvRoom.setText(room);
+                tvRoom.setText(getString(R.string.fragment_employee_details_card_view_text_room) + room);
             }
 
             @Override
             public void showDepartment(@NonNull String department) {
                 llDepartment.setVisibility(View.VISIBLE);
-                tvDepartment.setText(department);
+                tvDepartment.setText(getString(R.string.fragment_employee_details_card_view_text_department) + department);
             }
 
             @Override
             public void showLead(@NonNull String lead) {
                 llLead.setVisibility(View.VISIBLE);
-                tvLead.setText(lead);
+                tvLead.setText(getString(R.string.fragment_employee_details_card_view_text_lead) + lead);
             }
 
             @Override
             public void showBirthday(@NonNull String birthday) {
                 llBirthday.setVisibility(View.VISIBLE);
-                tvBirthday.setText(birthday);
+                tvBirthday.setText(getString(R.string.fragment_employee_details_card_view_text_date_of_birth) + birthday);
             }
 
             @Override
             public void showRelocationCity(@NonNull String city) {
                 llRelocationCity.setVisibility(View.VISIBLE);
-                tvRelCity.setText(city);
+                tvRelCity.setText(getString(R.string.fragment_employee_details_card_view_text_date_of_city_of_relocation) + city);
             }
 
             @Override
             public void showFirstDay(@NonNull String date) {
                 llFirstDay.setVisibility(View.VISIBLE);
-                tvFirstDay.setText(date);
+                tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
             }
 
             @Override
             public void showAbout(@NonNull String aboutText) {
                 llAbout.setVisibility(View.VISIBLE);
-                tvAbout.setText(aboutText);
+                tvAbout.setText(getString(R.string.fragment_employee_details_card_view_text_about_me) + aboutText);
             }
 
             @Override
             public void showEmergencyPhoneNumber(@NonNull String phone) {
                 llEmergencyPhoneNumber.setVisibility(View.VISIBLE);
-                tvEmergPhoneNumber.setText(phone);
+                tvEmergPhoneNumber.setText(getString(R.string.fragment_employee_details_card_view_text_emergency_phone_number) + phone);
             }
 
             @Override
             public void showEmergencyContact(@NonNull String contact) {
                 llEmergencyContact.setVisibility(View.VISIBLE);
-                tvEmergContact.setText(contact);
+                tvEmergContact.setText(getString(R.string.fragment_employee_details_card_view_text_emergency_contact) + contact);
             }
 
             @Override

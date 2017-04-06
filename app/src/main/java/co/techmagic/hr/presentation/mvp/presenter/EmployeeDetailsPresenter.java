@@ -4,6 +4,7 @@ import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.view.EmployeeDetailsView;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView> {
 
@@ -58,10 +59,9 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
             view.showLead(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        if (data.getBirthday() != null) {
-            // todo format date (use Date Util)
-            String formattedDate = "";
-            view.showBirthday(formattedDate);
+        final String birthdayDate = DateUtil.getFormattedDate(data.getBirthday());
+        if (birthdayDate != null) {
+            view.showBirthday(birthdayDate);
         }
 
         if (data.getRelocationCity() != null) {
@@ -82,22 +82,19 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
         }
 
         /* TODO next fields should be visible only for HR */
-        if (data.getFirstWorkingDay() != null) {
-            // todo format date (use Date Util)
-            String formattedDate = "";
-            view.showFirstDay(formattedDate);
+        final String firstDayDate = DateUtil.getFormattedDate(data.getFirstWorkingDay());
+        if (firstDayDate != null) {
+            view.showFirstDay(firstDayDate);
         }
 
-        if (data.getTrialPeriodEnds() != null) {
-            // todo format date (use Date Util)
-            String formattedDate = "";
-            view.showTrialPeriodEndsDate(formattedDate);
+        final String trialPeriodDate = DateUtil.getFormattedDate(data.getTrialPeriodEnds());
+        if (trialPeriodDate != null) {
+            view.showTrialPeriodEndsDate(trialPeriodDate);
         }
 
-        if (data.getLastWorkingDay() != null) {
-            // todo format date (use Date Util)
-            String formattedDate = "";
-            view.showLastWorkingDay(formattedDate);
+        final String lastDayDate = DateUtil.getFormattedDate(data.getLastWorkingDay());
+        if (lastDayDate != null) {
+            view.showLastWorkingDay(lastDayDate);
         }
     }
 }

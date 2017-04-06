@@ -35,8 +35,10 @@
     <dimen name="fragment_employee_details_margin">16dp</dimen>
     <dimen name="fragment_employee_details_photo_size">200dp</dimen>
     <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
+    <dimen name="fragment_employee_details_line_spacing_extra">6dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
-    <dimen name="fragment_employee_details_text_view_margin_left">16dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_bottom">12dp</dimen>
 
 </resources>
