@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 
+import co.techmagic.hr.data.exception.NetworkConnectionException;
 import co.techmagic.hr.presentation.mvp.view.View;
 import retrofit2.HttpException;
 import rx.Subscriber;
@@ -27,7 +28,7 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
         if (view == null) {
             return;
         }
-        if (e instanceof SocketTimeoutException) {
+        if (e instanceof SocketTimeoutException || e instanceof NetworkConnectionException) {
             view.showConnectionErrorMessage();
         } else if (e instanceof HttpException) {
             handleHttpErrorCodes(((HttpException) e).code());

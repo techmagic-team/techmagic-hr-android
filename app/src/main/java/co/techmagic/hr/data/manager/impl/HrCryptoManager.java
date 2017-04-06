@@ -1,4 +1,4 @@
-package co.techmagic.hr.data.manager;
+package co.techmagic.hr.data.manager.impl;
 
 import android.util.Base64;
 import android.util.Log;
