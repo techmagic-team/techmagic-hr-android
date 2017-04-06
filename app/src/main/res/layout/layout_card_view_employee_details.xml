@@ -38,6 +38,7 @@
                         android:src="@drawable/ic_mail_black" />
 
                     <ImageView
+                        android:id="@+id/ivEmailClipboard"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                         android:layout_marginTop="@dimen/fragment_employee_details_margin"
@@ -93,6 +94,7 @@
                         android:src="@drawable/ic_skype_black" />
 
                     <ImageView
+                        android:id="@+id/ivSkypeClipboard"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                         android:layout_marginTop="@dimen/fragment_employee_details_margin"
@@ -148,6 +150,7 @@
                         android:src="@drawable/ic_phone_black" />
 
                     <ImageView
+                        android:id="@+id/ivPhoneClipboard"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                         android:layout_marginTop="@dimen/fragment_employee_details_margin"
@@ -600,13 +603,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
+                        android:layout_marginBottom="@dimen/fragment_employee_details_text_view_margin_bottom"
                         android:layout_marginEnd="@dimen/fragment_employee_details_text_view_margin_horizontal"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="@dimen/fragment_employee_details_text_view_margin_horizontal"
                         android:layout_marginStart="0dp"
                         android:gravity="start"
                         android:lineSpacingExtra="4dp"
-                        android:layout_marginBottom="@dimen/fragment_employee_details_text_view_margin_bottom"
                         android:text="@string/fragment_employee_details_card_view_text_about_me" />
 
                 </LinearLayout>
