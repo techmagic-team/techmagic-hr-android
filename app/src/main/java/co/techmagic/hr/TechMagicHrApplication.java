@@ -14,7 +14,7 @@ public class TechMagicHrApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        NetworkManagerImpl.initNetworkManager(this);
+        NetworkManagerImpl.initNetworkManager(getApplicationContext());
         SharedPreferencesUtil.init(this);
        // Fabric.with(this, new Crashlytics());
     }

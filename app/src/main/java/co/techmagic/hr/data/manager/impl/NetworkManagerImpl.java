@@ -3,6 +3,7 @@ package co.techmagic.hr.data.manager.impl;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 
 import co.techmagic.hr.data.manager.NetworkManager;
 
@@ -18,12 +19,10 @@ public class NetworkManagerImpl implements NetworkManager {
     private Context context;
 
 
-    public static synchronized NetworkManagerImpl initNetworkManager (Context context) {
+    public static synchronized void initNetworkManager (@NonNull Context context) {
         if (networkManager == null) {
-            networkManager = new NetworkManagerImpl(context.getApplicationContext());
+            networkManager = new NetworkManagerImpl(context);
         }
-
-        return networkManager;
     }
 
 
@@ -32,13 +31,17 @@ public class NetworkManagerImpl implements NetworkManager {
     }
 
 
-    public static NetworkManager getNetworkManager() {
+    public static synchronized NetworkManager getNetworkManager() {
         return networkManager;
     }
 
 
     @Override
     public boolean isNetworkAvailable() {
+        if (context == null) {
+            return false;
+        }
+
         ConnectivityManager cm = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
