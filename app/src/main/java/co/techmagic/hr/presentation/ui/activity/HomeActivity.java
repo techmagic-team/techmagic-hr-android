@@ -26,9 +26,10 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.EmployeeDetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.MyProfileFragment;
+import co.techmagic.hr.presentation.ui.view.ToolbarViewChangeListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ToolbarViewChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
 
     public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
@@ -165,6 +166,24 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
+    public void showHomeActivityToolbar() {
+
+    }
+
+
+    @Override
+    public void showEmployeeDetailsToolbar() {
+
+    }
+
+
+    @Override
+    public void showMyProfileToolbar() {
+
+    }
+
+
+    @Override
     public void onEmployeeItemClicked(@NonNull Docs docs) {
         addEmployeeDetailsFragment(docs);
     }
@@ -243,19 +262,15 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void handleClearFiltersClick() {
-        clearFilterIds();
         flFilters.setVisibility(View.GONE);
         tvNoResults.setVisibility(View.GONE);
         adapter.clear();
+        searchQuery = null;
+        selDepId = null;
+        selLeadId = null;
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
         loadMoreEmployees(null, selDepId, selLeadId, 0, 0, false);
-    }
-
-
-    private void clearFilterIds() {
-        selDepId = null;
-        selLeadId = null;
     }
 
 

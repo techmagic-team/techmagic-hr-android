@@ -36,4 +36,10 @@ public interface EmployeeDetailsView extends View {
     void showTrialPeriodEndsDate(@NonNull String date);
 
     void showLastWorkingDay(@NonNull String date);
+
+    void onCopyEmailToClipboard(@NonNull String email);
+
+    void onCopySkypeToClipboard(@NonNull String skype);
+
+    void onCopyPhoneToClipboard(@NonNull String phone);
 }

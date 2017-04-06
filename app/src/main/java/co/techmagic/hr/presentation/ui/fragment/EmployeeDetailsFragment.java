@@ -1,5 +1,8 @@
 package co.techmagic.hr.presentation.ui.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +16,7 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.EmployeeDetailsPresenter;
@@ -187,6 +191,21 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
             public void showLastWorkingDay(@NonNull String date) {
 
             }
+
+            @Override
+            public void onCopyEmailToClipboard(@NonNull String email) {
+                saveTextToClipboard(email);
+            }
+
+            @Override
+            public void onCopySkypeToClipboard(@NonNull String skype) {
+                saveTextToClipboard(skype);
+            }
+
+            @Override
+            public void onCopyPhoneToClipboard(@NonNull String phone) {
+                saveTextToClipboard(phone);
+            }
         };
     }
 
@@ -194,6 +213,24 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     @Override
     protected EmployeeDetailsPresenter initPresenter() {
         return new EmployeeDetailsPresenter();
+    }
+
+
+    @OnClick(R.id.ivEmailClipboard)
+    public void onEmailClipBoardClick() {
+        presenter.onCopyEmailToClipboardClick();
+    }
+
+
+    @OnClick(R.id.ivSkypeClipboard)
+    public void onSkypeClipBoardClick() {
+        presenter.onCopySkypeToClipboardClick();
+    }
+
+
+    @OnClick(R.id.ivPhoneClipboard)
+    public void onPhoneClipBoardClick() {
+        presenter.onCopyPhoneToClipboardClick();
     }
 
 
@@ -207,5 +244,13 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
         if (b != null) {
             data = b.getParcelable(HomeActivity.DOCS_OBJECT_PARAM);
         }
+    }
+
+
+    private void saveTextToClipboard(@NonNull String text) {
+        ClipboardManager clipManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = android.content.ClipData.newPlainText("Text Label", text);
+        clipManager.setPrimaryClip(clip);
+        view.showMessage(R.string.message_copied_to_clipboard);
     }
 }

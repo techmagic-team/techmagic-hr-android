@@ -22,7 +22,7 @@
     <dimen name="activity_home_card_view_list_item_text_margin_top">8dp</dimen>
     <dimen name="activity_home_card_view_list_loading_margin">16dp</dimen>
     <dimen name="activity_home_card_view_list_left_drawable_icon_size">12dp</dimen>
-    <dimen name="activity_home_card_view_list_text_layout_height">18dp</dimen>
+    <dimen name="activity_home_card_view_list_text_layout_height">20dp</dimen>
     <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
 
     <!-- SearchActivity -->

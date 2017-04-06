@@ -1,13 +1,21 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.support.annotation.NonNull;
+
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.view.EmployeeDetailsView;
 import co.techmagic.hr.presentation.util.DateUtil;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView> {
 
+    private static final int ROLE_USER = 0;
+    private static final int ROLE_HR = 1;
+    private static final int ROLE_ADMIN = 2;
+
+    private Docs data;
 
     public EmployeeDetailsPresenter() {
         super();
@@ -21,13 +29,14 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
 
 
     public void setupUiWithData(Docs data) {
+        this.data = data;
         view.showProgress();
         showData(data);
         view.hideProgress();
     }
 
 
-    private void showData(Docs data) {
+    private void showData(@NonNull Docs data) {
         view.loadEmployeePhoto(data.getPhoto());
 
         if (data.getFirstName() != null && data.getLastName() != null) {
@@ -81,7 +90,14 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
             view.showAbout(data.getDescription());
         }
 
-        /* TODO next fields should be visible only for HR */
+        final int userRole = SharedPreferencesUtil.readUser().getRole();
+        if (userRole == ROLE_HR) {
+            setupHrRoleViews(data);
+        }
+    }
+
+
+    private void setupHrRoleViews(@NonNull Docs data) {
         final String firstDayDate = DateUtil.getFormattedDate(data.getFirstWorkingDay());
         if (firstDayDate != null) {
             view.showFirstDay(firstDayDate);
@@ -96,5 +112,20 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
         }
+    }
+
+
+    public void onCopyEmailToClipboardClick() {
+        view.onCopyEmailToClipboard(data.getEmail());
+    }
+
+
+    public void onCopySkypeToClipboardClick() {
+        view.onCopySkypeToClipboard(data.getSkype());
+    }
+
+
+    public void onCopyPhoneToClipboardClick() {
+        view.onCopyPhoneToClipboard(data.getPhone());
     }
 }
