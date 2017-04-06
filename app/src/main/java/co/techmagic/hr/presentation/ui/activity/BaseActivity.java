@@ -2,13 +2,17 @@ package co.techmagic.hr.presentation.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
+import co.techmagic.hr.presentation.ui.fragment.BaseFragment;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePresenter> extends AppCompatActivity {
@@ -67,8 +71,25 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void startHomeScreen() {
-        startActivity(new Intent(this, HomeActivity.class));
+    protected void replaceFragment(BaseFragment fragment) {
+        final String tag = fragment.getClass().getName();
+        FragmentManager fm = getSupportFragmentManager();
+        boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
+
+        if (!fragmentPopped && fm.findFragmentByTag(tag) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.llFragmentsContainer, fragment, tag)
+                    .addToBackStack(tag)
+                    .commit();
+        }
+    }
+
+
+    protected void clearFragmentsBackStack(@NonNull FragmentActivity fragmentActivity) {
+        FragmentManager fm = fragmentActivity.getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
     }
 
 

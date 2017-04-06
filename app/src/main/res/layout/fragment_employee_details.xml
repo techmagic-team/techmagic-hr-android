@@ -1,0 +1,36 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="co.techmagic.hr.presentation.ui.fragment.EmployeeDetailsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/fragment_employee_details_margin"
+            android:layout_marginTop="@dimen/fragment_employee_details_margin">
+
+            <ImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="@dimen/fragment_employee_details_photo_size"
+                android:layout_height="@dimen/fragment_employee_details_photo_size"
+                android:layout_gravity="center_horizontal"
+                android:foreground="?android:attr/selectableItemBackground" />
+
+        </android.support.v7.widget.CardView>
+
+        <include layout="@layout/divider_grey" />
+
+        <include layout="@layout/layout_card_view_employee_details" />
+
+    </LinearLayout>
+
+</ScrollView>
