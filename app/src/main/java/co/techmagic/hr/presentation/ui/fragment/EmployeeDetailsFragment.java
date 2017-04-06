@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +25,7 @@ import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.EmployeeDetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EmployeeDetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 
 public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImpl, EmployeeDetailsPresenter> {
 
@@ -77,10 +81,19 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     TextView tvEmergContact;
 
     private Docs data;
+    private ActionBarChangeListener toolbarChangeListener;
 
 
     public static EmployeeDetailsFragment newInstance() {
         return new EmployeeDetailsFragment();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setHasOptionsMenu(true);
+        toolbarChangeListener = (ActionBarChangeListener) context;
     }
 
 
@@ -95,13 +108,32 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
 
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        toolbarChangeListener.showBackButton();
+        if (data.getFirstName() != null && data.getLastName() != null) {
+            toolbarChangeListener.showEmployeeDetailsActionBar(data.getFirstName() + " " + data.getLastName());
+        }
+        inflater.inflate(R.menu.menu_employee_details, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                toolbarChangeListener.showHomeActionBar();
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     protected EmployeeDetailsViewImpl initView() {
         return new EmployeeDetailsViewImpl(this) {
-            @Override
-            public void showEmployeeName(@NonNull String name) {
-
-            }
-
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
                 Glide.with(getActivity())

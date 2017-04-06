@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 
 public interface EmployeeDetailsView extends View {
 
-    void showEmployeeName(@NonNull String name);
-
     void loadEmployeePhoto(@Nullable String photoUrl);
 
     void showEmail(@NonNull String email);

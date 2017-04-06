@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -26,10 +27,10 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.EmployeeDetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.MyProfileFragment;
-import co.techmagic.hr.presentation.ui.view.ToolbarViewChangeListener;
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ToolbarViewChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
 
     public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
@@ -45,6 +46,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @BindView(R.id.tvNoResults)
     TextView tvNoResults;
 
+    private ActionBar actionBar;
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
 
@@ -126,6 +128,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setTitle(getString(R.string.app_name));
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         return true;
@@ -135,6 +139,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                removeFragmentFromBackStack();
+                return true;
+
             case R.id.search:
                 startSearchScreen();
                 return true;
@@ -164,21 +172,32 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         }
     }
 
+    /**
+     * Methods to update actionbar should be called only in Fragment's onCreateOptionsMenu.
+     * Otherwise they won't be work.
+     * */
 
     @Override
-    public void showHomeActivityToolbar() {
-
+    public void showHomeActionBar() {
+        actionBar.invalidateOptionsMenu();
     }
 
 
     @Override
-    public void showEmployeeDetailsToolbar() {
-
+    public void showBackButton() {
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
 
     @Override
-    public void showMyProfileToolbar() {
+    public void showEmployeeDetailsActionBar(@NonNull String title) {
+        actionBar.setTitle(title);
+        actionBar.invalidateOptionsMenu();
+    }
+
+
+    @Override
+    public void showMyProfileActionBar() {
 
     }
 
@@ -214,10 +233,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void initUi() {
-        selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
-        selLeadId = SharedPreferencesUtil.getSelectedLeadId();
+        actionBar = getSupportActionBar();
         setupBottomNavigation();
         setupRecyclerView();
+        selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
+        selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
     }
 

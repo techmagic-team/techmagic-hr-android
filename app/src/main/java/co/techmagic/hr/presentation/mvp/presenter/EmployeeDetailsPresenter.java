@@ -39,10 +39,6 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
     private void showData(@NonNull Docs data) {
         view.loadEmployeePhoto(data.getPhoto());
 
-        if (data.getFirstName() != null && data.getLastName() != null) {
-            view.showEmployeeName(data.getFirstName() + " " + data.getLastName());
-        }
-
         if (data.getEmail() != null) {
             view.showEmail(data.getEmail());
         }
