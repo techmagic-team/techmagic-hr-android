@@ -10,6 +10,9 @@ import java.util.TimeZone;
 
 public class DateUtil {
 
+    private static SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+    private static SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+
 
     public static String getFormattedDate(@Nullable String inputData) {
         String formattedDate = null;
@@ -18,12 +21,10 @@ public class DateUtil {
             return formattedDate;
         }
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try {
             Date date = inputFormat.parse(inputData);
-            SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
             formattedDate = outputFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();

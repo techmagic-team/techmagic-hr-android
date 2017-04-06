@@ -206,6 +206,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void clearAllFilters() {
+        searchQuery = null;
         selDepId = null;
         selLeadId = null;
         tvDepartment.setText("");
