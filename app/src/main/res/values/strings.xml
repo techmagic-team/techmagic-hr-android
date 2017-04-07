@@ -57,8 +57,8 @@
     <string name="fragment_employee_details_card_view_text_date_of_birth">"Date of birth: "</string>
     <string name="fragment_employee_details_card_view_text_date_of_city_of_relocation">"City of relocation: "</string>
     <string name="fragment_employee_details_card_view_text_first_working_day">"First working day: "</string>
-    <string name="fragment_employee_details_card_view_text_trial_ends_date">"Trial period ends date: "</string>
-    <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day.: "</string>
+    <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
+    <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
     <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
 
 </resources>

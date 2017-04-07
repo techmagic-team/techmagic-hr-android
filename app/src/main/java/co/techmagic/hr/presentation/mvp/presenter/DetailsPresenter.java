@@ -5,11 +5,12 @@ import android.support.annotation.NonNull;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
-import co.techmagic.hr.presentation.mvp.view.EmployeeDetailsView;
+import co.techmagic.hr.presentation.mvp.view.DetailsView;
+import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView> {
+public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     private static final int ROLE_USER = 0;
     private static final int ROLE_HR = 1;
@@ -17,7 +18,7 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
 
     private Docs data;
 
-    public EmployeeDetailsPresenter() {
+    public DetailsPresenter() {
         super();
     }
 
@@ -28,20 +29,16 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
     }
 
 
-    public void setupUiWithData(Docs data) {
+    public void setupUiWithData(Docs data, ProfileTypes profileType) {
         this.data = data;
         view.showProgress();
-        showData(data);
+        showData(data, profileType);
         view.hideProgress();
     }
 
 
-    private void showData(@NonNull Docs data) {
+    private void showData(@NonNull Docs data, ProfileTypes profileType) {
         view.loadEmployeePhoto(data.getPhoto());
-
-        if (data.getFirstName() != null && data.getLastName() != null) {
-            view.showEmployeeName(data.getFirstName() + " " + data.getLastName());
-        }
 
         if (data.getEmail() != null) {
             view.showEmail(data.getEmail());
@@ -90,14 +87,15 @@ public class EmployeeDetailsPresenter extends BasePresenter<EmployeeDetailsView>
             view.showAbout(data.getDescription());
         }
 
+        /* Show next info only for User, HR or Admin */
         final int userRole = SharedPreferencesUtil.readUser().getRole();
-        if (userRole == ROLE_HR) {
-            setupHrRoleViews(data);
+        if (profileType == ProfileTypes.MY_PROFILE || userRole == ROLE_HR || userRole == ROLE_ADMIN) {
+            showFullDetailsIfAvailable(data);
         }
     }
 
 
-    private void setupHrRoleViews(@NonNull Docs data) {
+    private void showFullDetailsIfAvailable(@NonNull Docs data) {
         final String firstDayDate = DateUtil.getFormattedDate(data.getFirstWorkingDay());
         if (firstDayDate != null) {
             view.showFirstDay(firstDayDate);
