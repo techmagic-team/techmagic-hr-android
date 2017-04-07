@@ -176,7 +176,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     @OnClick(R.id.btnApply)
     public void onApplyClick() {
-        searchQuery = searchView.getQuery().toString().trim();
+        String query = searchView.getQuery().toString().trim();
+        searchQuery = query.isEmpty() ? null : query;
         applyFilters();
     }
 
