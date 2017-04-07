@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:splitMotionEvents="false"
                 android:orientation="vertical">
 
                 <TextView
@@ -129,6 +130,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:splitMotionEvents="false"
         android:orientation="horizontal">
 
         <Button
