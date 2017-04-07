@@ -9,6 +9,8 @@
     <string name="message_invalid_password">Invalid Password</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <string name="message_no_installed_application">No installed application to perform this action</string>
+
     <!--HomeActivity-->
     <string name="message_alert_dialog_title_log_out">Logout</string>
     <string name="message_alert_dialog_message_are_you_sure_you_want_to_log_out">Are you sure you want to Logout?</string>

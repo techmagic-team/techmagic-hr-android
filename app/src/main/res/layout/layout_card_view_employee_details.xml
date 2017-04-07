@@ -16,6 +16,7 @@
             android:id="@+id/llEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -72,6 +73,7 @@
             android:id="@+id/llSkype"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -128,6 +130,7 @@
             android:id="@+id/llPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -184,6 +187,7 @@
             android:id="@+id/llRoom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -232,6 +236,7 @@
             android:id="@+id/llDepartment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -280,6 +285,7 @@
             android:id="@+id/llLead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -329,6 +335,7 @@
             android:id="@+id/llBirthday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -377,6 +384,7 @@
             android:id="@+id/llRelocationCity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -425,6 +433,7 @@
             android:id="@+id/llFirstDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -473,6 +482,7 @@
             android:id="@+id/llTrialPeriod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -521,6 +531,7 @@
             android:id="@+id/llLastDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -569,6 +580,7 @@
             android:id="@+id/llEmergencyPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -617,6 +629,7 @@
             android:id="@+id/llEmergencyContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -665,6 +678,7 @@
             android:id="@+id/llAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
             android:visibility="gone">
 

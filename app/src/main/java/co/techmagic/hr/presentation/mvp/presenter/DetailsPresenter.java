@@ -1,7 +1,16 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
+import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
@@ -110,6 +119,66 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
         }
+    }
+
+
+    public void onEmailClick(@NonNull Context context) {
+        Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + data.getEmail()));
+
+        if (isIntentAvailable(context, i)) {
+            context.startActivity(Intent.createChooser(i, "Email via..."));
+        }
+    }
+
+
+    public void onSkypeClick(@NonNull Context context) {
+        Intent i = new Intent("android.intent.action.VIEW");
+        final String skypeId = data.getSkype();
+
+        if (isSkypeInstalled(context)) {
+            i.setComponent(new ComponentName("com.skype.raider", "com.skype.raider.Main"));
+            i.setData(Uri.parse("skype:" + skypeId + "?chat"));
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
+    }
+
+
+    public void onPhoneClick(@NonNull Context context) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("tel:" + data.getPhone()));
+
+        if (isIntentAvailable(context, i)) {
+            context.startActivity(i);
+        }
+    }
+
+
+    /** @return true if intent is available
+     * @return otherwise - error message and false.
+     */
+
+    private boolean isIntentAvailable(@NonNull Context context, Intent i) {
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        if (list.size() > 0) {
+            return true;
+        } else {
+            view.showMessage(R.string.message_no_installed_application);
+            return false;
+        }
+    }
+
+
+    private boolean isSkypeInstalled(@NonNull Context context) {
+        PackageManager myPackageMgr = context.getPackageManager();
+        try {
+            myPackageMgr.getPackageInfo("com.skype.raider", PackageManager.GET_ACTIVITIES);
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            view.showMessage(R.string.message_no_installed_application);
+            return false;
+        }
+        return true;
     }
 
 
