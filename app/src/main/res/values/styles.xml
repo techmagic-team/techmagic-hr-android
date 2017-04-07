@@ -19,7 +19,7 @@
     </style>
 
 
-    <style name="DialogThemeDimmed" parent="android:Theme.Holo.Dialog">
+    <style name="DialogThemeDimmed" parent="android:Theme.Dialog">
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
