@@ -71,8 +71,10 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void replaceFragment(BaseFragment fragment) {
-        final String tag = fragment.getClass().getName();
+    protected void replaceFragment(BaseFragment fragment, String tag) {
+        if (tag == null ) {
+            tag = fragment.getClass().getName();
+        }
         FragmentManager fm = getSupportFragmentManager();
         boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
 

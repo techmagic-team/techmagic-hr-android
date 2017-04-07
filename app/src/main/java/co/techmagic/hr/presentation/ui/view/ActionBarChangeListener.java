@@ -9,11 +9,7 @@ import android.support.annotation.NonNull;
 
 public interface ActionBarChangeListener {
 
-    void showHomeActionBar();
-
     void showBackButton();
 
-    void showEmployeeDetailsActionBar(@NonNull String title);
-
-    void showMyProfileActionBar();
+    void setActionBarText(@NonNull String title);
 }

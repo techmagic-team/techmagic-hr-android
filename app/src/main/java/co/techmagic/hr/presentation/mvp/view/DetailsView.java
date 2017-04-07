@@ -3,7 +3,7 @@ package co.techmagic.hr.presentation.mvp.view;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public interface EmployeeDetailsView extends View {
+public interface DetailsView extends View {
 
     void loadEmployeePhoto(@Nullable String photoUrl);
 

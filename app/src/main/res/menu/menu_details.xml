@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/menu_item_logout"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_exit_to_app_white"
-        android:title="@string/tm_hr_home_activity_text_logout"
-        app:showAsAction="ifRoom" />
+        android:title="@string/tm_hr_home_activity_text_logout" />
 
 </menu>

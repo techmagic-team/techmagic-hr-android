@@ -22,7 +22,7 @@
     <dimen name="activity_home_card_view_list_item_text_margin_top">8dp</dimen>
     <dimen name="activity_home_card_view_list_loading_margin">16dp</dimen>
     <dimen name="activity_home_card_view_list_left_drawable_icon_size">12dp</dimen>
-    <dimen name="activity_home_card_view_list_text_layout_height">20dp</dimen>
+    <dimen name="activity_home_card_view_list_icon_height">18dp</dimen>
     <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
 
     <!-- SearchActivity -->
@@ -31,11 +31,11 @@
     <dimen name="search_activity_alert_dialog_filter_list_item_margin">12dp</dimen>
     <dimen name="search_activity_card_view_selected_filter_margin_left">80dp</dimen>
 
-    <!-- EmployeeDetailsFragment -->
+    <!-- DetailsFragment -->
     <dimen name="fragment_employee_details_margin">16dp</dimen>
     <dimen name="fragment_employee_details_photo_size">200dp</dimen>
     <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
-    <dimen name="fragment_employee_details_line_spacing_extra">6dp</dimen>
+    <dimen name="fragment_employee_details_line_spacing_extra">4dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>

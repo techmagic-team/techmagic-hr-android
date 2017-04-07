@@ -50,14 +50,14 @@
             <LinearLayout
                 android:id="@+id/llPosition"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_home_card_view_list_text_layout_height"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_home_card_view_list_item_text_margin_top"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/activity_home_card_view_list_icon_height"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:src="@drawable/ic_department_black" />
@@ -78,14 +78,14 @@
             <LinearLayout
                 android:id="@+id/llLead"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_home_card_view_list_text_layout_height"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_home_card_view_list_item_text_margin_top"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/activity_home_card_view_list_icon_height"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:src="@drawable/ic_lead_black" />

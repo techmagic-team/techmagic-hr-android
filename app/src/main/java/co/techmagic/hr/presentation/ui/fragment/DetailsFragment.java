@@ -22,12 +22,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
-import co.techmagic.hr.presentation.mvp.presenter.EmployeeDetailsPresenter;
-import co.techmagic.hr.presentation.mvp.view.impl.EmployeeDetailsViewImpl;
+import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
+import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 
-public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImpl, EmployeeDetailsPresenter> {
+public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> {
 
     @BindView(R.id.ivPhoto)
     ImageView ivPhoto;
@@ -49,6 +49,10 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     View llRelocationCity;
     @BindView(R.id.llFirstDay)
     View llFirstDay;
+    @BindView(R.id.llTrialPeriod)
+    View llTrialPeriod;
+    @BindView(R.id.llLastDay)
+    View llLastDay;
     @BindView(R.id.llEmergencyPhoneNumber)
     View llEmergencyPhoneNumber;
     @BindView(R.id.llEmergencyContact)
@@ -73,6 +77,10 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     TextView tvRelCity;
     @BindView(R.id.tvFirstDay)
     TextView tvFirstDay;
+    @BindView(R.id.tvTrialPeriod)
+    TextView tvTrialPeriod;
+    @BindView(R.id.tvLastDay)
+    TextView tvLastDay;
     @BindView(R.id.tvAbout)
     TextView tvAbout;
     @BindView(R.id.tvEmergPhoneNumber)
@@ -81,11 +89,12 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     TextView tvEmergContact;
 
     private Docs data;
+    private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
 
 
-    public static EmployeeDetailsFragment newInstance() {
-        return new EmployeeDetailsFragment();
+    public static DetailsFragment newInstance() {
+        return new DetailsFragment();
     }
 
 
@@ -99,7 +108,7 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_employee_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
         getData();
         initUi();
@@ -110,11 +119,7 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        toolbarChangeListener.showBackButton();
-        if (data.getFirstName() != null && data.getLastName() != null) {
-            toolbarChangeListener.showEmployeeDetailsActionBar(data.getFirstName() + " " + data.getLastName());
-        }
-        inflater.inflate(R.menu.menu_employee_details, menu);
+        setupActionBar(menu, inflater);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -123,7 +128,6 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                toolbarChangeListener.showHomeActionBar();
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
@@ -132,8 +136,8 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
 
 
     @Override
-    protected EmployeeDetailsViewImpl initView() {
-        return new EmployeeDetailsViewImpl(this) {
+    protected DetailsViewImpl initView() {
+        return new DetailsViewImpl(this) {
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
                 Glide.with(getActivity())
@@ -191,12 +195,6 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
             }
 
             @Override
-            public void showFirstDay(@NonNull String date) {
-                llFirstDay.setVisibility(View.VISIBLE);
-                tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
-            }
-
-            @Override
             public void showAbout(@NonNull String aboutText) {
                 llAbout.setVisibility(View.VISIBLE);
                 tvAbout.setText(getString(R.string.fragment_employee_details_card_view_text_about_me) + aboutText);
@@ -215,13 +213,21 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
             }
 
             @Override
-            public void showTrialPeriodEndsDate(@NonNull String date) {
+            public void showFirstDay(@NonNull String date) {
+                llFirstDay.setVisibility(View.VISIBLE);
+                tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
+            }
 
+            @Override
+            public void showTrialPeriodEndsDate(@NonNull String date) {
+                llTrialPeriod.setVisibility(View.VISIBLE);
+                tvTrialPeriod.setText(getString(R.string.fragment_employee_details_card_view_text_trial_period_ends) + date);
             }
 
             @Override
             public void showLastWorkingDay(@NonNull String date) {
-
+                llLastDay.setVisibility(View.VISIBLE);
+                tvLastDay.setText(getString(R.string.fragment_employee_details_card_view_text_last_working_day) + date);
             }
 
             @Override
@@ -243,8 +249,8 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
 
 
     @Override
-    protected EmployeeDetailsPresenter initPresenter() {
-        return new EmployeeDetailsPresenter();
+    protected DetailsPresenter initPresenter() {
+        return new DetailsPresenter();
     }
 
 
@@ -267,7 +273,22 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
 
 
     private void initUi() {
-        presenter.setupUiWithData(data);
+        presenter.setupUiWithData(data, profileTypes);
+    }
+
+
+    private void setupActionBar(Menu menu, MenuInflater inflater) {
+        switch (profileTypes) {
+            case EMPLOYEE:
+                toolbarChangeListener.showBackButton();
+                showEmployeeName();
+                break;
+
+            case MY_PROFILE:
+                inflater.inflate(R.menu.menu_details, menu);
+                showEmployeeName();
+                break;
+        }
     }
 
 
@@ -275,6 +296,14 @@ public class EmployeeDetailsFragment extends BaseFragment<EmployeeDetailsViewImp
         Bundle b = getArguments();
         if (b != null) {
             data = b.getParcelable(HomeActivity.DOCS_OBJECT_PARAM);
+            profileTypes = (ProfileTypes) b.getSerializable(HomeActivity.PROFILE_TYPE_PARAM);
+        }
+    }
+
+
+    private void showEmployeeName() {
+        if (data.getFirstName() != null && data.getLastName() != null) {
+            toolbarChangeListener.setActionBarText(data.getFirstName() + " " + data.getLastName());
         }
     }
 
