@@ -272,6 +272,24 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
+    @OnClick(R.id.llEmail)
+    public void onEmailClick() {
+        presenter.onEmailClick(getContext());
+    }
+
+
+    @OnClick(R.id.llSkype)
+    public void onSkypeClick() {
+        presenter.onSkypeClick(getContext());
+    }
+
+
+    @OnClick(R.id.llPhone)
+    public void onPhoneClick() {
+        presenter.onPhoneClick(getContext());
+    }
+
+
     private void initUi() {
         presenter.setupUiWithData(data, profileTypes);
     }
