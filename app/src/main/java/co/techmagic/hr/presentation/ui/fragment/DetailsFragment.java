@@ -250,7 +250,25 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @Override
     protected DetailsPresenter initPresenter() {
-        return new DetailsPresenter();
+        return new DetailsPresenter(getContext());
+    }
+
+
+    @OnClick(R.id.cvPhoto)
+    public void onPhotoClick() {
+        handleOnPhotoClick();
+    }
+
+
+    @OnClick(R.id.ivDownload)
+    public void onDownloadClick() {
+        handleOnDownloadClick();
+    }
+
+
+    @OnClick(R.id.tvMessage)
+    public void onTapMessageClick() {
+        presenter.onPhotoClick();
     }
 
 
@@ -290,8 +308,30 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
+    @OnClick(R.id.llEmergencyPhoneNumber)
+    public void onEmergencyNumberClick() {
+        presenter.onEmergencyPhoneNumberClick(getContext());
+    }
+
+
+    @OnClick(R.id.llEmergencyContact)
+    public void onEmergencyContactClick() {
+        presenter.onEmergencyContactClick(getContext());
+    }
+
+
     private void initUi() {
         presenter.setupUiWithData(data, profileTypes);
+    }
+
+
+    private void handleOnPhotoClick() {
+        presenter.onPhotoClick();
+    }
+
+
+    private void handleOnDownloadClick() {
+        presenter.onDownloadClick(getContext());
     }
 
 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/fragment_employee_details_alert_dialog_full_image_margin"
+    android:layout_marginLeft="@dimen/fragment_employee_details_alert_dialog_full_image_margin"
+    android:layout_marginRight="@dimen/fragment_employee_details_alert_dialog_full_image_margin"
+    android:layout_marginStart="@dimen/fragment_employee_details_alert_dialog_full_image_margin"
+    android:orientation="horizontal">
+
+    <!-- ImageView used to have horizontal margins -->
+
+    <ImageView
+        style="@style/FullImageViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:src="@drawable/ic_close_white"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/ivFullImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:adjustViewBounds="true" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivClose"
+            style="@style/FullImageViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:src="@drawable/ic_close_white" />
+
+        <ImageView
+            android:id="@+id/ivFullSizeDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:paddingEnd="@dimen/fragment_employee_details_image_view_padding"
+            android:paddingLeft="@dimen/fragment_employee_details_image_view_padding"
+            android:paddingRight="@dimen/fragment_employee_details_image_view_padding"
+            android:paddingStart="@dimen/fragment_employee_details_image_view_padding"
+            android:src="@drawable/ic_arrow_downward_white" />
+
+    </FrameLayout>
+
+</LinearLayout>
