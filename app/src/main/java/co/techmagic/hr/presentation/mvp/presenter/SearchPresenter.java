@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.mvp.presenter;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import co.techmagic.hr.R;
@@ -89,6 +90,14 @@ public class SearchPresenter extends BasePresenter<SearchView> {
         if (filterDepartments.isEmpty()) {
             view.showEmptyDepartmentFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_department_filters);
         }
+
+        /* Sorting by alphabetical order */
+        Collections.sort(filterDepartments, (f1, f2) -> {
+            final String name1 = f1.getName();
+            final String name2 = f2.getName();
+            return (name1).compareToIgnoreCase(name2);
+        });
+
         departments.addAll(filterDepartments);
 
         final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
@@ -125,6 +134,14 @@ public class SearchPresenter extends BasePresenter<SearchView> {
         if (filterLeads.isEmpty()) {
             view.showEmptyLeadFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
         }
+
+        /* Sorting by alphabetical order */
+        Collections.sort(filterLeads, (l1, l2) -> {
+            final String name1 = l1.getName();
+            final String name2 = l2.getName();
+            return (name1).compareToIgnoreCase(name2);
+        });
+
         leads.addAll(filterLeads);
 
         final String leadId = SharedPreferencesUtil.getSelectedLeadId();
