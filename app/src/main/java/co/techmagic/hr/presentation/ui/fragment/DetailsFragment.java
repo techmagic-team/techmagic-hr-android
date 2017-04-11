@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -273,6 +274,11 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             public void onCopyPhoneToClipboard(@NonNull String phone) {
                 saveTextToClipboard(phone);
             }
+
+            @Override
+            public void showConfirmationDialog() {
+                showDialog();
+            }
         };
     }
 
@@ -343,7 +349,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @OnClick(R.id.llEmergencyPhoneNumber)
     public void onEmergencyNumberClick() {
-        presenter.onEmergencyPhoneNumberClick(getContext());
+        presenter.onEmergencyPhoneNumberClick();
     }
 
 
@@ -418,6 +424,16 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         if (data.getFirstName() != null && data.getLastName() != null) {
             toolbarChangeListener.setActionBarText(data.getFirstName() + " " + data.getLastName());
         }
+    }
+
+
+    protected void showDialog() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(getString(R.string.message_do_you_want_to_call_emergency_contact))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
 

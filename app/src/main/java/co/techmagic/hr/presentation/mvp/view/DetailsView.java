@@ -40,4 +40,6 @@ public interface DetailsView extends View {
     void onCopySkypeToClipboard(@NonNull String skype);
 
     void onCopyPhoneToClipboard(@NonNull String phone);
+
+    void showConfirmationDialog();
 }

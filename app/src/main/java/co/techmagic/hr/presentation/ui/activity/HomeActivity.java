@@ -204,7 +204,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public void setActionBarText(@NonNull String title) {
         actionBar.setTitle(title);
-       // actionBar.invalidateOptionsMenu();
     }
 
 

@@ -12,6 +12,7 @@
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
+    <string name="message_do_you_want_to_call_emergency_contact">Do You want to call the emergency contact?</string>
     <string name="message_image_downloaded">Image was saved into gallery</string>
     <string name="message_permission_denied">Permission denied</string>
 

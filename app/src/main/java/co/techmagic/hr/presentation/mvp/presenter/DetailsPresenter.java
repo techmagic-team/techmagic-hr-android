@@ -175,9 +175,15 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
     }
 
 
+    public void onEmergencyPhoneNumberClick() {
+        view.showConfirmationDialog();
+    }
+
+
     public void onEmergencyPhoneNumberClick(@NonNull Context context) {
         onPhoneClick(context, data.getEmergencyContact().getPhone());
     }
+
 
 
     public void onEmergencyContactClick(@NonNull Context context) {
