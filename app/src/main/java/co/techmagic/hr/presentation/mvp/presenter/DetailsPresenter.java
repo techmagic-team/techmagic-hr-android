@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
@@ -22,45 +21,25 @@ import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
-import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
-import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
-import co.techmagic.hr.presentation.ui.view.UserPhotoActionListener;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class DetailsPresenter extends BasePresenter<DetailsView> implements UserPhotoActionListener {
+public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     private static final int ROLE_USER = 0;
     private static final int ROLE_HR = 1;
     private static final int ROLE_ADMIN = 2;
 
     private Docs data;
-    private FullSizeImageDialog fullSizeImageDialog;
-    private RequestPermissionListener requestPermissionListener;
 
-
-    public DetailsPresenter(Context context, @NonNull RequestPermissionListener requestPermissionListener) {
+    public DetailsPresenter() {
         super();
-        this.requestPermissionListener = requestPermissionListener;
-        fullSizeImageDialog = new FullSizeImageDialog(context, R.style.DialogThemeNoBarDimmed, this);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
-    }
-
-
-    @Override
-    public void onCloseImage() {
-        fullSizeImageDialog.hide();
-    }
-
-
-    @Override
-    public void onDownloadImage() {
-        requestPermissionListener.checkForWriteExternalStoragePermission();
     }
 
 
@@ -185,7 +164,6 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
     }
 
 
-
     public void onEmergencyContactClick(@NonNull Context context) {
         onPhoneClick(context, data.getEmergencyContact().getName());
     }
@@ -244,12 +222,6 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
     }
 
 
-    public void onPhotoClick() {
-        fullSizeImageDialog.show();
-        fullSizeImageDialog.loadImage(data.getPhoto());
-    }
-
-
     public void onDownloadPhotoWithGrantedPermissionClick(@NonNull Context context) {
         performDownloadImageRequest(context);
     }
@@ -263,19 +235,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        saveImageIntoGallery(context, resource);
+                        view.saveImage(resource);
                     }
                 });
-    }
-
-
-    private void saveImageIntoGallery(@NonNull Context context, @NonNull final Bitmap bitmap) {
-        MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                bitmap,
-                String.valueOf(System.currentTimeMillis()),
-                "Description");
-
-        view.hideProgress();
-        view.showMessage(R.string.message_image_downloaded);
     }
 }
