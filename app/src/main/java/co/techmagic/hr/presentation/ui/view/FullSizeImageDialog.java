@@ -49,7 +49,7 @@ public class FullSizeImageDialog extends Dialog {
         ImageView ivClose = (ImageView) view.findViewById(R.id.ivClose);
         ImageView ivFullSizeDownload = (ImageView) view.findViewById(R.id.ivFullSizeDownload);
 
-        ivFullSizeDownload.setOnClickListener(v -> actionListener.onDownloadImage(context));
+        ivFullSizeDownload.setOnClickListener(v -> actionListener.onDownloadImage());
         ivClose.setOnClickListener(v -> actionListener.onCloseImage());
         setContentView(view);
     }

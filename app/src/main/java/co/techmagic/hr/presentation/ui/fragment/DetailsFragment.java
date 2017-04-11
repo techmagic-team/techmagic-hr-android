@@ -3,6 +3,8 @@ package co.techmagic.hr.presentation.ui.fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,11 +28,14 @@ import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
 
-public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> {
+public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener {
 
     @BindView(R.id.ivPhoto)
     ImageView ivPhoto;
+    @BindView(R.id.ivDownload)
+    ImageView ivDownload;
     @BindView(R.id.llEmail)
     View llEmail;
     @BindView(R.id.llSkype)
@@ -59,6 +64,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llEmergencyContact;
     @BindView(R.id.llAbout)
     View llAbout;
+    @BindView(R.id.tvMessage)
+    TextView tvMessage;
     @BindView(R.id.tvEmail)
     TextView tvEmail;
     @BindView(R.id.tvSkype)
@@ -136,30 +143,52 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case RC_WRITE_EXTERNAL_STORAGE_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission allowed
+                    onDownloadPhotoWithGrantedPermissionClick();
+                } else {
+                    // Permission denied
+                    view.showMessage(getString(R.string.message_permission_denied));
+                }
+                break;
+            }
+        }
+    }
+
+
+    @Override
     protected DetailsViewImpl initView() {
         return new DetailsViewImpl(this) {
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
-                Glide.with(getActivity())
-                        .load(photoUrl)
-                        .placeholder(R.drawable.ic_user_placeholder)
-                        .into(ivPhoto);
+                loadPhoto(photoUrl);
+                if (photoUrl == null) {
+                    setupNoPhotoLayout();
+                } else {
+                    setupPhotoLayout();
+                }
             }
 
             @Override
             public void showEmail(@NonNull String email) {
+                tvEmail.setPaintFlags(tvEmail.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 llEmail.setVisibility(View.VISIBLE);
                 tvEmail.setText(getString(R.string.fragment_employee_details_card_view_text_email) + email);
             }
 
             @Override
             public void showSkype(@NonNull String skype) {
+                tvSkype.setPaintFlags(tvSkype.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 llSkype.setVisibility(View.VISIBLE);
                 tvSkype.setText(getString(R.string.fragment_employee_details_card_view_text_skype) + skype);
             }
 
             @Override
             public void showPhone(@NonNull String phone) {
+                tvPhone.setPaintFlags(tvPhone.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 llPhone.setVisibility(View.VISIBLE);
                 tvPhone.setText(getString(R.string.fragment_employee_details_card_view_text_phone_number) + phone);
             }
@@ -250,19 +279,23 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @Override
     protected DetailsPresenter initPresenter() {
-        return new DetailsPresenter(getContext());
+        return new DetailsPresenter(getContext(), this);
     }
 
 
-    @OnClick(R.id.cvPhoto)
-    public void onPhotoClick() {
-        handleOnPhotoClick();
+    @Override
+    public void checkForWriteExternalStoragePermission() {
+        if (isWriteExternalStoragePermissionGranted()) {
+            onDownloadPhotoWithGrantedPermissionClick();
+        } else {
+            requestWriteExternalStoragePermission();
+        }
     }
 
 
     @OnClick(R.id.ivDownload)
     public void onDownloadClick() {
-        handleOnDownloadClick();
+        checkForWriteExternalStoragePermission();
     }
 
 
@@ -330,8 +363,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
-    private void handleOnDownloadClick() {
-        presenter.onDownloadClick(getContext());
+    private void onDownloadPhotoWithGrantedPermissionClick() {
+        presenter.onDownloadPhotoWithGrantedPermissionClick(getContext());
     }
 
 
@@ -347,6 +380,28 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
                 showEmployeeName();
                 break;
         }
+    }
+
+
+    private void setupPhotoLayout() {
+        ivDownload.setVisibility(View.VISIBLE);
+        tvMessage.setVisibility(View.VISIBLE);
+        ivPhoto.setOnClickListener(v -> handleOnPhotoClick());
+    }
+
+
+    private void setupNoPhotoLayout() {
+        ivDownload.setVisibility(View.GONE);
+        tvMessage.setVisibility(View.GONE);
+        ivPhoto.setOnClickListener(null);
+    }
+
+
+    private void loadPhoto(@Nullable String photoUrl) {
+        Glide.with(getActivity())
+                .load(photoUrl)
+                .placeholder(R.drawable.ic_user_placeholder)
+                .into(ivPhoto);
     }
 
 

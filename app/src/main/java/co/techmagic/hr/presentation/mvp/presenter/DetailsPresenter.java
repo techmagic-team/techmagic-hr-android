@@ -23,6 +23,7 @@ import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
 import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
+import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
 import co.techmagic.hr.presentation.ui.view.UserPhotoActionListener;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -35,10 +36,12 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
 
     private Docs data;
     private FullSizeImageDialog fullSizeImageDialog;
+    private RequestPermissionListener requestPermissionListener;
 
 
-    public DetailsPresenter(Context context) {
+    public DetailsPresenter(Context context, @NonNull RequestPermissionListener requestPermissionListener) {
         super();
+        this.requestPermissionListener = requestPermissionListener;
         fullSizeImageDialog = new FullSizeImageDialog(context, R.style.DialogThemeNoBarDimmed, this);
     }
 
@@ -56,8 +59,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
 
 
     @Override
-    public void onDownloadImage(@NonNull Context context) {
-        performDownloadImageRequest(context);
+    public void onDownloadImage() {
+        requestPermissionListener.checkForWriteExternalStoragePermission();
     }
 
 
@@ -241,7 +244,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> implements User
     }
 
 
-    public void onDownloadClick(@NonNull Context context) {
+    public void onDownloadPhotoWithGrantedPermissionClick(@NonNull Context context) {
         performDownloadImageRequest(context);
     }
 
