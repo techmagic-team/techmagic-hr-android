@@ -20,10 +20,10 @@ public class FullSizeImageDialog extends Dialog {
 
     private ImageView ivFullImageSize;
     private Context context;
-    private UserPhotoActionListener actionListener;
+    private FullPhotoActionListener actionListener;
 
 
-    public FullSizeImageDialog(@NonNull Context context, int theme, @NonNull UserPhotoActionListener actionListener) {
+    public FullSizeImageDialog(@NonNull Context context, int theme, @NonNull FullPhotoActionListener actionListener) {
         super(context, theme);
         this.context = context;
         this.actionListener =  actionListener;

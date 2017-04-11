@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.view;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -40,4 +41,8 @@ public interface DetailsView extends View {
     void onCopySkypeToClipboard(@NonNull String skype);
 
     void onCopyPhoneToClipboard(@NonNull String phone);
+
+    void showConfirmationDialog();
+
+    void saveImage(@NonNull final Bitmap image);
 }

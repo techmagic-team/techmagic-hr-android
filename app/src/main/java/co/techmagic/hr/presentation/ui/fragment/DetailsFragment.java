@@ -4,10 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,9 +31,11 @@ import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
 import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
+import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
 
-public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener {
+public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener, FullPhotoActionListener {
 
     @BindView(R.id.ivPhoto)
     ImageView ivPhoto;
@@ -98,6 +103,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private Docs data;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
+    private FullSizeImageDialog fullSizeImageDialog;
 
 
     public static DetailsFragment newInstance() {
@@ -117,8 +123,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
-        getData();
-        initUi();
+        init();
         return view;
     }
 
@@ -147,10 +152,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         switch (requestCode) {
             case RC_WRITE_EXTERNAL_STORAGE_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission allowed
                     onDownloadPhotoWithGrantedPermissionClick();
                 } else {
-                    // Permission denied
                     view.showMessage(getString(R.string.message_permission_denied));
                 }
                 break;
@@ -273,13 +276,23 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             public void onCopyPhoneToClipboard(@NonNull String phone) {
                 saveTextToClipboard(phone);
             }
+
+            @Override
+            public void showConfirmationDialog() {
+                showDialog();
+            }
+
+            @Override
+            public void saveImage(@NonNull Bitmap image) {
+                saveImageIntoGallery(image);
+            }
         };
     }
 
 
     @Override
     protected DetailsPresenter initPresenter() {
-        return new DetailsPresenter(getContext(), this);
+        return new DetailsPresenter();
     }
 
 
@@ -293,6 +306,18 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
+    @Override
+    public void onCloseImage() {
+        fullSizeImageDialog.dismiss();
+    }
+
+
+    @Override
+    public void onDownloadImage() {
+        checkForWriteExternalStoragePermission();
+    }
+
+
     @OnClick(R.id.ivDownload)
     public void onDownloadClick() {
         checkForWriteExternalStoragePermission();
@@ -301,7 +326,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @OnClick(R.id.tvMessage)
     public void onTapMessageClick() {
-        presenter.onPhotoClick();
+        handleOnPhotoClick();
     }
 
 
@@ -343,7 +368,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @OnClick(R.id.llEmergencyPhoneNumber)
     public void onEmergencyNumberClick() {
-        presenter.onEmergencyPhoneNumberClick(getContext());
+        presenter.onEmergencyPhoneNumberClick();
     }
 
 
@@ -353,13 +378,21 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
+    private void init() {
+        fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
+        getData();
+        initUi();
+    }
+
+
     private void initUi() {
         presenter.setupUiWithData(data, profileTypes);
     }
 
 
     private void handleOnPhotoClick() {
-        presenter.onPhotoClick();
+        fullSizeImageDialog.show();
+        fullSizeImageDialog.loadImage(data.getPhoto());
     }
 
 
@@ -421,10 +454,31 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
+    protected void showDialog() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(getString(R.string.message_do_you_want_to_call_emergency_contact))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
+    }
+
+
     private void saveTextToClipboard(@NonNull String text) {
         ClipboardManager clipManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = android.content.ClipData.newPlainText("Text Label", text);
+        ClipData clip = ClipData.newPlainText("Text Label", text);
         clipManager.setPrimaryClip(clip);
         view.showMessage(R.string.message_copied_to_clipboard);
+    }
+
+
+    private void saveImageIntoGallery(@NonNull final Bitmap bitmap) {
+        MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
+                bitmap,
+                String.valueOf(System.currentTimeMillis()),
+                "Description");
+
+        view.hideProgress();
+        view.showMessage(R.string.message_image_downloaded);
     }
 }
