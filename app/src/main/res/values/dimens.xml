@@ -41,4 +41,9 @@
     <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_bottom">12dp</dimen>
 
+    <dimen name="fragment_employee_details_image_view_padding">8dp</dimen>
+    <dimen name="fragment_employee_details_image_view_margin_bottom">16dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
+
 </resources>

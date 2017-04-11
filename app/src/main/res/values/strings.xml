@@ -9,7 +9,11 @@
     <string name="message_invalid_password">Invalid Password</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
+    <string name="message_image_download_error">Image can not be downloaded</string>
+    <string name="message_image_downloaded">Image was saved into gallery</string>
+    <string name="message_permission_denied">Permission denied</string>
 
     <!--HomeActivity-->
     <string name="message_alert_dialog_title_log_out">Logout</string>
@@ -62,5 +66,6 @@
     <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
     <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
     <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
+    <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
 
 </resources>
