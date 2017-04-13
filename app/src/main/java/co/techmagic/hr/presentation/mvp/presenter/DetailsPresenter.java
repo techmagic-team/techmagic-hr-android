@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -60,10 +61,15 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    public void performGetTimeOffRequests() {
-        performGetTimeOffRequest(true);
-        performGetTimeOffRequest(false);
-        performGetIllnessesRequest();
+    public void performGetTimeOffRequestsIfNeeded() {
+        String firstDate = data.getFirstWorkingDay();
+        if (firstDate == null) {
+            return;
+        }
+        String userId = data.getId();
+        performGetTimeOffRequest(userId, true, firstDate);
+        performGetTimeOffRequest(userId, false, firstDate);
+        performGetIllnessesRequest(userId, firstDate);
     }
 
 
@@ -268,19 +274,19 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
      *               else (Day-off Request)
      */
 
-    private void performGetTimeOffRequest(boolean isPaid) {
+    private void performGetTimeOffRequest(@NonNull String userId, boolean isPaid, @NonNull String firstDate) {
         view.showProgress();
-        String userId = SharedPreferencesUtil.readUser().getId();
-        long currentDate = DateUtil.getDateAfterYearInMillis(); // todo
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
-        final TimeOffRequest request = new TimeOffRequest(userId, currentDate, dateAfterYear, isPaid);
 
-        getTimeOff.execute(request, new DefaultSubscriber<RequestedTimeOff[]>(view) {
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+
+        final TimeOffRequest request = new TimeOffRequest(userId, firstDay, dateAfterYear, isPaid);
+        getTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
-            public void onNext(RequestedTimeOff[] response) {
+            public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
                 view.hideProgress();
-               // handleRetrievedTimeOffs(response.getTimeOffs(), isPaid);
+                handleRetrievedTimeOffs(response, isPaid);
             }
 
             @Override
@@ -293,17 +299,17 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     private void handleRetrievedTimeOffs(List<RequestedTimeOff> requestedTimeOffs, boolean isPaid) {
-        String formattedText = null;
+        String formattedText = "";
 
         if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
             for (RequestedTimeOff item : requestedTimeOffs) {
-                if (item.getDateFrom() != null && item.getDateTo() != null) {
-                    formattedText += "\n" + DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
                 }
             }
         }
 
-        if (formattedText != null) {
+        if (!TextUtils.isEmpty(formattedText)) {
             if (isPaid) {
                 view.showVacationDays(formattedText);
             } else {
@@ -313,18 +319,19 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    private void performGetIllnessesRequest() {
-        String userId = SharedPreferencesUtil.readUser().getId();
-        long currentDate = DateUtil.getDateAfterYearInMillis(); // todo
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
-        final GetIllnessRequest request = new GetIllnessRequest(userId, currentDate, dateAfterYear);
+    private void performGetIllnessesRequest(@NonNull String userId, @NonNull String firstDate) {
+        view.showProgress();
 
-        getIllness.execute(request, new DefaultSubscriber<RequestedTimeOff[]>(view) {
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+
+        final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
+        getIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
-            public void onNext(RequestedTimeOff[] response) {
+            public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
                 view.hideProgress();
-               // handleRetrievedIllnesses(response.getTimeOffs());
+                handleRetrievedIllnesses(response);
             }
 
             @Override
@@ -337,18 +344,29 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     private void handleRetrievedIllnesses(List<RequestedTimeOff> requestedTimeOffs) {
-        String formattedText = null;
+        String formattedText = "";
 
         if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
             for (RequestedTimeOff item : requestedTimeOffs) {
-                if (item.getDateFrom() != null && item.getDateTo() != null) {
-                    formattedText += "\n" + DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
                 }
             }
         }
 
-        if (formattedText != null) {
+        if (!TextUtils.isEmpty(formattedText)) {
             view.showIllnessDays(formattedText);
         }
+    }
+
+
+    @NonNull
+    private String buildFormattedString(String formattedText, @NonNull RequestedTimeOff item) {
+        if (TextUtils.isEmpty(formattedText)) {
+            formattedText += DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+        } else {
+            formattedText += "\n" + DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+        }
+        return formattedText;
     }
 }

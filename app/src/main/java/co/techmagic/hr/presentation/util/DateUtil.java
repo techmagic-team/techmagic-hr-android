@@ -35,14 +35,35 @@ public class DateUtil {
     }
 
 
-    public static long getDateInMillis() {
-        return Calendar.getInstance().getTimeInMillis();
+    public static long getFirstWorkingDayInMillis(@Nullable String firstDayDate) {
+        long dayInMillis = 0;
+
+        if (firstDayDate == null) {
+            return dayInMillis;
+        }
+
+        try {
+            Date date = inputFormat.parse(firstDayDate);
+            dayInMillis = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return dayInMillis;
     }
 
 
-    public static long getDateAfterYearInMillis() {
+    public static long getDateAfterYearInMillis(long currentDate) {
+        long dayAfterYear = 0;
+
+        if (currentDate == 0) {
+            return dayAfterYear;
+        }
+
         Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(currentDate);
         cal.add(Calendar.YEAR, 1);
+
         return cal.getTimeInMillis();
     }
 }

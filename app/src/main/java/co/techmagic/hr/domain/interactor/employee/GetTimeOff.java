@@ -1,12 +1,14 @@
 package co.techmagic.hr.domain.interactor.employee;
 
+import java.util.List;
+
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.domain.interactor.DataUseCase;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 
-public class GetTimeOff extends DataUseCase<TimeOffRequest, RequestedTimeOff[], IEmployeeRepository> {
+public class GetTimeOff extends DataUseCase<TimeOffRequest, List<RequestedTimeOff>, IEmployeeRepository> {
 
 
     public GetTimeOff(IEmployeeRepository iEmployeeRepository) {
@@ -14,7 +16,7 @@ public class GetTimeOff extends DataUseCase<TimeOffRequest, RequestedTimeOff[], 
     }
 
     @Override
-    protected Observable<RequestedTimeOff[]> buildObservable(TimeOffRequest request) {
+    protected Observable<List<RequestedTimeOff>> buildObservable(TimeOffRequest request) {
         return repository.getAllVacations(request);
     }
 }

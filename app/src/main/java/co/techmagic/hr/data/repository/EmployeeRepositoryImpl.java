@@ -63,7 +63,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<RequestedTimeOff[]> getAllVacations(TimeOffRequest request) {
+    public Observable<List<RequestedTimeOff>> getAllVacations(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllVacations(request);
         }
@@ -73,7 +73,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<RequestedTimeOff[]> getAllIllnesses(GetIllnessRequest request) {
+    public Observable<List<RequestedTimeOff>> getAllIllnesses(GetIllnessRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllIllnesses(request);
         }

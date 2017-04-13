@@ -277,19 +277,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             @Override
             public void showVacationDays(@NonNull String dates) {
                 llVacation.setVisibility(View.VISIBLE);
-                tvVacation.setText(getString(R.string.fragment_employee_details_card_view_text_vacation) + dates);
+                tvVacation.setText(dates);
             }
 
             @Override
             public void showDayOff(@NonNull String dates) {
                 llDayOff.setVisibility(View.VISIBLE);
-                tvDayOff.setText(getString(R.string.fragment_employee_details_card_view_text_day_off) + dates);
+                tvDayOff.setText(dates);
             }
 
             @Override
             public void showIllnessDays(@NonNull String dates) {
                 llIllness.setVisibility(View.VISIBLE);
-                tvIllness.setText(getString(R.string.fragment_employee_details_card_view_text_illness) + dates);
+                tvIllness.setText(dates);
             }
 
             @Override
@@ -417,7 +417,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void initUi() {
         presenter.setupUiWithData(data, profileTypes);
-        presenter.performGetTimeOffRequests();
+        presenter.performGetTimeOffRequestsIfNeeded();
     }
 
 

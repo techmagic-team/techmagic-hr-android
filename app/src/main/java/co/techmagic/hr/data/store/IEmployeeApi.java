@@ -26,8 +26,8 @@ public interface IEmployeeApi {
     Observable<List<FilterLead>> getFilterLeads();
 
     @POST("/v1/time-off/vacation/findAll/")
-    Observable<RequestedTimeOff[]> getAllVacations(@Body TimeOffRequest request);
+    Observable<List<RequestedTimeOff>> getAllVacations(@Body TimeOffRequest request);
 
     @POST("/v1/time-off/illness/findAll/")
-    Observable<RequestedTimeOff[]> getAllIllnesses(@Body GetIllnessRequest request);
+    Observable<List<RequestedTimeOff>> getAllIllnesses(@Body GetIllnessRequest request);
 }
