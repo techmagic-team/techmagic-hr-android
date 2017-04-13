@@ -5,7 +5,10 @@ import java.util.List;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.FilterDepartment;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
+import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.TimeOffRequest;
 import rx.Observable;
 
 public interface IEmployeeRepository {
@@ -17,4 +20,8 @@ public interface IEmployeeRepository {
     Observable<List<FilterDepartment>> getFilterDepartments();
 
     Observable<List<FilterLead>> getFilterLeads();
+
+    Observable<RequestedTimeOff[]> getAllVacations(TimeOffRequest request);
+
+    Observable<RequestedTimeOff[]> getAllIllnesses(GetIllnessRequest request);
 }

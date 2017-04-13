@@ -73,6 +73,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             @Override
             public void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
+                dismissDialogIfOpened();
                 showSelectFilterAlertDialog(departments, null);
             }
 
@@ -90,6 +91,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             @Override
             public void showFilterByLeadDialog(@NonNull List<FilterLead> leads) {
                 filterTypes = FilterTypes.LEAD;
+                dismissDialogIfOpened();
                 showSelectFilterAlertDialog(null, leads);
             }
 
@@ -189,9 +191,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void handleSelection(String id, String name) {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        dismissDialogIfOpened();
         switch (filterTypes) {
             case DEPARTMENT:
                 selDepId = id;
@@ -210,6 +210,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         searchQuery = null;
         selDepId = null;
         selLeadId = null;
+        searchView.setQuery("", false);
         tvDepartment.setText("");
         tvLead.setText("");
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
@@ -313,6 +314,13 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             adapter.refresh(leads);
         } else {
             adapter.refresh(results);
+        }
+    }
+
+
+    private void dismissDialogIfOpened() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
         }
     }
 

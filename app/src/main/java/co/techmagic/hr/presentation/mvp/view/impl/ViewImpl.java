@@ -29,8 +29,9 @@ public abstract class ViewImpl implements View {
     }
 
 
-    public ViewImpl(Fragment fragment) {
+    public ViewImpl(Fragment fragment, android.view.View contentView) {
         this.fragment = fragment;
+        this.contentView = contentView;
         init(false);
     }
 

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -31,5 +32,17 @@ public class DateUtil {
         }
 
         return formattedDate;
+    }
+
+
+    public static long getDateInMillis() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+
+    public static long getDateAfterYearInMillis() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 1);
+        return cal.getTimeInMillis();
     }
 }

@@ -67,6 +67,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llEmergencyPhoneNumber;
     @BindView(R.id.llEmergencyContact)
     View llEmergencyContact;
+    @BindView(R.id.llVacation)
+    View llVacation;
+    @BindView(R.id.llDayOff)
+    View llDayOff;
+    @BindView(R.id.llIllness)
+    View llIllness;
     @BindView(R.id.llAbout)
     View llAbout;
     @BindView(R.id.tvMessage)
@@ -93,6 +99,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvTrialPeriod;
     @BindView(R.id.tvLastDay)
     TextView tvLastDay;
+    @BindView(R.id.tvVacation)
+    TextView tvVacation;
+    @BindView(R.id.tvDayOff)
+    TextView tvDayOff;
+    @BindView(R.id.tvIllness)
+    TextView tvIllness;
     @BindView(R.id.tvAbout)
     TextView tvAbout;
     @BindView(R.id.tvEmergPhoneNumber)
@@ -164,7 +176,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     @Override
     protected DetailsViewImpl initView() {
-        return new DetailsViewImpl(this) {
+        return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
                 loadPhoto(photoUrl);
@@ -260,6 +272,24 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             public void showLastWorkingDay(@NonNull String date) {
                 llLastDay.setVisibility(View.VISIBLE);
                 tvLastDay.setText(getString(R.string.fragment_employee_details_card_view_text_last_working_day) + date);
+            }
+
+            @Override
+            public void showVacationDays(@NonNull String dates) {
+                llVacation.setVisibility(View.VISIBLE);
+                tvVacation.setText(getString(R.string.fragment_employee_details_card_view_text_vacation) + dates);
+            }
+
+            @Override
+            public void showDayOff(@NonNull String dates) {
+                llDayOff.setVisibility(View.VISIBLE);
+                tvDayOff.setText(getString(R.string.fragment_employee_details_card_view_text_day_off) + dates);
+            }
+
+            @Override
+            public void showIllnessDays(@NonNull String dates) {
+                llIllness.setVisibility(View.VISIBLE);
+                tvIllness.setText(getString(R.string.fragment_employee_details_card_view_text_illness) + dates);
             }
 
             @Override
@@ -387,6 +417,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void initUi() {
         presenter.setupUiWithData(data, profileTypes);
+        presenter.performGetTimeOffRequests();
     }
 
 

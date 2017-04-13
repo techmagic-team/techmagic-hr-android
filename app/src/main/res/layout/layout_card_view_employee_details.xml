@@ -741,6 +741,8 @@
 
         </LinearLayout>
 
+        <include layout="@layout/layout_requested_items" />
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
