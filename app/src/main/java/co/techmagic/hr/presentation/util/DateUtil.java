@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -31,5 +32,38 @@ public class DateUtil {
         }
 
         return formattedDate;
+    }
+
+
+    public static long getFirstWorkingDayInMillis(@Nullable String firstDayDate) {
+        long dayInMillis = 0;
+
+        if (firstDayDate == null) {
+            return dayInMillis;
+        }
+
+        try {
+            Date date = inputFormat.parse(firstDayDate);
+            dayInMillis = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return dayInMillis;
+    }
+
+
+    public static long getDateAfterYearInMillis(long currentDate) {
+        long dayAfterYear = 0;
+
+        if (currentDate == 0) {
+            return dayAfterYear;
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(currentDate);
+        cal.add(Calendar.YEAR, 1);
+
+        return cal.getTimeInMillis();
     }
 }

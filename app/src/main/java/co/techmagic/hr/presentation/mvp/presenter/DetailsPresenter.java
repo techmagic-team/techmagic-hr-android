@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -19,6 +20,14 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.RequestedTimeOff;
+import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
+import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.TimeOffRequest;
+import co.techmagic.hr.domain.interactor.employee.GetIllness;
+import co.techmagic.hr.domain.interactor.employee.GetTimeOff;
+import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
@@ -31,23 +40,42 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private static final int ROLE_ADMIN = 2;
 
     private Docs data;
+    private IEmployeeRepository employeeRepository;
+    private GetTimeOff getTimeOff;
+    private GetIllness getIllness;
+
 
     public DetailsPresenter() {
         super();
+        employeeRepository = new EmployeeRepositoryImpl();
+        getTimeOff = new GetTimeOff(employeeRepository);
+        getIllness = new GetIllness(employeeRepository);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
+        getTimeOff.unsubscribe();
+        getIllness.unsubscribe();
+    }
+
+
+    public void performGetTimeOffRequestsIfNeeded() {
+        String firstDate = data.getFirstWorkingDay();
+        if (firstDate == null) {
+            return;
+        }
+        String userId = data.getId();
+        performGetTimeOffRequest(userId, true, firstDate);
+        performGetTimeOffRequest(userId, false, firstDate);
+        performGetIllnessesRequest(userId, firstDate);
     }
 
 
     public void setupUiWithData(Docs data, ProfileTypes profileType) {
         this.data = data;
-        view.showProgress();
         showData(data, profileType);
-        view.hideProgress();
     }
 
 
@@ -238,5 +266,107 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
                         view.saveImage(resource);
                     }
                 });
+    }
+
+
+    /**
+     * @param isPaid == true (Vacation Request)
+     *               else (Day-off Request)
+     */
+
+    private void performGetTimeOffRequest(@NonNull String userId, boolean isPaid, @NonNull String firstDate) {
+        view.showProgress();
+
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+
+        final TimeOffRequest request = new TimeOffRequest(userId, firstDay, dateAfterYear, isPaid);
+        getTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+            @Override
+            public void onNext(List<RequestedTimeOff> response) {
+                super.onNext(response);
+                view.hideProgress();
+                handleRetrievedTimeOffs(response, isPaid);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleRetrievedTimeOffs(List<RequestedTimeOff> requestedTimeOffs, boolean isPaid) {
+        String formattedText = "";
+
+        if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
+            for (RequestedTimeOff item : requestedTimeOffs) {
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
+                }
+            }
+        }
+
+        if (!TextUtils.isEmpty(formattedText)) {
+            if (isPaid) {
+                view.showVacationDays(formattedText);
+            } else {
+                view.showDayOff(formattedText);
+            }
+        }
+    }
+
+
+    private void performGetIllnessesRequest(@NonNull String userId, @NonNull String firstDate) {
+        view.showProgress();
+
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+
+        final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
+        getIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+            @Override
+            public void onNext(List<RequestedTimeOff> response) {
+                super.onNext(response);
+                view.hideProgress();
+                handleRetrievedIllnesses(response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleRetrievedIllnesses(List<RequestedTimeOff> requestedTimeOffs) {
+        String formattedText = "";
+
+        if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
+            for (RequestedTimeOff item : requestedTimeOffs) {
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
+                }
+            }
+        }
+
+        if (!TextUtils.isEmpty(formattedText)) {
+            view.showIllnessDays(formattedText);
+        }
+    }
+
+
+    @NonNull
+    private String buildFormattedString(String formattedText, @NonNull RequestedTimeOff item) {
+        if (TextUtils.isEmpty(formattedText)) {
+            formattedText += DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+        } else {
+            formattedText += "\n" + DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+        }
+        return formattedText;
     }
 }

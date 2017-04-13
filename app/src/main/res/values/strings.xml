@@ -67,6 +67,9 @@
     <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
     <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
     <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
+    <string name="fragment_employee_details_card_view_text_vacation">"Vacation: "</string>
+    <string name="fragment_employee_details_card_view_text_day_off">"Day off: "</string>
+    <string name="fragment_employee_details_card_view_text_illness">"Illness: "</string>
     <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
 
 </resources>

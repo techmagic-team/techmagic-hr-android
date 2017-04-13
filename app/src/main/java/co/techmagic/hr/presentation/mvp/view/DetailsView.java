@@ -36,6 +36,12 @@ public interface DetailsView extends View {
 
     void showLastWorkingDay(@NonNull String date);
 
+    void showVacationDays(@NonNull String dates);
+
+    void showDayOff(@NonNull String dates);
+
+    void showIllnessDays(@NonNull String dates);
+
     void onCopyEmailToClipboard(@NonNull String email);
 
     void onCopySkypeToClipboard(@NonNull String skype);
