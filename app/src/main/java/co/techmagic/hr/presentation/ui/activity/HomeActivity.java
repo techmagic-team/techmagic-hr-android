@@ -168,6 +168,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 showLogOutDialog();
                 return true;
 
+            case R.id.menu_item_calendar:
+                startActivity(new Intent(this, CalendarActivity.class));
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

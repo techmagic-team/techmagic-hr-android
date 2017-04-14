@@ -45,5 +45,8 @@
     <dimen name="fragment_employee_details_image_view_margin_bottom">16dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_vertical">16dp</dimen>
     <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="dimennn">0dp</dimen>
 
 </resources>

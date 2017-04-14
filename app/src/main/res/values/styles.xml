@@ -39,22 +39,36 @@
 
     <style name="EmployeeDetailsLayout">
         <item name="android:selectableItemBackground">?android:attr/selectableItemBackground</item>
-        <item name="android:layout_marginTop">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
-        <item name="android:layout_marginBottom">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
-        <item name="android:layout_marginLeft">@dimen/fragment_employee_details_text_layout_margin_horizontal</item>
-        <item name="android:layout_marginRight">@dimen/fragment_employee_details_text_layout_margin_horizontal</item>
+        <item name="android:layout_marginTop">
+            @dimen/fragment_employee_details_text_layout_margin_vertical
+        </item>
+        <item name="android:layout_marginBottom">
+            @dimen/fragment_employee_details_text_layout_margin_vertical
+        </item>
+        <item name="android:layout_marginLeft">
+            @dimen/fragment_employee_details_text_layout_margin_horizontal
+        </item>
+        <item name="android:layout_marginRight">
+            @dimen/fragment_employee_details_text_layout_margin_horizontal
+        </item>
     </style>
 
 
     <style name="EmployeeDetailsLayoutContent">
-        <item name="android:layout_marginTop">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
+        <item name="android:layout_marginTop">
+            @dimen/fragment_employee_details_text_layout_margin_vertical
+        </item>
         <item name="android:layout_marginLeft">0dp</item>
     </style>
 
 
     <style name="EmployeeDetailsTextView">
-        <item name="android:layout_marginLeft">@dimen/fragment_employee_details_text_view_margin_horizontal</item>
-        <item name="android:layout_marginRight">@dimen/fragment_employee_details_text_view_margin_horizontal</item>
+        <item name="android:layout_marginLeft">
+            @dimen/fragment_employee_details_text_view_margin_horizontal
+        </item>
+        <item name="android:layout_marginRight">
+            @dimen/fragment_employee_details_text_view_margin_horizontal
+        </item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:lineSpacingExtra">@dimen/fragment_employee_details_line_spacing_extra
@@ -64,8 +78,11 @@
 
     <style name="EmployeeDetailsTextViewContent">
         <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginRight">@dimen/fragment_employee_details_text_view_margin_horizontal</item>
-        <item name="android:lineSpacingExtra">@dimen/fragment_employee_details_line_spacing_extra</item>
+        <item name="android:layout_marginRight">
+            @dimen/fragment_employee_details_text_view_margin_horizontal
+        </item>
+        <item name="android:lineSpacingExtra">@dimen/fragment_employee_details_line_spacing_extra
+        </item>
         <item name="android:gravity">left</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
@@ -75,7 +92,18 @@
     <style name="FullImageViewStyle">
         <item name="android:paddingLeft">@dimen/fragment_employee_details_image_view_padding</item>
         <item name="android:paddingRight">@dimen/fragment_employee_details_image_view_padding</item>
-        <item name="android:layout_marginBottom">@dimen/fragment_employee_details_image_view_margin_bottom</item>
+        <item name="android:layout_marginBottom">
+            @dimen/fragment_employee_details_image_view_margin_bottom
+        </item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

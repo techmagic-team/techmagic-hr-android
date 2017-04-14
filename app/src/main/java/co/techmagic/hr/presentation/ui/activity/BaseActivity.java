@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -72,9 +73,27 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
 
 
     protected void replaceFragment(BaseFragment fragment, String tag) {
-        if (tag == null ) {
+        if (tag == null) {
             tag = fragment.getClass().getName();
         }
+        FragmentManager fm = getSupportFragmentManager();
+        boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
+
+        if (!fragmentPopped && fm.findFragmentByTag(tag) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.llFragmentsContainer, fragment, tag)
+                    .addToBackStack(tag)
+                    .commit();
+        }
+    }
+
+
+    /* TODO temporary solution */
+
+
+    protected void replaceFragment(Fragment fragment) {
+        String tag = fragment.getClass().getName();
+
         FragmentManager fm = getSupportFragmentManager();
         boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
 

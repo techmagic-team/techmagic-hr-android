@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_item_calendar"
+        app:showAsAction="ifRoom"
+        android:title="Calendar" />
+
+    <item
         android:id="@+id/menu_item_logout"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_exit_to_app_white"

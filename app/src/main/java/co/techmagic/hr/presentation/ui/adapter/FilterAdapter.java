@@ -26,7 +26,7 @@ public class FilterAdapter<T extends IFilterModel> extends RecyclerView.Adapter<
 
     @Override
     public FilterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_select_filter, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_select_filter, parent, false);
         return new FilterViewHolder(view, filterSelectionListener);
     }
 
