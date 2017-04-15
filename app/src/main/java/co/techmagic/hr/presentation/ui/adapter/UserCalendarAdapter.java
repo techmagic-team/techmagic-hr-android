@@ -31,7 +31,7 @@ public class UserCalendarAdapter extends RecyclerView.Adapter<UserCalendarAdapte
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 64;
     }
 
 

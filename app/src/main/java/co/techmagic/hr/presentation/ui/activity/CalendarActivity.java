@@ -10,9 +10,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.ui.adapter.GridCalendarAdapter;
-import co.techmagic.hr.presentation.ui.adapter.UserCalendarAdapter;
 import co.techmagic.hr.presentation.ui.adapter.GridSpacingDecorator;
-
+import co.techmagic.hr.presentation.ui.adapter.UserCalendarAdapter;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -31,8 +30,8 @@ public class CalendarActivity extends AppCompatActivity {
         rvUserCalendar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvUserCalendar.setAdapter(new UserCalendarAdapter());
 
-        rvCalendarGrid.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.HORIZONTAL, false));
-        rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(3, 0, false, 0));
+        rvCalendarGrid.setLayoutManager(new GridLayoutManager(this, 31, GridLayoutManager.VERTICAL, false));
+        rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(31, 0, false, 0));
         rvCalendarGrid.setAdapter(new GridCalendarAdapter());
     }
 }
