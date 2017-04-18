@@ -30,6 +30,7 @@ public class CalendarActivity extends AppCompatActivity {
         rvUserCalendar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvUserCalendar.setAdapter(new UserCalendarAdapter());
 
+        rvCalendarGrid.setNestedScrollingEnabled(false);
         rvCalendarGrid.setLayoutManager(new GridLayoutManager(this, 31, GridLayoutManager.VERTICAL, false));
         rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(31, 0, false, 0));
         rvCalendarGrid.setAdapter(new GridCalendarAdapter());

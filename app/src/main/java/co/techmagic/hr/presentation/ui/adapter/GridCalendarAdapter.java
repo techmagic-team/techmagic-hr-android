@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.Random;
 
@@ -27,7 +26,6 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
     public void onBindViewHolder(UserCalendarViewHolder holder, int position) {
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         holder.vItem.setBackgroundColor(color);
-        holder.tvItem.setText(String.valueOf(position));
     }
 
 
@@ -41,13 +39,11 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
 
         View rootView;
         View vItem;
-        TextView tvItem;
 
         public UserCalendarViewHolder(View itemView) {
             super(itemView);
             rootView = itemView;
             vItem = itemView.findViewById(R.id.vItem);
-            tvItem = (TextView) itemView.findViewById(R.id.tvText);
         }
 
 
