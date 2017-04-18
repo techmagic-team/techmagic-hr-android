@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_calendar_scroll_view_margin_vertical"
+    android:layout_marginTop="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:background="@android:color/white"
     tools:context="co.techmagic.hr.presentation.ui.activity.CalendarActivity">
 

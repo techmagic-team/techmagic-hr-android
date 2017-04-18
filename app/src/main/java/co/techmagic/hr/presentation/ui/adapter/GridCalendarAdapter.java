@@ -25,25 +25,25 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
     @Override
     public void onBindViewHolder(UserCalendarViewHolder holder, int position) {
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-        holder.vItem.setBackgroundColor(color);
+        holder.vCell.setBackgroundColor(color);
     }
 
 
     @Override
     public int getItemCount() {
-        return 2000;
+        return 1984;
     }
 
 
     static class UserCalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         View rootView;
-        View vItem;
+        View vCell;
 
         public UserCalendarViewHolder(View itemView) {
             super(itemView);
             rootView = itemView;
-            vItem = itemView.findViewById(R.id.vItem);
+            vCell = itemView.findViewById(R.id.vCell);
         }
 
 

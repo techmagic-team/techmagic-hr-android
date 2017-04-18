@@ -47,6 +47,11 @@
     <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="dimennn">0dp</dimen>
+    <!-- CalendarActivity -->
+    <dimen name="activity_calendar_scroll_view_margin_vertical">4dp</dimen>
+    <dimen name="activity_calendar_grid_cell_size">39dp</dimen>
+    <dimen name="activity_calendar_user_image_size">36dp</dimen>
+    <dimen name="activity_calendar_user_margin_vertical">1dp</dimen>
+    <dimen name="activity_calendar_user_margin_horizontal">8dp</dimen>
 
 </resources>

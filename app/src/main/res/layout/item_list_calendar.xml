@@ -5,9 +5,9 @@
     android:layout_gravity="center">
 
     <View
-        android:id="@+id/vItem"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/vCell"
+        android:layout_width="@dimen/activity_calendar_grid_cell_size"
+        android:layout_height="@dimen/activity_calendar_grid_cell_size"
         android:layout_gravity="center" />
 
 </FrameLayout>

@@ -27,12 +27,13 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
         ButterKnife.bind(this);
 
+        rvUserCalendar.setNestedScrollingEnabled(false);
         rvUserCalendar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvUserCalendar.setAdapter(new UserCalendarAdapter());
 
         rvCalendarGrid.setNestedScrollingEnabled(false);
         rvCalendarGrid.setLayoutManager(new GridLayoutManager(this, 31, GridLayoutManager.VERTICAL, false));
-        rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(31, 0, false, 0));
+        rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(31, 1, false, 0));
         rvCalendarGrid.setAdapter(new GridCalendarAdapter());
     }
 }
