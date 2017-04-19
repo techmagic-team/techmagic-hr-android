@@ -80,7 +80,11 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     private void showData(@NonNull Docs data, ProfileTypes profileType) {
-        view.loadEmployeePhoto(data.getPhoto());
+        if (data.getPhotoOrigin() == null) {
+            view.loadEmployeePhoto(data.getPhoto());
+        } else {
+            view.loadEmployeePhoto(data.getPhotoOrigin());
+        }
 
         if (data.getEmail() != null) {
             view.showEmail(data.getEmail());
