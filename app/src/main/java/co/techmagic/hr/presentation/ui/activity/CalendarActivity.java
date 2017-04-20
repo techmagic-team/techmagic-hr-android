@@ -3,25 +3,22 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.techmagic.hr.R;
-import co.techmagic.hr.presentation.ui.adapter.GridCalendarAdapter;
-import co.techmagic.hr.presentation.ui.adapter.GridSpacingDecorator;
-import co.techmagic.hr.presentation.ui.adapter.UserCalendarAdapter;
+import co.techmagic.hr.presentation.ui.view.timetable.EmployeePlanItem;
+import co.techmagic.hr.presentation.ui.view.timetable.TimeTable;
 
 public class CalendarActivity extends AppCompatActivity {
 
-    @BindView(R.id.rvUserCalendar)
-    RecyclerView rvUserCalendar;
-    @BindView(R.id.rvCalendarGrid)
-    RecyclerView rvCalendarGrid;
     ActionBar actionBar;
+    @BindView(R.id.timeTable)
+    TimeTable timeTable;
 
 
     @Override
@@ -32,19 +29,11 @@ public class CalendarActivity extends AppCompatActivity {
 
         actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("");
+            actionBar.setTitle("Calendar");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
-        rvUserCalendar.setNestedScrollingEnabled(false);
-        rvUserCalendar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvUserCalendar.setAdapter(new UserCalendarAdapter());
-
-        rvCalendarGrid.setNestedScrollingEnabled(false);
-        rvCalendarGrid.setLayoutManager(new GridLayoutManager(this, 31, GridLayoutManager.VERTICAL, false));
-        rvCalendarGrid.addItemDecoration(new GridSpacingDecorator(31, 1, false, 0));
-        rvCalendarGrid.setAdapter(new GridCalendarAdapter());
+        timeTable.setItems(generateSamplePlanData());
     }
 
 
@@ -58,5 +47,14 @@ public class CalendarActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    private static List<EmployeePlanItem> generateSamplePlanData() {
+        List<EmployeePlanItem> planItems = new ArrayList<>();
+        for (int i = 0; i < 20; i++)
+            planItems.add(EmployeePlanItem.generateSample());
+
+        return planItems;
     }
 }

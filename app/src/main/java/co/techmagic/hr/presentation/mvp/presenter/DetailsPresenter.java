@@ -152,6 +152,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
         }
+
+        // todo show fields for profileType == ProfileTypes.MY_PROFILE
     }
 
 

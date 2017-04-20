@@ -1,43 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:layout_marginTop="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:background="@android:color/white"
+    android:orientation="vertical"
     tools:context="co.techmagic.hr.presentation.ui.activity.CalendarActivity">
 
-    <LinearLayout
+    <include layout="@layout/layout_colors" />
+
+    <co.techmagic.hr.presentation.ui.view.timetable.TimeTable
+        android:id="@+id/timeTable"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent" />
 
-        <include layout="@layout/view_weekdays" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvUserCalendar"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvCalendarGrid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </HorizontalScrollView>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</android.support.v4.widget.NestedScrollView>
+</LinearLayout>
