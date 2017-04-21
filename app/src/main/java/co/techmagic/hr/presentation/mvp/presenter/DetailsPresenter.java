@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -80,11 +81,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     private void showData(@NonNull Docs data, ProfileTypes profileType) {
-        if (data.getPhotoOrigin() == null) {
-            view.loadEmployeePhoto(data.getPhoto());
-        } else {
-            view.loadEmployeePhoto(data.getPhotoOrigin());
-        }
+        view.loadEmployeePhoto(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
 
         if (data.getEmail() != null) {
             view.showEmail(data.getEmail());
@@ -111,22 +108,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             view.showLead(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        final String birthdayDate = DateUtil.getFormattedDate(data.getBirthday());
-        if (birthdayDate != null) {
-            view.showBirthday(birthdayDate);
-        }
-
         if (data.getRelocationCity() != null) {
             view.showRelocationCity(data.getRelocationCity());
-        }
-
-        final EmergencyContact emergencyContact = data.getEmergencyContact();
-        if (emergencyContact != null && emergencyContact.getPhone() != null) {
-            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
-        }
-
-        if (emergencyContact != null && emergencyContact.getName() != null) {
-            view.showEmergencyContact(emergencyContact.getName());
         }
 
         if (data.getDescription() != null) {
@@ -137,24 +120,43 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         final int userRole = SharedPreferencesUtil.readUser().getRole();
         if (profileType == ProfileTypes.MY_PROFILE || userRole == ROLE_HR || userRole == ROLE_ADMIN) {
             showFullDetailsIfAvailable(data);
+        } else {
+            final String birthdayDate = getCorrectDateFormat(data, false);
+            if (birthdayDate != null) {
+                view.showBirthday(birthdayDate);
+            }
         }
     }
 
 
     private void showFullDetailsIfAvailable(@NonNull Docs data) {
-        final String firstDayDate = DateUtil.getFormattedDate(data.getFirstWorkingDay());
+        final String birthdayDate = getCorrectDateFormat(data, true);
+        if (birthdayDate != null) {
+            view.showBirthday(birthdayDate);
+        }
+
+        final String firstDayDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
         if (firstDayDate != null) {
             view.showFirstDay(firstDayDate);
         }
 
-        final String trialPeriodDate = DateUtil.getFormattedDate(data.getTrialPeriodEnds());
+        final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());
         if (trialPeriodDate != null) {
             view.showTrialPeriodEndsDate(trialPeriodDate);
         }
 
-        final String lastDayDate = DateUtil.getFormattedDate(data.getLastWorkingDay());
+        final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
+        }
+
+        final EmergencyContact emergencyContact = data.getEmergencyContact();
+        if (emergencyContact != null && emergencyContact.getPhone() != null) {
+            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
+        }
+
+        if (emergencyContact != null && emergencyContact.getName() != null) {
+            view.showEmergencyContact(emergencyContact.getName());
         }
     }
 
@@ -262,7 +264,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void performDownloadImageRequest(Context context) {
         view.showProgress();
         Glide.with(context)
-                .load(data.getPhoto())
+                .load(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin())
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -367,10 +369,16 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     @NonNull
     private String buildFormattedString(String formattedText, @NonNull RequestedTimeOff item) {
         if (TextUtils.isEmpty(formattedText)) {
-            formattedText += DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+            formattedText += DateUtil.getFormattedFullDate(item.getDateFrom()) + " - " + DateUtil.getFormattedFullDate(item.getDateTo());
         } else {
-            formattedText += "\n" + DateUtil.getFormattedDate(item.getDateFrom()) + " - " + DateUtil.getFormattedDate(item.getDateTo());
+            formattedText += "\n" + DateUtil.getFormattedFullDate(item.getDateFrom()) + " - " + DateUtil.getFormattedFullDate(item.getDateTo());
         }
         return formattedText;
+    }
+
+
+    @Nullable
+    private String getCorrectDateFormat(Docs data, boolean fullDate) {
+        return fullDate ? DateUtil.getFormattedFullDate(data.getBirthday()) : DateUtil.getFormattedMonthAndDay(data.getBirthday());
     }
 }
