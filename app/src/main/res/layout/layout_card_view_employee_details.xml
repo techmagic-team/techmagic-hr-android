@@ -409,7 +409,7 @@
                         android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                         android:layout_gravity="top"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/ic_birthday_cake_black" />
+                        android:src="@drawable/ic_truck_black" />
 
                 </LinearLayout>
 

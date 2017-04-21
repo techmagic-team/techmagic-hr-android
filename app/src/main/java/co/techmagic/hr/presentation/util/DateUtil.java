@@ -12,10 +12,11 @@ import java.util.TimeZone;
 public class DateUtil {
 
     private static SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-    private static SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+    private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+    private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
 
 
-    public static String getFormattedDate(@Nullable String inputData) {
+    public static String getFormattedFullDate(@Nullable String inputData) {
         String formattedDate = null;
 
         if (inputData == null) {
@@ -26,7 +27,27 @@ public class DateUtil {
 
         try {
             Date date = inputFormat.parse(inputData);
-            formattedDate = outputFormat.format(date);
+            formattedDate = outputFullDateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+
+    public static String getFormattedMonthAndDay(@Nullable String inputData) {
+        String formattedDate = null;
+
+        if (inputData == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            Date date = inputFormat.parse(inputData);
+            formattedDate = outputMonthAndDayFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
