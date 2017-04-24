@@ -20,13 +20,16 @@
 
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="@dimen/activity_home_card_view_list_item_avatar_width"
+            android:layout_width="@dimen/activity_home_card_view_list_item_avatar_height"
             android:layout_height="@dimen/activity_home_card_view_list_item_avatar_height"
+            android:layout_marginBottom="@dimen/activity_home_card_view_list_item_photo_margin_vertical"
             android:layout_marginEnd="@dimen/activity_home_card_view_list_item_photo_margin_horizontal"
             android:layout_marginLeft="@dimen/activity_home_card_view_list_item_photo_margin_horizontal"
             android:layout_marginRight="@dimen/activity_home_card_view_list_item_photo_margin_horizontal"
             android:layout_marginStart="@dimen/activity_home_card_view_list_item_photo_margin_horizontal"
-            android:adjustViewBounds="true" />
+            android:layout_marginTop="@dimen/activity_home_card_view_list_item_photo_margin_vertical"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"

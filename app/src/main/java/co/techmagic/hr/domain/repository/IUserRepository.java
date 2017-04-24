@@ -9,7 +9,8 @@ import rx.Observable;
 
 public interface IUserRepository {
 
-    String STUB_COMPANY_ID = "58593c3398c899445ecb224a"; // Testing Company (production)
+    // String STUB_COMPANY_ID = "58593c3398c899445ecb224a"; // Testing Company (production)
+    String STUB_COMPANY_ID = "585019ffff9c2c5a2b98a7ce";
 
     Observable<User> login(LoginRequest loginRequest);
 
