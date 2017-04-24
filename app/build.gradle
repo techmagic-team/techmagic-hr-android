@@ -40,21 +40,17 @@ android {
         debug {
 
         }
-        release {
-            storeFile file("keys/release.jks")
-            storePassword "techmagic_hr"
-            keyAlias "techmagic_hr_key"
-            keyPassword "techmagic_hr"
-        }
+
+        release
     }
 
     productFlavors {
         dev {
-
+            buildConfigField 'String', 'HOST_URL', '"http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com"'
         }
 
         prod {
-
+            buildConfigField 'String', 'HOST_URL', '"https://hrapi.techmagic.co"'
         }
     }
 
@@ -109,3 +105,11 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 }
+
+def props = new Properties()
+props.load(new FileInputStream(rootProject.file("release.properties")))
+
+android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
+android.signingConfigs.release.storePassword props.keyStorePassword
+android.signingConfigs.release.keyAlias props.keyAlias
+android.signingConfigs.release.keyPassword props.keyAliasPassword

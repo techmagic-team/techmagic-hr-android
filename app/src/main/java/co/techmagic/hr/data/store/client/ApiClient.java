@@ -16,9 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    // public static final String HOST = "http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com";
-    public static final String HOST = "https://hrapi.techmagic.co";
-
     private static ApiClient apiClient;
     private Retrofit retrofit;
 
@@ -34,7 +31,7 @@ public class ApiClient {
     private ApiClient() {
         OkHttpClient client = buildClient();
         retrofit = new Retrofit.Builder()
-                .baseUrl(HOST)
+                .baseUrl(BuildConfig.HOST_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
