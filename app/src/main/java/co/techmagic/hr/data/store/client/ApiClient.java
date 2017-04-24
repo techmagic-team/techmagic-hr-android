@@ -2,6 +2,7 @@ package co.techmagic.hr.data.store.client;
 
 import java.util.concurrent.TimeUnit;
 
+import co.techmagic.hr.BuildConfig;
 import co.techmagic.hr.data.store.IEmployeeApi;
 import co.techmagic.hr.data.store.IUserApi;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -15,7 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String HOST = "http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com";
+    // public static final String HOST = "http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com";
+    public static final String HOST = "https://hrapi.techmagic.co";
 
     private static ApiClient apiClient;
     private Retrofit retrofit;
@@ -54,9 +56,12 @@ public class ApiClient {
             }
             return chain.proceed(request.build());
         });
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        builder.addInterceptor(interceptor);
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(interceptor);
+        }
         return builder.build();
     }
 
