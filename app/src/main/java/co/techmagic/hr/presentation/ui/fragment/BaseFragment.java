@@ -65,4 +65,9 @@ public abstract class BaseFragment<VIEW extends View, PRESENTER extends BasePres
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, RC_WRITE_EXTERNAL_STORAGE_PERMISSION);
         }
     }
+
+
+    protected void removeFragmentFromBackStack() {
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 }

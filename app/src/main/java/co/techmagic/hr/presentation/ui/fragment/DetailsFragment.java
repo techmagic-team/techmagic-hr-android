@@ -157,7 +157,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
+                removeFragmentFromBackStack();
                 break;
         }
         return super.onOptionsItemSelected(item);
