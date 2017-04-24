@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -65,8 +66,10 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     public void performGetTimeOffRequestsIfNeeded() {
         String firstDate = data.getFirstWorkingDay();
         if (firstDate == null) {
+            view.allowChangeBottomTab();
             return;
         }
+        view.disallowChangeBottomTab();
         String userId = data.getId();
         performGetTimeOffRequest(userId, true, firstDate);
         performGetTimeOffRequest(userId, false, firstDate);
@@ -261,6 +264,14 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
+    public void loadPhoto(String photoUrl, @NonNull ImageView ivPhoto) {
+        Glide.with(ivPhoto.getContext())
+                .load(photoUrl)
+                .placeholder(R.drawable.ic_user_placeholder)
+                .into(ivPhoto);
+    }
+
+
     private void performDownloadImageRequest(Context context) {
         view.showProgress();
         Glide.with(context)
@@ -344,6 +355,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             public void onError(Throwable e) {
                 super.onError(e);
                 view.hideProgress();
+                view.allowChangeBottomTab();
             }
         });
     }
@@ -360,8 +372,13 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             }
         }
 
-        if (!TextUtils.isEmpty(formattedText)) {
+        /* Should allow user to change the tab */
+
+        if (TextUtils.isEmpty(formattedText)) {
+            view.allowChangeBottomTab();
+        } else {
             view.showIllnessDays(formattedText);
+            view.allowChangeBottomTab();
         }
     }
 

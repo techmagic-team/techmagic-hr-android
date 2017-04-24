@@ -73,9 +73,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     public void handleMyProfileClick() {
         if (myProfileData == null) {
+            view.disallowChangeTabClick();
             performGetMyProfileRequest();
         } else {
-           handleEmployeeItemClick(myProfileData);
+            view.allowChangeTabClick();
+            handleEmployeeItemClick(myProfileData);
         }
     }
 
@@ -83,10 +85,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
     public void handleEmployeeItemClick(@NonNull Docs docs) {
         if (docs.getId().equals(SharedPreferencesUtil.readUser().getId())) {
             // User clicked on it's profile
+           // view.disallowChangeTabClick();
             myProfileData = docs;
             view.showMyProfile(docs);
         } else {
             // User clicked on Employee's profile
+            view.allowChangeTabClick();
             view.showEmployeeDetails(docs);
         }
     }

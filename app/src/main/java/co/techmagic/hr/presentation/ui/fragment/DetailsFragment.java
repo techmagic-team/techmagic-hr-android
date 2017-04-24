@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,9 +29,10 @@ import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
+import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
 import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
 import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
-import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
 
 public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener, FullPhotoActionListener {
 
@@ -115,6 +114,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private Docs data;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
+    private ChangeBottomTabListener changeBottomTabListener;
     private FullSizeImageDialog fullSizeImageDialog;
 
 
@@ -128,6 +128,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         super.onAttach(context);
         setHasOptionsMenu(true);
         toolbarChangeListener = (ActionBarChangeListener) context;
+        changeBottomTabListener = (ChangeBottomTabListener) context;
     }
 
 
@@ -179,7 +180,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
-                loadPhoto(photoUrl);
+                presenter.loadPhoto(photoUrl, ivPhoto);
                 if (photoUrl == null) {
                     setupNoPhotoLayout();
                 } else {
@@ -315,6 +316,16 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             @Override
             public void saveImage(@NonNull Bitmap image) {
                 saveImageIntoGallery(image);
+            }
+
+            @Override
+            public void allowChangeBottomTab() {
+                changeBottomTabListener.allowBottomTabClick();
+            }
+
+            @Override
+            public void disallowChangeBottomTab() {
+                changeBottomTabListener.disableBottomTabClick();
             }
         };
     }
@@ -458,14 +469,6 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         ivDownload.setVisibility(View.GONE);
         tvMessage.setVisibility(View.GONE);
         ivPhoto.setOnClickListener(null);
-    }
-
-
-    private void loadPhoto(@Nullable String photoUrl) {
-        Glide.with(getActivity())
-                .load(photoUrl)
-                .placeholder(R.drawable.ic_user_placeholder)
-                .into(ivPhoto);
     }
 
 

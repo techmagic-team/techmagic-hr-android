@@ -12,6 +12,7 @@
         <View
             android:id="@+id/logo"
             android:layout_width="48dp"
+            android:layout_margin="2dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical|center_horizontal"
             android:background="@drawable/shape_logo_bg" />

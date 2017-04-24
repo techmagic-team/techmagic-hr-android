@@ -25,4 +25,8 @@ public interface HomeView extends View {
     void showEmployeeDetails(@NonNull Docs data);
 
     void showMyProfile(@NonNull Docs data);
+
+    void allowChangeTabClick();
+
+    void disallowChangeTabClick();
 }
