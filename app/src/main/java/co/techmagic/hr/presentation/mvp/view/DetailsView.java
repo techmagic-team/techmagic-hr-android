@@ -26,6 +26,8 @@ public interface DetailsView extends View {
 
     void showFirstDay(@NonNull String date);
 
+    void showFirstDayInIt(@NonNull String date);
+
     void showAbout(@NonNull String aboutText);
 
     void showEmergencyPhoneNumber(@NonNull String phone);
@@ -51,4 +53,8 @@ public interface DetailsView extends View {
     void showConfirmationDialog();
 
     void saveImage(@NonNull final Bitmap image);
+
+    void allowChangeBottomTab();
+
+    void disallowChangeBottomTab();
 }

@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,9 +29,10 @@ import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
+import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
 import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
 import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
-import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
 
 public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener, FullPhotoActionListener {
 
@@ -59,6 +58,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llRelocationCity;
     @BindView(R.id.llFirstDay)
     View llFirstDay;
+    @BindView(R.id.llFirstDayInIt)
+    View llFirstDayInIt;
     @BindView(R.id.llTrialPeriod)
     View llTrialPeriod;
     @BindView(R.id.llLastDay)
@@ -95,6 +96,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvRelCity;
     @BindView(R.id.tvFirstDay)
     TextView tvFirstDay;
+    @BindView(R.id.tvFirstDayInIt)
+    TextView tvFirstDayInIt;
     @BindView(R.id.tvTrialPeriod)
     TextView tvTrialPeriod;
     @BindView(R.id.tvLastDay)
@@ -115,6 +118,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private Docs data;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
+    private ChangeBottomTabListener changeBottomTabListener;
     private FullSizeImageDialog fullSizeImageDialog;
 
 
@@ -128,6 +132,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         super.onAttach(context);
         setHasOptionsMenu(true);
         toolbarChangeListener = (ActionBarChangeListener) context;
+        changeBottomTabListener = (ChangeBottomTabListener) context;
     }
 
 
@@ -152,7 +157,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
+                removeFragmentFromBackStack();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -179,7 +184,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
-                loadPhoto(photoUrl);
+                presenter.loadPhoto(photoUrl, ivPhoto);
                 if (photoUrl == null) {
                     setupNoPhotoLayout();
                 } else {
@@ -263,6 +268,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void showFirstDayInIt(@NonNull String date) {
+                llFirstDayInIt.setVisibility(View.VISIBLE);
+                tvFirstDayInIt.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day_in_it) + date);
+            }
+
+            @Override
             public void showTrialPeriodEndsDate(@NonNull String date) {
                 llTrialPeriod.setVisibility(View.VISIBLE);
                 tvTrialPeriod.setText(getString(R.string.fragment_employee_details_card_view_text_trial_period_ends) + date);
@@ -315,6 +326,16 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             @Override
             public void saveImage(@NonNull Bitmap image) {
                 saveImageIntoGallery(image);
+            }
+
+            @Override
+            public void allowChangeBottomTab() {
+                changeBottomTabListener.allowBottomTabClick();
+            }
+
+            @Override
+            public void disallowChangeBottomTab() {
+                changeBottomTabListener.disableBottomTabClick();
             }
         };
     }
@@ -462,14 +483,6 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         ivDownload.setVisibility(View.GONE);
         tvMessage.setVisibility(View.GONE);
         ivPhoto.setOnClickListener(null);
-    }
-
-
-    private void loadPhoto(@Nullable String photoUrl) {
-        Glide.with(getActivity())
-                .load(photoUrl)
-                .placeholder(R.drawable.ic_user_placeholder)
-                .into(ivPhoto);
     }
 
 
