@@ -46,11 +46,11 @@ android {
 
     productFlavors {
         dev {
-
+            buildConfigField 'String', 'HOST_URL', '"http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com"'
         }
 
         prod {
-
+            buildConfigField 'String', 'HOST_URL', '"https://hrapi.techmagic.co"'
         }
     }
 
