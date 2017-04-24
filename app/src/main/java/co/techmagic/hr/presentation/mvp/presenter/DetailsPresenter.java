@@ -119,6 +119,11 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             view.showAbout(data.getDescription());
         }
 
+        final String firstDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
+        if (firstDate != null) {
+            view.showFirstDay(firstDate);
+        }
+
         /* Show next info only for User, HR or Admin */
         final int userRole = SharedPreferencesUtil.readUser().getRole();
         if (profileType == ProfileTypes.MY_PROFILE || userRole == ROLE_HR || userRole == ROLE_ADMIN) {
@@ -138,9 +143,9 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             view.showBirthday(birthdayDate);
         }
 
-        final String firstDayDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
-        if (firstDayDate != null) {
-            view.showFirstDay(firstDayDate);
+        final String firstDayInItDate = DateUtil.getFormattedFullDate(data.getGeneralFirstWorkingDay());
+        if (firstDayInItDate != null) {
+            view.showFirstDayInIt(firstDayInItDate);
         }
 
         final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());

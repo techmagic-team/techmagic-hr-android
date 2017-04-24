@@ -58,6 +58,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llRelocationCity;
     @BindView(R.id.llFirstDay)
     View llFirstDay;
+    @BindView(R.id.llFirstDayInIt)
+    View llFirstDayInIt;
     @BindView(R.id.llTrialPeriod)
     View llTrialPeriod;
     @BindView(R.id.llLastDay)
@@ -94,6 +96,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvRelCity;
     @BindView(R.id.tvFirstDay)
     TextView tvFirstDay;
+    @BindView(R.id.tvFirstDayInIt)
+    TextView tvFirstDayInIt;
     @BindView(R.id.tvTrialPeriod)
     TextView tvTrialPeriod;
     @BindView(R.id.tvLastDay)
@@ -261,6 +265,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             public void showFirstDay(@NonNull String date) {
                 llFirstDay.setVisibility(View.VISIBLE);
                 tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
+            }
+
+            @Override
+            public void showFirstDayInIt(@NonNull String date) {
+                llFirstDayInIt.setVisibility(View.VISIBLE);
+                tvFirstDayInIt.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day_in_it) + date);
             }
 
             @Override
