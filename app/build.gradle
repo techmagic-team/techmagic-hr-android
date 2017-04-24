@@ -40,12 +40,8 @@ android {
         debug {
 
         }
-        release {
-            storeFile file("keys/release.jks")
-            storePassword "techmagic_hr"
-            keyAlias "techmagic_hr_key"
-            keyPassword "techmagic_hr"
-        }
+
+        release
     }
 
     productFlavors {
