@@ -28,9 +28,10 @@ import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
     public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
@@ -58,6 +59,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private String selDepId;
     private String selLeadId;
     private String searchQuery = null;
+    private boolean allowChangeTab = true;
 
 
     @Override
@@ -125,6 +127,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             @Override
             public void showEmployeeDetails(@NonNull Docs data) {
                 profileType = ProfileTypes.EMPLOYEE;
+                allowChangeTab = true;
                 addDetailsFragment(data, FRAGMENT_DETAILS_TAG);
             }
 
@@ -132,6 +135,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             public void showMyProfile(@NonNull Docs data) {
                 profileType = ProfileTypes.MY_PROFILE;
                 addDetailsFragment(data, FRAGMENT_MY_PROFILE_TAG);
+            }
+
+            @Override
+            public void allowChangeTabClick() {
+                allowChangeTab = true;
+            }
+
+            @Override
+            public void disallowChangeTabClick() {
+                allowChangeTab = false;
             }
         };
     }
@@ -231,6 +244,18 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
 
+    @Override
+    public void allowBottomTabClick() {
+        allowChangeTab = true;
+    }
+
+
+    @Override
+    public void disableBottomTabClick() {
+        allowChangeTab = false;
+    }
+
+
     private void initUi() {
         actionBar = getSupportActionBar();
         setupBottomNavigation();
@@ -245,8 +270,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
-                    profileType = ProfileTypes.NONE;
-                    clearFragmentsBackStack(this);
+                    if (allowChangeTab) {
+                        profileType = ProfileTypes.NONE;
+                        clearFragmentsBackStack(this);
+                    }
                     break;
 
                 case R.id.action_my_profile:

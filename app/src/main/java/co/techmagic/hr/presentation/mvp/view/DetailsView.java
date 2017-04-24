@@ -51,4 +51,8 @@ public interface DetailsView extends View {
     void showConfirmationDialog();
 
     void saveImage(@NonNull final Bitmap image);
+
+    void allowChangeBottomTab();
+
+    void disallowChangeBottomTab();
 }
