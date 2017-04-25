@@ -29,7 +29,7 @@
                     android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                     android:layout_gravity="top"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_calendar_check" />
+                    android:src="@drawable/ic_calendar_check_black" />
 
             </LinearLayout>
 
@@ -98,7 +98,7 @@
                     android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                     android:layout_gravity="top"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_calendar_check" />
+                    android:src="@drawable/ic_calendar_check_black" />
 
             </LinearLayout>
 
@@ -167,7 +167,7 @@
                     android:layout_height="@dimen/fragment_employee_details_text_layout_height"
                     android:layout_gravity="top"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_calendar_check" />
+                    android:src="@drawable/ic_calendar_check_black" />
 
             </LinearLayout>
 

@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_marginTop="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:orientation="horizontal"
     tools:showIn="@layout/activity_calendar">
 
@@ -18,7 +19,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_weekday" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_weekday" />
 
     </LinearLayout>
 
@@ -33,7 +34,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_holiday" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_holiday" />
 
     </LinearLayout>
 
@@ -48,7 +49,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_vacation" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_vacation" />
 
     </LinearLayout>
 
@@ -63,7 +64,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_day_off" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_day_off" />
 
     </LinearLayout>
 
@@ -78,7 +79,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_illness" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_illness" />
 
     </LinearLayout>
 
@@ -93,7 +94,7 @@
 
         <TextView
             style="@style/ColorsLayoutTextStyle"
-            android:text="@string/tm_hr_calendar_activity_weekday_layout_requested" />
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_requested" />
 
     </LinearLayout>
 

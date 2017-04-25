@@ -11,5 +11,7 @@ public interface IWeekDayItem {
 
     String getDateString();
 
+    String getYearString();
+
     String getDayString();
 }

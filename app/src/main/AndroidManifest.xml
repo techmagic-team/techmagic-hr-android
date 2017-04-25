@@ -39,11 +39,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".presentation.ui.activity.CalendarActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="01eedfc003ebb8ee5d931547b6ae783e5e1eb080" />

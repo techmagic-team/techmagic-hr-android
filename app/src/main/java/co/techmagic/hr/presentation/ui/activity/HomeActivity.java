@@ -24,6 +24,7 @@ import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
+import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
@@ -37,6 +38,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     private static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
+    private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
     private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
@@ -181,10 +183,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 showLogOutDialog();
                 return true;
 
-            case R.id.menu_item_calendar:
-                startActivity(new Intent(this, CalendarActivity.class));
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -219,7 +217,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void setActionBarText(@NonNull String title) {
+    public void setActionBarTitle(@NonNull String title) {
         actionBar.setTitle(title);
     }
 
@@ -239,6 +237,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
         replaceFragment(fragment, tag);
+    }
+
+
+    @Override
+    public void addCalendarFragment() {
+        CalendarFragment fragment = CalendarFragment.newInstance();
+        replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
     }
 
 
@@ -278,6 +283,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                         profileType = ProfileTypes.NONE;
                         clearFragmentsBackStack(this);
                     }
+                    break;
+
+                case R.id.action_calendar:
+                    addCalendarFragment();
                     break;
 
                 case R.id.action_my_profile:

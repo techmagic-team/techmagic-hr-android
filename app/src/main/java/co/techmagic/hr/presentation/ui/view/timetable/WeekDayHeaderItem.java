@@ -22,8 +22,8 @@ import co.techmagic.hr.R;
 public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHeaderItem.ViewHolder> implements IWeekDayItem {
 
     private Calendar time;
-    private String monthAndDate;
-    private String day;
+    private String month;
+    private String dayAndYear;
 
 
     public WeekDayHeaderItem(Calendar time) {
@@ -34,11 +34,12 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
        // boolean isMonday = this.time.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY;
        // String weekNumber = (isMonday ? "Wk." + Integer.toString(this.time.get(Calendar.WEEK_OF_YEAR)) : "") + "\n";
 
-        monthAndDate = getMonthString();
-       // monthAndDate += getDateString();
-        day = getDayString();
-        day += " " + getDateString();
-        // monthAndDate = (isFirstDayOfMonth && !isMonday ? Integer.toString(time.get(Calendar.YEAR)) + "\n" : weekNumber) + date + day;
+        month = getMonthString();
+       // month += getDateString();
+        dayAndYear = getDayString();
+        dayAndYear += " " + getDateString() + "\n";
+        dayAndYear += getYearString();
+        // month = (isFirstDayOfMonth && !isMonday ? Integer.toString(time.get(Calendar.YEAR)) + "\n" : weekNumber) + date + dayAndYear;
     }
 
 
@@ -46,8 +47,8 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        holder.tvMonthAndDate.setText(monthAndDate);
-        holder.tvDay.setText(day);
+        holder.tvMonthAndDate.setText(month);
+        holder.tvDay.setText(dayAndYear);
         holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), isToday() ? R.drawable.item_today_bg : R.drawable.item_guide_bg));
     }
 
@@ -69,6 +70,12 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     @Override
     public String getDateString() {
         return Integer.toString(time.get(Calendar.DAY_OF_MONTH));
+    }
+
+
+    @Override
+    public String getYearString() {
+        return Integer.toString(time.get(Calendar.YEAR));
     }
 
 

@@ -497,7 +497,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void showEmployeeName() {
         if (data.getFirstName() != null && data.getLastName() != null) {
-            toolbarChangeListener.setActionBarText(data.getFirstName() + " " + data.getLastName());
+            toolbarChangeListener.setActionBarTitle(data.getFirstName() + " " + data.getLastName());
         }
     }
 

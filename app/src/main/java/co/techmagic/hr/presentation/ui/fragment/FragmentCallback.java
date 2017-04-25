@@ -8,4 +8,6 @@ import co.techmagic.hr.data.entity.Docs;
 public interface FragmentCallback {
 
     void addDetailsFragment(@NonNull Docs docs, @Nullable String tag);
+
+    void addCalendarFragment();
 }

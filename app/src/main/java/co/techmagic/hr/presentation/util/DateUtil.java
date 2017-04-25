@@ -14,6 +14,7 @@ public class DateUtil {
     private static SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
+    private static SimpleDateFormat outputMonthAndYearFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
 
 
     public static String getFormattedFullDate(@Nullable String inputData) {
@@ -86,5 +87,26 @@ public class DateUtil {
         cal.add(Calendar.YEAR, 1);
 
         return cal.getTimeInMillis();
+    }
+
+
+    public static String getFormattedMonthAndYear(@Nullable Date inputDate) {
+        String formattedDate = null;
+
+        if (inputDate == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            formattedDate = outputMonthAndYearFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
     }
 }

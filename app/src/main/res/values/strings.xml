@@ -35,8 +35,8 @@
 
     <!-- HomeActivity -->
     <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_2">My Profile</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
     <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
@@ -73,12 +73,13 @@
     <string name="fragment_employee_details_card_view_text_illness">"Illness: "</string>
     <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
 
-    <!-- CalendarActivity -->
-    <string name="tm_hr_calendar_activity_weekday_layout_weekday">Weekend</string>
-    <string name="tm_hr_calendar_activity_weekday_layout_holiday">Holiday</string>
-    <string name="tm_hr_calendar_activity_weekday_layout_vacation">Vacation</string>
-    <string name="tm_hr_calendar_activity_weekday_layout_day_off">Day Off</string>
-    <string name="tm_hr_calendar_activity_weekday_layout_illness">Illness</string>
-    <string name="tm_hr_calendar_activity_weekday_layout_requested">Requested</string>
+    <!-- CalendarFragment -->
+    <string name="tm_hr_calendar_fragment_title">Calendar</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_weekday">Weekend</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_holiday">Holiday</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_vacation">Vacation</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_day_off">Day Off</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_illness">Illness</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
 
 </resources>
