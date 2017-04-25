@@ -1,3 +1,76 @@
 <resources>
     <string name="app_name">TechMagic HR</string>
+
+    <!-- Messages -->
+    <!--LoginActivity-->
+    <string name="message_loading">Loading</string>
+    <string name="message_connection_error">Please check your internet connection</string>
+    <string name="message_invalid_email">Invalid Email</string>
+    <string name="message_invalid_password">Invalid Password</string>
+    <string name="message_wrong_password_or_email">Wrong password or email</string>
+    <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <!--EmployeeDetailsFragment-->
+    <string name="message_no_installed_application">No installed application to perform this action</string>
+    <string name="message_image_download_error">Image can not be downloaded</string>
+    <string name="message_do_you_want_to_call_emergency_contact">Do You want to call the emergency contact?</string>
+    <string name="message_image_downloaded">Image was saved into gallery</string>
+    <string name="message_permission_denied">Permission denied</string>
+
+    <!--HomeActivity-->
+    <string name="message_alert_dialog_title_log_out">Logout</string>
+    <string name="message_alert_dialog_message_are_you_sure_you_want_to_log_out">Are you sure you want to Logout?</string>
+    <string name="message_no_results">No results</string>
+    <string name="message_no_results_for_selected_filters">No results for selected filters</string>
+    <string name="message_copied_to_clipboard">Copied to clipboard!</string>
+
+    <!-- LoginActivity -->
+    <string name="tm_hr_login_activity_text_hr">HR</string>
+    <string name="tm_hr_login_activity_text_log_in">Log In</string>
+    <string name="tm_hr_login_activity_text_forgot_password">Forgot Password</string>
+    <string name="tm_hr_login_activity_hint_email">Email</string>
+    <string name="tm_hr_login_activity_hint_password">Password</string>
+    <string name="tm_hr_login_activity_text_send">Send</string>
+    <string name="tm_hr_login_activity_text_go_to_sign_in">Go To Sign In</string>
+    <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
+
+    <!-- HomeActivity -->
+    <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_2">My Profile</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
+    <string name="tm_hr_home_activity_text_search">Search</string>
+    <string name="tm_hr_home_activity_text_logout">LogOut</string>
+    <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
+
+    <!-- SearchActivity -->
+    <string name="tm_hr_search_activity_text_filters">Filters</string>
+    <string name="tm_hr_search_activity_text_clear">Clear Filters</string>
+    <string name="tm_hr_search_activity_text_cancel">Cancel</string>
+    <string name="tm_hr_search_activity_text_apply">Apply Filters</string>
+    <string name="tm_hr_search_activity_text_filter_by">FILTER BY</string>
+    <string name="tm_hr_search_activity_text_filter_by_department">Department</string>
+    <string name="tm_hr_search_activity_text_filter_by_lead">Lead</string>
+    <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
+    <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
+
+    <!-- EmployeeDetailsFragment -->
+    <string name="fragment_employee_details_card_view_text_email">"Email: "</string>
+    <string name="fragment_employee_details_card_view_text_skype">"Skype: "</string>
+    <string name="fragment_employee_details_card_view_text_phone_number">"Phone number: "</string>
+    <string name="fragment_employee_details_card_view_text_room">"Room: "</string>
+    <string name="fragment_employee_details_card_view_text_emergency_phone_number">"Emergency phone number: "</string>
+    <string name="fragment_employee_details_card_view_text_emergency_contact">"Emergency contact: "</string>
+    <string name="fragment_employee_details_card_view_text_department">"Department: "</string>
+    <string name="fragment_employee_details_card_view_text_lead">"Lead: "</string>
+    <string name="fragment_employee_details_card_view_text_date_of_birth">"Date of birth: "</string>
+    <string name="fragment_employee_details_card_view_text_date_of_city_of_relocation">"City of relocation: "</string>
+    <string name="fragment_employee_details_card_view_text_first_working_day">"First working day: "</string>
+    <string name="fragment_employee_details_card_view_text_first_working_day_in_it">"First working day in IT: "</string>
+    <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
+    <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
+    <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
+    <string name="fragment_employee_details_card_view_text_vacation">"Vacation: "</string>
+    <string name="fragment_employee_details_card_view_text_day_off">"Day off: "</string>
+    <string name="fragment_employee_details_card_view_text_illness">"Illness: "</string>
+    <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
+
 </resources>

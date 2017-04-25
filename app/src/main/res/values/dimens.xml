@@ -1,5 +1,50 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- LoginActivity -->
+    <dimen name="activity_login_horizontal_margin">16dp</dimen>
+    <dimen name="activity_login_vertical_margin">16dp</dimen>
+    <dimen name="activity_login_horizontal_margin_text_top">-24dp</dimen>
+    <dimen name="activity_login_text_padding_top">8dp</dimen>
+    <dimen name="activity_login_card_view_margin_horizontal">8dp</dimen>
+    <dimen name="activity_login_tm_logo_width">300dp</dimen>
+    <dimen name="activity_login_tm_logo_height">120dp</dimen>
+    <dimen name="activity_login_tm_logo_margin_bottom">24dp</dimen>
+
+    <!-- HomeActivity -->
+    <!--EmployeeAdapter-->
+    <dimen name="activity_home_card_view_list_item_margin_horizontal">16dp</dimen>
+    <dimen name="activity_home_card_view_list_item_content_margin_horizontal">16dp</dimen>
+    <dimen name="activity_home_card_view_list_item_margin_vertical">8dp</dimen>
+    <dimen name="activity_home_card_view_list_item_margin">2dp</dimen>
+    <dimen name="activity_home_card_view_list_item_photo_margin_horizontal">16dp</dimen>
+    <dimen name="activity_home_card_view_list_item_photo_margin_vertical">8dp</dimen>
+    <dimen name="activity_home_card_view_list_item_avatar_width">80dp</dimen>
+    <dimen name="activity_home_card_view_list_item_avatar_height">80dp</dimen>
+    <dimen name="activity_home_card_view_list_item_text_margin_top">8dp</dimen>
+    <dimen name="activity_home_card_view_list_loading_margin">16dp</dimen>
+    <dimen name="activity_home_card_view_list_left_drawable_icon_size">12dp</dimen>
+    <dimen name="activity_home_card_view_list_icon_height">18dp</dimen>
+    <dimen name="activity_home_card_view_list_text_margin_left">4dp</dimen>
+
+    <!-- SearchActivity -->
+    <!--FilterAdapter-->
+    <dimen name="search_activity_alert_dialog_filter_rv_height">260dp</dimen>
+    <dimen name="search_activity_alert_dialog_filter_list_item_margin">12dp</dimen>
+    <dimen name="search_activity_card_view_selected_filter_margin_left">80dp</dimen>
+
+    <!-- DetailsFragment -->
+    <dimen name="fragment_employee_details_margin">16dp</dimen>
+    <dimen name="fragment_employee_details_photo_size">200dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
+    <dimen name="fragment_employee_details_line_spacing_extra">4dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_bottom">12dp</dimen>
+
+    <dimen name="fragment_employee_details_image_view_padding">8dp</dimen>
+    <dimen name="fragment_employee_details_image_view_margin_bottom">16dp</dimen>
+    <dimen name="fragment_employee_details_text_view_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
+
 </resources>
