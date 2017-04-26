@@ -11,6 +11,7 @@ import android.widget.DatePicker;
 import java.util.Calendar;
 import java.util.Date;
 
+import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -36,7 +37,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle b = getArguments();
         if (b != null) {
-            isDateFromPicker = b.getBoolean(CalendarFragment.SELECTED_DIALOG_KEY);
+            isDateFromPicker = b.getBoolean(HomeActivity.SELECTED_DIALOG_KEY);
         }
 
         final Calendar c = Calendar.getInstance();

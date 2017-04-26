@@ -3,7 +3,6 @@ package co.techmagic.hr.presentation.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,17 +25,15 @@ import co.techmagic.hr.presentation.ui.view.timetable.TimeTable;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> {
 
-    public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
-    public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
-
-    private ActionBarChangeListener actionBarChangeListener;
-
     @BindView(R.id.btnFrom)
     Button btnFrom;
     @BindView(R.id.btnTo)
     Button btnTo;
     @BindView(R.id.timeTable)
     TimeTable timeTable;
+
+    private ActionBarChangeListener actionBarChangeListener;
+    private FragmentCallback fragmentCallback;
 
 
     public static CalendarFragment newInstance() {
@@ -47,8 +44,9 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        actionBarChangeListener = (ActionBarChangeListener) context;
         setHasOptionsMenu(true);
+        actionBarChangeListener = (ActionBarChangeListener) context;
+        fragmentCallback = (FragmentCallback) context;
     }
 
 
@@ -56,7 +54,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
-        setUi();
+        initUi();
         timeTable.setItems(generateSamplePlanData());
         return view;
     }
@@ -96,27 +94,18 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @OnClick(R.id.btnFrom)
     public void onFromButtonClick() {
-        showDateDickerDialog(true);
+        fragmentCallback.addDatePickerFragment(true);
     }
 
 
     @OnClick(R.id.btnTo)
     public void onToButtonClick() {
-        showDateDickerDialog(false);
+        fragmentCallback.addDatePickerFragment(false);
     }
 
 
-    private void setUi() {
+    private void initUi() {
 
-    }
-
-
-    private void showDateDickerDialog(boolean isDateFromPicker) {
-        DialogFragment dialog = DatePickerFragment.newInstance();
-        Bundle b = new Bundle();
-        b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
-        dialog.setArguments(b);
-        dialog.show(getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
     }
 
 

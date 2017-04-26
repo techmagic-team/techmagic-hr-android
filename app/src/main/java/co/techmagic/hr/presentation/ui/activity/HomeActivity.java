@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
+import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
@@ -40,6 +42,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
     private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
+    public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
+    public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -244,6 +248,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public void addCalendarFragment() {
         CalendarFragment fragment = CalendarFragment.newInstance();
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
+    }
+
+
+    @Override
+    public void addDatePickerFragment(boolean isDateFromPicker) {
+        DialogFragment dialog = DatePickerFragment.newInstance();
+        Bundle b = new Bundle();
+        b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
+        dialog.setArguments(b);
+        dialog.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
     }
 
 

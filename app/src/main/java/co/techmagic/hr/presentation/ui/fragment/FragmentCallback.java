@@ -10,4 +10,6 @@ public interface FragmentCallback {
     void addDetailsFragment(@NonNull Docs docs, @Nullable String tag);
 
     void addCalendarFragment();
+
+    void addDatePickerFragment(boolean isDateFromPicker);
 }
