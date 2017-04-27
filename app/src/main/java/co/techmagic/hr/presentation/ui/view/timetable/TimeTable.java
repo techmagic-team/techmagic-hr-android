@@ -234,42 +234,6 @@ public class TimeTable extends FrameLayout {
                 state = newState;
             }
         });
-
-        // TODO
-        /*guideY.addOnScrollListener(new RecyclerView.OnScrollListener()
-		{
-			int state;
-			
-			@Override
-			public void onScrolled(RecyclerView rv, int dx, int dy)
-			{
-				super.onScrolled(recyclerView, dx, dy);
-				if (state == RecyclerView.SCROLL_STATE_IDLE)
-				{
-					return;
-				}
-				
-				final LinearLayoutManager managerY = (LinearLayoutManager) rv.getLayoutManager();
-				final FixedGridLayoutManager layoutMgr = (FixedGridLayoutManager) recyclerView.getLayoutManager();
-				
-				final int firstRow = managerY.findFirstVisibleItemPosition();
-				
-				View firstVisibleItem = layoutMgr.getChildAt(0);
-				if (firstVisibleItem != null)
-				{
-					int decoratedY = managerY.getDecoratedBottom(firstVisibleItem);
-					layoutMgr.scroll((firstRow + 1) * columns);
-				}
-				
-			}
-			
-			@Override
-			public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-			{
-				super.onScrollStateChanged(recyclerView, newState);
-				state = newState;
-			}
-		});*/
     }
 
 
