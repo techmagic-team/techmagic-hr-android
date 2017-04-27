@@ -7,18 +7,42 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import co.techmagic.hr.data.entity.Employee;
+import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
+import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
+import co.techmagic.hr.data.request.TimeOffAllRequest;
+import co.techmagic.hr.domain.interactor.employee.GetAllDayOffs;
+import co.techmagic.hr.domain.interactor.employee.GetAllIllnesses;
+import co.techmagic.hr.domain.interactor.employee.GetAllVacations;
+import co.techmagic.hr.domain.interactor.employee.GetCalendar;
+import co.techmagic.hr.domain.interactor.employee.GetEmployeesByDepartment;
+import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.ui.view.timetable.EmployeePlanItem;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
+    private EmployeeRepositoryImpl employeeRepository;
+
+    private GetAllDayOffs getAllDayOffs;
+    private GetAllVacations getAllVacations;
+    private GetAllIllnesses getAllIllnesses;
+    private GetEmployeesByDepartment getEmployeesByDepartment;
+    private GetCalendar getCalendar;
+
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
 
 
     public CalendarPresenter() {
-
+        employeeRepository = new EmployeeRepositoryImpl();
+        getAllDayOffs = new GetAllDayOffs(employeeRepository);
+        getAllVacations = new GetAllVacations(employeeRepository);
+        getAllIllnesses = new GetAllIllnesses(employeeRepository);
+        getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
+        getCalendar = new GetCalendar(employeeRepository);
     }
 
 
@@ -31,6 +55,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
+        getAllDayOffs.unsubscribe();
+        getAllVacations.unsubscribe();
+        getAllIllnesses.unsubscribe();
+        getEmployeesByDepartment.unsubscribe();
+        getCalendar.unsubscribe();
     }
 
 

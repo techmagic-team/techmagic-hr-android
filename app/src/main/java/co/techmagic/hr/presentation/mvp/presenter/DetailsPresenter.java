@@ -26,8 +26,8 @@ import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.GetIllnessRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
-import co.techmagic.hr.domain.interactor.employee.GetIllness;
-import co.techmagic.hr.domain.interactor.employee.GetTimeOff;
+import co.techmagic.hr.domain.interactor.employee.GetUserIllness;
+import co.techmagic.hr.domain.interactor.employee.GetUserTimeOff;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
@@ -43,23 +43,23 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     private Docs data;
     private IEmployeeRepository employeeRepository;
-    private GetTimeOff getTimeOff;
-    private GetIllness getIllness;
+    private GetUserTimeOff getUserTimeOff;
+    private GetUserIllness getUserIllness;
 
 
     public DetailsPresenter() {
         super();
         employeeRepository = new EmployeeRepositoryImpl();
-        getTimeOff = new GetTimeOff(employeeRepository);
-        getIllness = new GetIllness(employeeRepository);
+        getUserTimeOff = new GetUserTimeOff(employeeRepository);
+        getUserIllness = new GetUserIllness(employeeRepository);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
-        getTimeOff.unsubscribe();
-        getIllness.unsubscribe();
+        getUserTimeOff.unsubscribe();
+        getUserIllness.unsubscribe();
     }
 
 
@@ -303,7 +303,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
 
         final TimeOffRequest request = new TimeOffRequest(userId, firstDay, dateAfterYear, isPaid);
-        getTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getUserTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
@@ -348,7 +348,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
 
         final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
-        getIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getUserIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);

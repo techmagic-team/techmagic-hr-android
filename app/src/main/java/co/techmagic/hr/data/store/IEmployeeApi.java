@@ -2,6 +2,7 @@ package co.techmagic.hr.data.store;
 
 import java.util.List;
 
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.FilterDepartment;
 import co.techmagic.hr.data.entity.FilterLead;
@@ -26,8 +27,23 @@ public interface IEmployeeApi {
     Observable<List<FilterLead>> getFilterLeads();
 
     @POST("/v1/time-off/vacation/findAll/")
-    Observable<List<RequestedTimeOff>> getAllVacations(@Body TimeOffRequest request);
+    Observable<List<RequestedTimeOff>> getUserVacations(@Body TimeOffRequest request);
 
     @POST("/v1/time-off/illness/findAll/")
-    Observable<List<RequestedTimeOff>> getAllIllnesses(@Body GetIllnessRequest request);
+    Observable<List<RequestedTimeOff>> getUserIllnesses(@Body GetIllnessRequest request);
+
+    @GET("/v1/time-off/vacations?isPaid=true")
+    Observable<List<CalendarInfo>> getAllVacations(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/vacations?isPaid=false")
+    Observable<List<CalendarInfo>> getAllDayOffs(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/illness")
+    Observable<List<CalendarInfo>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/users")
+    Observable<List<Employee>> getAllEmployeesByDepartment(@Query("my-team") boolean isMyTeam, @Query("_dapartment") String departmentId);
+
+    @GET("/v1/endpoints/calendar")
+    Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 }

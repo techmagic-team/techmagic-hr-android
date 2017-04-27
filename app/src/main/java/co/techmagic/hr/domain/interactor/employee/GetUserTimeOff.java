@@ -8,15 +8,15 @@ import co.techmagic.hr.domain.interactor.DataUseCase;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 
-public class GetTimeOff extends DataUseCase<TimeOffRequest, List<RequestedTimeOff>, IEmployeeRepository> {
+public class GetUserTimeOff extends DataUseCase<TimeOffRequest, List<RequestedTimeOff>, IEmployeeRepository> {
 
 
-    public GetTimeOff(IEmployeeRepository iEmployeeRepository) {
+    public GetUserTimeOff(IEmployeeRepository iEmployeeRepository) {
         super(iEmployeeRepository);
     }
 
     @Override
     protected Observable<List<RequestedTimeOff>> buildObservable(TimeOffRequest request) {
-        return repository.getAllVacations(request);
+        return repository.getUserVacations(request);
     }
 }
