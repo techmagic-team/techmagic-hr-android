@@ -316,10 +316,7 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
         fillGrid(direction, 0, 0, recycler, state, null);
     }
 
-    private void fillGrid(int direction, int emptyLeft, int emptyTop,
-                          RecyclerView.Recycler recycler,
-                          RecyclerView.State state,
-                          SparseIntArray removedPositions) {
+    private void fillGrid(int direction, int emptyLeft, int emptyTop, RecyclerView.Recycler recycler, RecyclerView.State state, SparseIntArray removedPositions) {
         if (mFirstVisiblePosition < 0) mFirstVisiblePosition = 0;
         if (mFirstVisiblePosition >= getItemCount()) mFirstVisiblePosition = (getItemCount() - 1);
 

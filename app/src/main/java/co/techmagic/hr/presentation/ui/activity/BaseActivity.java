@@ -80,7 +80,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
 
         if (!fragmentPopped && fm.findFragmentByTag(tag) == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.llFragmentsContainer, fragment, tag)
+                    .replace(R.id.rlFragmentsContainer, fragment, tag)
                     .addToBackStack(tag)
                     .commit();
         }

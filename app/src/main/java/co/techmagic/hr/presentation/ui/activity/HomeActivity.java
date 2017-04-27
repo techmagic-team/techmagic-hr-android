@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,7 +34,8 @@ import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
+        EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
     public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
@@ -44,6 +45,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
     public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
+    public static final String CALENDAR_FROM_KEY = "calendar_from_key";
+    public static final String CALENDAR_TO_KEY = "calendar_to_key";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -250,14 +253,17 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
     }
 
-
     @Override
-    public void addDatePickerFragment(boolean isDateFromPicker) {
-        DialogFragment dialog = DatePickerFragment.newInstance();
+    public void addDatePickerFragment(@NonNull CalendarFragment targetFragment, @Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker) {
+        DatePickerFragment fragment = DatePickerFragment.newInstance();
         Bundle b = new Bundle();
+
         b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
-        dialog.setArguments(b);
-        dialog.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
+        b.putSerializable(CALENDAR_FROM_KEY, from);
+        b.putSerializable(CALENDAR_TO_KEY, to);
+        fragment.setArguments(b);
+        fragment.setTargetFragment(targetFragment, 1);
+        fragment.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
     }
 
 

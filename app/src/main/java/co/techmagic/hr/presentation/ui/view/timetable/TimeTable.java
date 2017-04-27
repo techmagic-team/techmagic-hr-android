@@ -89,13 +89,11 @@ public class TimeTable extends FrameLayout {
      * @param items the items to be displayed.
      */
 
-    public <T extends IGridItem> void setItems(@NonNull List<T> items) {
+    public <T extends IGridItem> void setItemsWithDateRange(@NonNull List<T> items, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
         if (left == null || right == null) {
-            left = Calendar.getInstance();
-            left.add(Calendar.YEAR, -1);
+            left = calFrom;
+            right = calTo;
             left.setTimeInMillis(calendarToMidnightMillis(left));
-            right = Calendar.getInstance();
-            right.add(Calendar.YEAR, +1);
             right.setTimeInMillis(calendarToMidnightMillis(right));
             setTimeRange(left, right);
         }
@@ -103,14 +101,14 @@ public class TimeTable extends FrameLayout {
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
         current.setTimeInMillis(calendarToMidnightMillis(left));
-        List<WeekDayHeaderItem> itemsX = new ArrayList<>();
+        List<WeekDayHeaderItem> headerItems = new ArrayList<>();
 
         while (current.getTimeInMillis() <= right.getTimeInMillis()) {
-            itemsX.add(new WeekDayHeaderItem(current));
+            headerItems.add(new WeekDayHeaderItem(current));
             current.add(Calendar.DATE, 1);
         }
 
-        setGuideXItems(itemsX);
+        setHeaderItems(headerItems);
         columns = timeRange.getColumnCount();
         construct(columns);
 
@@ -143,13 +141,13 @@ public class TimeTable extends FrameLayout {
 
 
         List<GridXitem> allGridItems = new ArrayList<>();
-        List<GridYitem> itemsY = new ArrayList<>();
+        List<GridYitem> employeeItems = new ArrayList<>();
         for (GridItemRow r : rows) {
             List<GridXitem> l = r.getItems();
             allGridItems.addAll(l);
 
             for (int i = 0; i < l.size() / columns; i++)
-                itemsY.add(new GridYitem(i == 0 ? r.getPersonName() : "")); // only write the tvItemY once.
+                employeeItems.add(new GridYitem(i == 0 ? r.getPersonName() : "")); // only write the tvItemY once.
         }
 
         if (gridAdapter == null) {
@@ -159,7 +157,8 @@ public class TimeTable extends FrameLayout {
             recyclerView.setAdapter(gridAdapter);
         }
 
-        setGuideYItems(itemsY);
+        setEmployeeItems(employeeItems);
+        gridAdapter.clear();
         gridAdapter.set(allGridItems);
         requestLayout();
         center();
@@ -294,7 +293,7 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public <T extends IWeekDayItem> void setGuideXItems(List<T> items) {
+    public <T extends IWeekDayItem> void setHeaderItems(List<T> items) {
         if (guideXadapter == null) {
             guideXadapter = new FastItemAdapter();
             guideXadapter.setHasStableIds(true);
@@ -302,18 +301,19 @@ public class TimeTable extends FrameLayout {
             guideX.setAdapter(guideXadapter);
         }
 
+        guideXadapter.clear();
         guideXadapter.set(items);
     }
 
 
-    public <T extends IGuideYItem> void setGuideYItems(List<T> items) {
+    public <T extends IGuideYItem> void setEmployeeItems(List<T> items) {
         if (guideYadapter == null) {
             guideYadapter = new FastItemAdapter();
             guideYadapter.setHasStableIds(true);
             guideYadapter.withSelectable(false);
             guideY.setAdapter(guideYadapter);
         }
-
+        guideYadapter.clear();
         guideYadapter.set(items);
     }
 

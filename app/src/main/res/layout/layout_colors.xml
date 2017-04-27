@@ -4,9 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginTop="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:orientation="horizontal"
-    tools:showIn="@layout/activity_calendar">
+    tools:showIn="@layout/fragment_calendar">
 
     <LinearLayout
         style="@style/ColorsLayout"

@@ -8,7 +8,7 @@
     tools:context="co.techmagic.hr.presentation.ui.activity.HomeActivity">
 
     <RelativeLayout
-        android:id="@+id/llFragmentsContainer"
+        android:id="@+id/rlFragmentsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/coordinatorLayout"
@@ -55,25 +55,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <FrameLayout
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
-            app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationBehavior">
-
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/bottomNavigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:splitMotionEvents="true"
-                app:itemBackground="@color/colorPrimary"
-                app:itemIconTint="@android:color/white"
-                app:itemTextColor="@android:color/white"
-                app:menu="@menu/menu_bottom_navigation" />
-
-        </FrameLayout>
-
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white"
+            app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationBehavior"
+            app:menu="@menu/menu_bottom_navigation" />
 
     </android.support.design.widget.CoordinatorLayout>
 

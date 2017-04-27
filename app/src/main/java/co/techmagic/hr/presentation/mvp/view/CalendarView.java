@@ -1,12 +1,21 @@
 package co.techmagic.hr.presentation.mvp.view;
 
-
 import android.support.annotation.NonNull;
+
+import java.util.Calendar;
+import java.util.List;
+
+import co.techmagic.hr.presentation.ui.view.timetable.IGridItem;
 
 public interface CalendarView extends View {
 
-    void displaySelectedFromDate(@NonNull String date);
+    <T extends IGridItem> void updateTableWithDateRange(@NonNull List<T> items, @NonNull Calendar from, @NonNull Calendar to);
 
-    void displaySelectedToDate(@NonNull String date);
+    void updateSelectedFromButtonText(@NonNull String date);
 
+    void updateSelectedToButtonText(@NonNull String date);
+
+    void showDatePicker(@NonNull Calendar from, @NonNull Calendar to, boolean isDateFromPicker);
+
+    void inValidDateRange(int resId);
 }

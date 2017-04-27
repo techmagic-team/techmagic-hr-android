@@ -74,6 +74,10 @@
     <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
 
     <!-- CalendarFragment -->
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_from">From</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_to">To</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_invalid_date">Invalid date range</string>
+    <string name="tm_hr_calendar_fragment_to_text">to</string>
     <string name="tm_hr_calendar_fragment_title">Calendar</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_weekday">Weekend</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_holiday">Holiday</string>

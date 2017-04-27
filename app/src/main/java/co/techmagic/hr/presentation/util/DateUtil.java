@@ -109,4 +109,13 @@ public class DateUtil {
 
         return formattedDate;
     }
+
+
+    public static boolean isValidDateRange(@Nullable Calendar from, @Nullable Calendar to) {
+        if (from == null || to == null) {
+            return false;
+        }
+
+        return from.get(Calendar.YEAR) <= to.get(Calendar.YEAR);
+    }
 }
