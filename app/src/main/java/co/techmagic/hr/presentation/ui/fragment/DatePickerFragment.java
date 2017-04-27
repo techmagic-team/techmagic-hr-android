@@ -116,8 +116,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         monthPicker.setValue(cal.get(Calendar.MONTH) + 1);
 
         DateFormatSymbols dfs = new DateFormatSymbols(Locale.US);
-        String[] months = dfs.getShortMonths();
-        monthPicker.setDisplayedValues(months);
+        monthPicker.setDisplayedValues(dfs.getShortMonths());
 
         int year = cal.get(Calendar.YEAR);
         yearPicker.setMinValue(year - MIN_YEAR);

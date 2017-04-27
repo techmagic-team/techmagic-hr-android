@@ -90,13 +90,11 @@ public class TimeTable extends FrameLayout {
      */
 
     public <T extends IGridItem> void setItemsWithDateRange(@NonNull List<T> items, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
-        if (left == null || right == null) {
-            left = calFrom;
-            right = calTo;
-            left.setTimeInMillis(calendarToMidnightMillis(left));
-            right.setTimeInMillis(calendarToMidnightMillis(right));
-            setTimeRange(left, right);
-        }
+        left = calFrom;
+        right = calTo;
+        left.setTimeInMillis(calendarToMidnightMillis(left));
+        right.setTimeInMillis(calendarToMidnightMillis(right));
+        setTimeRange(left, right);
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -147,7 +145,7 @@ public class TimeTable extends FrameLayout {
             allGridItems.addAll(l);
 
             for (int i = 0; i < l.size() / columns; i++)
-                employeeItems.add(new GridYitem(i == 0 ? r.getPersonName() : "")); // only write the tvItemY once.
+                employeeItems.add(new GridYitem(r.getPersonName())); // only write the tvItemY once.
         }
 
         if (gridAdapter == null) {
@@ -238,7 +236,7 @@ public class TimeTable extends FrameLayout {
         });
 
         // TODO
-		/*guideY.addOnScrollListener(new RecyclerView.OnScrollListener()
+        /*guideY.addOnScrollListener(new RecyclerView.OnScrollListener()
 		{
 			int state;
 			
@@ -313,6 +311,7 @@ public class TimeTable extends FrameLayout {
             guideYadapter.withSelectable(false);
             guideY.setAdapter(guideYadapter);
         }
+
         guideYadapter.clear();
         guideYadapter.set(items);
     }

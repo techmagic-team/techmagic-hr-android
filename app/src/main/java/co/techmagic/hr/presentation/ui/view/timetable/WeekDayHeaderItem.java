@@ -39,7 +39,6 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
         dayAndYear = getDayString();
         dayAndYear += " " + getDateString() + "\n";
         dayAndYear += getYearString();
-        // month = (isFirstDayOfMonth && !isMonday ? Integer.toString(time.get(Calendar.YEAR)) + "\n" : weekNumber) + date + dayAndYear;
     }
 
 
@@ -56,6 +55,7 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     @Override
     public void unbindView(ViewHolder holder) {
         super.unbindView(holder);
+
         holder.tvMonthAndDate.setText(null);
         holder.tvDay.setText(null);
     }
