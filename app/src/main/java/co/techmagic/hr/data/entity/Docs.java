@@ -2,9 +2,14 @@ package co.techmagic.hr.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Docs implements Parcelable {
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
+
+public class Docs implements Parcelable, IGridItem {
 
     @SerializedName("_department")
     private Department department;
@@ -237,5 +242,26 @@ public class Docs implements Parcelable {
 
     public String getTrialPeriodEnds() {
         return trialPeriodEnds;
+    }
+
+    @Nullable
+    @Override
+    public TimeRange getTimeRange() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getPersonName() {
+        return firstName + " " + lastName;
+    }
+
+    @Override
+    public String getPhotoUrl() {
+        return photo;
     }
 }

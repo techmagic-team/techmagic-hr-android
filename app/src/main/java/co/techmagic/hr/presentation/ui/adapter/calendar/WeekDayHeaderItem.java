@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;

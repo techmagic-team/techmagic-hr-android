@@ -116,7 +116,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<Employee>> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest) {
+    public Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllEmployeesByDepartment(employeesByDepartmentRequest.isMyTeam(), employeesByDepartmentRequest.getDepartmentId());
         }

@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.List;
@@ -22,8 +23,8 @@ import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.OnDisplaySelectedDateListener;
-import co.techmagic.hr.presentation.ui.view.timetable.IGridItem;
-import co.techmagic.hr.presentation.ui.view.timetable.TimeTable;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements OnDisplaySelectedDateListener {
 
@@ -31,6 +32,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     Button btnFrom;
     @BindView(R.id.btnTo)
     Button btnTo;
+    @BindView(R.id.tvCalendarNoResults)
+    TextView tvNoResults;
     @BindView(R.id.timeTable)
     TimeTable timeTable;
 
@@ -83,6 +86,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         return new CalendarViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
             public <T extends IGridItem> void updateTableWithDateRange(@NonNull List<T> items, @NonNull Calendar from, @NonNull Calendar to) {
+                tvNoResults.setVisibility(View.GONE);
+                timeTable.setVisibility(View.VISIBLE);
                 timeTable.setItemsWithDateRange(items, from, to);
             }
 
@@ -104,6 +109,12 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             @Override
             public void inValidDateRange(int resId) {
                 view.showSnackBarMessage(getString(resId));
+            }
+
+            @Override
+            public void showNoResults() {
+                timeTable.setVisibility(View.GONE);
+                tvNoResults.setVisibility(View.VISIBLE);
             }
         };
     }
@@ -149,5 +160,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     private void initUi() {
         presenter.setupPage();
+        presenter.performRequests();
     }
 }

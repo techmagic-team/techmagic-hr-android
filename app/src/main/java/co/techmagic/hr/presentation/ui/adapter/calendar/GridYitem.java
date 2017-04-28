@@ -1,10 +1,12 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.adapter.calendar;
 
-import android.support.v4.content.ContextCompat;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
@@ -15,35 +17,44 @@ import co.techmagic.hr.R;
  * Created by Wiebe Geertsma on 12-12-2016.
  * E-mail: e.w.geertsma@gmail.com
  */
+
 public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> implements IGuideYItem {
 
+    private final String photoUrl;
     private final String name;
 
 
-    public GridYitem(String name) {
+    public GridYitem(String name, String photoUrl) {
         this.name = name;
+        this.photoUrl = photoUrl;
     }
 
 
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
+        final Context context = holder.itemView.getContext();
+
+        Glide.with(context)
+                .load(getPhotoUrl())
+                .placeholder(R.drawable.ic_user_placeholder)
+                .into(holder.ivPhotoItemY);
 
         holder.tvItemY.setText(getName());
-        holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.item_guide_bg));
     }
 
 
     @Override
     public void unbindView(ViewHolder holder) {
         super.unbindView(holder);
+
         holder.tvItemY.setText(null);
     }
 
 
     @Override
     public int getType() {
-        return R.id.llItemY;
+        return R.id.flItemY;
     }
 
 
@@ -71,13 +82,21 @@ public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> imp
     }
 
 
+    @Override
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView ivPhotoItemY;
         TextView tvItemY;
 
         public ViewHolder(View view) {
             super(view);
-            this.tvItemY = (TextView) view.findViewById(R.id.tvItemY);
+            ivPhotoItemY = (ImageView) view.findViewById(R.id.ivPhotoItemY);
+            tvItemY = (TextView) view.findViewById(R.id.tvItemY);
         }
     }
 }

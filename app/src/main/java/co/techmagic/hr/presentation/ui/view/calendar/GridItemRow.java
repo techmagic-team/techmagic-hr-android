@@ -1,22 +1,29 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.view.calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import co.techmagic.hr.data.entity.EmployeeGridYitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+
 /**
  * Created by Wiebe Geertsma on 13-12-2016.
  * E-mail: e.w.geertsma@gmail.com
  */
+
 public class GridItemRow<T extends IGridItem> {
 
     private final TimeRange timeRange;
     private final String personName;
+    private final String photoUrl;
     private final List<GridXitem> items;
 
-    public GridItemRow(final String personName, final TimeRange timeRange, final List<T> containedItems) {
+    public GridItemRow(final EmployeeGridYitem employeeGridYitem, final TimeRange timeRange, final List<T> containedItems) {
         this.timeRange = timeRange; // We need to keep track of the time range of this row so we can display the current day
-        this.personName = personName;
+        personName = employeeGridYitem.getName();
+        photoUrl = employeeGridYitem.getPhotoUrl();
         items = generateGridItems(fitItems(containedItems), timeRange);
     }
 
@@ -121,6 +128,11 @@ public class GridItemRow<T extends IGridItem> {
 
     public String getPersonName() {
         return personName;
+    }
+
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     /**

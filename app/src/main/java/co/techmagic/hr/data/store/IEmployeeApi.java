@@ -42,7 +42,7 @@ public interface IEmployeeApi {
     Observable<List<CalendarInfo>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/users")
-    Observable<List<Employee>> getAllEmployeesByDepartment(@Query("my-team") boolean isMyTeam, @Query("_dapartment") String departmentId);
+    Observable<Employee> getAllEmployeesByDepartment(@Query("my-team") boolean isMyTeam, @Query("_department") String departmentId);
 
     @GET("/v1/endpoints/calendar")
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);

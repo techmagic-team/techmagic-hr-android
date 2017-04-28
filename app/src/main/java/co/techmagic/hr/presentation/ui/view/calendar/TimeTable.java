@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.view.calendar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -21,6 +21,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.EmployeeGridYitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridYitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItem;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -110,20 +117,20 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
-        List<Pair<String, List<IGridItem>>> pairs = new ArrayList<>();
+        List<Pair<EmployeeGridYitem, List<IGridItem>>> pairs = new ArrayList<>();
 
         for (int i = 0; i < items.size(); i++) {
             T item = items.get(i);
-            Pair<String, List<IGridItem>> pair = null;
-            for (Pair<String, List<IGridItem>> p : pairs) {
-                if (p.first.equals(item.getPersonName())) {
+            Pair<EmployeeGridYitem, List<IGridItem>> pair = null;
+            for (Pair<EmployeeGridYitem, List<IGridItem>> p : pairs) {
+                if (p.first.getName() != null && p.first.getName().equals(item.getPersonName())) {
                     pair = p;
                     break;
                 }
             }
 
             if (pair == null)
-                pair = new Pair<>(item.getPersonName(), new ArrayList<IGridItem>());
+                pair = new Pair<>(new EmployeeGridYitem(item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
 
             pair.second.add(item);
 
@@ -132,7 +139,7 @@ public class TimeTable extends FrameLayout {
         }
 
         List<GridItemRow> rows = new ArrayList<>();
-        for (Pair<String, List<IGridItem>> pair : pairs) {
+        for (Pair<EmployeeGridYitem, List<IGridItem>> pair : pairs) {
             GridItemRow gridRow = new GridItemRow(pair.first, new TimeRange(left, right), pair.second);
             rows.add(gridRow);
         }
@@ -145,7 +152,7 @@ public class TimeTable extends FrameLayout {
             allGridItems.addAll(l);
 
             for (int i = 0; i < l.size() / columns; i++)
-                employeeItems.add(new GridYitem(r.getPersonName())); // only write the tvItemY once.
+                employeeItems.add(new GridYitem(r.getPersonName(), r.getPhotoUrl())); // only write the tvItemY once.
         }
 
         if (gridAdapter == null) {

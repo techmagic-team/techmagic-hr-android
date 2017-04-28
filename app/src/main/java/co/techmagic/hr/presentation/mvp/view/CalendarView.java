@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.List;
 
-import co.techmagic.hr.presentation.ui.view.timetable.IGridItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 
 public interface CalendarView extends View {
 
@@ -18,4 +18,6 @@ public interface CalendarView extends View {
     void showDatePicker(@NonNull Calendar from, @NonNull Calendar to, boolean isDateFromPicker);
 
     void inValidDateRange(int resId);
+
+    void showNoResults();
 }

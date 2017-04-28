@@ -60,5 +60,7 @@
     <dimen name="activity_layout_colors_circle_margin_right">2dp</dimen>
     <dimen name="activity_layout_colors_text_size">11sp</dimen>
     <dimen name="activity_layout_grid_item_size">48dp</dimen>
+    <dimen name="activity_layout_grid_item_padding">2dp</dimen>
+    <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
 
 </resources>

@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.view.calendar;
 
 import java.util.Calendar;
 import java.util.Date;

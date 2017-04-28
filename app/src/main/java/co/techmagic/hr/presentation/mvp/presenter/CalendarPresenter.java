@@ -1,25 +1,23 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
-import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.domain.interactor.employee.GetAllDayOffs;
 import co.techmagic.hr.domain.interactor.employee.GetAllIllnesses;
 import co.techmagic.hr.domain.interactor.employee.GetAllVacations;
 import co.techmagic.hr.domain.interactor.employee.GetCalendar;
 import co.techmagic.hr.domain.interactor.employee.GetEmployeesByDepartment;
-import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
-import co.techmagic.hr.presentation.ui.view.timetable.EmployeePlanItem;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
@@ -31,6 +29,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private GetAllIllnesses getAllIllnesses;
     private GetEmployeesByDepartment getEmployeesByDepartment;
     private GetCalendar getCalendar;
+    private List<Docs> employees;
 
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
@@ -43,12 +42,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getAllIllnesses = new GetAllIllnesses(employeeRepository);
         getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
         getCalendar = new GetCalendar(employeeRepository);
-    }
-
-
-    @Override
-    protected void onViewAttached() {
-        super.onViewAttached();
     }
 
 
@@ -68,7 +61,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         Calendar to = Calendar.getInstance();
         showFromDate(from);
         showToDate(to);
-        view.updateTableWithDateRange(generateSamplePlanData(), from, to);
+    }
+
+
+    public void performRequests() {
+        performGetEmployeesByDepartmentRequest();
     }
 
 
@@ -95,7 +92,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
-        view.updateTableWithDateRange(generateSamplePlanData(), dateFrom, dateTo);
+        view.updateTableWithDateRange(employees, dateFrom, dateTo);
     }
 
 
@@ -125,11 +122,34 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    private static List<EmployeePlanItem> generateSamplePlanData() {
-        List<EmployeePlanItem> planItems = new ArrayList<>();
-        for (int i = 0; i < 20; i++)
-            planItems.add(EmployeePlanItem.generateSample());
+    private void performGetEmployeesByDepartmentRequest() {
+        view.showProgress();
 
-        return planItems;
+        EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, "");
+        getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
+            @Override
+            public void onNext(Employee response) {
+                super.onNext(response);
+                handleEmployeesByDepartmentSuccessResponse(response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
+        view.hideProgress();
+        final List<Docs> result = response.getDocs();
+        if (result == null || result.isEmpty()) {
+            view.showNoResults();
+        } else {
+            employees = result;
+            view.updateTableWithDateRange(employees, dateFrom, dateTo);
+        }
     }
 }

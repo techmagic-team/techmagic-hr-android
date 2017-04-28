@@ -1,7 +1,8 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 import android.support.annotation.Nullable;
-import android.view.View;
+
+import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
 
 /**
  * Interface for your plan item.
@@ -11,6 +12,7 @@ import android.view.View;
  * Created by Wiebe Geertsma on 12-12-2016.
  * E-mail: e.w.geertsma@gmail.com
  */
+
 public interface IGridItem {
     /**
      * If the TimeRange is null, your item will NOT be displayed.
@@ -35,14 +37,9 @@ public interface IGridItem {
     String getPersonName();
 
     /**
-     * Get the item's color.
+     * Get the photo url that is displayed on the Y axis.
      *
-     * @return the color of the item
+     * @return the photo url that is displayed on the Y axis
      */
-    int getItemColor();
-
-    /**
-     * Executed when the user clicked on the item.
-     */
-    void onClick(View view);
+    String getPhotoUrl();
 }

@@ -32,7 +32,7 @@ public interface IEmployeeRepository {
 
     Observable<List<CalendarInfo>> getAllIllnesses(TimeOffAllRequest request);
 
-    Observable<List<Employee>> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
+    Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
 }

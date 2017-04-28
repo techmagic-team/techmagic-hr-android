@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.view.timetable;
+package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 /**
  * Created by Wiebe Geertsma on 8-12-2016.
