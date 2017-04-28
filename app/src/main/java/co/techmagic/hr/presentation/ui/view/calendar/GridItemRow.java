@@ -7,6 +7,7 @@ import java.util.List;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideXItem;
 
 /**
  * Created by Wiebe Geertsma on 13-12-2016.
@@ -102,7 +103,7 @@ public class GridItemRow<T extends IGridItem> {
                     if (item.getTimeRange() == null)
                         continue; // Skip any items that have null start or end tvMonthAndDate.
                     if (item.getTimeRange().isWithin(cellTime)) {
-                        gridXitem = new GridXitem(item, x, y);
+                        gridXitem = new GridXitem((IGuideXItem) item, x, y);// todo cast!!!!
                         break;
                     }
                 }

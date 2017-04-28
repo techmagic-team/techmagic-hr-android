@@ -14,11 +14,6 @@ import java.util.Locale;
 
 import co.techmagic.hr.R;
 
-/**
- * Created by Wiebe Geertsma on 8-12-2016.
- * E-mail: e.w.geertsma@gmail.com
- */
-
 public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHeaderItem.ViewHolder> implements IWeekDayItem {
 
     private Calendar time;

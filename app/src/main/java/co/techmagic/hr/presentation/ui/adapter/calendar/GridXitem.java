@@ -1,5 +1,7 @@
 package co.techmagic.hr.presentation.ui.adapter.calendar;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -10,14 +12,9 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 
-/**
- * Created by Wiebe Geertsma on 8-12-2016.
- * E-mail: e.w.geertsma@gmail.com
- */
-
 public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
 
-    private final IGridItem model;
+    private final IGuideXItem model;
     private final int row;
     private final int column;
     private boolean isStart, isToday, isWeekend;
@@ -31,7 +28,7 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     }
 
 
-    public <T extends IGridItem> GridXitem(T model, int row, int column) {
+    public <T extends IGuideXItem> GridXitem(T model, int row, int column) {
         this.model = model;
         this.row = row;
         this.column = column;
@@ -42,7 +39,45 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        holder.itemView.setBackgroundResource(isToday ? R.drawable.item_today_bg : isWeekend ? R.drawable.item_weekend_bg : R.drawable.item_bg);
+        // todo
+        if (model == null) {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+            return;
+        }
+
+        final Context c = holder.itemView.getContext();
+
+        if (model.isHoliday()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorHoliday));
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        }
+
+        if (model.isVacation()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorVacation));
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        }
+
+        if (model.isDayOff()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorDayOff));
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        }
+
+        if (model.isIllness()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorIllness));
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        }
+
+        if (model.isRequested()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorRequested));
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        }
+
+       // holder.itemView.setBackgroundResource(isToday ? R.drawable.item_today_bg : isWeekend ? R.drawable.item_weekend_bg : R.drawable.item_bg);
     }
 
 
@@ -106,18 +141,8 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     }
 
 
-    public IGridItem getModel() {
+    public IGuideXItem getModel() {
         return model;
-    }
-
-
-    public int getRow() {
-        return row;
-    }
-
-
-    public int getColumn() {
-        return column;
     }
 
 

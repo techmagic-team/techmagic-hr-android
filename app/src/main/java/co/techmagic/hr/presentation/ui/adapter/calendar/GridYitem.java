@@ -13,11 +13,6 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 
-/**
- * Created by Wiebe Geertsma on 12-12-2016.
- * E-mail: e.w.geertsma@gmail.com
- */
-
 public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> implements IGuideYItem {
 
     private final String photoUrl;
@@ -41,6 +36,7 @@ public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> imp
                 .into(holder.ivPhotoItemY);
 
         holder.tvItemY.setText(getName());
+        holder.itemView.setBackgroundResource(R.drawable.item_bg);
     }
 
 

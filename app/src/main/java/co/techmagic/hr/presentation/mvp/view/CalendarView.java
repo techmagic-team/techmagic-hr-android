@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.List;
 
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 
 public interface CalendarView extends View {
@@ -20,4 +21,8 @@ public interface CalendarView extends View {
     void inValidDateRange(int resId);
 
     void showNoResults();
+
+    void updateCalendarInfo(@NonNull List<CalendarInfo> calendar);
+
+    void onCalendarInfoError(int resId);
 }

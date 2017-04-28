@@ -2,9 +2,6 @@ package co.techmagic.hr.data.request;
 
 import com.google.gson.annotations.SerializedName;
 
-import co.techmagic.hr.data.entity.DateFrom;
-import co.techmagic.hr.data.entity.DateTo;
-
 public class TimeOffAllRequest {
 
     @SerializedName("dateFrom")
@@ -15,6 +12,17 @@ public class TimeOffAllRequest {
 
     @SerializedName("isPaid")
     private boolean isPaid;
+
+    public TimeOffAllRequest(long dateFrom, long dateTo) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
+
+    public TimeOffAllRequest(long dateFrom, long dateTo, boolean isPaid) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.isPaid = isPaid;
+    }
 
     public long getDateFrom() {
         return dateFrom;

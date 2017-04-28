@@ -7,10 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
+import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.domain.interactor.employee.GetAllDayOffs;
 import co.techmagic.hr.domain.interactor.employee.GetAllIllnesses;
 import co.techmagic.hr.domain.interactor.employee.GetAllVacations;
@@ -66,6 +68,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public void performRequests() {
         performGetEmployeesByDepartmentRequest();
+        performGetCalendarRequest();
     }
 
 
@@ -125,7 +128,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
-        EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, "");
+        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, "");
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee response) {
@@ -151,5 +154,26 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             employees = result;
             view.updateTableWithDateRange(employees, dateFrom, dateTo);
         }
+    }
+
+
+    private void performGetCalendarRequest() {
+        view.showProgress();
+
+        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
+        getCalendar.execute(request, new DefaultSubscriber<List<CalendarInfo>>(view) {
+            @Override
+            public void onNext(List<CalendarInfo> response) {
+                super.onNext(response);
+                view.hideProgress();
+                view.updateCalendarInfo(response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
     }
 }

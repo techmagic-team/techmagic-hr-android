@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
@@ -115,6 +116,16 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public void showNoResults() {
                 timeTable.setVisibility(View.GONE);
                 tvNoResults.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void updateCalendarInfo(@NonNull List<CalendarInfo> calendar) {
+                timeTable.setGridItems(calendar);
+            }
+
+            @Override
+            public void onCalendarInfoError(int resId) {
+
             }
         };
     }

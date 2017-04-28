@@ -155,16 +155,8 @@ public class TimeTable extends FrameLayout {
                 employeeItems.add(new GridYitem(r.getPersonName(), r.getPhotoUrl())); // only write the tvItemY once.
         }
 
-        if (gridAdapter == null) {
-            gridAdapter = new FastItemAdapter<>();
-            gridAdapter.setHasStableIds(true);
-            gridAdapter.withSelectable(false);
-            recyclerView.setAdapter(gridAdapter);
-        }
-
+        setGridItems(allGridItems);
         setEmployeeItems(employeeItems);
-        gridAdapter.clear();
-        gridAdapter.set(allGridItems);
         requestLayout();
         center();
     }
@@ -259,6 +251,19 @@ public class TimeTable extends FrameLayout {
         this.left = left;
         this.right = right;
         this.timeRange = new TimeRange(left, right);
+    }
+
+
+    public <T> void setGridItems(List<T> items) {
+        if (gridAdapter == null) {
+            gridAdapter = new FastItemAdapter<>();
+            gridAdapter.setHasStableIds(true);
+            gridAdapter.withSelectable(false);
+            recyclerView.setAdapter(gridAdapter);
+        }
+
+        gridAdapter.clear();
+        gridAdapter.set(items);
     }
 
 

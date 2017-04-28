@@ -4,14 +4,6 @@ import android.support.annotation.Nullable;
 
 import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
 
-/**
- * Interface for your plan item.
- * Your class just needs a time range, an item tvItemY (for example "Renovation block A") and the tvItemY of the person
- * that is assigned to this plan.
- * <p>
- * Created by Wiebe Geertsma on 12-12-2016.
- * E-mail: e.w.geertsma@gmail.com
- */
 
 public interface IGridItem {
     /**
