@@ -3,11 +3,14 @@ package co.techmagic.hr.presentation.ui.view.calendar;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideXItem;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 /**
  * Created by Wiebe Geertsma on 13-12-2016.
@@ -21,11 +24,11 @@ public class GridItemRow<T extends IGridItem> {
     private final String photoUrl;
     private final List<GridXitem> items;
 
-    public GridItemRow(final EmployeeGridYitem employeeGridYitem, final TimeRange timeRange, final List<T> containedItems) {
+    public GridItemRow(final EmployeeGridYitem employeeGridYitem, final TimeRange timeRange, final List<T> containedItems, final AllTimeOffs allTimeOffs) {
         this.timeRange = timeRange; // We need to keep track of the time range of this row so we can display the current day
         personName = employeeGridYitem.getName();
         photoUrl = employeeGridYitem.getPhotoUrl();
-        items = generateGridItems(fitItems(containedItems), timeRange);
+        items = generateGridItems(fitItems(containedItems), timeRange, allTimeOffs);
     }
 
     /**
@@ -54,11 +57,8 @@ public class GridItemRow<T extends IGridItem> {
             boolean wasAdded = true;
             for (List<T> currentRowList : sortedList) {
                 boolean fitsInCurrentRow = true;
-                for (IGridItem rowItem : currentRowList) // Check if there are overlapping items in this row
-                {
-                    if (item.getTimeRange() != null &&
-                            rowItem.getTimeRange() != null &&
-                            item.getTimeRange().overlaps(rowItem.getTimeRange())) {
+                for (IGridItem rowItem : currentRowList) { // Check if there are overlapping items in this row
+                    if (item.getTimeRange() != null && rowItem.getTimeRange() != null && item.getTimeRange().overlaps(rowItem.getTimeRange())) {
                         fitsInCurrentRow = false;
                         break;
                     }
@@ -88,7 +88,7 @@ public class GridItemRow<T extends IGridItem> {
      * @param timeRange the time range (start to end) of this row.
      * @return the generated list of GridItems ready to display in the RecyclerView.
      */
-    private static <T extends IGridItem> List<GridXitem> generateGridItems(final List<List<T>> itemsList, final TimeRange timeRange) {
+    private static <T extends IGridItem> List<GridXitem> generateGridItems(final List<List<T>> itemsList, final TimeRange timeRange, final AllTimeOffs allTimeOffs) {
         final int columns = timeRange.getColumnCount();
         List<GridXitem> gridItems = new ArrayList<>();
 
@@ -103,21 +103,36 @@ public class GridItemRow<T extends IGridItem> {
                     if (item.getTimeRange() == null)
                         continue; // Skip any items that have null start or end tvMonthAndDate.
                     if (item.getTimeRange().isWithin(cellTime)) {
-                        gridXitem = new GridXitem((IGuideXItem) item, x, y);// todo cast!!!!
+                        gridXitem = new GridXitem(x, y);
                         break;
                     }
                 }
+
                 if (gridXitem == null)
-                    gridXitem = new GridXitem(x, y);
+                    gridXitem = new GridXitem(allTimeOffs, x, y);
+
                 else if (!gridItems.isEmpty() && gridItems.size() > 0) {
                     GridXitem lastItem = gridItems.get((y * columns) + x - 1);
                     gridXitem.setStart(lastItem.isEmpty() || !gridXitem.getModel().equals(lastItem.getModel()));
                 }
-                if (compareDates(cellTime, Calendar.getInstance())) {
+                if (DateUtil.compareDates(cellTime, Calendar.getInstance())) {
                     gridXitem.setIsToday(true);
                 }
                 if (cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                     gridXitem.setIsWeekend(true);
+
+                // TODO add more timeOffs here
+                final List<CalendarInfo> info = allTimeOffs.getCalendarInfo();
+
+                for (CalendarInfo c : info) {
+                    if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(c.getName())) {
+                        for (int h = 0; h < c.getHolidays().size(); h++) {
+                            if ((cellTime.get(Calendar.DAY_OF_MONTH)) == c.getHolidays().get(h).getDate()) {
+                                gridXitem.setHasHolidays(true);
+                            }
+                        }
+                    }
+                }
 
                 gridItems.add(gridXitem);
                 cellTime.add(Calendar.DATE, 1);
@@ -134,22 +149,5 @@ public class GridItemRow<T extends IGridItem> {
 
     public String getPhotoUrl() {
         return photoUrl;
-    }
-
-    /**
-     * Compare two dates, and check if they are the same.
-     * Only checks year, month, day.
-     *
-     * @return TRUE if the dates are the same.
-     */
-    public static boolean compareDates(Calendar left, Calendar right) {
-        if (left.get(Calendar.YEAR) != right.get(Calendar.YEAR))
-            return false;
-        if (left.get(Calendar.MONTH) != right.get(Calendar.MONTH))
-            return false;
-        if (left.get(Calendar.DAY_OF_MONTH) != right.get(Calendar.DAY_OF_MONTH))
-            return false;
-
-        return true;
     }
 }

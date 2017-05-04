@@ -20,6 +20,7 @@ import co.techmagic.hr.domain.interactor.employee.GetCalendar;
 import co.techmagic.hr.domain.interactor.employee.GetEmployeesByDepartment;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
+import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
@@ -36,6 +37,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
 
+    private AllTimeOffs allTimeOffs;
+
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
@@ -44,6 +47,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getAllIllnesses = new GetAllIllnesses(employeeRepository);
         getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
         getCalendar = new GetCalendar(employeeRepository);
+        allTimeOffs = new AllTimeOffs();
     }
 
 
@@ -68,7 +72,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public void performRequests() {
         performGetEmployeesByDepartmentRequest();
-        performGetCalendarRequest();
+        performGetHolidaysAtCalendarRequest();
     }
 
 
@@ -95,7 +99,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
-        view.updateTableWithDateRange(employees, dateFrom, dateTo);
+        view.updateTableWithDateRange(employees, allTimeOffs, dateFrom, dateTo);
     }
 
 
@@ -152,12 +156,12 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             view.showNoResults();
         } else {
             employees = result;
-            view.updateTableWithDateRange(employees, dateFrom, dateTo);
+            view.updateTableWithDateRange(employees, allTimeOffs, dateFrom, dateTo);
         }
     }
 
 
-    private void performGetCalendarRequest() {
+    private void performGetHolidaysAtCalendarRequest() {
         view.showProgress();
 
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
@@ -166,7 +170,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             public void onNext(List<CalendarInfo> response) {
                 super.onNext(response);
                 view.hideProgress();
-                view.updateCalendarInfo(response);
+
+                allTimeOffs.setCalendarInfo(response);
+                // TODO should be called after all requests only
+                view.updateTableWithDateRange(employees, allTimeOffs, dateFrom, dateTo);
             }
 
             @Override

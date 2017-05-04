@@ -118,4 +118,23 @@ public class DateUtil {
 
         return from.get(Calendar.YEAR) <= to.get(Calendar.YEAR);
     }
+
+
+    /**
+     * Compare two dates, and check if they are the same.
+     * Only checks year, month, day.
+     *
+     * @return TRUE if the dates are the same.
+     */
+
+    public static boolean compareDates(Calendar left, Calendar right) {
+        if (left.get(Calendar.YEAR) != right.get(Calendar.YEAR))
+            return false;
+        if (left.get(Calendar.MONTH) != right.get(Calendar.MONTH))
+            return false;
+        if (left.get(Calendar.DAY_OF_MONTH) != right.get(Calendar.DAY_OF_MONTH))
+            return false;
+
+        return true;
+    }
 }

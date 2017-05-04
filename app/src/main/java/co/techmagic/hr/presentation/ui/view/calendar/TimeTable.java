@@ -21,7 +21,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
+import co.techmagic.hr.data.entity.Holiday;
+import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridYitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
@@ -96,7 +99,7 @@ public class TimeTable extends FrameLayout {
      * @param items the items to be displayed.
      */
 
-    public <T extends IGridItem> void setItemsWithDateRange(@NonNull List<T> items, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
+    public <T extends IGridItem> void setItemsWithDateRange(@NonNull List<T> items, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
         left = calFrom;
         right = calTo;
         left.setTimeInMillis(calendarToMidnightMillis(left));
@@ -140,7 +143,7 @@ public class TimeTable extends FrameLayout {
 
         List<GridItemRow> rows = new ArrayList<>();
         for (Pair<EmployeeGridYitem, List<IGridItem>> pair : pairs) {
-            GridItemRow gridRow = new GridItemRow(pair.first, new TimeRange(left, right), pair.second);
+            GridItemRow gridRow = new GridItemRow(pair.first, new TimeRange(left, right), pair.second, allTimeOffs);
             rows.add(gridRow);
         }
 
@@ -251,6 +254,19 @@ public class TimeTable extends FrameLayout {
         this.left = left;
         this.right = right;
         this.timeRange = new TimeRange(left, right);
+    }
+
+
+    public void displayHolidays(List<CalendarInfo> calendarInfo) {
+        List<Holiday> allHolidays = new ArrayList<>();
+        for (CalendarInfo c: calendarInfo) {
+            final List<Holiday> holidays = c.getHolidays();
+            if (holidays != null && !holidays.isEmpty()) {
+                allHolidays.addAll(holidays);
+            }
+        }
+
+
     }
 
 

@@ -6,6 +6,12 @@ import java.util.List;
 
 public class CalendarInfo {
 
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("year")
+    private String year;
+
     @SerializedName("holidays")
     private List<Holiday> holidays;
 
@@ -18,5 +24,13 @@ public class CalendarInfo {
 
     public boolean isCurrent() {
         return isCurrent;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getYear() {
+        return year;
     }
 }

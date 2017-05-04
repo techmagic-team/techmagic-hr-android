@@ -22,6 +22,7 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
+import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.OnDisplaySelectedDateListener;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
@@ -86,10 +87,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     protected CalendarViewImpl initView() {
         return new CalendarViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
-            public <T extends IGridItem> void updateTableWithDateRange(@NonNull List<T> items, @NonNull Calendar from, @NonNull Calendar to) {
+            public <T extends IGridItem> void updateTableWithDateRange(@NonNull List<T> items, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(items, from, to);
+                timeTable.setItemsWithDateRange(items, allTimeOffs, from, to);
             }
 
             @Override
@@ -119,8 +120,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             }
 
             @Override
-            public void updateCalendarInfo(@NonNull List<CalendarInfo> calendar) {
-                timeTable.setGridItems(calendar);
+            public void updateHolidaysAtCalendar(@NonNull List<CalendarInfo> calendar) {
+               // timeTable.displayHolidays(calendar);
             }
 
             @Override

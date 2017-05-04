@@ -1,7 +1,5 @@
 package co.techmagic.hr.presentation.ui.adapter.calendar;
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -18,6 +16,11 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     private final int row;
     private final int column;
     private boolean isStart, isToday, isWeekend;
+    private boolean hasHolidays;
+    private boolean vacation;
+    private boolean dayOff;
+    private boolean illness;
+    private boolean requested;
 
 
     public GridXitem(int row, int column) {
@@ -39,45 +42,22 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        // todo
-        if (model == null) {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
-            return;
+        if (hasHolidays()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
+        } else if (hasVacation()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
+        } else if (hasDayOff()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
+        } else if (hasIllness()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
+        } else if (hasRequested()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
+        } else if (isWeekend()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
         }
-
-        final Context c = holder.itemView.getContext();
-
-        if (model.isHoliday()) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorHoliday));
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
-        }
-
-        if (model.isVacation()) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorVacation));
-        } else {
+        else {
             holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
-
-        if (model.isDayOff()) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorDayOff));
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
-        }
-
-        if (model.isIllness()) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorIllness));
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
-        }
-
-        if (model.isRequested()) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(c, R.color.colorRequested));
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
-        }
-
-       // holder.itemView.setBackgroundResource(isToday ? R.drawable.item_today_bg : isWeekend ? R.drawable.item_weekend_bg : R.drawable.item_bg);
     }
 
 
@@ -131,7 +111,7 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     }
 
 
-    public boolean getIsWeekend() {
+    public boolean isWeekend() {
         return isWeekend;
     }
 
@@ -148,6 +128,56 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
 
     public boolean isEmpty() {
         return model == null;
+    }
+
+
+    public boolean hasHolidays() {
+        return hasHolidays;
+    }
+
+
+    public boolean hasVacation() {
+        return vacation;
+    }
+
+
+    public void setVacation(boolean vacation) {
+        this.vacation = vacation;
+    }
+
+
+    public boolean hasDayOff() {
+        return dayOff;
+    }
+
+
+    public void setDayOff(boolean dayOff) {
+        this.dayOff = dayOff;
+    }
+
+
+    public boolean hasIllness() {
+        return illness;
+    }
+
+
+    public void setIllness(boolean illness) {
+        this.illness = illness;
+    }
+
+
+    public boolean hasRequested() {
+        return requested;
+    }
+
+
+    public void setRequested(boolean requested) {
+        this.requested = requested;
+    }
+
+
+    public void setHasHolidays(boolean hasHolidays) {
+        this.hasHolidays = hasHolidays;
     }
 
 

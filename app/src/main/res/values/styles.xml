@@ -91,6 +91,7 @@
     <style name="ColorsLayoutCircleView">
         <item name="android:layout_width">@dimen/activity_layout_colors_circle_view_size</item>
         <item name="android:layout_height">@dimen/activity_layout_colors_circle_view_size</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginRight">@dimen/activity_layout_colors_circle_margin_right</item>
     </style>
 
