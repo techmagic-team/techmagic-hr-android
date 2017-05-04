@@ -10,15 +10,15 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHeaderItem.ViewHolder> implements IWeekDayItem {
 
     private Calendar time;
     private String month;
-    private String dayAndYear;
+    private String dayNumber;
 
 
     public WeekDayHeaderItem(Calendar time) {
@@ -30,10 +30,7 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
        // String weekNumber = (isMonday ? "Wk." + Integer.toString(this.time.get(Calendar.WEEK_OF_YEAR)) : "") + "\n";
 
         month = getMonthString();
-       // month += getDateString();
-        dayAndYear = getDayString();
-        dayAndYear += " " + getDateString() + "\n";
-        dayAndYear += getYearString();
+        dayNumber = getDateString();
     }
 
 
@@ -41,9 +38,9 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        holder.tvMonthAndDate.setText(month);
-        holder.tvDay.setText(dayAndYear);
-        holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), isToday() ? R.drawable.item_today_bg : R.drawable.item_guide_bg));
+        holder.tvMonth.setText(month);
+        holder.tvDay.setText(dayNumber);
+        holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), DateUtil.isToday(time) ? R.drawable.item_today_bg : R.drawable.item_guide_bg));
     }
 
 
@@ -51,7 +48,7 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     public void unbindView(ViewHolder holder) {
         super.unbindView(holder);
 
-        holder.tvMonthAndDate.setText(null);
+        holder.tvMonth.setText(null);
         holder.tvDay.setText(null);
     }
 
@@ -65,18 +62,6 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     @Override
     public String getDateString() {
         return Integer.toString(time.get(Calendar.DAY_OF_MONTH));
-    }
-
-
-    @Override
-    public String getYearString() {
-        return Integer.toString(time.get(Calendar.YEAR));
-    }
-
-
-    @Override
-    public String getDayString() {
-        return time.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()).toUpperCase();
     }
 
 
@@ -104,27 +89,14 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
     }
 
 
-    private boolean isToday() {
-        Calendar now = Calendar.getInstance();
-        if (time.get(Calendar.YEAR) != now.get(Calendar.YEAR))
-            return false;
-        if (time.get(Calendar.MONTH) != now.get(Calendar.MONTH))
-            return false;
-        if (time.get(Calendar.DAY_OF_MONTH) != now.get(Calendar.DAY_OF_MONTH))
-            return false;
-
-        return true;
-    }
-
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvMonthAndDate;
+        TextView tvMonth;
         TextView tvDay;
 
         public ViewHolder(View view) {
             super(view);
-            tvMonthAndDate = (TextView) view.findViewById(R.id.tvMonthAndDate);
+            tvMonth = (TextView) view.findViewById(R.id.tvMonth);
             tvDay = (TextView) view.findViewById(R.id.tvDay);
         }
     }

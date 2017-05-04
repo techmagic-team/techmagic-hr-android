@@ -5,8 +5,4 @@ public interface IWeekDayItem {
     String getMonthString();
 
     String getDateString();
-
-    String getYearString();
-
-    String getDayString();
 }

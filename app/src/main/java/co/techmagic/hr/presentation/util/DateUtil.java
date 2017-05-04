@@ -120,6 +120,23 @@ public class DateUtil {
     }
 
 
+    public static boolean isToday(@Nullable Calendar time) {
+        if (time == null) {
+            return false;
+        }
+
+        Calendar now = Calendar.getInstance();
+        if (time.get(Calendar.YEAR) != now.get(Calendar.YEAR))
+            return false;
+        if (time.get(Calendar.MONTH) != now.get(Calendar.MONTH))
+            return false;
+        if (time.get(Calendar.DAY_OF_MONTH) != now.get(Calendar.DAY_OF_MONTH))
+            return false;
+
+        return true;
+    }
+
+
     /**
      * Compare two dates, and check if they are the same.
      * Only checks year, month, day.
@@ -127,7 +144,11 @@ public class DateUtil {
      * @return TRUE if the dates are the same.
      */
 
-    public static boolean compareDates(Calendar left, Calendar right) {
+    public static boolean compareDates(@Nullable Calendar left, @Nullable Calendar right) {
+        if (left == null || right == null) {
+            return false;
+        }
+
         if (left.get(Calendar.YEAR) != right.get(Calendar.YEAR))
             return false;
         if (left.get(Calendar.MONTH) != right.get(Calendar.MONTH))
