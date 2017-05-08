@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
 
@@ -140,6 +142,49 @@ public class Docs implements Parcelable, IGridItem {
         dest.writeString(trialPeriodEnds);
     }
 
+
+    @Override
+    public void setEmployees(List<Docs> employees) {
+
+    }
+
+    @Override
+    public List<Docs> getEmployees() {
+        return null;
+    }
+
+    @Override
+    public void setTimeRange(TimeRange timeRange) {
+
+    }
+
+    @Nullable
+    @Override
+    public TimeRange getTimeRange() {
+        return null;
+    }
+
+    @Override
+    public void setPersonName(String personName) {
+
+    }
+
+    @Override
+    public String getPersonName() {
+        return lastName + " " + firstName;
+    }
+
+    @Override
+    public void setPhotoUrl(String photoUrl) {
+
+    }
+
+    @Override
+    public String getPhotoUrl() {
+        return photo;
+    }
+
+
     public static final Parcelable.Creator<Docs> CREATOR = new Parcelable.Creator<Docs>() {
         @Override
         public Docs createFromParcel(Parcel in) {
@@ -242,26 +287,5 @@ public class Docs implements Parcelable, IGridItem {
 
     public String getTrialPeriodEnds() {
         return trialPeriodEnds;
-    }
-
-    @Nullable
-    @Override
-    public TimeRange getTimeRange() {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public String getPersonName() {
-        return firstName + " " + lastName;
-    }
-
-    @Override
-    public String getPhotoUrl() {
-        return photo;
     }
 }

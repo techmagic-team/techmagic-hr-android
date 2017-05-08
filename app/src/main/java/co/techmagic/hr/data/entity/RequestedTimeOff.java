@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 public class RequestedTimeOff implements Parcelable {
 
     @SerializedName("_user")
@@ -14,10 +16,10 @@ public class RequestedTimeOff implements Parcelable {
     private String companyId;
 
     @SerializedName("dateFrom")
-    private String dateFrom;
+    private Date dateFrom;
 
     @SerializedName("dateTo")
-    private String dateTo;
+    private Date dateTo;
 
     @SerializedName("isPaid")
     private boolean isPaid;
@@ -25,11 +27,14 @@ public class RequestedTimeOff implements Parcelable {
     @SerializedName("isAccepted")
     private boolean isAccepted;
 
-    public RequestedTimeOff(Parcel in) {
+
+    protected RequestedTimeOff(Parcel in) {
         userId = in.readString();
         companyId = in.readString();
-        dateFrom = in.readString();
-        dateTo = in.readString();
+        long tmpDateFrom = in.readLong();
+        dateFrom = tmpDateFrom != -1 ? new Date(tmpDateFrom) : null;
+        long tmpDateTo = in.readLong();
+        dateTo = tmpDateTo != -1 ? new Date(tmpDateTo) : null;
         isPaid = in.readByte() != 0x00;
         isAccepted = in.readByte() != 0x00;
     }
@@ -42,11 +47,11 @@ public class RequestedTimeOff implements Parcelable {
         return companyId;
     }
 
-    public String getDateFrom() {
+    public Date getDateFrom() {
         return dateFrom;
     }
 
-    public String getDateTo() {
+    public Date getDateTo() {
         return dateTo;
     }
 
@@ -67,8 +72,8 @@ public class RequestedTimeOff implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(userId);
         dest.writeString(companyId);
-        dest.writeString(dateFrom);
-        dest.writeString(dateTo);
+        dest.writeLong(dateFrom != null ? dateFrom.getTime() : -1L);
+        dest.writeLong(dateTo != null ? dateTo.getTime() : -1L);
         dest.writeByte((byte) (isPaid ? 0x01 : 0x00));
         dest.writeByte((byte) (isAccepted ? 0x01 : 0x00));
     }

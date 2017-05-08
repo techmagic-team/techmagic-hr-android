@@ -32,14 +32,14 @@ public interface IEmployeeApi {
     @POST("/v1/time-off/illness/findAll/")
     Observable<List<RequestedTimeOff>> getUserIllnesses(@Body GetIllnessRequest request);
 
-    @GET("/v1/time-off/vacations?isPaid=true")
-    Observable<List<CalendarInfo>> getAllVacations(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    @GET("/v1/time-off/vacation?isPaid=true")
+    Observable<List<RequestedTimeOff>> getAllVacations(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacations?isPaid=false")
-    Observable<List<CalendarInfo>> getAllDayOffs(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    @GET("/v1/time-off/vacation?isPaid=false")
+    Observable<List<RequestedTimeOff>> getAllDayOffs(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/time-off/illness")
-    Observable<List<CalendarInfo>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    Observable<List<RequestedTimeOff>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/users")
     Observable<Employee> getAllEmployeesByDepartment(@Query("my-team") boolean isMyTeam, @Query("_department") String departmentId);

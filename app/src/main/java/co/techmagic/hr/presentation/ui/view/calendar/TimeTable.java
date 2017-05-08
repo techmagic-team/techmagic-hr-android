@@ -22,6 +22,7 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.CalendarInfo;
+import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.data.entity.Holiday;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
@@ -96,15 +97,16 @@ public class TimeTable extends FrameLayout {
     /**
      * Sets the items to be displayed.
      *
-     * @param items the items to be displayed.
+     * @param data the items to be displayed.
      */
 
-    public <T extends IGridItem> void setItemsWithDateRange(@NonNull List<T> items, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
+    public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
         left = calFrom;
         right = calTo;
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
         setTimeRange(left, right);
+        data.setTimeRange(new TimeRange(left, right)); // todo
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -122,8 +124,8 @@ public class TimeTable extends FrameLayout {
 
         List<Pair<EmployeeGridYitem, List<IGridItem>>> pairs = new ArrayList<>();
 
-        for (int i = 0; i < items.size(); i++) {
-            T item = items.get(i);
+        for (int i = 0; i < data.getEmployees().size(); i++) {
+            Docs item = data.getEmployees().get(i);
             Pair<EmployeeGridYitem, List<IGridItem>> pair = null;
             for (Pair<EmployeeGridYitem, List<IGridItem>> p : pairs) {
                 if (p.first.getName() != null && p.first.getName().equals(item.getPersonName())) {
@@ -155,13 +157,13 @@ public class TimeTable extends FrameLayout {
             allGridItems.addAll(l);
 
             for (int i = 0; i < l.size() / columns; i++)
-                employeeItems.add(new GridYitem(r.getPersonName(), r.getPhotoUrl())); // only write the tvItemY once.
+                employeeItems.add(new GridYitem(r.getPersonName(), r.getPhotoUrl()));
         }
 
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems);
         requestLayout();
-        center();
+       // center(); // todo scroll to current month
     }
 
 

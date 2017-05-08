@@ -86,7 +86,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<CalendarInfo>> getAllVacations(TimeOffAllRequest request) {
+    public Observable<List<RequestedTimeOff>> getAllVacations(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllVacations(request.getDateFrom(), request.getDateTo());
         }
@@ -96,7 +96,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<CalendarInfo>> getAllDayOffs(TimeOffAllRequest request) {
+    public Observable<List<RequestedTimeOff>> getAllDayOffs(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllDayOffs(request.getDateFrom(), request.getDateFrom());
         }
@@ -106,7 +106,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<CalendarInfo>> getAllIllnesses(TimeOffAllRequest request) {
+    public Observable<List<RequestedTimeOff>> getAllIllnesses(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getAllIllnesses(request.getDateFrom(), request.getDateTo());
         }

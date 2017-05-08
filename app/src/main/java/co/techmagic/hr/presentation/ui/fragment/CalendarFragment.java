@@ -13,19 +13,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.OnDisplaySelectedDateListener;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements OnDisplaySelectedDateListener {
@@ -71,6 +69,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         menu.clear();
         actionBarChangeListener.showBackButton();
         actionBarChangeListener.setActionBarTitle(getString(R.string.tm_hr_calendar_fragment_title));
+        inflater.inflate(R.menu.menu_calendar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -87,10 +86,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     protected CalendarViewImpl initView() {
         return new CalendarViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
-            public <T extends IGridItem> void updateTableWithDateRange(@NonNull List<T> items, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
+            public <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(items, allTimeOffs, from, to);
+                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to);
             }
 
             @Override
@@ -117,16 +116,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public void showNoResults() {
                 timeTable.setVisibility(View.GONE);
                 tvNoResults.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void updateHolidaysAtCalendar(@NonNull List<CalendarInfo> calendar) {
-               // timeTable.displayHolidays(calendar);
-            }
-
-            @Override
-            public void onCalendarInfoError(int resId) {
-
             }
         };
     }

@@ -77,7 +77,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                 selectedDateListener.displaySelectedFromDate(fmtDate, c, null);
             } else {
                 toDate = c;
-                if (DateUtil.isValidDateRange(fromDate, toDate)) {
+                if (DateUtil.isValidSelectedDatesRange(fromDate, toDate)) {
                     selectedDateListener.displaySelectedToDate(fmtDate, null, c);
                 } else {
                     selectedDateListener.invalidDateRangeSelected(R.string.tm_hr_calendar_fragment_message_alert_dialog_invalid_date);

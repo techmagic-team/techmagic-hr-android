@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.presentation.util.DateUtil;
 
 public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHeaderItem.ViewHolder> implements IWeekDayItem {
 
@@ -25,10 +24,6 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
         this.time = Calendar.getInstance();
         this.time.setTimeInMillis(time.getTimeInMillis());
 
-       // boolean isFirstDayOfMonth = time.get(Calendar.DAY_OF_MONTH) == 1;
-       // boolean isMonday = this.time.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY;
-       // String weekNumber = (isMonday ? "Wk." + Integer.toString(this.time.get(Calendar.WEEK_OF_YEAR)) : "") + "\n";
-
         month = getMonthString();
         dayNumber = getDateString();
     }
@@ -40,7 +35,7 @@ public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHe
 
         holder.tvMonth.setText(month);
         holder.tvDay.setText(dayNumber);
-        holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), DateUtil.isToday(time) ? R.drawable.item_today_bg : R.drawable.item_guide_bg));
+        holder.itemView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.item_guide_bg));
     }
 
 

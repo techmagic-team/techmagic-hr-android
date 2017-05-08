@@ -2,10 +2,19 @@ package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 import android.support.annotation.Nullable;
 
+import java.util.List;
+
+import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
 
 
 public interface IGridItem {
+
+    void setEmployees(List<Docs> employees);
+
+    List<Docs> getEmployees();
+
+    void setTimeRange(TimeRange timeRange);
     /**
      * If the TimeRange is null, your item will NOT be displayed.
      *
@@ -14,12 +23,7 @@ public interface IGridItem {
     @Nullable
     TimeRange getTimeRange();
 
-    /**
-     * Get the text that is displayed in the tile.
-     *
-     * @return the text that is displayed in the tile
-     */
-    String getName();
+    void setPersonName(String personName);
 
     /**
      * Get the text that is displayed on the Y axis.
@@ -27,6 +31,8 @@ public interface IGridItem {
      * @return the text that is displayed on the Y axis
      */
     String getPersonName();
+
+    void setPhotoUrl(String photoUrl);
 
     /**
      * Get the photo url that is displayed on the Y axis.

@@ -15,12 +15,12 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     private final IGuideXItem model;
     private final int row;
     private final int column;
-    private boolean isStart, isToday, isWeekend;
+    private boolean isStart, isWeekend;
     private boolean hasHolidays;
-    private boolean vacation;
-    private boolean dayOff;
-    private boolean illness;
-    private boolean requested;
+    private boolean hasVacation;
+    private boolean hasDayOff;
+    private boolean hasIllness;
+    private boolean hasRequested;
 
 
     public GridXitem(int row, int column) {
@@ -54,8 +54,7 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
             holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
         } else if (isWeekend()) {
             holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
-        }
-        else {
+        } else {
             holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
     }
@@ -101,16 +100,6 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     }
 
 
-    public boolean isToday() {
-        return isToday;
-    }
-
-
-    public void setIsToday(boolean today) {
-        isToday = today;
-    }
-
-
     public boolean isWeekend() {
         return isWeekend;
     }
@@ -137,42 +126,42 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
 
 
     public boolean hasVacation() {
-        return vacation;
+        return hasVacation;
     }
 
 
-    public void setVacation(boolean vacation) {
-        this.vacation = vacation;
+    public void setHasVacation(boolean hasVacation) {
+        this.hasVacation = hasVacation;
     }
 
 
     public boolean hasDayOff() {
-        return dayOff;
+        return hasDayOff;
     }
 
 
-    public void setDayOff(boolean dayOff) {
-        this.dayOff = dayOff;
+    public void setHasDayOff(boolean hasDayOff) {
+        this.hasDayOff = hasDayOff;
     }
 
 
     public boolean hasIllness() {
-        return illness;
+        return hasIllness;
     }
 
 
-    public void setIllness(boolean illness) {
-        this.illness = illness;
+    public void setHasIllness(boolean hasIllness) {
+        this.hasIllness = hasIllness;
     }
 
 
     public boolean hasRequested() {
-        return requested;
+        return hasRequested;
     }
 
 
-    public void setRequested(boolean requested) {
-        this.requested = requested;
+    public void setHasRequested(boolean hasRequested) {
+        this.hasRequested = hasRequested;
     }
 
 

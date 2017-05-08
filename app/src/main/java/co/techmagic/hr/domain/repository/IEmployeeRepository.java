@@ -26,11 +26,11 @@ public interface IEmployeeRepository {
 
     Observable<List<RequestedTimeOff>> getUserIllnesses(GetIllnessRequest request);
 
-    Observable<List<CalendarInfo>> getAllVacations(TimeOffAllRequest request);
+    Observable<List<RequestedTimeOff>> getAllVacations(TimeOffAllRequest request);
 
-    Observable<List<CalendarInfo>> getAllDayOffs(TimeOffAllRequest request);
+    Observable<List<RequestedTimeOff>> getAllDayOffs(TimeOffAllRequest request);
 
-    Observable<List<CalendarInfo>> getAllIllnesses(TimeOffAllRequest request);
+    Observable<List<RequestedTimeOff>> getAllIllnesses(TimeOffAllRequest request);
 
     Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 

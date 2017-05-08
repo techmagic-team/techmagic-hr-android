@@ -37,6 +37,26 @@ public class DateUtil {
     }
 
 
+    public static Date getFormattedFullDate(@Nullable Date inputData) {
+        Date formattedDate = null;
+
+        if (inputData == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            String date = outputFullDateFormat.format(inputData);
+            formattedDate = inputFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+
     public static String getFormattedMonthAndDay(@Nullable String inputData) {
         String formattedDate = null;
 
@@ -111,12 +131,21 @@ public class DateUtil {
     }
 
 
-    public static boolean isValidDateRange(@Nullable Calendar from, @Nullable Calendar to) {
+    public static boolean isValidSelectedDatesRange(@Nullable Calendar from, @Nullable Calendar to) {
         if (from == null || to == null) {
             return false;
         }
 
         return from.get(Calendar.YEAR) <= to.get(Calendar.YEAR);
+    }
+
+
+    public static boolean isValidDatesRange(@Nullable Date start, @Nullable Date end, @Nullable Date inputDate) {
+        if (start == null || end == null || inputDate == null) {
+            return false;
+        }
+
+        return inputDate.after(start) && inputDate.before(end);
     }
 
 
