@@ -8,7 +8,7 @@ import co.techmagic.hr.data.entity.RequestedTimeOff;
 
 /**
  * Holds all time offs which are ready to display at calendar.
-**/
+ **/
 
 public class AllTimeOffs implements IGuideXItem {
 
@@ -17,6 +17,7 @@ public class AllTimeOffs implements IGuideXItem {
     private List<RequestedTimeOff> vacations;
     private List<RequestedTimeOff> illnesses;
     private List<RequestedTimeOff> requested;
+    private boolean vacation;
 
 
     public AllTimeOffs() {
@@ -49,6 +50,12 @@ public class AllTimeOffs implements IGuideXItem {
 
 
     @Override
+    public boolean hasDayOffs() {
+        return dayOffs != null && !dayOffs.isEmpty();
+    }
+
+
+    @Override
     public void setVacations(List<RequestedTimeOff> vacations) {
         this.vacations = vacations;
     }
@@ -57,6 +64,11 @@ public class AllTimeOffs implements IGuideXItem {
     @Override
     public List<RequestedTimeOff> getVacations() {
         return vacations;
+    }
+
+    @Override
+    public boolean hasVacation() {
+        return vacation;
     }
 
 
@@ -71,6 +83,11 @@ public class AllTimeOffs implements IGuideXItem {
         return illnesses;
     }
 
+    @Override
+    public boolean hasIllnesses() {
+        return illnesses != null && !illnesses.isEmpty();
+    }
+
 
     @Override
     public void setRequested(List<RequestedTimeOff> requested) {
@@ -81,5 +98,16 @@ public class AllTimeOffs implements IGuideXItem {
     @Override
     public List<RequestedTimeOff> getRequested() {
         return requested;
+    }
+
+
+    @Override
+    public boolean hasRequested() {
+        return requested != null && !requested.isEmpty();
+    }
+
+
+    public void setVacation(boolean vacation) {
+        this.vacation = vacation;
     }
 }

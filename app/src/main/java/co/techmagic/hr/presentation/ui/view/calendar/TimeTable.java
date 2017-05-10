@@ -21,10 +21,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
-import co.techmagic.hr.data.entity.Holiday;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridYitem;
@@ -106,7 +104,6 @@ public class TimeTable extends FrameLayout {
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
         setTimeRange(left, right);
-        data.setTimeRange(new TimeRange(left, right)); // todo
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -136,6 +133,8 @@ public class TimeTable extends FrameLayout {
 
             if (pair == null)
                 pair = new Pair<>(new EmployeeGridYitem(item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
+
+            item.setTimeRange(new TimeRange(left, right)); // todo
 
             pair.second.add(item);
 
@@ -219,7 +218,7 @@ public class TimeTable extends FrameLayout {
                 final int firstRow = layoutMgr.getFirstVisibleRow();
                 final int firstColumn = layoutMgr.getFirstVisibleColumn();
 
-                View firstVisibleItem = layoutMgr.getChildAt(0);
+                View firstVisibleItem = layoutMgr.getChildAt(1);
                 if (firstVisibleItem != null) {
                     int decoratedY = layoutMgr.getDecoratedBottom(firstVisibleItem);
                     int decoratedX = layoutMgr.getDecoratedLeft(firstVisibleItem);
@@ -256,19 +255,6 @@ public class TimeTable extends FrameLayout {
         this.left = left;
         this.right = right;
         this.timeRange = new TimeRange(left, right);
-    }
-
-
-    public void displayHolidays(List<CalendarInfo> calendarInfo) {
-        List<Holiday> allHolidays = new ArrayList<>();
-        for (CalendarInfo c: calendarInfo) {
-            final List<Holiday> holidays = c.getHolidays();
-            if (holidays != null && !holidays.isEmpty()) {
-                allHolidays.addAll(holidays);
-            }
-        }
-
-
     }
 
 

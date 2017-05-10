@@ -82,6 +82,8 @@ public class Docs implements Parcelable, IGridItem {
     @SerializedName("trialPeriodEnds")
     private String trialPeriodEnds;
 
+    private TimeRange timeRange;
+
     public Docs() {}
 
     public Docs(Parcel in) {
@@ -155,13 +157,13 @@ public class Docs implements Parcelable, IGridItem {
 
     @Override
     public void setTimeRange(TimeRange timeRange) {
-
+        this.timeRange = timeRange;
     }
 
     @Nullable
     @Override
     public TimeRange getTimeRange() {
-        return null;
+        return timeRange;
     }
 
     @Override

@@ -42,18 +42,29 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        if (hasHolidays()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
-        } else if (hasVacation()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
-        } else if (hasDayOff()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
-        } else if (hasIllness()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
-        } else if (hasRequested()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
-        } else if (isWeekend()) {
+        // default color for item
+        holder.itemView.setBackgroundResource(R.drawable.item_bg);
+
+        if (isWeekend()) {
             holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+        }
+
+        if (hasHolidays) {
+            holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
+        }
+
+        if (model == null) {
+            return;
+        }
+
+        if (model.hasVacation()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
+        } else if (model.hasDayOffs()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
+        } else if (model.hasIllnesses()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
+        } else if (model.hasRequested()) {
+            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
         } else {
             holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }

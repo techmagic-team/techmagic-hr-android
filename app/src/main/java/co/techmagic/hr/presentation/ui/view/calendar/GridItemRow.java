@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
-import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
@@ -26,12 +25,14 @@ public class GridItemRow<T extends IGridItem> {
     private final String photoUrl;
     private final List<GridXitem> items;
 
+
     public GridItemRow(final EmployeeGridYitem employeeGridYitem, final TimeRange timeRange, final List<T> containedItems, final AllTimeOffs allTimeOffs) {
         this.timeRange = timeRange; // We need to keep track of the time range of this row so we can display the current day
         personName = employeeGridYitem.getName();
         photoUrl = employeeGridYitem.getPhotoUrl();
         items = generateGridItems(fitItems(containedItems), timeRange, allTimeOffs);
     }
+
 
     /**
      * Convert a list of potentially overlapping items into a list of lists containing IGridItems that don't overlap.
@@ -105,10 +106,10 @@ public class GridItemRow<T extends IGridItem> {
                 if (gridXitem == null)
                     gridXitem = new GridXitem(x, y);
 
-                else if (!gridItems.isEmpty() && gridItems.size() > 0) {
+                /*else if (!gridItems.isEmpty() && gridItems.size() > 0) {
                     GridXitem lastItem = gridItems.get((y * columns) + x - 1);
                     gridXitem.setStart(lastItem.isEmpty() || !gridXitem.getModel().equals(lastItem.getModel()));
-                }
+                }*/
 
                 if (cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                     gridXitem.setIsWeekend(true);
@@ -127,9 +128,9 @@ public class GridItemRow<T extends IGridItem> {
                     }
                 }
 
-                 /* Check for day off */
+                 /* Check for day off *//*
 
-                if (allTimeOffs.getDayOffs() != null) {
+                /*if (allTimeOffs.getDayOffs() != null) {
                     for (RequestedTimeOff dayOff : allTimeOffs.getDayOffs()) {
                         if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom(), dayOff.getDateTo(), cellTime.getTime())) {
                             gridXitem.setHasDayOff(true);
@@ -137,7 +138,7 @@ public class GridItemRow<T extends IGridItem> {
                     }
                 }
 
-                /* Check for vacation */
+                *//* Check for vacation *//*
 
                 if (allTimeOffs.getVacations() != null) {
                     for (RequestedTimeOff vacation : allTimeOffs.getVacations()) {
@@ -147,7 +148,7 @@ public class GridItemRow<T extends IGridItem> {
                     }
                 }
 
-                /* Check for illness */
+                *//* Check for illness *//*
 
                 if (allTimeOffs.getIllnesses() != null) {
                     for (RequestedTimeOff illness : allTimeOffs.getIllnesses()) {
@@ -155,7 +156,7 @@ public class GridItemRow<T extends IGridItem> {
                             gridXitem.setHasIllness(true);
                         }
                     }
-                }
+                }*/
 
                 gridItems.add(gridXitem);
                 cellTime.add(Calendar.DATE, 1);

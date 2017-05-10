@@ -15,15 +15,23 @@ public interface IGuideXItem {
 
     List<RequestedTimeOff> getDayOffs();
 
+    boolean hasDayOffs();
+
     void setVacations(List<RequestedTimeOff> vacations);
 
     List<RequestedTimeOff> getVacations();
+
+    boolean hasVacation();
 
     void setIllnesses(List<RequestedTimeOff> illnesses);
 
     List<RequestedTimeOff> getIllnesses();
 
+    boolean hasIllnesses();
+
     void setRequested(List<RequestedTimeOff> requested);
 
     List<RequestedTimeOff> getRequested();
+
+    boolean hasRequested();
 }

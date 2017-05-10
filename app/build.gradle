@@ -114,10 +114,11 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 }
 
+/*
 def props = new Properties()
 props.load(new FileInputStream(rootProject.file("release.properties")))
 
 android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
 android.signingConfigs.release.storePassword props.keyStorePassword
 android.signingConfigs.release.keyAlias props.keyAlias
-android.signingConfigs.release.keyPassword props.keyAliasPassword
+android.signingConfigs.release.keyPassword props.keyAliasPassword*/
