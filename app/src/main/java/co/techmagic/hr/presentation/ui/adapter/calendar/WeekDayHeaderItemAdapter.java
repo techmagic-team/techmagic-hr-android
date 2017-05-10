@@ -13,14 +13,14 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 
-public class WeekDayHeaderItem extends AbstractItem<WeekDayHeaderItem, WeekDayHeaderItem.ViewHolder> implements IWeekDayItem {
+public class WeekDayHeaderItemAdapter extends AbstractItem<WeekDayHeaderItemAdapter, WeekDayHeaderItemAdapter.ViewHolder> implements IWeekDayItem {
 
     private Calendar time;
     private String month;
     private String dayNumber;
 
 
-    public WeekDayHeaderItem(Calendar time) {
+    public WeekDayHeaderItemAdapter(Calendar time) {
         this.time = Calendar.getInstance();
         this.time.setTimeInMillis(time.getTimeInMillis());
 

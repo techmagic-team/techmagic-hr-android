@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,7 +25,6 @@ import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
-import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
@@ -43,12 +41,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
     private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
-    public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
-    public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
-    public static final String CALENDAR_FROM_KEY = "calendar_from_key";
-    public static final String CALENDAR_TO_KEY = "calendar_to_key";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
+    public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
     public static final int ITEMS_COUNT = 10;
 
     @BindView(R.id.flFilters)
@@ -190,6 +185,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 showLogOutDialog();
                 return true;
 
+            case R.id.action_calendar_filters:
+                startCalendarFiltersScreen();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -208,6 +207,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0, true);
+
+        } else if (requestCode == CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE) {
+
         }
     }
 
@@ -251,19 +253,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public void addCalendarFragment() {
         CalendarFragment fragment = CalendarFragment.newInstance();
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
-    }
-
-    @Override
-    public void addDatePickerFragment(@NonNull CalendarFragment targetFragment, @Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker) {
-        DatePickerFragment fragment = DatePickerFragment.newInstance();
-        Bundle b = new Bundle();
-
-        b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
-        b.putSerializable(CALENDAR_FROM_KEY, from);
-        b.putSerializable(CALENDAR_TO_KEY, to);
-        fragment.setArguments(b);
-        fragment.setTargetFragment(targetFragment, 1);
-        fragment.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
     }
 
 
@@ -322,6 +311,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
+
+    private void startCalendarFiltersScreen() {
+        Intent i = new Intent(this, CalendarFiltersActivity.class);
+       // i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
+        startActivityForResult(i, CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
     }
 
 

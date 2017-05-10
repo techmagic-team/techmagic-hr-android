@@ -9,7 +9,7 @@ import java.util.Locale;
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
-import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.util.DateUtil;
 
@@ -21,15 +21,13 @@ import co.techmagic.hr.presentation.util.DateUtil;
 public class GridItemRow<T extends IGridItem> {
 
     private final TimeRange timeRange;
-    private final String personName;
-    private final String photoUrl;
-    private final List<GridXitem> items;
+    private final EmployeeGridYitem employeeGridYitem;
+    private final List<GridCellItemAdapter> items;
 
 
     public GridItemRow(final EmployeeGridYitem employeeGridYitem, final TimeRange timeRange, final List<T> containedItems, final AllTimeOffs allTimeOffs) {
         this.timeRange = timeRange; // We need to keep track of the time range of this row so we can display the current day
-        personName = employeeGridYitem.getName();
-        photoUrl = employeeGridYitem.getPhotoUrl();
+        this.employeeGridYitem = employeeGridYitem;
         items = generateGridItems(fitItems(containedItems), timeRange, allTimeOffs);
     }
 
@@ -82,10 +80,10 @@ public class GridItemRow<T extends IGridItem> {
      * @return the generated list of GridItems ready to display in the RecyclerView.
      */
 
-    private static <T extends IGridItem> List<GridXitem> generateGridItems(final List<List<T>> itemsList, final TimeRange timeRange, final AllTimeOffs allTimeOffs) {
+    private static <T extends IGridItem> List<GridCellItemAdapter> generateGridItems(final List<List<T>> itemsList, final TimeRange timeRange, final AllTimeOffs allTimeOffs) {
         final int rows = itemsList.size();
         final int columns = timeRange.getColumnCount();
-        List<GridXitem> gridItems = new ArrayList<>();
+        List<GridCellItemAdapter> gridItems = new ArrayList<>();
 
         for (int y = 0; y < rows; y++) {
             Calendar cellTime = Calendar.getInstance();
@@ -93,18 +91,18 @@ public class GridItemRow<T extends IGridItem> {
             cellTime.add(Calendar.DATE, 1);
 
             for (int x = 0; x < columns; x++) {
-                GridXitem gridXitem = null;
+                GridCellItemAdapter gridCellItemAdapter = null;
                 for (T item : itemsList.get(y)) {
                     if (item.getTimeRange() == null)
                         continue; // Skip any items that have null start or end
                     if (item.getTimeRange().isWithin(cellTime)) {
-                        gridXitem = new GridXitem(allTimeOffs, x, y);
+                        gridCellItemAdapter = new GridCellItemAdapter(allTimeOffs, x, y);
                         break;
                     }
                 }
 
-                if (gridXitem == null)
-                    gridXitem = new GridXitem(x, y);
+                if (gridCellItemAdapter == null)
+                    gridCellItemAdapter = new GridCellItemAdapter(x, y);
 
                 /*else if (!gridItems.isEmpty() && gridItems.size() > 0) {
                     GridXitem lastItem = gridItems.get((y * columns) + x - 1);
@@ -112,7 +110,7 @@ public class GridItemRow<T extends IGridItem> {
                 }*/
 
                 if (cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                    gridXitem.setIsWeekend(true);
+                    gridCellItemAdapter.setIsWeekend(true);
 
                 /* Check for holidays */
 
@@ -121,7 +119,7 @@ public class GridItemRow<T extends IGridItem> {
                         if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(c.getName())) {
                             for (int h = 0; h < c.getHolidays().size(); h++) {
                                 if ((cellTime.get(Calendar.DAY_OF_MONTH)) == c.getHolidays().get(h).getDate()) {
-                                    gridXitem.setHasHolidays(true);
+                                    gridCellItemAdapter.setHasHolidays(true);
                                 }
                             }
                         }
@@ -158,7 +156,7 @@ public class GridItemRow<T extends IGridItem> {
                     }
                 }*/
 
-                gridItems.add(gridXitem);
+                gridItems.add(gridCellItemAdapter);
                 cellTime.add(Calendar.DATE, 1);
             }
         }
@@ -180,17 +178,27 @@ public class GridItemRow<T extends IGridItem> {
      * @return all items for all required rows for this person.
      */
 
-    public List<GridXitem> getItems() {
+    public List<GridCellItemAdapter> getItems() {
         return items;
     }
 
 
+    public EmployeeGridYitem getEmployeeGridYitem() {
+        return employeeGridYitem;
+    }
+
+
+    public String getId() {
+        return employeeGridYitem.getId();
+    }
+
+
     public String getPersonName() {
-        return personName;
+        return employeeGridYitem.getName();
     }
 
 
     public String getPhotoUrl() {
-        return photoUrl;
+        return employeeGridYitem.getPhotoUrl();
     }
 }

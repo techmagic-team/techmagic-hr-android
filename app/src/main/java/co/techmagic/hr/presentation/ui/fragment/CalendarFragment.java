@@ -3,42 +3,34 @@ package co.techmagic.hr.presentation.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
-import co.techmagic.hr.presentation.ui.view.OnDisplaySelectedDateListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 
-public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements OnDisplaySelectedDateListener {
+public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener {
 
-    @BindView(R.id.btnFrom)
-    Button btnFrom;
-    @BindView(R.id.btnTo)
-    Button btnTo;
     @BindView(R.id.tvCalendarNoResults)
     TextView tvNoResults;
     @BindView(R.id.timeTable)
     TimeTable timeTable;
 
     private ActionBarChangeListener actionBarChangeListener;
-    private FragmentCallback fragmentCallback;
 
 
     public static CalendarFragment newInstance() {
@@ -51,7 +43,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         super.onAttach(context);
         setHasOptionsMenu(true);
         actionBarChangeListener = (ActionBarChangeListener) context;
-        fragmentCallback = (FragmentCallback) context;
     }
 
 
@@ -78,7 +69,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public void onDetach() {
         super.onDetach();
         actionBarChangeListener = null;
-        fragmentCallback = null;
     }
 
 
@@ -89,27 +79,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to);
-            }
-
-            @Override
-            public void updateSelectedFromButtonText(@NonNull String date) {
-                btnFrom.setText(date);
-            }
-
-            @Override
-            public void updateSelectedToButtonText(@NonNull String date) {
-                btnTo.setText(date);
-            }
-
-            @Override
-            public void showDatePicker(@NonNull Calendar from, @NonNull Calendar to, boolean isDateFromPicker) {
-                fragmentCallback.addDatePickerFragment(CalendarFragment.this, from, to, isDateFromPicker);
-            }
-
-            @Override
-            public void inValidDateRange(int resId) {
-                view.showSnackBarMessage(getString(resId));
+                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to, CalendarFragment.this);
             }
 
             @Override
@@ -128,39 +98,13 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     @Override
-    public void displaySelectedFromDate(@NonNull String date, @Nullable Calendar from, @Nullable Calendar to) {
-        view.updateSelectedFromButtonText(date);
-        presenter.updateCalendar(from, to);
-    }
-
-
-    @Override
-    public void displaySelectedToDate(@NonNull String date, @Nullable Calendar from, @Nullable Calendar to) {
-        view.updateSelectedToButtonText(date);
-        presenter.updateCalendar(from, to);
-    }
-
-
-    @Override
-    public void invalidDateRangeSelected(int resId) {
-        view.inValidDateRange(resId);
-    }
-
-
-    @OnClick(R.id.btnFrom)
-    public void onFromButtonClick() {
-        presenter.onFromButtonClick();
-    }
-
-
-    @OnClick(R.id.btnTo)
-    public void onToButtonClick() {
-        presenter.onToButtonClick();
+    public void onEmployeeItemClick() {
+       // fragmentCallback.addDetailsFragment();
     }
 
 
     private void initUi() {
-        presenter.setupPage();
+        presenter.setupCalendarRange();
         presenter.performRequests();
     }
 }

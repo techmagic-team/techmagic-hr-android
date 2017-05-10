@@ -24,12 +24,12 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
-import co.techmagic.hr.presentation.ui.adapter.calendar.GridXitem;
-import co.techmagic.hr.presentation.ui.adapter.calendar.GridYitem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
+import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
-import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItem;
+import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -98,7 +98,8 @@ public class TimeTable extends FrameLayout {
      * @param data the items to be displayed.
      */
 
-    public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo) {
+    public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo,
+                                                            @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
         left = calFrom;
         right = calTo;
         left.setTimeInMillis(calendarToMidnightMillis(left));
@@ -108,10 +109,10 @@ public class TimeTable extends FrameLayout {
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
         current.setTimeInMillis(calendarToMidnightMillis(left));
-        List<WeekDayHeaderItem> headerItems = new ArrayList<>();
+        List<WeekDayHeaderItemAdapter> headerItems = new ArrayList<>();
 
         while (current.getTimeInMillis() <= right.getTimeInMillis()) {
-            headerItems.add(new WeekDayHeaderItem(current));
+            headerItems.add(new WeekDayHeaderItemAdapter(current));
             current.add(Calendar.DATE, 1);
         }
 
@@ -132,9 +133,9 @@ public class TimeTable extends FrameLayout {
             }
 
             if (pair == null)
-                pair = new Pair<>(new EmployeeGridYitem(item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
+                pair = new Pair<>(new EmployeeGridYitem(item.getId(), item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
 
-            item.setTimeRange(new TimeRange(left, right)); // todo
+          //  item.setTimeRange(new TimeRange(left, right)); // todo
 
             pair.second.add(item);
 
@@ -149,18 +150,18 @@ public class TimeTable extends FrameLayout {
         }
 
 
-        List<GridXitem> allGridItems = new ArrayList<>();
-        List<GridYitem> employeeItems = new ArrayList<>();
+        List<GridCellItemAdapter> allGridItems = new ArrayList<>();
+        List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
         for (GridItemRow r : rows) {
-            List<GridXitem> l = r.getItems();
+            List<GridCellItemAdapter> l = r.getItems();
             allGridItems.addAll(l);
 
             for (int i = 0; i < l.size() / columns; i++)
-                employeeItems.add(new GridYitem(r.getPersonName(), r.getPhotoUrl()));
+                employeeItems.add(new GridEmployeeItemAdapter(r));
         }
 
         setGridItems(allGridItems);
-        setEmployeeItems(employeeItems);
+        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
        // center(); // todo scroll to current month
     }
@@ -284,7 +285,7 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public <T extends IGuideYItem> void setEmployeeItems(List<T> items) {
+    public <T extends IGuideYItem> void setEmployeeItems(List<T> items, GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
         if (guideYadapter == null) {
             guideYadapter = new FastItemAdapter();
             guideYadapter.setHasStableIds(true);

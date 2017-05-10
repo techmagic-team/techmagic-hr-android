@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
@@ -24,7 +23,6 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.ReadyToDisplayXitem;
-import co.techmagic.hr.presentation.util.DateUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
@@ -66,7 +64,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    public void setupPage() {
+    public void setupCalendarRange() {
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
         showFromDate(from);
@@ -97,7 +95,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         if (dateFrom == null) {
             dateFrom = c;
             dateFrom.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
-        } else if (dateTo == null) {
+        }
+
+        if (dateTo == null) {
             dateTo = c;
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
@@ -106,29 +106,15 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    public void onFromButtonClick() {
-        view.showDatePicker(dateFrom, dateTo, true);
-    }
-
-
-    public void onToButtonClick() {
-        view.showDatePicker(dateFrom, dateTo, false);
-    }
-
-
     private void showFromDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
         dateFrom = c;
-        Date date = c.getTime();
-        view.updateSelectedFromButtonText(DateUtil.getFormattedMonthAndYear(date));
     }
 
 
     private void showToDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         dateTo = c;
-        Date date = c.getTime();
-        view.updateSelectedToButtonText(DateUtil.getFormattedMonthAndYear(date));
     }
 
     /**

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.presentation.ui.activity.HomeActivity;
-import co.techmagic.hr.presentation.ui.view.OnDisplaySelectedDateListener;
+import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -30,7 +30,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     private Calendar fromDate;
     private Calendar toDate;
     private boolean isDateFromPicker;
-    private OnDisplaySelectedDateListener selectedDateListener;
+    private OnDatePickerFragmentListener selectedDateListener;
 
 
     public static DatePickerFragment newInstance() {
@@ -41,7 +41,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        selectedDateListener = (OnDisplaySelectedDateListener) getTargetFragment();
+        selectedDateListener = (OnDatePickerFragmentListener) context;
     }
 
 
@@ -50,9 +50,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle b = getArguments();
         if (b != null) {
-            fromDate = (Calendar) b.getSerializable(HomeActivity.CALENDAR_FROM_KEY);
-            toDate = (Calendar) b.getSerializable(HomeActivity.CALENDAR_TO_KEY);
-            isDateFromPicker = b.getBoolean(HomeActivity.SELECTED_DIALOG_KEY);
+            fromDate = (Calendar) b.getSerializable(CalendarFiltersActivity.CALENDAR_FROM_KEY);
+            toDate = (Calendar) b.getSerializable(CalendarFiltersActivity.CALENDAR_TO_KEY);
+            isDateFromPicker = b.getBoolean(CalendarFiltersActivity.SELECTED_DIALOG_KEY);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -122,5 +122,17 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         yearPicker.setMinValue(year - MIN_YEAR);
         yearPicker.setMaxValue(cal.get(Calendar.YEAR) + MAX_YEAR);
         yearPicker.setValue(year);
+    }
+
+
+    public interface OnDatePickerFragmentListener {
+
+        void addDatePickerFragment(@Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker);
+
+        void displaySelectedFromDate(@NonNull String date, @Nullable Calendar from, @Nullable Calendar to);
+
+        void displaySelectedToDate(@NonNull String date, @Nullable Calendar from, @Nullable Calendar to);
+
+        void invalidDateRangeSelected(int resId);
     }
 }

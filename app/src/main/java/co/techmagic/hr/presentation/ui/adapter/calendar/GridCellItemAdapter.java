@@ -10,7 +10,7 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 
-public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
+public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridCellItemAdapter.ViewHolder> {
 
     private final IGuideXItem model;
     private final int row;
@@ -23,7 +23,7 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     private boolean hasRequested;
 
 
-    public GridXitem(int row, int column) {
+    public GridCellItemAdapter(int row, int column) {
         // Make a blank item
         model = null;
         this.row = row;
@@ -31,7 +31,7 @@ public class GridXitem extends AbstractItem<GridXitem, GridXitem.ViewHolder> {
     }
 
 
-    public <T extends IGuideXItem> GridXitem(T model, int row, int column) {
+    public <T extends IGuideXItem> GridCellItemAdapter(T model, int row, int column) {
         this.model = model;
         this.row = row;
         this.column = column;

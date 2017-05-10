@@ -39,6 +39,7 @@
     <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
+    <string name="tm_hr_home_activity_text_filters">Filters</string>
     <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
 
     <!-- SearchActivity -->
@@ -85,5 +86,10 @@
     <string name="tm_hr_calendar_fragment_weekday_layout_day_off">Day Off</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_illness">Illness</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
+
+    <!-- CalendarFiltersActivity -->
+    <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
+    <string name="tm_hr_calendar_filters_activity_text_from">From</string>
+    <string name="tm_hr_calendar_filters_activity_text_to">To</string>
 
 </resources>

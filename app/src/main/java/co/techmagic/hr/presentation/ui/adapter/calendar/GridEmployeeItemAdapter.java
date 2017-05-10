@@ -12,16 +12,17 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.presentation.ui.view.calendar.GridItemRow;
 
-public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> implements IGuideYItem {
+public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapter, GridEmployeeItemAdapter.ViewHolder> implements IGuideYItem {
 
-    private final String photoUrl;
-    private final String name;
+    private final GridItemRow model;
+    private OnEmployeeItemClickListener onEmployeeItemClickListener;
 
 
-    public GridYitem(String name, String photoUrl) {
-        this.name = name;
-        this.photoUrl = photoUrl;
+    public GridEmployeeItemAdapter(GridItemRow model) {
+        this.model = model;
+        this.onEmployeeItemClickListener = onEmployeeItemClickListener;
     }
 
 
@@ -37,6 +38,8 @@ public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> imp
 
         holder.tvItemY.setText(getName());
         holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        holder.itemView.setTag(this);
+       // holder.itemView.setOnClickListener(v -> onEmployeeItemClickListener.onEmployeeItemClick());
     }
 
 
@@ -50,7 +53,7 @@ public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> imp
 
     @Override
     public int getType() {
-        return R.id.flItemY;
+        return R.id.llItemY;
     }
 
 
@@ -73,26 +76,41 @@ public class GridYitem extends AbstractItem<GridYitem, GridYitem.ViewHolder> imp
 
 
     @Override
+    public String getId() {
+        return model.getId() == null ? null : model.getId();
+    }
+
+
+    @Override
     public String getName() {
-        return name;
+        return model.getPersonName() == null ? null : model.getPersonName();
     }
 
 
     @Override
     public String getPhotoUrl() {
-        return photoUrl;
+        return model.getPhotoUrl() == null ? null : model.getPhotoUrl();
     }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        View root;
         ImageView ivPhotoItemY;
         TextView tvItemY;
 
+
         public ViewHolder(View view) {
             super(view);
+            root = view.findViewById(R.id.llItemY);
             ivPhotoItemY = (ImageView) view.findViewById(R.id.ivPhotoItemY);
             tvItemY = (TextView) view.findViewById(R.id.tvItemY);
+           // itemView.setOnClickListener(this);
         }
+    }
+
+
+    public interface OnEmployeeItemClickListener {
+        void onEmployeeItemClick();
     }
 }

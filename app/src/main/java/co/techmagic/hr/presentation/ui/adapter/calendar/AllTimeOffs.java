@@ -17,7 +17,6 @@ public class AllTimeOffs implements IGuideXItem {
     private List<RequestedTimeOff> vacations;
     private List<RequestedTimeOff> illnesses;
     private List<RequestedTimeOff> requested;
-    private boolean vacation;
 
 
     public AllTimeOffs() {
@@ -66,9 +65,10 @@ public class AllTimeOffs implements IGuideXItem {
         return vacations;
     }
 
+
     @Override
     public boolean hasVacation() {
-        return vacation;
+        return vacations != null && !vacations.isEmpty();
     }
 
 
@@ -104,10 +104,5 @@ public class AllTimeOffs implements IGuideXItem {
     @Override
     public boolean hasRequested() {
         return requested != null && !requested.isEmpty();
-    }
-
-
-    public void setVacation(boolean vacation) {
-        this.vacation = vacation;
     }
 }

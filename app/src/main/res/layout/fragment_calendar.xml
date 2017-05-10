@@ -7,32 +7,6 @@
     android:paddingBottom="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:paddingTop="@dimen/activity_calendar_scroll_view_margin_vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnFrom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Primary.Button" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="@string/tm_hr_calendar_fragment_to_text" />
-
-        <Button
-            android:id="@+id/btnTo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Primary.Button" />
-
-    </LinearLayout>
-
     <include layout="@layout/layout_colors" />
 
     <TextView
