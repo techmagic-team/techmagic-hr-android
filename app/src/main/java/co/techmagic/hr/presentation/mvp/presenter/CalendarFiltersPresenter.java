@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,8 +72,38 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     public void setDefaultDates() {
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
+
+        final long fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
+        final long toInMillis = SharedPreferencesUtil.getSelectedToTime();
+
+        if (fromInMillis != 0) {
+            from.setTimeInMillis(fromInMillis);
+        }
+
+        if (toInMillis != 0) {
+            to.setTimeInMillis(toInMillis);
+        }
+
         showFromDate(from);
         showToDate(to);
+    }
+
+
+    public void displaySelectedFromDate(@Nullable Calendar from, @NonNull String date) {
+        if (from != null) {
+            SharedPreferencesUtil.saveSelectedFromTime(from.getTimeInMillis());
+        }
+
+        view.updateSelectedFromButtonText(date);
+    }
+
+
+    public void displaySelectedToDate(@Nullable Calendar to, @NonNull String date) {
+        if (to != null) {
+            SharedPreferencesUtil.saveSelectedToTime(to.getTimeInMillis());
+        }
+
+        view.updateSelectedToButtonText(date);
     }
 
 
@@ -125,7 +156,7 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
 
         departments.addAll(filterDepartments);
 
-        final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
+        final String depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
         if (depId != null) {
             for (FilterDepartment d : departments) {
                 if (depId.equals(d.getId())) {

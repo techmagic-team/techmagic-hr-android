@@ -43,7 +43,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
-    public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
     public static final int ITEMS_COUNT = 10;
 
     @BindView(R.id.flFilters)
@@ -185,10 +184,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 showLogOutDialog();
                 return true;
 
-            case R.id.action_calendar_filters:
-                startCalendarFiltersScreen();
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -207,9 +202,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0, true);
-
-        } else if (requestCode == CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE) {
-
         }
     }
 
@@ -311,13 +303,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
-    }
-
-
-    private void startCalendarFiltersScreen() {
-        Intent i = new Intent(this, CalendarFiltersActivity.class);
-       // i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
-        startActivityForResult(i, CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
     }
 
 

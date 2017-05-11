@@ -23,6 +23,7 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.ReadyToDisplayXitem;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
@@ -39,6 +40,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
+
+    private boolean isMyTeam;
+    private String depId;
+
+    private boolean tempShouldUpdate = true; // todo
 
 
     public CalendarPresenter() {
@@ -64,20 +70,24 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    public void setupCalendarRange() {
-        Calendar from = Calendar.getInstance();
-        Calendar to = Calendar.getInstance();
-        showFromDate(from);
-        showToDate(to);
+    public void setupPage() {
+        setupCalendarRange();
+        isMyTeam = SharedPreferencesUtil.getMyTeamSelection();
+        depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
+        updateCalendar(isMyTeam, depId, null, null);
     }
 
 
-    public void performRequests() {
-        performGetEmployeesByDepartmentRequest();
-    }
+    public void updateCalendar(boolean isMyTeamChecked, String selDepId, @Nullable Calendar from, @Nullable Calendar to) {
+        isMyTeam = isMyTeamChecked;
+        depId = selDepId;
 
+        if (isMyTeam && depId == null && from == null && to == null) {
+            view.hideClearFilters();
+        } else {
+            view.showClearFilters();
+        }
 
-    public void updateCalendar(@Nullable Calendar from, @Nullable Calendar to) {
         if (from != null) {
             dateFrom = from;
         }
@@ -102,7 +112,27 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
-        view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
+        performRequests();
+    }
+
+
+    public void onClearFiltersClick() {
+        isMyTeam = true;
+        depId = null;
+        view.hideClearFilters();
+    }
+
+
+    private void setupCalendarRange() {
+        Calendar from = Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
+        showFromDate(from);
+        showToDate(to);
+    }
+
+
+    private void performRequests() {
+        performGetEmployeesByDepartmentRequest();
     }
 
 
@@ -133,7 +163,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
-        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, ""); // todo
+        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee response) {
@@ -299,9 +329,12 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             allTimeOffs.setIllnesses(actualIllnesses);
         }
 
-        // todo remove
-        // should be called after all requests only
-        view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
+        if (tempShouldUpdate) {
+            // todo remove
+            // should be called after all requests only
+            view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
+            tempShouldUpdate = false;
+        }
     }
 
 

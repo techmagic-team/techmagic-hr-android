@@ -12,4 +12,8 @@ public interface CalendarView extends View {
     <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to);
 
     void showNoResults();
+
+    void showClearFilters();
+
+    void hideClearFilters();
 }

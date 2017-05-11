@@ -7,6 +7,23 @@
     android:paddingBottom="@dimen/activity_calendar_scroll_view_margin_vertical"
     android:paddingTop="@dimen/activity_calendar_scroll_view_margin_vertical">
 
+    <FrameLayout
+        android:id="@+id/flCalFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnClearCalFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:text="@string/tm_hr_home_activity_text_clear_filters"
+            android:theme="@style/AppTheme.Primary.Button" />
+
+    </FrameLayout>
+
     <include layout="@layout/layout_colors" />
 
     <TextView
