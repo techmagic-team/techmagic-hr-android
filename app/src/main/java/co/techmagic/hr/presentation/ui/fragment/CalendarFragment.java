@@ -31,8 +31,6 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener {
 
-
-
     @BindView(R.id.flCalFilters)
     View calFilters;
     @BindView(R.id.tvCalendarNoResults)
@@ -65,7 +63,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
-        initUi();
         return view;
     }
 
@@ -195,10 +192,5 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         i.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
         i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
         startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
-    }
-
-
-    private void initUi() {
-        presenter.setupPage();
     }
 }

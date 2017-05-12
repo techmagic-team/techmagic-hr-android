@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,24 +85,6 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
 
         showFromDate(from);
         showToDate(to);
-    }
-
-
-    public void displaySelectedFromDate(@Nullable Calendar from, @NonNull String date) {
-        if (from != null) {
-            SharedPreferencesUtil.saveSelectedFromTime(from.getTimeInMillis());
-        }
-
-        view.updateSelectedFromButtonText(date);
-    }
-
-
-    public void displaySelectedToDate(@Nullable Calendar to, @NonNull String date) {
-        if (to != null) {
-            SharedPreferencesUtil.saveSelectedToTime(to.getTimeInMillis());
-        }
-
-        view.updateSelectedToButtonText(date);
     }
 
 

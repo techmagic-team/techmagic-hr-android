@@ -42,6 +42,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private Calendar dateTo = null;
 
     private boolean isMyTeam;
+    private long fromInMillis = 0;
+    private long toInMillis = 0;
     private String depId;
 
     private boolean tempShouldUpdate = true; // todo
@@ -73,6 +75,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     public void setupPage() {
         setupCalendarRange();
         isMyTeam = SharedPreferencesUtil.getMyTeamSelection();
+        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
+        toInMillis = SharedPreferencesUtil.getSelectedToTime();
         depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
         updateCalendar(isMyTeam, depId, null, null);
     }
@@ -82,7 +86,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         isMyTeam = isMyTeamChecked;
         depId = selDepId;
 
-        if (isMyTeam && depId == null && from == null && to == null) {
+        if (noFiltersSelected(from, to)) {
             view.hideClearFilters();
         } else {
             view.showClearFilters();
@@ -118,6 +122,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public void onClearFiltersClick() {
         isMyTeam = true;
+        fromInMillis = 0;
+        toInMillis = 0;
         depId = null;
         view.hideClearFilters();
     }
@@ -146,6 +152,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         dateTo = c;
     }
+
+    private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
+        return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
+    }
+
 
     /**
      * Should be called after employees by department only

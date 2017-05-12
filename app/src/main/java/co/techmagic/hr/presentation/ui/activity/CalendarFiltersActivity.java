@@ -143,7 +143,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             fromInMillis = from.getTimeInMillis();
         }
 
-        presenter.displaySelectedFromDate(from, date);
+        view.updateSelectedFromButtonText(date);
     }
 
 
@@ -153,7 +153,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             toInMillis = to.getTimeInMillis();
         }
 
-        presenter.displaySelectedToDate(to, date);
+        view.updateSelectedToButtonText(date);
     }
 
 
