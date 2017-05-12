@@ -11,10 +11,6 @@ import java.util.List;
 import co.techmagic.hr.R;
 
 public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridCellItemAdapter.ViewHolder> {
-
-    private final IGuideXItem model;
-    private final int row;
-    private final int column;
     private boolean isStart, isWeekend;
     private boolean hasHolidays;
     private boolean hasVacation;
@@ -22,54 +18,28 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasIllness;
     private boolean hasRequested;
 
-
-    public GridCellItemAdapter(int row, int column) {
-        // Make a blank item
-        model = null;
-        this.row = row;
-        this.column = column;
-    }
-
-
-    public <T extends IGuideXItem> GridCellItemAdapter(T model, int row, int column) {
-        this.model = model;
-        this.row = row;
-        this.column = column;
-    }
-
-
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        // default color for item
-        holder.itemView.setBackgroundResource(R.drawable.item_bg);
-
-        if (isWeekend()) {
-            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
-        }
-
-        if (hasHolidays) {
-            holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
-        }
-
-        if (model == null) {
-            return;
-        }
-
-        if (model.hasVacation()) {
+        if (hasVacation) {
             holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
-        } else if (model.hasDayOffs()) {
+        } else if (hasDayOff) {
             holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
-        } else if (model.hasIllnesses()) {
+        } else if (hasIllness) {
             holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
-        } else if (model.hasRequested()) {
+        } else if (hasRequested) {
             holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
         } else {
             holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
-    }
 
+        if (hasHolidays) {
+            holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
+        } else if (isWeekend) {
+            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+        }
+    }
 
     @Override
     public void unbindView(ViewHolder holder) {
@@ -119,17 +89,6 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     public void setIsWeekend(boolean weekend) {
         isWeekend = weekend;
     }
-
-
-    public IGuideXItem getModel() {
-        return model;
-    }
-
-
-    public boolean isEmpty() {
-        return model == null;
-    }
-
 
     public boolean hasHolidays() {
         return hasHolidays;

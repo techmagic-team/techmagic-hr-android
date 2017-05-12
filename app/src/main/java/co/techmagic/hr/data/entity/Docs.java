@@ -2,16 +2,10 @@ package co.techmagic.hr.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
-import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
-
-public class Docs implements Parcelable, IGridItem {
+public class Docs implements Parcelable {
 
     @SerializedName("_department")
     private Department department;
@@ -82,8 +76,6 @@ public class Docs implements Parcelable, IGridItem {
     @SerializedName("trialPeriodEnds")
     private String trialPeriodEnds;
 
-    private TimeRange timeRange;
-
     public Docs() {}
 
     public Docs(Parcel in) {
@@ -143,49 +135,6 @@ public class Docs implements Parcelable, IGridItem {
         dest.writeByte((byte) (isActive ? 0x01 : 0x00));
         dest.writeString(trialPeriodEnds);
     }
-
-
-    @Override
-    public void setEmployees(List<Docs> employees) {
-
-    }
-
-    @Override
-    public List<Docs> getEmployees() {
-        return null;
-    }
-
-    @Override
-    public void setTimeRange(TimeRange timeRange) {
-        this.timeRange = timeRange;
-    }
-
-    @Nullable
-    @Override
-    public TimeRange getTimeRange() {
-        return timeRange;
-    }
-
-    @Override
-    public void setPersonName(String personName) {
-
-    }
-
-    @Override
-    public String getPersonName() {
-        return lastName + " " + firstName;
-    }
-
-    @Override
-    public void setPhotoUrl(String photoUrl) {
-
-    }
-
-    @Override
-    public String getPhotoUrl() {
-        return photo;
-    }
-
 
     public static final Parcelable.Creator<Docs> CREATOR = new Parcelable.Creator<Docs>() {
         @Override

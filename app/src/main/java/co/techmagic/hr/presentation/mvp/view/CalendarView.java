@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Calendar;
 
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 
@@ -16,4 +17,6 @@ public interface CalendarView extends View {
     void showClearFilters();
 
     void hideClearFilters();
+
+    void updateTableWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, Calendar dateFrom, Calendar dateTo);
 }

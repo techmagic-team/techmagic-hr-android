@@ -5,9 +5,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
+import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
@@ -91,28 +93,33 @@ public class GridItemRow<T extends IGridItem> {
             cellTime.add(Calendar.DATE, 1);
 
             for (int x = 0; x < columns; x++) {
-                GridCellItemAdapter gridCellItemAdapter = null;
-                for (T item : itemsList.get(y)) {
-                    if (item.getTimeRange() == null)
-                        continue; // Skip any items that have null start or end
-                    if (item.getTimeRange().isWithin(cellTime)) {
-                        gridCellItemAdapter = new GridCellItemAdapter(allTimeOffs, x, y);
-                        break;
-                    }
-                }
+                GridCellItemAdapter gridCellItemAdapter = new GridCellItemAdapter();
+//                for (T item : itemsList.get(y)) {
+//                    if (item.getTimeRange() != null && item.getTimeRange().isWithin(cellTime)) {
+//                        gridCellItemAdapter = new GridCellItemAdapter();
+//                        break;
+//                    }
+//                }
 
-                if (gridCellItemAdapter == null)
-                    gridCellItemAdapter = new GridCellItemAdapter(x, y);
+//                if (gridCellItemAdapter == null)
+//                    gridCellItemAdapter = new GridCellItemAdapter();
 
                 /*else if (!gridItems.isEmpty() && gridItems.size() > 0) {
                     GridXitem lastItem = gridItems.get((y * columns) + x - 1);
                     gridXitem.setStart(lastItem.isEmpty() || !gridXitem.getModel().equals(lastItem.getModel()));
                 }*/
 
-                if (cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                if (cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cellTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                     gridCellItemAdapter.setIsWeekend(true);
+                }
 
                 /* Check for holidays */
+
+//                Random random = new Random();
+//                int randomInt = random.nextInt(10);
+//                if (randomInt % 3 == 0) {
+//                    gridCellItemAdapter.setHasVacation(true);
+//                }
 
                 if (allTimeOffs.getCalendarInfo() != null) {
                     for (CalendarInfo c : allTimeOffs.getCalendarInfo()) {
@@ -126,35 +133,35 @@ public class GridItemRow<T extends IGridItem> {
                     }
                 }
 
-                 /* Check for day off *//*
+                 /* Check for day off */
 
-                /*if (allTimeOffs.getDayOffs() != null) {
+                if (allTimeOffs.getDayOffs() != null) {
                     for (RequestedTimeOff dayOff : allTimeOffs.getDayOffs()) {
                         if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom(), dayOff.getDateTo(), cellTime.getTime())) {
-                            gridXitem.setHasDayOff(true);
+                            gridCellItemAdapter.setHasDayOff(true);
                         }
                     }
                 }
 
-                *//* Check for vacation *//*
+                /* Check for vacation */
 
                 if (allTimeOffs.getVacations() != null) {
                     for (RequestedTimeOff vacation : allTimeOffs.getVacations()) {
                         if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom(), vacation.getDateTo(), cellTime.getTime())) {
-                            gridXitem.setHasVacation(true);
+                            gridCellItemAdapter.setHasVacation(true);
                         }
                     }
                 }
 
-                *//* Check for illness *//*
+                /* Check for illness */
 
                 if (allTimeOffs.getIllnesses() != null) {
                     for (RequestedTimeOff illness : allTimeOffs.getIllnesses()) {
                         if (shouldTimeOffBeInCurrentCell(illness.getDateFrom(), illness.getDateTo(), cellTime.getTime())) {
-                            gridXitem.setHasIllness(true);
+                            gridCellItemAdapter.setHasIllness(true);
                         }
                     }
-                }*/
+                }
 
                 gridItems.add(gridCellItemAdapter);
                 cellTime.add(Calendar.DATE, 1);

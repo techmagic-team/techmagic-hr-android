@@ -21,6 +21,7 @@ import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
@@ -153,6 +154,13 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             @Override
             public void hideClearFilters() {
                 calFilters.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void updateTableWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, Calendar dateFrom, Calendar dateTo) {
+                tvNoResults.setVisibility(View.GONE);
+                timeTable.setVisibility(View.VISIBLE);
+                timeTable.setItemsWithDateRange(userAllTimeOffsMap, dateFrom, dateTo, CalendarFragment.this);
             }
         };
     }
