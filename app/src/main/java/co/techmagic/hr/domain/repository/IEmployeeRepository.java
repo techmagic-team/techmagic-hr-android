@@ -24,6 +24,8 @@ public interface IEmployeeRepository {
 
     Observable<List<RequestedTimeOff>> getUserVacations(TimeOffRequest request);
 
+    Observable<List<RequestedTimeOff>> getUserDayOffs(TimeOffRequest request);
+
     Observable<List<RequestedTimeOff>> getUserIllnesses(GetIllnessRequest request);
 
     Observable<List<RequestedTimeOff>> getAllVacations(TimeOffAllRequest request);

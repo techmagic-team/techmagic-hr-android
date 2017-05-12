@@ -68,7 +68,17 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<List<RequestedTimeOff>> getUserVacations(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getUserVacations(request);
+            return client.getEmployeeClient().getUserVacations(request.getUserId(), true, request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getUserDayOffs(TimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getUserDayOffs(request.getUserId(), false, request.getDateFrom().getGte(), request.getDateTo().getLte());
         }
 
         return Observable.error(new NetworkConnectionException());
@@ -78,7 +88,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<List<RequestedTimeOff>> getUserIllnesses(GetIllnessRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getUserIllnesses(request);
+            return client.getEmployeeClient().getUserIllnesses(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte());
         }
 
         return Observable.error(new NetworkConnectionException());
