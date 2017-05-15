@@ -17,12 +17,14 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
+import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
@@ -118,7 +120,10 @@ public class TimeTable extends FrameLayout {
         List<GridItemRow> rows = new ArrayList<>();
         for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
             EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhotoOrigin());
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), userAllTimeOffsMap, calendarInfo);
+
+            List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser , calendarInfo);
             rows.add(gridRow);
         }
 
@@ -295,4 +300,17 @@ public class TimeTable extends FrameLayout {
     }
 
 
+    private List<UserTimeOff> getTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
+        Set<Docs> users = userAllTimeOffsMap.getMap().keySet();
+        List<UserTimeOff> timeOffsForUser = new ArrayList<>();
+
+        for (Docs user : users) {
+            if (userId.equals(user.getId())) {
+                timeOffsForUser.addAll(userAllTimeOffsMap.getMap().get(user));
+                break;
+            }
+        }
+
+        return timeOffsForUser;
+    }
 }
