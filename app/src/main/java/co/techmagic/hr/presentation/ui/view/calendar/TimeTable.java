@@ -177,7 +177,7 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-        // center(); // todo scroll to current month
+        scrollToCurrentMonth();
     }
 
 
@@ -322,9 +322,12 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public void center() {
-        if (recyclerView != null && gridAdapter != null && gridAdapter.getItemCount() > 0) {
-            recyclerView.scrollToPosition(((gridAdapter.getItemCount() / columns) / 2));
+    public void scrollToCurrentMonth() {
+        if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
+            int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
+            guideX.scrollToPosition(dayOfYear - 1);
         }
     }
 
