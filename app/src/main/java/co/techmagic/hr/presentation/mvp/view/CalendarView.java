@@ -1,19 +1,18 @@
 package co.techmagic.hr.presentation.mvp.view;
 
-import android.support.annotation.NonNull;
-
 import java.util.Calendar;
+import java.util.List;
 
-import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.domain.pojo.CalendarInfoDto;
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 
 public interface CalendarView extends View {
-
-    <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to);
 
     void showNoResults();
 
     void showClearFilters();
 
     void hideClearFilters();
+
+    void updateTableWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo);
 }

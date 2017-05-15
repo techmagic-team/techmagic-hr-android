@@ -14,7 +14,6 @@ public class ReadyToDisplayXitem implements IGridItem {
     private String personName;
     private String photoUrl;
 
-
     @Override
     public void setEmployees(List<Docs> employees) {
         this.employees = employees;

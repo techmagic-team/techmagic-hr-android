@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,17 +13,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
-import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
@@ -34,6 +34,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @BindView(R.id.flCalFilters)
     View calFilters;
+
     @BindView(R.id.tvCalendarNoResults)
     TextView tvNoResults;
     @BindView(R.id.timeTable)
@@ -81,7 +82,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     /**
      * Used to handle the menu item click and startActivityForResult()
-     * */
+     */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -159,6 +160,13 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public void hideClearFilters() {
                 calFilters.setVisibility(View.GONE);
             }
+
+            @Override
+            public void updateTableWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo) {
+                tvNoResults.setVisibility(View.GONE);
+                timeTable.setVisibility(View.VISIBLE);
+                timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this);
+            }
         };
     }
 
@@ -171,7 +179,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @Override
     public void onEmployeeItemClick() {
-       // fragmentCallback.addDetailsFragment();
+        // fragmentCallback.addDetailsFragment();
     }
 
 

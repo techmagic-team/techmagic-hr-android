@@ -3,13 +3,11 @@ package co.techmagic.hr.presentation.ui.view.calendar;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -20,18 +18,21 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
-import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
+import co.techmagic.hr.domain.pojo.CalendarInfoDto;
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
+import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
+import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -96,8 +97,6 @@ public class TimeTable extends FrameLayout {
 
     /**
      * Sets the items to be displayed.
-     *
-     * @param data the items to be displayed.
      */
 
     public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo,
@@ -119,6 +118,9 @@ public class TimeTable extends FrameLayout {
         });
 
         setTimeRange(calFrom, calTo);
+    public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo, CalendarFragment calendarFragment) {
+        left = dateFrom;
+        right = dateTo;
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
 
@@ -158,28 +160,33 @@ public class TimeTable extends FrameLayout {
         }
 
         List<GridItemRow> rows = new ArrayList<>();
-        for (Pair<EmployeeGridYitem, List<IGridItem>> pair : pairs) {
-            GridItemRow gridRow = new GridItemRow(pair.first, new TimeRange(left, right), pair.second, allTimeOffs);
+        for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
+            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhotoOrigin());
+
+            List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser , calendarInfo);
             rows.add(gridRow);
         }
 
-
         List<GridCellItemAdapter> allGridItems = new ArrayList<>();
         List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
-        for (GridItemRow r : rows) {
-            List<GridCellItemAdapter> l = r.getItems();
-            allGridItems.addAll(l);
 
-            for (int i = 0; i < l.size() / columns; i++)
-                employeeItems.add(new GridEmployeeItemAdapter(r));
+        for (GridItemRow row : rows) {
+            List<GridCellItemAdapter> cells = row.getItems();
+            allGridItems.addAll(cells);
+
+            for (int i = 0; i < cells.size() / columns; i++) {
+                employeeItems.add(new GridEmployeeItemAdapter(row));
+            }
         }
 
         setGridItems(allGridItems);
-        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
+        setEmployeeItems(employeeItems, null);
         requestLayout();
         scrollToCurrentMonth();
+        // center(); // todo scroll to current month
     }
-
 
     private void construct(final int itemCount) {
         final RecyclerView.OnItemTouchListener itemTouchListener = new RecyclerView.OnItemTouchListener() {
@@ -336,5 +343,20 @@ public class TimeTable extends FrameLayout {
         Calendar c = Calendar.getInstance();
         c.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         return calendar.getTimeInMillis();
+    }
+
+
+    private List<UserTimeOff> getTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
+        Set<Docs> users = userAllTimeOffsMap.getMap().keySet();
+        List<UserTimeOff> timeOffsForUser = new ArrayList<>();
+
+        for (Docs user : users) {
+            if (userId.equals(user.getId())) {
+                timeOffsForUser.addAll(userAllTimeOffsMap.getMap().get(user));
+                break;
+            }
+        }
+
+        return timeOffsForUser;
     }
 }

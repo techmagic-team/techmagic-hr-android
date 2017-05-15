@@ -5,37 +5,37 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import co.techmagic.hr.data.entity.CalendarInfo;
+import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.Employee;
-import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
-import co.techmagic.hr.domain.interactor.employee.GetAllDayOffs;
-import co.techmagic.hr.domain.interactor.employee.GetAllIllnesses;
-import co.techmagic.hr.domain.interactor.employee.GetAllVacations;
+import co.techmagic.hr.domain.interactor.employee.GetAllTimeOffs;
 import co.techmagic.hr.domain.interactor.employee.GetCalendar;
 import co.techmagic.hr.domain.interactor.employee.GetEmployeesByDepartment;
+import co.techmagic.hr.domain.pojo.AllTimeOffsDto;
+import co.techmagic.hr.domain.pojo.RequestedTimeOffDto;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
-import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
+import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
+import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.ReadyToDisplayXitem;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     private EmployeeRepositoryImpl employeeRepository;
-
-    private GetAllDayOffs getAllDayOffs;
-    private GetAllVacations getAllVacations;
-    private GetAllIllnesses getAllIllnesses;
     private GetEmployeesByDepartment getEmployeesByDepartment;
     private GetCalendar getCalendar;
+    private GetAllTimeOffs getAllTimeOffs;
 
-    private AllTimeOffs allTimeOffs;
     private ReadyToDisplayXitem xItem;
 
     private Calendar dateFrom = null;
@@ -46,29 +46,25 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private long toInMillis = 0;
     private String depId;
 
+    private boolean tempShouldUpdate = true; // todo
+
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
-        getAllDayOffs = new GetAllDayOffs(employeeRepository);
-        getAllVacations = new GetAllVacations(employeeRepository);
-        getAllIllnesses = new GetAllIllnesses(employeeRepository);
+
+        getAllTimeOffs = new GetAllTimeOffs(employeeRepository);
         getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
         getCalendar = new GetCalendar(employeeRepository);
-        allTimeOffs = new AllTimeOffs();
         xItem = new ReadyToDisplayXitem();
     }
-
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
-        getAllDayOffs.unsubscribe();
-        getAllVacations.unsubscribe();
-        getAllIllnesses.unsubscribe();
+        getAllTimeOffs.unsubscribe();
         getEmployeesByDepartment.unsubscribe();
         getCalendar.unsubscribe();
     }
-
 
     public void setupPage() {
         setupDefaultCalendarRange();
@@ -104,7 +100,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             updateCalendar(isMyTeam, depId, from, to);
         }
     }
-
 
     public void updateCalendar(boolean isMyTeamChecked, String selDepId, @Nullable Calendar from, @Nullable Calendar to) {
         isMyTeam = isMyTeamChecked;
@@ -143,7 +138,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         performRequests();
     }
 
-
     public void onClearFiltersClick() {
         isMyTeam = true;
         fromInMillis = 0;
@@ -154,6 +148,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         performGetEmployeesByDepartmentRequest();
     }
 
+    private void setupCalendarRange() {
 
     private void setupDefaultCalendarRange() {
         Calendar from = Calendar.getInstance();
@@ -162,12 +157,18 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         showToDecemberDate(to);
     }
 
+    private void performRequests() {
+        performGetEmployeesByDepartmentRequest();
+    }
+
+    private void showFromDate(Calendar c) {
 
     private void showFromJanuaryDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
         dateFrom = c;
     }
 
+    private void showToDate(Calendar c) {
 
     private void showToDecemberDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
@@ -184,23 +185,35 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
     }
 
-
-    /**
-     * Should be called after employees by department only
-     */
-
     private void performGetAllTimeOffsRequests() {
-        performGetHolidaysAtCalendarRequest();
-        performGetAllDayOffsRequest();
-        performGetAllVacationsRequest();
-        performGetAllIllnessesRequest();
-        // performGetAllRequestedRequest();
-    }
+        view.showProgress();
+        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
+        getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>(view) {
 
+            @Override
+            public void onNext(AllTimeOffsDto allTimeOffsDto) {
+                view.hideProgress();
+
+                if (tempShouldUpdate) {
+                    UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
+                    view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
+                    tempShouldUpdate = false;
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
 
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
+        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, depId);
+        getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
         final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
@@ -218,7 +231,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         });
     }
 
-
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
         final List<Docs> result = response.getDocs();
         if (result == null || result.isEmpty()) {
@@ -228,184 +240,70 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         }
     }
 
+    private UserAllTimeOffsMap prepareMap(ReadyToDisplayXitem xItem, AllTimeOffsDto allTimeOffs) {
+        UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
     /**
      * view.showProgress() should be called only once
      * view.hideProgress() will be called in Timetable.setItemsWithDateRange() method
      */
 
-    private void performGetHolidaysAtCalendarRequest() {
-        view.showProgress();
+        List<String> userIds = new ArrayList<>(xItem.getEmployees().size());
+        for (Docs doc : xItem.getEmployees()) {
+            userIds.add(doc.getId());
+        }
 
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getCalendar.execute(request, new DefaultSubscriber<List<CalendarInfo>>() {
-            @Override
-            public void onNext(List<CalendarInfo> response) {
-                super.onNext(response);
-                // view.hideProgress();
-                allTimeOffs.setCalendarInfo(response);
+        // clean collection
+        Collection<List<RequestedTimeOffDto>> lists = allTimeOffs.getMap().values();
+        for (List<RequestedTimeOffDto> timeOffList : lists) {
+            Iterator<RequestedTimeOffDto> iterator = timeOffList.iterator();
+            while (iterator.hasNext()) {
+                RequestedTimeOffDto requestedTimeOffDto = iterator.next();
+                String userId = requestedTimeOffDto.getUserId();
+
+                if (!userIds.contains(userId)) {
+                    iterator.remove();
+                }
             }
+        }
 
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-            }
-        });
-    }
+        // sort data by user
+        for (Docs doc : xItem.getEmployees()) {
 
+            List<UserTimeOff> userTimeOffs = new ArrayList<>();
 
-    private void performGetAllDayOffsRequest() {
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
-            @Override
-            public void onNext(List<RequestedTimeOff> dayOffs) {
-                super.onNext(dayOffs);
-                handleAllDayOffsSuccessResponse(dayOffs);
-            }
+            Set<Map.Entry<TimeOffType, List<RequestedTimeOffDto>>> allTimeOffsEntries = allTimeOffs.getMap().entrySet();
 
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-            }
-        });
-    }
+            for (Map.Entry<TimeOffType, List<RequestedTimeOffDto>> entry : allTimeOffsEntries) {
+                for (RequestedTimeOffDto requestedTimeOffDto : entry.getValue()) {
+                    if (requestedTimeOffDto.getUserId().equals(doc.getId())) {
+                        UserTimeOff userTimeOff = map(requestedTimeOffDto);
 
-
-    private void handleAllDayOffsSuccessResponse(List<RequestedTimeOff> allDayOffs) {
-        if (allDayOffs == null || allDayOffs.isEmpty()) {
-
-        } else {
-            List<RequestedTimeOff> actualDayOffs = new ArrayList<>();
-            for (Docs d : xItem.getEmployees()) {
-                for (RequestedTimeOff dayOff : allDayOffs) {
-                    if (d.getId().equals(dayOff.getUserId())) {
-                        actualDayOffs.add(dayOff);
+                        if (userTimeOff != null) {
+                            userTimeOff.setTimeOffType(entry.getKey());
+                            userTimeOffs.add(userTimeOff);
+                        }
                     }
                 }
             }
 
-            allTimeOffs.setDayOffs(actualDayOffs);
+            userAllTimeOffsMap.getMap().put(doc, userTimeOffs);
         }
+
+        return userAllTimeOffsMap;
     }
 
+    private UserTimeOff map(RequestedTimeOffDto requestedTimeOffDto) {
+        if (requestedTimeOffDto != null) {
+            UserTimeOff userTimeOff = new UserTimeOff();
+            userTimeOff.setPaid(requestedTimeOffDto.isPaid());
+            userTimeOff.setAccepted(requestedTimeOffDto.isAccepted());
+            userTimeOff.setCompanyId(requestedTimeOffDto.getCompanyId());
+            userTimeOff.setDateFrom(requestedTimeOffDto.getDateFrom());
+            userTimeOff.setDateTo(requestedTimeOffDto.getDateTo());
 
-    private void performGetAllVacationsRequest() {
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
-            @Override
-            public void onNext(List<RequestedTimeOff> vacations) {
-                super.onNext(vacations);
-                handleAllVacationsSuccessResponse(vacations);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-            }
-        });
-    }
-
-
-    private void handleAllVacationsSuccessResponse(List<RequestedTimeOff> allVacations) {
-        if (allVacations == null || allVacations.isEmpty()) {
-
+            return userTimeOff;
         } else {
-            List<RequestedTimeOff> actualVacations = new ArrayList<>();
-            for (Docs d : xItem.getEmployees()) {
-                for (RequestedTimeOff vacation : allVacations) {
-                    if (d.getId().equals(vacation.getUserId())) {
-                        actualVacations.add(vacation);
-                    }
-                }
-            }
-
-            allTimeOffs.setVacations(actualVacations);
+            return null;
         }
-    }
-
-
-    private void performGetAllIllnessesRequest() {
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllIllnesses.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
-            @Override
-            public void onNext(List<RequestedTimeOff> illnesses) {
-                super.onNext(illnesses);
-                handleAllIllnessesSuccessResponse(illnesses);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-            }
-        });
-    }
-
-
-    private void handleAllIllnessesSuccessResponse(List<RequestedTimeOff> allIllnesses) {
-        if (allIllnesses == null || allIllnesses.isEmpty()) {
-
-        } else {
-            List<RequestedTimeOff> actualIllnesses = new ArrayList<>();
-            for (Docs d : xItem.getEmployees()) {
-                for (RequestedTimeOff illness : allIllnesses) {
-                    if (d.getId().equals(illness.getUserId())) {
-                        actualIllnesses.add(illness);
-                    }
-                }
-            }
-
-            allTimeOffs.setIllnesses(actualIllnesses);
-        }
-
-        // should be called after all requests only
-        view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
-    }
-
-
-    private void performGetAllRequestedRequest() {
-        /*view.showProgress();
-
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        .execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
-            @Override
-            public void onNext(List<RequestedTimeOff> requested) {
-                super.onNext(requested);
-                handleAllRequestedSuccessResponse(requested);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-
-                // should be called after all requests only
-                view.updateTableWithDateRange(employees, allTimeOffs, dateFrom, dateTo);
-            }
-        });*/
-    }
-
-
-    private void handleAllRequestedSuccessResponse(List<RequestedTimeOff> allRequested) {
-        // view.hideProgress();
-        if (allRequested == null || allRequested.isEmpty()) {
-
-        } else {
-            List<RequestedTimeOff> actualRequested = new ArrayList<>();
-            for (Docs d : xItem.getEmployees()) {
-                for (RequestedTimeOff illness : allRequested) {
-                    if (d.getId().equals(illness.getUserId())) {
-                        actualRequested.add(illness);
-                    }
-                }
-            }
-
-            allTimeOffs.setRequested(actualRequested);
-        }
-
-        // should be called after all requests only
-        // view.updateTableWithDateRange(employees, allTimeOffs, dateFrom, dateTo);
     }
 }
