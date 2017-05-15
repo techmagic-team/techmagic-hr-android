@@ -153,6 +153,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         dateTo = c;
     }
 
+
     private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
         return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
     }
@@ -175,7 +176,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         view.showProgress();
 
         final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
-        getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
+        getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
             public void onNext(Employee response) {
                 super.onNext(response);
@@ -186,7 +187,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                view.hideProgress();
+               // view.hideProgress();
                 performGetAllTimeOffsRequests();
             }
         });
@@ -194,7 +195,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
-        view.hideProgress();
+       // view.hideProgress();
         final List<Docs> result = response.getDocs();
         if (result == null || result.isEmpty()) {
             view.showNoResults();
@@ -203,16 +204,20 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         }
     }
 
+    /**
+     * view.showProgress() should be called only once
+     * view.hideProgress() will be called in Timetable.setItemsWithDateRange() method
+     * */
 
     private void performGetHolidaysAtCalendarRequest() {
         view.showProgress();
 
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getCalendar.execute(request, new DefaultSubscriber<List<CalendarInfo>>(view) {
+        getCalendar.execute(request, new DefaultSubscriber<List<CalendarInfo>>() {
             @Override
             public void onNext(List<CalendarInfo> response) {
                 super.onNext(response);
-                view.hideProgress();
+               // view.hideProgress();
                 allTimeOffs.setCalendarInfo(response);
             }
 
@@ -226,10 +231,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllDayOffsRequest() {
-        view.showProgress();
+       // view.showProgress();
 
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getAllDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
             public void onNext(List<RequestedTimeOff> dayOffs) {
                 super.onNext(dayOffs);
@@ -246,7 +251,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllDayOffsSuccessResponse(List<RequestedTimeOff> allDayOffs) {
-        view.hideProgress();
+       // view.hideProgress();
         if (allDayOffs == null || allDayOffs.isEmpty()) {
 
         } else {
@@ -265,10 +270,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllVacationsRequest() {
-        view.showProgress();
+       // view.showProgress();
 
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getAllVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
             public void onNext(List<RequestedTimeOff> vacations) {
                 super.onNext(vacations);
@@ -285,7 +290,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllVacationsSuccessResponse(List<RequestedTimeOff> allVacations) {
-        view.hideProgress();
+       // view.hideProgress();
         if (allVacations == null || allVacations.isEmpty()) {
 
         } else {
@@ -304,10 +309,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllIllnessesRequest() {
-        view.showProgress();
+       // view.showProgress();
 
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllIllnesses.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getAllIllnesses.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
             public void onNext(List<RequestedTimeOff> illnesses) {
                 super.onNext(illnesses);
@@ -324,7 +329,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllIllnessesSuccessResponse(List<RequestedTimeOff> allIllnesses) {
-        view.hideProgress();
+       // view.hideProgress();
         if (allIllnesses == null || allIllnesses.isEmpty()) {
 
         } else {
@@ -373,7 +378,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllRequestedSuccessResponse(List<RequestedTimeOff> allRequested) {
-        view.hideProgress();
+       // view.hideProgress();
         if (allRequested == null || allRequested.isEmpty()) {
 
         } else {

@@ -12,9 +12,16 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
 
     private View view;
 
+    /* Used to handle progress manually */
+
+    public DefaultSubscriber() {
+
+    }
+
     public DefaultSubscriber(View view) {
         this.view = view;
     }
+
 
     @Override
     public void onCompleted() {

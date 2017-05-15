@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -30,6 +31,7 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
+import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -99,7 +101,23 @@ public class TimeTable extends FrameLayout {
      */
 
     public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo,
-                                                            @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
+                                                            @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener,
+                                                            @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener) {
+
+        /* Hide progress listener */
+
+        guideY.setTag(guideY.getVisibility());
+        ViewTreeObserver observer = guideY.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(() -> {
+            int visibility = guideY.getVisibility();
+
+            if (visibility == VISIBLE) {
+                onCalendarViewReadyListener.onCalendarVisible();
+            }
+
+            guideY.setTag(guideY.getVisibility());
+        });
+
         left = calFrom;
         right = calTo;
         left.setTimeInMillis(calendarToMidnightMillis(left));
@@ -135,7 +153,7 @@ public class TimeTable extends FrameLayout {
             if (pair == null)
                 pair = new Pair<>(new EmployeeGridYitem(item.getId(), item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
 
-          //  item.setTimeRange(new TimeRange(left, right)); // todo
+            //  item.setTimeRange(new TimeRange(left, right)); // todo
 
             pair.second.add(item);
 
@@ -163,7 +181,7 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-       // center(); // todo scroll to current month
+        // center(); // todo scroll to current month
     }
 
 

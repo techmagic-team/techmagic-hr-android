@@ -26,10 +26,11 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
+import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener {
+public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener, OnCalendarViewReadyListener {
 
     @BindView(R.id.flCalFilters)
     View calFilters;
@@ -136,7 +137,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to, CalendarFragment.this);
+                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to, CalendarFragment.this, CalendarFragment.this);
             }
 
             @Override
@@ -167,6 +168,12 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onEmployeeItemClick() {
        // fragmentCallback.addDetailsFragment();
+    }
+
+
+    @Override
+    public void onCalendarVisible() {
+        view.hideProgress();
     }
 
 
