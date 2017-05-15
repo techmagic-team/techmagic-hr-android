@@ -115,14 +115,12 @@ public class TimeTable extends FrameLayout {
                 onCalendarViewReadyListener.onCalendarVisible();
             }
 
-            guideY.setTag(guideY.getVisibility());
+            guideY.setTag(visibility);
         });
 
-        left = calFrom;
-        right = calTo;
+        setTimeRange(calFrom, calTo);
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
-        setTimeRange(left, right);
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -152,8 +150,6 @@ public class TimeTable extends FrameLayout {
 
             if (pair == null)
                 pair = new Pair<>(new EmployeeGridYitem(item.getId(), item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
-
-            //  item.setTimeRange(new TimeRange(left, right)); // todo
 
             pair.second.add(item);
 

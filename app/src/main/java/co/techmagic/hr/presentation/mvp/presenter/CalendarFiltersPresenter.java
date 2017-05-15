@@ -75,20 +75,31 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
         final long fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
         final long toInMillis = SharedPreferencesUtil.getSelectedToTime();
 
-        if (fromInMillis != 0) {
+        /* Set selected date or from January otherwise */
+
+        if (fromInMillis == 0) {
+            showFromJanuaryDate(from);
+        } else {
             from.setTimeInMillis(fromInMillis);
+            dateFrom = from;
+            Date date = from.getTime();
+            view.updateSelectedFromButtonText(DateUtil.getFormattedMonthAndYear(date));
         }
 
-        if (toInMillis != 0) {
+        /* Set selected date or to December otherwise */
+
+        if (toInMillis == 0) {
+            showToDecemberDate(to);
+        } else {
             to.setTimeInMillis(toInMillis);
+            dateTo = to;
+            Date date = to.getTime();
+            view.updateSelectedToButtonText(DateUtil.getFormattedMonthAndYear(date));
         }
-
-        showFromDate(from);
-        showToDate(to);
     }
 
 
-    private void showFromDate(Calendar c) {
+    private void showFromJanuaryDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
         dateFrom = c;
         Date date = c.getTime();
@@ -96,7 +107,7 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     }
 
 
-    private void showToDate(Calendar c) {
+    private void showToDecemberDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         dateTo = c;
         Date date = c.getTime();

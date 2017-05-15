@@ -46,8 +46,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private long toInMillis = 0;
     private String depId;
 
-    private boolean tempShouldUpdate = true; // todo
-
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
@@ -73,12 +71,38 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     public void setupPage() {
-        setupCalendarRange();
+        setupDefaultCalendarRange();
         isMyTeam = SharedPreferencesUtil.getMyTeamSelection();
         fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
         toInMillis = SharedPreferencesUtil.getSelectedToTime();
         depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
-        updateCalendar(isMyTeam, depId, null, null);
+
+        if (fromInMillis == 0 && toInMillis == 0) {
+            updateCalendar(isMyTeam, depId, null, null);
+        } else {
+            Calendar from = Calendar.getInstance();
+            Calendar to = Calendar.getInstance();
+
+            /* Set selected date. Otherwise - from January  */
+
+            if (fromInMillis == 0) {
+                showFromJanuaryDate(from);
+            } else {
+                from.setTimeInMillis(fromInMillis);
+                dateFrom = from;
+            }
+
+            /* Set selected date. Otherwise to December */
+
+            if (toInMillis == 0) {
+                showToDecemberDate(to);
+            } else {
+                to.setTimeInMillis(toInMillis);
+                dateTo = to;
+            }
+
+            updateCalendar(isMyTeam, depId, from, to);
+        }
     }
 
 
@@ -126,31 +150,33 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         toInMillis = 0;
         depId = null;
         view.hideClearFilters();
-    }
-
-
-    private void setupCalendarRange() {
-        Calendar from = Calendar.getInstance();
-        Calendar to = Calendar.getInstance();
-        showFromDate(from);
-        showToDate(to);
-    }
-
-
-    private void performRequests() {
+        setupDefaultCalendarRange();
         performGetEmployeesByDepartmentRequest();
     }
 
 
-    private void showFromDate(Calendar c) {
+    private void setupDefaultCalendarRange() {
+        Calendar from = Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
+        showFromJanuaryDate(from);
+        showToDecemberDate(to);
+    }
+
+
+    private void showFromJanuaryDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
         dateFrom = c;
     }
 
 
-    private void showToDate(Calendar c) {
+    private void showToDecemberDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         dateTo = c;
+    }
+
+
+    private void performRequests() {
+        performGetEmployeesByDepartmentRequest();
     }
 
 
@@ -187,7 +213,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-               // view.hideProgress();
                 performGetAllTimeOffsRequests();
             }
         });
@@ -195,7 +220,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
-       // view.hideProgress();
         final List<Docs> result = response.getDocs();
         if (result == null || result.isEmpty()) {
             view.showNoResults();
@@ -207,7 +231,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     /**
      * view.showProgress() should be called only once
      * view.hideProgress() will be called in Timetable.setItemsWithDateRange() method
-     * */
+     */
 
     private void performGetHolidaysAtCalendarRequest() {
         view.showProgress();
@@ -217,7 +241,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             @Override
             public void onNext(List<CalendarInfo> response) {
                 super.onNext(response);
-               // view.hideProgress();
+                // view.hideProgress();
                 allTimeOffs.setCalendarInfo(response);
             }
 
@@ -231,8 +255,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllDayOffsRequest() {
-       // view.showProgress();
-
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
         getAllDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
@@ -251,7 +273,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllDayOffsSuccessResponse(List<RequestedTimeOff> allDayOffs) {
-       // view.hideProgress();
         if (allDayOffs == null || allDayOffs.isEmpty()) {
 
         } else {
@@ -270,8 +291,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllVacationsRequest() {
-       // view.showProgress();
-
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
         getAllVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
@@ -290,7 +309,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllVacationsSuccessResponse(List<RequestedTimeOff> allVacations) {
-       // view.hideProgress();
         if (allVacations == null || allVacations.isEmpty()) {
 
         } else {
@@ -309,8 +327,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void performGetAllIllnessesRequest() {
-       // view.showProgress();
-
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
         getAllIllnesses.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>() {
             @Override
@@ -329,7 +345,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllIllnessesSuccessResponse(List<RequestedTimeOff> allIllnesses) {
-       // view.hideProgress();
         if (allIllnesses == null || allIllnesses.isEmpty()) {
 
         } else {
@@ -345,12 +360,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             allTimeOffs.setIllnesses(actualIllnesses);
         }
 
-        if (tempShouldUpdate) {
-            // todo remove
-            // should be called after all requests only
-            view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
-            tempShouldUpdate = false;
-        }
+        // should be called after all requests only
+        view.updateTableWithDateRange(xItem, allTimeOffs, dateFrom, dateTo);
     }
 
 
@@ -378,7 +389,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleAllRequestedSuccessResponse(List<RequestedTimeOff> allRequested) {
-       // view.hideProgress();
+        // view.hideProgress();
         if (allRequested == null || allRequested.isEmpty()) {
 
         } else {

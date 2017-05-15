@@ -74,7 +74,9 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                Intent i = new Intent();
+                setResult(Activity.RESULT_CANCELED, i);
+                finish();
                 return true;
 
             default:

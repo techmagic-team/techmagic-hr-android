@@ -64,14 +64,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
-        return view;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
         presenter.setupPage();
+        return view;
     }
 
 
@@ -123,8 +117,18 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 selDepId = data.getStringExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA);
             }
 
-            from.setTimeInMillis(fromInMillis);
-            to.setTimeInMillis(toInMillis);
+            if (fromInMillis == 0) {
+                from = null;
+            } else {
+                from.setTimeInMillis(fromInMillis);
+            }
+
+            if (toInMillis == 0) {
+                to.setTimeInMillis(fromInMillis);
+            } else {
+                to.setTimeInMillis(toInMillis);
+            }
+
             presenter.updateCalendar(isMyTeamChecked, selDepId, from, to);
         }
     }

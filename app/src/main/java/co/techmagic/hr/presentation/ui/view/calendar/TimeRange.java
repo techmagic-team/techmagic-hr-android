@@ -60,7 +60,7 @@ public class TimeRange {
         Calendar current = Calendar.getInstance();
         current.setTimeInMillis(start.getTimeInMillis());
         int days = 0;
-        while (current.getTimeInMillis() < end.getTimeInMillis()) {
+        while (current.getTimeInMillis() <= end.getTimeInMillis()) {
             current.add(Calendar.DATE, 1);
             days++;
         }

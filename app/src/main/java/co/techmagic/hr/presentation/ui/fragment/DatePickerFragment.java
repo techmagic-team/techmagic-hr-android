@@ -73,12 +73,14 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         if (fmtDate != null) {
             if (isDateFromPicker) {
+                c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
                 fromDate = c;
-                selectedDateListener.displaySelectedFromDate(fmtDate, c, null);
+                selectedDateListener.displaySelectedFromDate(fmtDate, fromDate, null);
             } else {
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH)); // To last day of month
                 toDate = c;
                 if (DateUtil.isValidSelectedDatesRange(fromDate, toDate)) {
-                    selectedDateListener.displaySelectedToDate(fmtDate, null, c);
+                    selectedDateListener.displaySelectedToDate(fmtDate, null, toDate);
                 } else {
                     selectedDateListener.invalidDateRangeSelected(R.string.tm_hr_calendar_fragment_message_alert_dialog_invalid_date);
                 }
