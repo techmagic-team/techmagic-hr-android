@@ -67,7 +67,13 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                     }
                 });
 
-        return Observable.merge(illnessesObservable, vacationsObservable, dayOffObservable, holidaysObservable);
+        List<Observable<AllTimeOffsDto>> observables = new ArrayList<>();
+        observables.add(illnessesObservable);
+        observables.add(vacationsObservable);
+        observables.add(dayOffObservable);
+        observables.add(holidaysObservable);
+
+        return Observable.zip(observables, args -> (AllTimeOffsDto) args[0]);
     }
 
     private List<CalendarInfoDto> mapCalendarInfoCollection(List<CalendarInfo> calendarInfos) {
@@ -91,6 +97,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
             calendarInfoDto.setName(calendarInfo.getName());
             calendarInfoDto.setYear(calendarInfo.getYear());
             calendarInfoDto.setHolidays(mapHolidays(calendarInfo.getHolidays()));
+
+            return calendarInfoDto;
         }
 
         return null;
@@ -146,6 +154,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
             requestedTimeOffDto.setDateTo(requestedTimeOff.getDateTo());
             requestedTimeOffDto.setPaid(requestedTimeOff.isPaid());
             requestedTimeOffDto.setUserId(requestedTimeOff.getUserId());
+
+            return requestedTimeOffDto;
         }
 
         return null;
