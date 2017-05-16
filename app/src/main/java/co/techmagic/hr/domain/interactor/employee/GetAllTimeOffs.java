@@ -23,9 +23,11 @@ import rx.functions.Func1;
 
 public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDto, IEmployeeRepository> {
 
+
     public GetAllTimeOffs(IEmployeeRepository iEmployeeRepository) {
         super(iEmployeeRepository);
     }
+
 
     @Override
     protected Observable<AllTimeOffsDto> buildObservable(TimeOffAllRequest timeOffAllRequest) {
@@ -35,7 +37,12 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        allTimeOffsDto.getMap().put(TimeOffType.ILLNESS, mapCollection(requestedTimeOffs));
+                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allIllnesses = mapCollection(requestedTimeOffs, false);
+
+                        allTimeOffsDto.addRequested(requested);
+                        allTimeOffsDto.getMap().put(TimeOffType.ILLNESS, allIllnesses);
+
                         return Observable.just(allTimeOffsDto);
                     }
                 });
@@ -44,7 +51,12 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        allTimeOffsDto.getMap().put(TimeOffType.VACATION, mapCollection(requestedTimeOffs));
+                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allVacations = mapCollection(requestedTimeOffs, false);
+
+                        allTimeOffsDto.addRequested(requested);
+                        allTimeOffsDto.getMap().put(TimeOffType.VACATION, allVacations);
+
                         return Observable.just(allTimeOffsDto);
                     }
                 });
@@ -53,7 +65,12 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        allTimeOffsDto.getMap().put(TimeOffType.DAYOFF, mapCollection(requestedTimeOffs));
+                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allDayoffs = mapCollection(requestedTimeOffs, false);
+
+                        allTimeOffsDto.addRequested(requested);
+                        allTimeOffsDto.getMap().put(TimeOffType.DAYOFF, allDayoffs);
+
                         return Observable.just(allTimeOffsDto);
                     }
                 });
@@ -76,6 +93,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
         return Observable.zip(observables, args -> (AllTimeOffsDto) args[0]);
     }
 
+
     private List<CalendarInfoDto> mapCalendarInfoCollection(List<CalendarInfo> calendarInfos) {
         List<CalendarInfoDto> calendarInfoDtos = new ArrayList<>();
         if (calendarInfos != null) {
@@ -89,6 +107,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
 
         return calendarInfoDtos;
     }
+
 
     private CalendarInfoDto mapCalendarInfo(CalendarInfo calendarInfo) {
         if (calendarInfo != null) {
@@ -104,6 +123,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
         return null;
     }
 
+
     private List<HolidayDto> mapHolidays(List<Holiday> holidays) {
         List<HolidayDto> holidayDtos = new ArrayList<>();
         if (holidays != null) {
@@ -118,6 +138,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
         return holidayDtos;
     }
 
+
     private HolidayDto map(Holiday holiday) {
         if (holiday != null) {
             HolidayDto holidayDto = new HolidayDto();
@@ -130,20 +151,29 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
         return null;
     }
 
-    private List<RequestedTimeOffDto> mapCollection(List<RequestedTimeOff> requestedTimeOffs) {
-        List<RequestedTimeOffDto> requestedTimeOffDtos = new ArrayList<>();
+
+    private List<RequestedTimeOffDto> mapCollection(List<RequestedTimeOff> requestedTimeOffs, boolean requestedOnly) {
+        List<RequestedTimeOffDto> timeOffDtos = new ArrayList<>();
 
         if (requestedTimeOffs != null) {
             for (RequestedTimeOff requestedTimeOff : requestedTimeOffs) {
                 RequestedTimeOffDto requestedTimeOffDto = map(requestedTimeOff);
-                if (requestedTimeOffDto != null) {
-                    requestedTimeOffDtos.add(requestedTimeOffDto);
+
+                if (requestedTimeOffDto == null) {
+                    return timeOffDtos;
+                }
+
+                if (requestedOnly && requestedTimeOffDto.isAccepted()) {
+                    timeOffDtos.add(requestedTimeOffDto);
+                } else {
+                    timeOffDtos.add(requestedTimeOffDto);
                 }
             }
         }
 
-        return requestedTimeOffDtos;
+        return timeOffDtos;
     }
+
 
     private RequestedTimeOffDto map(RequestedTimeOff requestedTimeOff) {
         if (requestedTimeOff != null) {

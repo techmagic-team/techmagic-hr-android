@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,11 +20,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
+import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
@@ -41,6 +44,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     TimeTable timeTable;
 
     private ActionBarChangeListener actionBarChangeListener;
+    private FragmentCallback fragmentCallback;
 
     private boolean isMyTeamChecked = true; // by default
     private long fromInMillis = 0;
@@ -58,6 +62,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         super.onAttach(context);
         setHasOptionsMenu(true);
         actionBarChangeListener = (ActionBarChangeListener) context;
+        fragmentCallback = (FragmentCallback) context;
     }
 
 
@@ -162,7 +167,12 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             public void updateTableWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo) {
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this);
+                timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this, CalendarFragment.this);
+            }
+
+            @Override
+            public void addDetailsFragment(@NonNull Docs docs) {
+                fragmentCallback.addDetailsFragment(docs, HomeActivity.FRAGMENT_DETAILS_TAG);
             }
         };
     }
@@ -175,8 +185,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     @Override
-    public void onEmployeeItemClick() {
-        // fragmentCallback.addDetailsFragment();
+    public void onEmployeeItemClick(@NonNull String employeeId) {
+        presenter.onEmployeeClick(employeeId);
     }
 
 

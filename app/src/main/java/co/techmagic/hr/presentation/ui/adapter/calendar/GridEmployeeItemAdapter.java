@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,8 +39,6 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
 
         holder.tvItemY.setText(getName());
         holder.itemView.setBackgroundResource(R.drawable.item_bg);
-        holder.itemView.setTag(this);
-       // holder.itemView.setOnClickListener(v -> onEmployeeItemClickListener.onEmployeeItemClick());
     }
 
 
@@ -77,7 +76,7 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
 
     @Override
     public String getId() {
-        return model.getId() == null ? null : model.getId();
+        return model.getId();
     }
 
 
@@ -111,6 +110,6 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
 
 
     public interface OnEmployeeItemClickListener {
-        void onEmployeeItemClick();
+        void onEmployeeItemClick(@NonNull String employeeId);
     }
 }

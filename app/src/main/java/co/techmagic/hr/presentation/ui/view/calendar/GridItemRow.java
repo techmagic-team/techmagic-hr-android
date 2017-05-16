@@ -14,93 +14,44 @@ import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
-import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 /**
  * Created by Wiebe Geertsma on 13-12-2016.
  * E-mail: e.w.geertsma@gmail.com
  */
 
-public class GridItemRow<T extends IGridItem> {
+public class GridItemRow {
 
     private EmployeeGridYitem employeeGridYitem;
     private List<GridCellItemAdapter> items;
 
+
     public GridItemRow(EmployeeGridYitem employeeGridYitem, TimeRange timeRange, List<UserTimeOff> timeOffs, List<CalendarInfoDto> calendarInfo) {
         this.employeeGridYitem = employeeGridYitem;
-        items = generateGridItems(fitItems(timeOffs), timeRange, calendarInfo);
-    }
-
-//    /**
-//     * Convert a list of potentially overlapping items into a list of lists containing IGridItems that don't overlap.
-//     *
-//     * @param list the unsorted list of IGridItems
-//     * @return the list of
-//     */
-
-//    private static <T extends IGridItem> List<List<T>> fitItems(List<UserTimeOff> list) {
-//        List<List<T>> sortedList = new ArrayList<>();
-//        sortedList.add(new ArrayList<>()); // Add the initial item
-//
-//        // Cycle until there are no more items left
-//        for (T item : list) {
-//            boolean wasAdded = true;
-//            for (List<T> currentRowList : sortedList) {
-//                boolean fitsInCurrentRow = true;
-//                for (IGridItem rowItem : currentRowList) { // Check if there are overlapping items in this row
-//                    if (item.getTimeRange() != null && rowItem.getTimeRange() != null && item.getTimeRange().overlaps(rowItem.getTimeRange())) {
-//                        fitsInCurrentRow = false;
-//                        break;
-//                    }
-//                }
-//
-//                if (fitsInCurrentRow)
-//                    currentRowList.add(item);
-//                else
-//                    wasAdded = false;
-//            }
-//            if (!wasAdded) {
-//                List<T> newList = new ArrayList<>();
-//                newList.add(item);
-//                sortedList.add(newList);
-//            }
-//        }
-//
-//        return sortedList;
-//    }
-
-    private static boolean shouldTimeOffBeInCurrentCell(String start, String end, Date inputDate) {
-       // return DateUtil.isValidDatesRange(start, end, inputDate);
-        return true; // todo
+        items = generateGridItems(fitItems(timeOffs, timeRange), timeRange, calendarInfo);
     }
 
     /**
-     * Here we get the final items for display.
-     * We determine if we need one or two rows.
-     * If we need two rows for this person, this function returns a total of two rows of items.
+     * Convert a list of potentially overlapping items into a list of lists containing IGridItems that don't overlap.
      *
-     * @return all items for all required rows for this person.
+     * @param list the unsorted list of IGridItems
+     * @return the list of
      */
 
-    public List<GridCellItemAdapter> getItems() {
-        return items;
+
+    private List<UserTimeOff> fitItems(List<UserTimeOff> list, TimeRange timeRange) {
+        List<UserTimeOff> sortedTimeOffs = new ArrayList<>();
+        for (UserTimeOff userTimeOff : list) {
+            if (timeRange != null && userTimeOff.getTimeRange() != null && timeRange.overlaps(userTimeOff.getTimeRange())) {
+                sortedTimeOffs.add(userTimeOff);
+                break;
+            }
+        }
+
+        return sortedTimeOffs;
     }
 
-    public EmployeeGridYitem getEmployeeGridYitem() {
-        return employeeGridYitem;
-    }
-
-    public String getId() {
-        return employeeGridYitem.getId();
-    }
-
-    public String getPersonName() {
-        return employeeGridYitem.getName();
-    }
-
-    public String getPhotoUrl() {
-        return employeeGridYitem.getPhotoUrl();
-    }
 
     private List<GridCellItemAdapter> generateGridItems(List<UserTimeOff> timeOffs, TimeRange timeRange, List<CalendarInfoDto> calendarInfoList) {
         final int columns = timeRange.getColumnCount();
@@ -108,7 +59,6 @@ public class GridItemRow<T extends IGridItem> {
 
         Calendar cellTime = Calendar.getInstance();
         cellTime.setTimeInMillis(timeRange.getStart().getTimeInMillis());
-        cellTime.add(Calendar.DATE, 1);
 
         for (int x = 0; x < columns; x++) {
             GridCellItemAdapter gridCellItemAdapter = new GridCellItemAdapter();
@@ -163,12 +113,25 @@ public class GridItemRow<T extends IGridItem> {
                 }
             }
 
+
+            /* Check for requested */
+            List<UserTimeOff> requestedList = getTimeOff(timeOffs, TimeOffType.REQUESTED);
+
+            if (requestedList != null) {
+                for (UserTimeOff requested : requestedList) {
+                    if (shouldTimeOffBeInCurrentCell(requested.getDateFrom(), requested.getDateTo(), cellTime.getTime())) {
+                        gridCellItemAdapter.setHasRequested(true);
+                    }
+                }
+            }
+
             gridItems.add(gridCellItemAdapter);
-            cellTime.add(Calendar.DATE, 1);
+            cellTime.add(Calendar.DATE, 1); // go to next day
         }
 
         return gridItems;
     }
+
 
     private List<UserTimeOff> getTimeOff(List<UserTimeOff> timeOffs, @NonNull TimeOffType timeOffType) {
         List<UserTimeOff> targetTimeOffs = new ArrayList<>(timeOffs.size());
@@ -185,8 +148,40 @@ public class GridItemRow<T extends IGridItem> {
         return targetTimeOffs;
     }
 
-    private List<UserTimeOff> fitItems(List<UserTimeOff> list) {
-        // TODO: 5/15/17
-        return list;
+
+    private static boolean shouldTimeOffBeInCurrentCell(Date start, Date end, Date inputDate) {
+        return DateUtil.isValidDatesRange(start, end, inputDate);
+    }
+
+    /**
+     * Here we get the final items for display.
+     * We determine if we need one or two rows.
+     * If we need two rows for this person, this function returns a total of two rows of items.
+     *
+     * @return all items for all required rows for this person.
+     */
+
+    public List<GridCellItemAdapter> getItems() {
+        return items;
+    }
+
+
+    public EmployeeGridYitem getEmployeeGridYitem() {
+        return employeeGridYitem;
+    }
+
+
+    public String getId() {
+        return employeeGridYitem.getId();
+    }
+
+
+    public String getPersonName() {
+        return employeeGridYitem.getName();
+    }
+
+
+    public String getPhotoUrl() {
+        return employeeGridYitem.getPhotoUrl();
     }
 }

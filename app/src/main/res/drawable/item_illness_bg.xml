@@ -5,6 +5,6 @@
         android:width="1px"
         android:color="@android:color/black" />
 
-    <solid android:color="@color/colorHoliday" />
+    <solid android:color="@color/colorIllness" />
 
 </shape>

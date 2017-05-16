@@ -38,9 +38,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String DOCS_OBJECT_PARAM = "docs_object_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
-    private static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
+    public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
-    private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
+    public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;

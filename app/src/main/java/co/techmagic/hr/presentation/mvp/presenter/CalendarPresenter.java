@@ -151,6 +151,21 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
+    public void onEmployeeClick(@NonNull String employeeId) {
+        Docs selectedEmployee = null;
+        List<Docs> employees = xItem.getEmployees();
+        for (Docs d : employees) {
+            if (d.getId().equals(employeeId) ) {
+                selectedEmployee = d;
+            }
+        }
+
+        if (selectedEmployee != null) {
+            view.addDetailsFragment(selectedEmployee);
+        }
+    }
+
+
     private void setupDefaultCalendarRange() {
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
@@ -178,27 +193,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
         return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
-    }
-
-
-    private void performGetAllTimeOffsRequests() {
-        view.showProgress();
-        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
-        getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>(view) {
-            @Override
-            public void onNext(AllTimeOffsDto allTimeOffsDto) {
-                view.hideProgress();
-
-                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
-                view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                view.hideProgress();
-            }
-        });
     }
 
 
@@ -230,6 +224,25 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         } else {
             xItem.setEmployees(result);
         }
+    }
+
+
+    private void performGetAllTimeOffsRequests() {
+        view.showProgress();
+        final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
+        getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>() {
+            @Override
+            public void onNext(AllTimeOffsDto allTimeOffsDto) {
+                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
+                view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
     }
 
 

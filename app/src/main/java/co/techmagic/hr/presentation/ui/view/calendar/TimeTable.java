@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
@@ -99,11 +102,12 @@ public class TimeTable extends FrameLayout {
      * Sets the items to be displayed.
      */
 
-    public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo, @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener) {
+    public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo,
+                                      @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener, @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
 
         /* Hide progress listener */
 
-        guideY.setTag(guideY.getVisibility());
+      //  guideY.setTag(guideY.getVisibility());
         ViewTreeObserver observer = guideY.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(() -> {
             int visibility = guideY.getVisibility();
@@ -112,7 +116,7 @@ public class TimeTable extends FrameLayout {
                 onCalendarViewReadyListener.onCalendarVisible();
             }
 
-            guideY.setTag(visibility);
+           // guideY.setTag(visibility);
         });
 
         setTimeRange(dateFrom, dateTo);
@@ -136,7 +140,7 @@ public class TimeTable extends FrameLayout {
 
         List<GridItemRow> rows = new ArrayList<>();
         for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
-            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto());
+            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
 
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
@@ -157,7 +161,7 @@ public class TimeTable extends FrameLayout {
         }
 
         setGridItems(allGridItems);
-        setEmployeeItems(employeeItems, null);
+        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
         scrollToCurrentMonth();
     }
@@ -285,7 +289,14 @@ public class TimeTable extends FrameLayout {
         if (guideYadapter == null) {
             guideYadapter = new FastItemAdapter();
             guideYadapter.setHasStableIds(true);
-            guideYadapter.withSelectable(false);
+            guideYadapter.withSelectable(true);
+            guideYadapter.withOnClickListener(new FastAdapter.OnClickListener() {
+                @Override
+                public boolean onClick(View v, IAdapter adapter, IItem item, int position) {
+                    onEmployeeItemClickListener.onEmployeeItemClick(items.get(position).getId());
+                    return true;
+                }
+            });
             guideY.setAdapter(guideYadapter);
         }
 

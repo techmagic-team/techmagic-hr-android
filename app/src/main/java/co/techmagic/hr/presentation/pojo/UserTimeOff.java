@@ -1,6 +1,9 @@
 package co.techmagic.hr.presentation.pojo;
 
+import java.util.Date;
+
 import co.techmagic.hr.common.TimeOffType;
+import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
 
 /**
  * Created by Roman Ursu on 5/12/17
@@ -10,11 +13,12 @@ public class UserTimeOff {
 
     private String userId;
     private String companyId;
-    private String dateFrom;
-    private String dateTo;
+    private Date dateFrom;
+    private Date dateTo;
     private boolean isPaid;
     private boolean isAccepted;
     private TimeOffType timeOffType;
+    private TimeRange timeRange;
 
     public String getUserId() {
         return userId;
@@ -32,19 +36,19 @@ public class UserTimeOff {
         this.companyId = companyId;
     }
 
-    public String getDateFrom() {
+    public Date getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(String dateFrom) {
+    public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public String getDateTo() {
+    public Date getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(String dateTo) {
+    public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
     }
 
@@ -70,5 +74,10 @@ public class UserTimeOff {
 
     public void setTimeOffType(TimeOffType timeOffType) {
         this.timeOffType = timeOffType;
+    }
+
+    public TimeRange getTimeRange() {
+        timeRange = new TimeRange(dateFrom, dateTo);
+        return timeRange;
     }
 }
