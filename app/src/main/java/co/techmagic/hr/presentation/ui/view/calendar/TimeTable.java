@@ -14,9 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import java.util.ArrayList;
@@ -107,7 +104,6 @@ public class TimeTable extends FrameLayout {
 
         /* Hide progress listener */
 
-      //  guideY.setTag(guideY.getVisibility());
         ViewTreeObserver observer = guideY.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(() -> {
             int visibility = guideY.getVisibility();
@@ -115,9 +111,16 @@ public class TimeTable extends FrameLayout {
             if (visibility == VISIBLE) {
                 onCalendarViewReadyListener.onCalendarVisible();
             }
-
-           // guideY.setTag(visibility);
         });
+
+        /*ViewTreeObserver gridObserver = recyclerView.getViewTreeObserver();
+        gridObserver.addOnGlobalLayoutListener(() -> {
+            int visibility = guideY.getVisibility();
+
+            if (visibility == VISIBLE) {
+                scrollToCurrentMonth();
+            }
+        });*/
 
         setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(calendarToMidnightMillis(left));
@@ -144,7 +147,7 @@ public class TimeTable extends FrameLayout {
 
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser , calendarInfo);
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, calendarInfo);
             rows.add(gridRow);
         }
 
@@ -163,7 +166,7 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-        scrollToCurrentMonth();
+        //scrollToCurrentMonth();
     }
 
 
@@ -191,8 +194,10 @@ public class TimeTable extends FrameLayout {
 
         guideY.setHasFixedSize(true);
         guideY.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+
         // Do not allow scrolling with the X or Y for now because we do not have a scrollToPositionWithOffset yet in our FixedGridLayout
-        guideY.addOnItemTouchListener(itemTouchListener);
+        // guideY.addOnItemTouchListener(itemTouchListener); // !!! Touch listener intercepts click event !!!
 
         observedList = new ArrayList<RecyclerView>() {{
             add(guideX);
@@ -285,17 +290,16 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public <T extends IGuideYItem> void setEmployeeItems(List<T> items, GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
+    public void setEmployeeItems(List<GridEmployeeItemAdapter> items, @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
         if (guideYadapter == null) {
             guideYadapter = new FastItemAdapter();
             guideYadapter.setHasStableIds(true);
             guideYadapter.withSelectable(true);
-            guideYadapter.withOnClickListener(new FastAdapter.OnClickListener() {
-                @Override
-                public boolean onClick(View v, IAdapter adapter, IItem item, int position) {
-                    onEmployeeItemClickListener.onEmployeeItemClick(items.get(position).getId());
-                    return true;
+            guideYadapter.withOnClickListener((v, adapter, item, position) -> {
+                if (item instanceof IGuideYItem) {
+                    onEmployeeItemClickListener.onEmployeeItemClick(((IGuideYItem) item).getId());
                 }
+                return true;
             });
             guideY.setAdapter(guideYadapter);
         }

@@ -57,7 +57,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private ActionBar actionBar;
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
-    private ProfileTypes profileType = ProfileTypes.NONE;
 
     private String selDepId;
     private String selLeadId;
@@ -129,15 +128,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
             @Override
             public void showEmployeeDetails(@NonNull Docs data) {
-                profileType = ProfileTypes.EMPLOYEE;
                 allowChangeTab = true;
-                addDetailsFragment(data, FRAGMENT_DETAILS_TAG);
+                addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
             public void showMyProfile(@NonNull Docs data) {
-                profileType = ProfileTypes.MY_PROFILE;
-                addDetailsFragment(data, FRAGMENT_MY_PROFILE_TAG);
+                addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
             @Override
@@ -230,7 +227,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs docs, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull Docs docs, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
         bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
@@ -281,7 +278,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
-                        profileType = ProfileTypes.NONE;
                         clearFragmentsBackStack(this);
                     }
                     break;

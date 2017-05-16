@@ -172,7 +172,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
             @Override
             public void addDetailsFragment(@NonNull Docs docs) {
-                fragmentCallback.addDetailsFragment(docs, HomeActivity.FRAGMENT_DETAILS_TAG);
+                fragmentCallback.addDetailsFragment(docs, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
             }
         };
     }

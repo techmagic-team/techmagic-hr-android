@@ -26,7 +26,6 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
-import co.techmagic.hr.presentation.ui.adapter.calendar.ReadyToDisplayXitem;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
@@ -36,7 +35,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private GetCalendar getCalendar;
     private GetAllTimeOffs getAllTimeOffs;
 
-    private ReadyToDisplayXitem xItem;
+    private List<Docs> employees;
 
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
@@ -53,7 +52,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getAllTimeOffs = new GetAllTimeOffs(employeeRepository);
         getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
         getCalendar = new GetCalendar(employeeRepository);
-        xItem = new ReadyToDisplayXitem();
+        employees = new ArrayList<>();
     }
 
 
@@ -153,7 +152,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public void onEmployeeClick(@NonNull String employeeId) {
         Docs selectedEmployee = null;
-        List<Docs> employees = xItem.getEmployees();
         for (Docs d : employees) {
             if (d.getId().equals(employeeId) ) {
                 selectedEmployee = d;
@@ -222,7 +220,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         if (result == null || result.isEmpty()) {
             view.showNoResults();
         } else {
-            xItem.setEmployees(result);
+            employees = result;
         }
     }
 
@@ -233,7 +231,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>() {
             @Override
             public void onNext(AllTimeOffsDto allTimeOffsDto) {
-                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
+                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(allTimeOffsDto);
                 view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
             }
 
@@ -246,11 +244,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    private UserAllTimeOffsMap prepareMap(ReadyToDisplayXitem xItem, AllTimeOffsDto allTimeOffs) {
+    private UserAllTimeOffsMap prepareMap(AllTimeOffsDto allTimeOffs) {
         UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
 
-        List<String> userIds = new ArrayList<>(xItem.getEmployees().size());
-        for (Docs doc : xItem.getEmployees()) {
+        List<String> userIds = new ArrayList<>(employees.size());
+        for (Docs doc : employees) {
             userIds.add(doc.getId());
         }
 
@@ -269,7 +267,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         }
 
         // sort data by user
-        for (Docs doc : xItem.getEmployees()) {
+        for (Docs doc : employees) {
 
             List<UserTimeOff> userTimeOffs = new ArrayList<>();
 

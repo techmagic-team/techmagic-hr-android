@@ -18,12 +18,10 @@ import co.techmagic.hr.presentation.ui.view.calendar.GridItemRow;
 public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapter, GridEmployeeItemAdapter.ViewHolder> implements IGuideYItem {
 
     private final GridItemRow model;
-    private OnEmployeeItemClickListener onEmployeeItemClickListener;
 
 
     public GridEmployeeItemAdapter(GridItemRow model) {
         this.model = model;
-        this.onEmployeeItemClickListener = onEmployeeItemClickListener;
     }
 
 
@@ -37,6 +35,7 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
                 .placeholder(R.drawable.ic_user_placeholder)
                 .into(holder.ivPhotoItemY);
 
+        withTag(this);
         holder.tvItemY.setText(getName());
         holder.itemView.setBackgroundResource(R.drawable.item_bg);
     }
@@ -73,7 +72,6 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
         return R.layout.item_grid_employee;
     }
 
-
     @Override
     public String getId() {
         return model.getId();
@@ -84,7 +82,6 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
     public String getName() {
         return model.getPersonName() == null ? null : model.getPersonName();
     }
-
 
     @Override
     public String getPhotoUrl() {
@@ -98,13 +95,11 @@ public class GridEmployeeItemAdapter extends AbstractItem<GridEmployeeItemAdapte
         ImageView ivPhotoItemY;
         TextView tvItemY;
 
-
         public ViewHolder(View view) {
             super(view);
             root = view.findViewById(R.id.llItemY);
             ivPhotoItemY = (ImageView) view.findViewById(R.id.ivPhotoItemY);
             tvItemY = (TextView) view.findViewById(R.id.tvItemY);
-           // itemView.setOnClickListener(this);
         }
     }
 
