@@ -65,8 +65,14 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
-        presenter.setupPage();
         return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.setupPage();
     }
 
 
@@ -107,8 +113,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Calendar from = Calendar.getInstance();
-        Calendar to = Calendar.getInstance();
+        Calendar from = null;
+        Calendar to = null;
 
         if (requestCode == CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -118,15 +124,13 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 selDepId = data.getStringExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA);
             }
 
-            if (fromInMillis == 0) {
-                from = null;
-            } else {
+            if (fromInMillis != 0) {
+                from = Calendar.getInstance();
                 from.setTimeInMillis(fromInMillis);
             }
 
-            if (toInMillis == 0) {
-                to.setTimeInMillis(fromInMillis);
-            } else {
+            if (toInMillis != 0) {
+                to = Calendar.getInstance();
                 to.setTimeInMillis(toInMillis);
             }
 
