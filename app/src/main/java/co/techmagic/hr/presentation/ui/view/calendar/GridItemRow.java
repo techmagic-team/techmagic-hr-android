@@ -8,20 +8,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import co.techmagic.hr.common.TimeOffType;
-import co.techmagic.hr.data.entity.CalendarInfo;
-import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
-import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
-import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
-import co.techmagic.hr.presentation.ui.adapter.calendar.AllTimeOffs;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGridItem;
-import co.techmagic.hr.presentation.util.DateUtil;
 
 /**
  * Created by Wiebe Geertsma on 13-12-2016.
@@ -76,8 +69,9 @@ public class GridItemRow<T extends IGridItem> {
 //        return sortedList;
 //    }
 
-    private static boolean shouldTimeOffBeInCurrentCell(Date start, Date end, Date inputDate) {
-        return DateUtil.isValidDatesRange(start, end, inputDate);
+    private static boolean shouldTimeOffBeInCurrentCell(String start, String end, Date inputDate) {
+       // return DateUtil.isValidDatesRange(start, end, inputDate);
+        return true; // todo
     }
 
     /**

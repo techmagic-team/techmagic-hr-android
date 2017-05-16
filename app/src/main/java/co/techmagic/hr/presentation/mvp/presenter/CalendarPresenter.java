@@ -46,8 +46,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private long toInMillis = 0;
     private String depId;
 
-    private boolean tempShouldUpdate = true; // todo
-
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
@@ -58,6 +56,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         xItem = new ReadyToDisplayXitem();
     }
 
+
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
@@ -65,6 +64,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getEmployeesByDepartment.unsubscribe();
         getCalendar.unsubscribe();
     }
+
 
     public void setupPage() {
         setupDefaultCalendarRange();
@@ -100,6 +100,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             updateCalendar(isMyTeam, depId, from, to);
         }
     }
+
 
     public void updateCalendar(boolean isMyTeamChecked, String selDepId, @Nullable Calendar from, @Nullable Calendar to) {
         isMyTeam = isMyTeamChecked;
@@ -138,6 +139,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         performRequests();
     }
 
+
     public void onClearFiltersClick() {
         isMyTeam = true;
         fromInMillis = 0;
@@ -148,7 +150,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         performGetEmployeesByDepartmentRequest();
     }
 
-    private void setupCalendarRange() {
 
     private void setupDefaultCalendarRange() {
         Calendar from = Calendar.getInstance();
@@ -157,18 +158,12 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         showToDecemberDate(to);
     }
 
-    private void performRequests() {
-        performGetEmployeesByDepartmentRequest();
-    }
-
-    private void showFromDate(Calendar c) {
 
     private void showFromJanuaryDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
         dateFrom = c;
     }
 
-    private void showToDate(Calendar c) {
 
     private void showToDecemberDate(Calendar c) {
         c.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
@@ -185,20 +180,17 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
     }
 
+
     private void performGetAllTimeOffsRequests() {
         view.showProgress();
         final TimeOffAllRequest request = new TimeOffAllRequest(dateFrom.getTimeInMillis(), dateTo.getTimeInMillis());
         getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>(view) {
-
             @Override
             public void onNext(AllTimeOffsDto allTimeOffsDto) {
                 view.hideProgress();
 
-                if (tempShouldUpdate) {
-                    UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
-                    view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
-                    tempShouldUpdate = false;
-                }
+                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(xItem, allTimeOffsDto);
+                view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
             }
 
             @Override
@@ -209,11 +201,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         });
     }
 
+
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
-        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(false, depId);
-        getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>(view) {
         final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
@@ -231,6 +222,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         });
     }
 
+
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
         final List<Docs> result = response.getDocs();
         if (result == null || result.isEmpty()) {
@@ -240,12 +232,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         }
     }
 
+
     private UserAllTimeOffsMap prepareMap(ReadyToDisplayXitem xItem, AllTimeOffsDto allTimeOffs) {
         UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
-    /**
-     * view.showProgress() should be called only once
-     * view.hideProgress() will be called in Timetable.setItemsWithDateRange() method
-     */
 
         List<String> userIds = new ArrayList<>(xItem.getEmployees().size());
         for (Docs doc : xItem.getEmployees()) {
@@ -292,8 +281,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         return userAllTimeOffsMap;
     }
 
+
     private UserTimeOff map(RequestedTimeOffDto requestedTimeOffDto) {
-        if (requestedTimeOffDto != null) {
+        if (requestedTimeOffDto == null) {
+            return null;
+        } else {
             UserTimeOff userTimeOff = new UserTimeOff();
             userTimeOff.setPaid(requestedTimeOffDto.isPaid());
             userTimeOff.setAccepted(requestedTimeOffDto.isAccepted());
@@ -302,8 +294,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             userTimeOff.setDateTo(requestedTimeOffDto.getDateTo());
 
             return userTimeOff;
-        } else {
-            return null;
         }
     }
 }

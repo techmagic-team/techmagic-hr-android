@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.ui.view.calendar;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,6 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
-import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -99,9 +99,7 @@ public class TimeTable extends FrameLayout {
      * Sets the items to be displayed.
      */
 
-    public <T extends IGridItem> void setItemsWithDateRange(@NonNull T data, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar calFrom, @NonNull Calendar calTo,
-                                                            @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener,
-                                                            @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener) {
+    public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo, @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener) {
 
         /* Hide progress listener */
 
@@ -117,12 +115,10 @@ public class TimeTable extends FrameLayout {
             guideY.setTag(visibility);
         });
 
-        setTimeRange(calFrom, calTo);
-    public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo, CalendarFragment calendarFragment) {
-        left = dateFrom;
-        right = dateTo;
+        setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
+
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -138,30 +134,9 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
-        List<Pair<EmployeeGridYitem, List<IGridItem>>> pairs = new ArrayList<>();
-
-        for (int i = 0; i < data.getEmployees().size(); i++) {
-            Docs item = data.getEmployees().get(i);
-            Pair<EmployeeGridYitem, List<IGridItem>> pair = null;
-            for (Pair<EmployeeGridYitem, List<IGridItem>> p : pairs) {
-                if (p.first.getName() != null && p.first.getName().equals(item.getPersonName())) {
-                    pair = p;
-                    break;
-                }
-            }
-
-            if (pair == null)
-                pair = new Pair<>(new EmployeeGridYitem(item.getId(), item.getPersonName(), item.getPhotoUrl()), new ArrayList<IGridItem>());
-
-            pair.second.add(item);
-
-            if (!pairs.contains(pair))
-                pairs.add(pair);
-        }
-
         List<GridItemRow> rows = new ArrayList<>();
         for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
-            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhotoOrigin());
+            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto());
 
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
@@ -185,8 +160,8 @@ public class TimeTable extends FrameLayout {
         setEmployeeItems(employeeItems, null);
         requestLayout();
         scrollToCurrentMonth();
-        // center(); // todo scroll to current month
     }
+
 
     private void construct(final int itemCount) {
         final RecyclerView.OnItemTouchListener itemTouchListener = new RecyclerView.OnItemTouchListener() {

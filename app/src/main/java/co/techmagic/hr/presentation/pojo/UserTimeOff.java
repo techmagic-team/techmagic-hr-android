@@ -1,7 +1,5 @@
 package co.techmagic.hr.presentation.pojo;
 
-import java.util.Date;
-
 import co.techmagic.hr.common.TimeOffType;
 
 /**
@@ -12,8 +10,8 @@ public class UserTimeOff {
 
     private String userId;
     private String companyId;
-    private Date dateFrom;
-    private Date dateTo;
+    private String dateFrom;
+    private String dateTo;
     private boolean isPaid;
     private boolean isAccepted;
     private TimeOffType timeOffType;
@@ -34,19 +32,19 @@ public class UserTimeOff {
         this.companyId = companyId;
     }
 
-    public Date getDateFrom() {
+    public String getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(Date dateFrom) {
+    public void setDateFrom(String dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public Date getDateTo() {
+    public String getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(Date dateTo) {
+    public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
     }
 

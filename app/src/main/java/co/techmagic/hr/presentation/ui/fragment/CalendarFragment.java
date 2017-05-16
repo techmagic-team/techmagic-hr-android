@@ -139,13 +139,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     protected CalendarViewImpl initView() {
         return new CalendarViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
-            public <T extends IGridItem> void updateTableWithDateRange(@NonNull T item, @NonNull AllTimeOffs allTimeOffs, @NonNull Calendar from, @NonNull Calendar to) {
-                tvNoResults.setVisibility(View.GONE);
-                timeTable.setVisibility(View.VISIBLE);
-                timeTable.setItemsWithDateRange(item, allTimeOffs, from, to, CalendarFragment.this, CalendarFragment.this);
-            }
-
-            @Override
             public void showNoResults() {
                 timeTable.setVisibility(View.GONE);
                 tvNoResults.setVisibility(View.VISIBLE);

@@ -1,7 +1,5 @@
 package co.techmagic.hr.domain.pojo;
 
-import java.util.Date;
-
 /**
  * Created by Roman Ursu on 5/12/17
  */
@@ -10,8 +8,8 @@ public class RequestedTimeOffDto {
 
     private String userId;
     private String companyId;
-    private Date dateFrom;
-    private Date dateTo;
+    private String dateFrom;
+    private String dateTo;
     private boolean isPaid;
     private boolean isAccepted;
 
@@ -31,19 +29,19 @@ public class RequestedTimeOffDto {
         this.companyId = companyId;
     }
 
-    public Date getDateFrom() {
+    public String getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(Date dateFrom) {
+    public void setDateFrom(String dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public Date getDateTo() {
+    public String getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(Date dateTo) {
+    public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
     }
 

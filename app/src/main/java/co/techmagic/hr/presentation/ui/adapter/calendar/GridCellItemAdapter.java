@@ -11,12 +11,14 @@ import java.util.List;
 import co.techmagic.hr.R;
 
 public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridCellItemAdapter.ViewHolder> {
+
     private boolean isStart, isWeekend;
     private boolean hasHolidays;
     private boolean hasVacation;
     private boolean hasDayOff;
     private boolean hasIllness;
     private boolean hasRequested;
+
 
     @Override
     public void bindView(ViewHolder holder, List payloads) {
