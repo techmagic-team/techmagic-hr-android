@@ -37,21 +37,14 @@ public class DateUtil {
     }
 
 
-    public static Date getFormattedFullDate(@Nullable Date inputData) {
-        Date formattedDate = null;
+    public static String getFormattedFullDate(@Nullable Date inputData) {
+        String formattedDate = null;
 
         if (inputData == null) {
             return formattedDate;
         }
 
-        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        try {
-            String date = outputFullDateFormat.format(inputData);
-            formattedDate = inputFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        formattedDate = outputFullDateFormat.format(inputData);
 
         return formattedDate;
     }
