@@ -1,12 +1,12 @@
 package co.techmagic.hr.domain.pojo;
 
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Roman Ursu on 5/12/17
  */
 
 public class HolidayDto {
+
     private int date;
     private String name;
 

@@ -11,6 +11,7 @@ import co.techmagic.hr.data.entity.Docs;
  */
 
 public class UserAllTimeOffsMap {
+
     private Map<Docs, List<UserTimeOff>> map = new HashMap<>();
 
     public Map<Docs, List<UserTimeOff>> getMap() {

@@ -165,8 +165,6 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
 
                 if (requestedOnly && requestedTimeOffDto.isAccepted()) {
                     timeOffDtos.add(requestedTimeOffDto);
-                } else {
-                    timeOffDtos.add(requestedTimeOffDto);
                 }
             }
         }
