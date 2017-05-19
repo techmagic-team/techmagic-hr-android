@@ -5,5 +5,5 @@ package co.techmagic.hr.common;
  */
 
 public enum TimeOffType {
-    VACATION, DAYOFF, ILLNESS, REQUESTED, HOLIDAY, WEEKEND;
+    VACATION, DAYOFF, ILLNESS, REQUESTED
 }

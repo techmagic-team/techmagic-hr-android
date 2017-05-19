@@ -24,22 +24,35 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        if (hasVacation) {
-            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
-        } else if (hasDayOff) {
-            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
-        } else if (hasIllness) {
-            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
-        } else if (hasRequested) {
-            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        if (isWeekend) {
+            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+            return;
         }
 
         if (hasHolidays) {
             holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
-        } else if (isWeekend) {
-            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+            return;
+        }
+
+        if (hasVacation) {
+            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
+            return;
+        }
+
+        if (hasDayOff) {
+            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
+            return;
+        }
+
+        if (hasIllness) {
+            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
+            return;
+        }
+
+        if (hasRequested) {
+            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
     }
 

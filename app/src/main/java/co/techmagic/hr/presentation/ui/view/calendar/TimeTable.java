@@ -146,6 +146,7 @@ public class TimeTable extends FrameLayout {
             EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
 
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+           // List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
             GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, calendarInfo);
             rows.add(gridRow);
@@ -166,7 +167,6 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-        //scrollToCurrentMonth();
     }
 
 
@@ -348,5 +348,19 @@ public class TimeTable extends FrameLayout {
         }
 
         return timeOffsForUser;
+    }
+
+    private List<UserTimeOff> getRequestedTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
+        Set<Docs> users = userAllTimeOffsMap.getRequestedMap().keySet();
+        List<UserTimeOff> requestedTimeOffsForUser = new ArrayList<>();
+
+        for (Docs user : users) {
+            if (userId.equals(user.getId())) {
+                requestedTimeOffsForUser.addAll(userAllTimeOffsMap.getRequestedMap().get(user));
+                break;
+            }
+        }
+
+        return requestedTimeOffsForUser;
     }
 }

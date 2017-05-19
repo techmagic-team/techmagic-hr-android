@@ -108,7 +108,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<List<RequestedTimeOff>> getAllDayOffs(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getAllDayOffs(request.getDateFrom(), request.getDateFrom());
+            return client.getEmployeeClient().getAllDayOffs(request.getDateFrom(), request.getDateTo());
         }
 
         return Observable.error(new NetworkConnectionException());

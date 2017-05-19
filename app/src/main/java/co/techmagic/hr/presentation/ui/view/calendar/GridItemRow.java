@@ -114,7 +114,8 @@ public class GridItemRow {
             }
 
 
-            /* Check for requested */
+
+            /* Check for requested *//*
             List<UserTimeOff> requestedList = getTimeOff(timeOffs, TimeOffType.REQUESTED);
 
             if (requestedList != null) {
@@ -123,7 +124,7 @@ public class GridItemRow {
                         gridCellItemAdapter.setHasRequested(true);
                     }
                 }
-            }
+            }*/
 
             gridItems.add(gridCellItemAdapter);
             cellTime.add(Calendar.DATE, 1); // go to next day

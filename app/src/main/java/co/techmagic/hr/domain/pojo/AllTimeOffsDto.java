@@ -14,26 +14,22 @@ import co.techmagic.hr.common.TimeOffType;
 public class AllTimeOffsDto {
 
     private Map<TimeOffType, List<RequestedTimeOffDto>> map = Collections.synchronizedMap(new HashMap<>());
+    private Map<TimeOffType, List<RequestedTimeOffDto>> requestedMap = Collections.synchronizedMap(new HashMap<>());
     private List<CalendarInfoDto> calendarInfo;
 
     public Map<TimeOffType, List<RequestedTimeOffDto>> getMap() {
         return map;
     }
 
-    public List<CalendarInfoDto> getCalendarInfo() {
+    public Map<TimeOffType, List<RequestedTimeOffDto>> getRequestedMap() {
+        return requestedMap;
+    }
+
+    public List<CalendarInfoDto> getCalendarInfos() {
         return calendarInfo;
     }
 
     public void setCalendarInfo(List<CalendarInfoDto> calendarInfo) {
         this.calendarInfo = calendarInfo;
-    }
-
-    public void addRequested(List<RequestedTimeOffDto> requestedTimeOffDtos) {
-        List<RequestedTimeOffDto> allRequested = map.get(TimeOffType.REQUESTED);
-        if (allRequested == null) {
-            map.put(TimeOffType.REQUESTED, requestedTimeOffDtos);
-        } else {
-            allRequested.addAll(requestedTimeOffDtos);
-        }
     }
 }

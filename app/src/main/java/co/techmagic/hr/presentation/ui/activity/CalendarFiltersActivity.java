@@ -291,7 +291,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private void initUi() {
         setupActionBar();
         getData();
-        swTeam.setChecked(SharedPreferencesUtil.getMyTeamSelection());
+        swTeam.setChecked(isMyTeamChecked);
         swTeam.setOnCheckedChangeListener((buttonView, isChecked) -> isMyTeamChecked = isChecked);
         presenter.setupPage();
     }

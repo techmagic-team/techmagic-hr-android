@@ -138,7 +138,7 @@ public class DateUtil {
             return false;
         }
 
-        return inputDate.after(start) && inputDate.before(end);
+        return start.getTime() <= inputDate.getTime() && end.getTime() >= inputDate.getTime();
     }
 
 
