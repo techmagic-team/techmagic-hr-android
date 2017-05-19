@@ -64,6 +64,8 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
     private int mFirstChangedPosition;
     private int mChangedPositionCount;
 
+    private boolean scrollInProgress;
+
     /**
      * Set the number of columns the layout manager will use. This will
      * trigger a layout update.
@@ -180,13 +182,14 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
 
         int childLeft;
         int childTop;
-        if (getChildCount() == 0) { //First or empty layout
+        if (getChildCount() == 0 && !scrollInProgress) { //First or empty layout
             //Reset the visible and scroll positions
             mFirstVisiblePosition = 0;
             childLeft = getPaddingLeft();
             childTop = getPaddingTop();
         } else if (!state.isPreLayout()
-                && getVisibleChildCount() >= state.getItemCount()) {
+                && getVisibleChildCount() >= state.getItemCount()
+                && !scrollInProgress) {
             //Data set is too small to scroll fully, just reset position
             mFirstVisiblePosition = 0;
             childLeft = getPaddingLeft();
@@ -196,9 +199,14 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
              * Keep the existing initial position, and save off
              * the current scrolled offset.
              */
-            final View topChild = getChildAt(0);
-            childLeft = getDecoratedLeft(topChild);
-            childTop = getDecoratedTop(topChild);
+            if (scrollInProgress){
+                childLeft = getPaddingLeft();
+                childTop = getPaddingTop();
+            } else {
+                final View topChild = getChildAt(0);
+                childLeft = getDecoratedLeft(topChild);
+                childTop = getDecoratedTop(topChild);
+            }
 
             /*
              * When data set is too small to scroll vertically, adjust vertical offset
@@ -277,6 +285,8 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
                 layoutDisappearingView(child);
             }
         }
+
+        scrollInProgress = false;
     }
 
     @Override
@@ -494,6 +504,8 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
             Log.e(TAG, "Cannot scroll to " + position + ", item count is " + getItemCount());
             return;
         }
+
+        scrollInProgress = true;
 
         //Set requested position as first visible
         mFirstVisiblePosition = position;

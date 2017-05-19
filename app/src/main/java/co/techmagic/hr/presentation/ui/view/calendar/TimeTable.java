@@ -118,7 +118,7 @@ public class TimeTable extends FrameLayout {
             int visibility = guideY.getVisibility();
 
             if (visibility == VISIBLE) {
-                scrollToCurrentMonth();
+                scrollToCurrentDay();
             }
         });*/
 
@@ -166,7 +166,6 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-        //scrollToCurrentMonth();
     }
 
 
@@ -319,12 +318,15 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public void scrollToCurrentMonth() {
+    public void scrollToCurrentDay() {
         if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
             Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
+            // c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
             int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
-            guideX.scrollToPosition(dayOfYear - 1);
+            int dayToScroll = dayOfYear - 1;
+            guideX.scrollToPosition(dayToScroll);
+            recyclerView.scrollToPosition(dayToScroll);
+            // FIXME first item doesn't update after scrollToPosition(int) until scroll will be performed
         }
     }
 

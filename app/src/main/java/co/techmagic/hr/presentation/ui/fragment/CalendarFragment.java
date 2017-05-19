@@ -168,6 +168,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
                 timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this, CalendarFragment.this);
+
+                timeTable.scrollToCurrentDay();
             }
 
             @Override
