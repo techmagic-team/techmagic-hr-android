@@ -70,7 +70,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
-        getData();
         return view;
     }
 
@@ -169,6 +168,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
                 timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this, CalendarFragment.this);
+
+                timeTable.scrollToCurrentDay();
             }
 
             @Override
@@ -209,14 +210,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         fromInMillis = 0;
         toInMillis = 0;
         selDepId = null;
-    }
-
-
-    private void getData() {
-        isMyTeamChecked = SharedPreferencesUtil.getMyTeamSelection();
-        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
-        toInMillis = SharedPreferencesUtil.getSelectedToTime();
-        selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
     }
 
 
