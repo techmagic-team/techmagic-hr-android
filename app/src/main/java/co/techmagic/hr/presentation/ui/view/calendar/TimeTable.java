@@ -326,7 +326,6 @@ public class TimeTable extends FrameLayout {
             int dayToScroll = dayOfYear - 1;
             guideX.scrollToPosition(dayToScroll);
             recyclerView.scrollToPosition(dayToScroll);
-            // FIXME first item doesn't update after scrollToPosition(int) until scroll will be performed
         }
     }
 
