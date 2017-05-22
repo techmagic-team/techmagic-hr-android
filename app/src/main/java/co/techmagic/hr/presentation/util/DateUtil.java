@@ -88,15 +88,8 @@ public class DateUtil {
     }
 
 
-    public static long getDateAfterYearInMillis(long currentDate) {
-        long dayAfterYear = 0;
-
-        if (currentDate == 0) {
-            return dayAfterYear;
-        }
-
+    public static long getDateAfterYearInMillis() {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(currentDate);
         cal.add(Calendar.YEAR, 1);
 
         return cal.getTimeInMillis();

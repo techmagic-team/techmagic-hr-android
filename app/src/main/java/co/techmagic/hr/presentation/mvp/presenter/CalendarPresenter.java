@@ -266,55 +266,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    /*private UserAllTimeOffsMap prepareMap(AllTimeOffsDto allTimeOffs) {
-        UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
-
-        List<String> userIds = new ArrayList<>(employees.size());
-        for (Docs doc : employees) {
-            userIds.add(doc.getId());
-        }
-
-        // clean collection
-        Collection<List<RequestedTimeOffDto>> lists = allTimeOffs.getMap().values();
-        for (List<RequestedTimeOffDto> timeOffList : lists) {
-            Iterator<RequestedTimeOffDto> iterator = timeOffList.iterator();
-            while (iterator.hasNext()) {
-                RequestedTimeOffDto requestedTimeOffDto = iterator.next();
-                String userId = requestedTimeOffDto.getUserId();
-
-                if (!userIds.contains(userId)) {
-                    iterator.remove();
-                }
-            }
-        }
-
-        // sort data by user
-        for (Docs doc : employees) {
-
-            List<UserTimeOff> userTimeOffs = new ArrayList<>();
-
-            Set<Map.Entry<TimeOffType, List<RequestedTimeOffDto>>> allTimeOffsEntries = allTimeOffs.getMap().entrySet();
-
-            for (Map.Entry<TimeOffType, List<RequestedTimeOffDto>> entry : allTimeOffsEntries) {
-                for (RequestedTimeOffDto requestedTimeOffDto : entry.getValue()) {
-                    if (requestedTimeOffDto.getUserId().equals(doc.getId())) {
-                        UserTimeOff userTimeOff = map(requestedTimeOffDto);
-
-                        if (userTimeOff != null) {
-                            userTimeOff.setTimeOffType(entry.getKey());
-                            userTimeOffs.add(userTimeOff);
-                        }
-                    }
-                }
-            }
-
-            userAllTimeOffsMap.getMap().put(doc, userTimeOffs);
-        }
-
-        return userAllTimeOffsMap;
-    }*/
-
-
     private UserAllTimeOffsMap prepareMap(AllTimeOffsDto allTimeOffs) {
         UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
 

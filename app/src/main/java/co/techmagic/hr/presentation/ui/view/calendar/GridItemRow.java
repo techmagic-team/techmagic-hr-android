@@ -128,9 +128,9 @@ public class GridItemRow {
             for (UserTimeOff timeOff : dayOffs) {
                 if (shouldTimeOffBeInCurrentCell(timeOff.getDateFrom(), timeOff.getDateTo(), cellTime.getTime())) {
                     if (displayAsRequested) {
-                        gridCellItemAdapter.setHasRequestedDayOff(true);
-                    } else {
                         gridCellItemAdapter.setHasDayOff(true);
+                    } else {
+                        gridCellItemAdapter.setHasRequested(true);
                     }
                 }
             }
@@ -143,9 +143,9 @@ public class GridItemRow {
             for (UserTimeOff vacation : vacations) {
                 if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom(), vacation.getDateTo(), cellTime.getTime())) {
                     if (displayAsRequested) {
-                        gridCellItemAdapter.setHasRequestedVacation(true);
-                    } else {
                         gridCellItemAdapter.setHasVacation(true);
+                    } else {
+                        gridCellItemAdapter.setHasRequested(true);
                     }
                 }
             }
@@ -158,9 +158,9 @@ public class GridItemRow {
             for (UserTimeOff illness : illnesses) {
                 if (shouldTimeOffBeInCurrentCell(illness.getDateFrom(), illness.getDateTo(), cellTime.getTime())) {
                     if (displayAsRequested) {
-                        gridCellItemAdapter.setHasRequestedIllness(true);
-                    } else {
                         gridCellItemAdapter.setHasIllness(true);
+                    } else {
+                        gridCellItemAdapter.setHasRequested(true);
                     }
                 }
             }
