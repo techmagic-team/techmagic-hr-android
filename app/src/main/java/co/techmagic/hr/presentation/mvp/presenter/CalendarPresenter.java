@@ -45,6 +45,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private long toInMillis = 0;
     private String depId;
 
+    private boolean isCalendarUpdating = false;
+
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
@@ -73,7 +75,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
 
         if (fromInMillis == 0 && toInMillis == 0) {
-            updateCalendar(isMyTeam, depId, null, null);
+            if (!isCalendarUpdating) {
+                updateCalendar(isMyTeam, depId, null, null);
+            }
         } else {
             Calendar from = Calendar.getInstance();
             Calendar to = Calendar.getInstance();
@@ -96,12 +100,15 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
                 dateTo = to;
             }
 
-            updateCalendar(isMyTeam, depId, from, to);
+            if (!isCalendarUpdating) {
+                updateCalendar(isMyTeam, depId, from, to);
+            }
         }
     }
 
 
     public void updateCalendar(boolean isMyTeamChecked, String selDepId, @Nullable Calendar from, @Nullable Calendar to) {
+        isCalendarUpdating = true;
         isMyTeam = isMyTeamChecked;
         depId = selDepId;
 
@@ -135,7 +142,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
-        performRequests();
+        performGetEmployeesByDepartmentRequest();
     }
 
 
@@ -153,7 +160,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     public void onEmployeeClick(@NonNull String employeeId) {
         Docs selectedEmployee = null;
         for (Docs d : employees) {
-            if (d.getId().equals(employeeId) ) {
+            if (d.getId().equals(employeeId)) {
                 selectedEmployee = d;
             }
         }
@@ -184,11 +191,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    private void performRequests() {
-        performGetEmployeesByDepartmentRequest();
-    }
-
-
     private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
         return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
     }
@@ -197,6 +199,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
+        isCalendarUpdating = true;
         final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
@@ -218,6 +221,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
         final List<Docs> result = response.getDocs();
         if (result == null || result.isEmpty()) {
+            employees.clear();
             view.showNoResults();
         } else {
             employees = result;
@@ -231,16 +235,34 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         getAllTimeOffs.execute(request, new DefaultSubscriber<AllTimeOffsDto>() {
             @Override
             public void onNext(AllTimeOffsDto allTimeOffsDto) {
-                UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(allTimeOffsDto);
-                view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfo(), dateFrom, dateTo);
+                handleAllTimeOffsSuccessResponse(allTimeOffsDto);
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
+                isCalendarUpdating = false;
                 view.hideProgress();
             }
         });
+    }
+
+
+    private void handleAllTimeOffsSuccessResponse(AllTimeOffsDto allTimeOffsDto) {
+        UserAllTimeOffsMap userAllTimeOffsMap = prepareMap(allTimeOffsDto);
+
+        if (allTimeOffsDto.getCalendarInfos() == null || allTimeOffsDto.getCalendarInfos().isEmpty()) {
+            view.hideProgress();
+            view.showNoResults();
+        } else {
+            if (userAllTimeOffsMap.isEmpty()) {
+                view.hideProgress();
+                view.showNoResults();
+            } else {
+                view.updateTableWithDateRange(userAllTimeOffsMap, allTimeOffsDto.getCalendarInfos(), dateFrom, dateTo);
+            }
+        }
+        isCalendarUpdating = false;
     }
 
 
@@ -270,7 +292,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         for (Docs doc : employees) {
 
             List<UserTimeOff> userTimeOffs = new ArrayList<>();
+            List<UserTimeOff> userRequestedTimeOffs = new ArrayList<>();
 
+            // cycle all time offs
             Set<Map.Entry<TimeOffType, List<RequestedTimeOffDto>>> allTimeOffsEntries = allTimeOffs.getMap().entrySet();
 
             for (Map.Entry<TimeOffType, List<RequestedTimeOffDto>> entry : allTimeOffsEntries) {
@@ -286,7 +310,28 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
                 }
             }
 
+            // save user's all time offs
             userAllTimeOffsMap.getMap().put(doc, userTimeOffs);
+
+            // cycle requested time offs only
+            Set<Map.Entry<TimeOffType, List<RequestedTimeOffDto>>> requestedTimeOffsEntries = allTimeOffs.getRequestedMap().entrySet();
+
+            for (Map.Entry<TimeOffType, List<RequestedTimeOffDto>> entry : requestedTimeOffsEntries) {
+                for (RequestedTimeOffDto requestedTimeOffDto : entry.getValue()) {
+                    if (requestedTimeOffDto.getUserId().equals(doc.getId())) {
+                        UserTimeOff requestedTimeOff = map(requestedTimeOffDto);
+
+                        if (requestedTimeOff.isAccepted()) {
+                            // save requested only
+                            requestedTimeOff.setTimeOffType(entry.getKey()); // TimeOffType.REQUESTED
+                            userRequestedTimeOffs.add(requestedTimeOff);
+                        }
+
+                        // save user's requested time offs
+                        userAllTimeOffsMap.getRequestedMap().put(doc, userRequestedTimeOffs);
+                    }
+                }
+            }
         }
 
         return userAllTimeOffsMap;

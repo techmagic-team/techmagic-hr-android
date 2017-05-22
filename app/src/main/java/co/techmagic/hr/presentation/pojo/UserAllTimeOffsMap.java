@@ -11,13 +11,20 @@ import co.techmagic.hr.data.entity.Docs;
  */
 
 public class UserAllTimeOffsMap {
+
     private Map<Docs, List<UserTimeOff>> map = new HashMap<>();
+
+    private Map<Docs, List<UserTimeOff>> requestedMap = new HashMap<>();
 
     public Map<Docs, List<UserTimeOff>> getMap() {
         return map;
     }
 
-    public void setMap(Map<Docs, List<UserTimeOff>> map) {
-        this.map = map;
+    public Map<Docs, List<UserTimeOff>> getRequestedMap() {
+        return requestedMap;
+    }
+
+    public boolean isEmpty() {
+        return map.isEmpty() && requestedMap.isEmpty();
     }
 }

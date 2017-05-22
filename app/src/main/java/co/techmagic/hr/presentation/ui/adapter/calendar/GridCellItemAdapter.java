@@ -17,29 +17,42 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasVacation;
     private boolean hasDayOff;
     private boolean hasIllness;
-    private boolean hasRequested;
+    private boolean hasAccepted;
 
 
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        if (hasVacation) {
-            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
-        } else if (hasDayOff) {
-            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
-        } else if (hasIllness) {
-            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
-        } else if (hasRequested) {
-            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
+        if (isWeekend) {
+            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+            return;
         }
 
         if (hasHolidays) {
             holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
-        } else if (isWeekend) {
-            holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
+            return;
+        }
+
+        if (hasVacation) {
+            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
+            return;
+        }
+
+        if (hasDayOff) {
+            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
+            return;
+        }
+
+        if (hasIllness) {
+            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
+            return;
+        }
+
+        if (hasAccepted) {
+            holder.itemView.setBackgroundResource(R.drawable.item_accepted_bg);
+        } else {
+            holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
     }
 
@@ -127,13 +140,13 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     }
 
 
-    public boolean hasRequested() {
-        return hasRequested;
+    public boolean isAccepted() {
+        return hasAccepted;
     }
 
 
-    public void setHasRequested(boolean hasRequested) {
-        this.hasRequested = hasRequested;
+    public void setAccepted(boolean hasAccepted) {
+        this.hasAccepted = hasAccepted;
     }
 
 

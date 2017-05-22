@@ -15,6 +15,6 @@
     <color name="colorVacation">#3ec961</color>
     <color name="colorDayOff">#ca8cd4</color>
     <color name="colorIllness">#64adf5</color>
-    <color name="colorRequested">#ffbf4a</color>
+    <color name="colorAccepted">#ffbf4a</color>
 
 </resources>

@@ -37,21 +37,14 @@ public class DateUtil {
     }
 
 
-    public static Date getFormattedFullDate(@Nullable Date inputData) {
-        Date formattedDate = null;
+    public static String getFormattedFullDate(@Nullable Date inputData) {
+        String formattedDate = null;
 
         if (inputData == null) {
             return formattedDate;
         }
 
-        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        try {
-            String date = outputFullDateFormat.format(inputData);
-            formattedDate = inputFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        formattedDate = outputFullDateFormat.format(inputData);
 
         return formattedDate;
     }
@@ -95,15 +88,8 @@ public class DateUtil {
     }
 
 
-    public static long getDateAfterYearInMillis(long currentDate) {
-        long dayAfterYear = 0;
-
-        if (currentDate == 0) {
-            return dayAfterYear;
-        }
-
+    public static long getDateAfterYearInMillis() {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(currentDate);
         cal.add(Calendar.YEAR, 1);
 
         return cal.getTimeInMillis();
@@ -145,46 +131,6 @@ public class DateUtil {
             return false;
         }
 
-        return inputDate.after(start) && inputDate.before(end);
-    }
-
-
-    public static boolean isToday(@Nullable Calendar time) {
-        if (time == null) {
-            return false;
-        }
-
-        Calendar now = Calendar.getInstance();
-        if (time.get(Calendar.YEAR) != now.get(Calendar.YEAR))
-            return false;
-        if (time.get(Calendar.MONTH) != now.get(Calendar.MONTH))
-            return false;
-        if (time.get(Calendar.DAY_OF_MONTH) != now.get(Calendar.DAY_OF_MONTH))
-            return false;
-
-        return true;
-    }
-
-
-    /**
-     * Compare two dates, and check if they are the same.
-     * Only checks year, month, day.
-     *
-     * @return TRUE if the dates are the same.
-     */
-
-    public static boolean compareDates(@Nullable Calendar left, @Nullable Calendar right) {
-        if (left == null || right == null) {
-            return false;
-        }
-
-        if (left.get(Calendar.YEAR) != right.get(Calendar.YEAR))
-            return false;
-        if (left.get(Calendar.MONTH) != right.get(Calendar.MONTH))
-            return false;
-        if (left.get(Calendar.DAY_OF_MONTH) != right.get(Calendar.DAY_OF_MONTH))
-            return false;
-
-        return true;
+        return start.getTime() <= inputDate.getTime() && end.getTime() >= inputDate.getTime();
     }
 }

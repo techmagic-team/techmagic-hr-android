@@ -37,7 +37,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @BindView(R.id.flCalFilters)
     View calFilters;
-
     @BindView(R.id.tvCalendarNoResults)
     TextView tvNoResults;
     @BindView(R.id.timeTable)
@@ -168,6 +167,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 tvNoResults.setVisibility(View.GONE);
                 timeTable.setVisibility(View.VISIBLE);
                 timeTable.setItemsWithDateRange(userAllTimeOffsMap, calendarInfo, dateFrom, dateTo, CalendarFragment.this, CalendarFragment.this);
+                timeTable.scrollToCurrentMonth();
             }
 
             @Override

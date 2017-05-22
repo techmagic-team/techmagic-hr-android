@@ -7,6 +7,7 @@ import java.util.List;
  */
 
 public class CalendarInfoDto {
+
     private String name;
     private String year;
     private List<HolidayDto> holidays;

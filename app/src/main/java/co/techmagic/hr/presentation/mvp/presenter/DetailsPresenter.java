@@ -298,7 +298,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
         final TimeOffRequest request = new TimeOffRequest(userId, true, firstDay, dateAfterYear);
         getUserVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
@@ -339,7 +339,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
         final TimeOffRequest request = new TimeOffRequest(userId, false, firstDay, dateAfterYear);
         getUserDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
@@ -381,7 +381,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
         final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
         getUserIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {

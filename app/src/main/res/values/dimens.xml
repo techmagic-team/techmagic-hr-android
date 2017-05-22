@@ -57,10 +57,11 @@
     <dimen name="activity_layout_colors_layout_margin">4dp</dimen>
     <dimen name="activity_layout_colors_layout_margin_vertical">8dp</dimen>
     <dimen name="activity_layout_colors_circle_view_size">10dp</dimen>
-    <dimen name="activity_layout_colors_circle_margin_right">2dp</dimen>
+    <dimen name="activity_layout_colors_circle_margin_right">4dp</dimen>
     <dimen name="activity_layout_colors_text_size">11sp</dimen>
     <dimen name="activity_layout_grid_item_size">48dp</dimen>
     <dimen name="activity_layout_grid_item_padding">2dp</dimen>
     <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
+    <dimen name="calendar_fragment_cell_stroke_size">1px</dimen>
 
 </resources>

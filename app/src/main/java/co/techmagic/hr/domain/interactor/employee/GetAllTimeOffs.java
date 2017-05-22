@@ -40,8 +40,13 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                         List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
                         List<RequestedTimeOffDto> allIllnesses = mapCollection(requestedTimeOffs, false);
 
-                        allTimeOffsDto.addRequested(requested);
-                        allTimeOffsDto.getMap().put(TimeOffType.ILLNESS, allIllnesses);
+                        if (!requested.isEmpty()) {
+                            allTimeOffsDto.getRequestedMap().put(TimeOffType.ILLNESS, requested);
+                        }
+
+                        if (!allIllnesses.isEmpty()) {
+                            allTimeOffsDto.getMap().put(TimeOffType.ILLNESS, allIllnesses);
+                        }
 
                         return Observable.just(allTimeOffsDto);
                     }
@@ -54,22 +59,32 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                         List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
                         List<RequestedTimeOffDto> allVacations = mapCollection(requestedTimeOffs, false);
 
-                        allTimeOffsDto.addRequested(requested);
-                        allTimeOffsDto.getMap().put(TimeOffType.VACATION, allVacations);
+                        if (!requested.isEmpty()) {
+                            allTimeOffsDto.getRequestedMap().put(TimeOffType.VACATION, requested);
+                        }
+
+                        if (!allVacations.isEmpty()) {
+                            allTimeOffsDto.getMap().put(TimeOffType.VACATION, allVacations);
+                        }
 
                         return Observable.just(allTimeOffsDto);
                     }
                 });
 
-        Observable<AllTimeOffsDto> dayOffObservable = repository.getAllVacations(timeOffAllRequest)
+        Observable<AllTimeOffsDto> dayOffObservable = repository.getAllDayOffs(timeOffAllRequest)
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
                         List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
                         List<RequestedTimeOffDto> allDayoffs = mapCollection(requestedTimeOffs, false);
 
-                        allTimeOffsDto.addRequested(requested);
-                        allTimeOffsDto.getMap().put(TimeOffType.DAYOFF, allDayoffs);
+                        if (!requested.isEmpty()) {
+                            allTimeOffsDto.getRequestedMap().put(TimeOffType.DAYOFF, requested);
+                        }
+
+                        if (!allDayoffs.isEmpty()) {
+                            allTimeOffsDto.getMap().put(TimeOffType.DAYOFF, allDayoffs);
+                        }
 
                         return Observable.just(allTimeOffsDto);
                     }
@@ -165,7 +180,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
 
                 if (requestedOnly && requestedTimeOffDto.isAccepted()) {
                     timeOffDtos.add(requestedTimeOffDto);
-                } else {
+                } else if (!requestedOnly) {
                     timeOffDtos.add(requestedTimeOffDto);
                 }
             }

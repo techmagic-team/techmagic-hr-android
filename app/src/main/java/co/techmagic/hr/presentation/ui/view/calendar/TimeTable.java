@@ -113,19 +113,9 @@ public class TimeTable extends FrameLayout {
             }
         });
 
-        /*ViewTreeObserver gridObserver = recyclerView.getViewTreeObserver();
-        gridObserver.addOnGlobalLayoutListener(() -> {
-            int visibility = guideY.getVisibility();
-
-            if (visibility == VISIBLE) {
-                scrollToCurrentMonth();
-            }
-        });*/
-
         setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(calendarToMidnightMillis(left));
         right.setTimeInMillis(calendarToMidnightMillis(right));
-
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
@@ -146,8 +136,9 @@ public class TimeTable extends FrameLayout {
             EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
 
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+            List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, calendarInfo);
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser,  calendarInfo);
             rows.add(gridRow);
         }
 
@@ -166,35 +157,17 @@ public class TimeTable extends FrameLayout {
         setGridItems(allGridItems);
         setEmployeeItems(employeeItems, onEmployeeItemClickListener);
         requestLayout();
-        //scrollToCurrentMonth();
     }
 
 
     private void construct(final int itemCount) {
-        final RecyclerView.OnItemTouchListener itemTouchListener = new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        };
         guideX.setHasFixedSize(true);
         guideX.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         // Do not allow scrolling with the X or Y for now because we do not have a scrollToPositionWithOffset yet in our FixedGridLayout
-        guideX.addOnItemTouchListener(itemTouchListener);
+        guideX.addOnItemTouchListener(getOnItemTouchListener());
 
         guideY.setHasFixedSize(true);
-        guideY.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
+        guideY.setLayoutManager(getScrollLayoutManager());
 
         // Do not allow scrolling with the X or Y for now because we do not have a scrollToPositionWithOffset yet in our FixedGridLayout
         // guideY.addOnItemTouchListener(itemTouchListener); // !!! Touch listener intercepts click event !!!
@@ -209,7 +182,6 @@ public class TimeTable extends FrameLayout {
         recyclerView.setLayoutManager(mgr);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int state;
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -309,22 +281,14 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    public Calendar getTimeLeft() {
-        return left;
-    }
-
-
-    public Calendar getTimeRight() {
-        return right;
-    }
-
-
     public void scrollToCurrentMonth() {
         if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
             int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
-            guideX.scrollToPosition(dayOfYear - 1);
+            int dayToScroll = dayOfYear - 1;
+            guideX.scrollToPosition(dayToScroll);
+            recyclerView.scrollToPosition(dayToScroll);
         }
     }
 
@@ -348,5 +312,60 @@ public class TimeTable extends FrameLayout {
         }
 
         return timeOffsForUser;
+    }
+
+
+    private List<UserTimeOff> getRequestedTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
+        Set<Docs> users = userAllTimeOffsMap.getRequestedMap().keySet();
+        List<UserTimeOff> requestedTimeOffsForUser = new ArrayList<>();
+
+        for (Docs user : users) {
+            if (userId.equals(user.getId())) {
+                requestedTimeOffsForUser.addAll(userAllTimeOffsMap.getRequestedMap().get(user));
+                break;
+            }
+        }
+
+        return requestedTimeOffsForUser;
+    }
+
+
+    public Calendar getTimeLeft() {
+        return left;
+    }
+
+
+    public Calendar getTimeRight() {
+        return right;
+    }
+
+
+    private RecyclerView.OnItemTouchListener getOnItemTouchListener() {
+        return new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
+    }
+
+
+    private ScrollLayoutManager getScrollLayoutManager() {
+        return new ScrollLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
     }
 }
