@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.pojo;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import co.techmagic.hr.common.TimeOffType;
@@ -20,6 +21,14 @@ public class UserTimeOff {
     private TimeOffType timeOffType;
     private TimeRange timeRange;
 
+    private Calendar from;
+    private Calendar to;
+
+    public UserTimeOff() {
+        from = Calendar.getInstance();
+        to = Calendar.getInstance();
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -36,16 +45,16 @@ public class UserTimeOff {
         this.companyId = companyId;
     }
 
-    public Date getDateFrom() {
-        return dateFrom;
+    public Calendar getDateFrom() {
+        return from;
     }
 
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public Date getDateTo() {
-        return dateTo;
+    public Calendar getDateTo() {
+        return to;
     }
 
     public void setDateTo(Date dateTo) {

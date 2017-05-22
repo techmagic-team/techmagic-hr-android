@@ -5,6 +5,6 @@
         android:width="@dimen/calendar_fragment_cell_stroke_size"
         android:color="@android:color/black" />
 
-    <solid android:color="@color/colorRequested" />
+    <solid android:color="@color/colorAccepted" />
 
 </shape>

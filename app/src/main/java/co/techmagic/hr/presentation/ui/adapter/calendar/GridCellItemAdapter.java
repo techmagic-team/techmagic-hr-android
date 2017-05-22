@@ -17,7 +17,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasVacation;
     private boolean hasDayOff;
     private boolean hasIllness;
-    private boolean hasRequested;
+    private boolean hasAccepted;
 
 
     @Override
@@ -49,8 +49,8 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
             return;
         }
 
-        if (hasRequested) {
-            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
+        if (hasAccepted) {
+            holder.itemView.setBackgroundResource(R.drawable.item_accepted_bg);
         } else {
             holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
@@ -140,13 +140,13 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     }
 
 
-    public boolean hasRequested() {
-        return hasRequested;
+    public boolean isAccepted() {
+        return hasAccepted;
     }
 
 
-    public void setHasRequested(boolean hasRequested) {
-        this.hasRequested = hasRequested;
+    public void setAccepted(boolean hasAccepted) {
+        this.hasAccepted = hasAccepted;
     }
 
 
