@@ -27,9 +27,9 @@ public class GridItemRow {
     private List<GridCellItemAdapter> items;
 
 
-    public GridItemRow(EmployeeGridYitem employeeGridYitem, TimeRange timeRange, List<UserTimeOff> timeOffs, List<CalendarInfoDto> calendarInfo) {
+    public GridItemRow(EmployeeGridYitem employeeGridYitem, TimeRange timeRange, List<UserTimeOff> timeOffs, List<UserTimeOff> allRequested, List<CalendarInfoDto> calendarInfo) {
         this.employeeGridYitem = employeeGridYitem;
-        items = generateGridItems(fitItems(timeOffs, timeRange), timeRange, calendarInfo);
+        items = generateGridItems(fitItems(timeOffs, timeRange), allRequested, timeRange, calendarInfo);
     }
 
     /**
@@ -53,12 +53,26 @@ public class GridItemRow {
     }
 
 
-    private List<GridCellItemAdapter> generateGridItems(List<UserTimeOff> timeOffs, TimeRange timeRange, List<CalendarInfoDto> calendarInfoList) {
+    private List<UserTimeOff> fitRequestedItems(List<UserTimeOff> list, TimeRange timeRange) {
+        List<UserTimeOff> sortedTimeOffs = new ArrayList<>();
+        for (UserTimeOff userTimeOff : list) {
+            if (timeRange != null && userTimeOff.getTimeRange() != null && timeRange.overlaps(userTimeOff.getTimeRange())) {
+                sortedTimeOffs.add(userTimeOff);
+                break;
+            }
+        }
+
+        return sortedTimeOffs;
+    }
+
+
+    private List<GridCellItemAdapter> generateGridItems(List<UserTimeOff> timeOffs, List<UserTimeOff> allRequested, TimeRange timeRange, List<CalendarInfoDto> calendarInfoList) {
         final int columns = timeRange.getColumnCount();
         List<GridCellItemAdapter> gridItems = new ArrayList<>();
 
         Calendar cellTime = Calendar.getInstance();
         cellTime.setTimeInMillis(timeRange.getStart().getTimeInMillis());
+        cellTime.set(Calendar.HOUR, 0);
 
         for (int x = 0; x < columns; x++) {
             GridCellItemAdapter gridCellItemAdapter = new GridCellItemAdapter();
@@ -68,6 +82,7 @@ public class GridItemRow {
             }
 
             /* Check for holidays */
+
             if (calendarInfoList != null) {
                 for (CalendarInfoDto calendarInfoDto : calendarInfoList) {
                     if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(calendarInfoDto.getName())) {
@@ -80,57 +95,76 @@ public class GridItemRow {
                 }
             }
 
-            /* Check for day off */
-            List<UserTimeOff> dayOffs = getTimeOff(timeOffs, TimeOffType.DAYOFF);
+            checkForTimeOffs(timeOffs, cellTime, gridCellItemAdapter, false);
 
-            if (dayOffs != null) {
-                for (UserTimeOff timeOff : dayOffs) {
-                    if (shouldTimeOffBeInCurrentCell(timeOff.getDateFrom(), timeOff.getDateTo(), cellTime.getTime())) {
-                        gridCellItemAdapter.setHasDayOff(true);
-                    }
-                }
-            }
+            /* Check for requested */
 
-            /* Check for vacation */
-            List<UserTimeOff> vacations = getTimeOff(timeOffs, TimeOffType.VACATION);
-
-            if (vacations != null) {
-                for (UserTimeOff vacation : vacations) {
-                    if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom(), vacation.getDateTo(), cellTime.getTime())) {
-                        gridCellItemAdapter.setHasVacation(true);
-                    }
-                }
-            }
-
-            /* Check for illness */
-            List<UserTimeOff> illnesses = getTimeOff(timeOffs, TimeOffType.ILLNESS);
-
-            if (illnesses != null) {
-                for (UserTimeOff illness : illnesses) {
-                    if (shouldTimeOffBeInCurrentCell(illness.getDateFrom(), illness.getDateTo(), cellTime.getTime())) {
-                        gridCellItemAdapter.setHasIllness(true);
-                    }
-                }
-            }
-
-
-
-            /* Check for requested *//*
-            List<UserTimeOff> requestedList = getTimeOff(timeOffs, TimeOffType.REQUESTED);
-
-            if (requestedList != null) {
-                for (UserTimeOff requested : requestedList) {
+            if (allRequested != null) {
+                for (UserTimeOff requested : allRequested) {
                     if (shouldTimeOffBeInCurrentCell(requested.getDateFrom(), requested.getDateTo(), cellTime.getTime())) {
-                        gridCellItemAdapter.setHasRequested(true);
+                        checkForTimeOffs(allRequested, cellTime, gridCellItemAdapter, true);
                     }
                 }
-            }*/
+            }
 
             gridItems.add(gridCellItemAdapter);
             cellTime.add(Calendar.DATE, 1); // go to next day
         }
 
         return gridItems;
+    }
+
+    /**
+     * @param displayAsRequested is used to identify how should cell be colored
+     *                           <p>true - as requested color</p>
+     *                           <p>false - regarding to time off (DayOff, Vacation or Illness)</p>
+     */
+
+    private void checkForTimeOffs(List<UserTimeOff> timeOffs, Calendar cellTime, GridCellItemAdapter gridCellItemAdapter, boolean displayAsRequested) {
+        /* Check for day off */
+        List<UserTimeOff> dayOffs = getTimeOff(timeOffs, TimeOffType.DAYOFF);
+
+        if (dayOffs != null) {
+            for (UserTimeOff timeOff : dayOffs) {
+                if (shouldTimeOffBeInCurrentCell(timeOff.getDateFrom(), timeOff.getDateTo(), cellTime.getTime())) {
+                    if (displayAsRequested) {
+                        gridCellItemAdapter.setHasRequestedDayOff(true);
+                    } else {
+                        gridCellItemAdapter.setHasDayOff(true);
+                    }
+                }
+            }
+        }
+
+        /* Check for vacation */
+        List<UserTimeOff> vacations = getTimeOff(timeOffs, TimeOffType.VACATION);
+
+        if (vacations != null) {
+            for (UserTimeOff vacation : vacations) {
+                if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom(), vacation.getDateTo(), cellTime.getTime())) {
+                    if (displayAsRequested) {
+                        gridCellItemAdapter.setHasRequestedVacation(true);
+                    } else {
+                        gridCellItemAdapter.setHasVacation(true);
+                    }
+                }
+            }
+        }
+
+        /* Check for illness */
+        List<UserTimeOff> illnesses = getTimeOff(timeOffs, TimeOffType.ILLNESS);
+
+        if (illnesses != null) {
+            for (UserTimeOff illness : illnesses) {
+                if (shouldTimeOffBeInCurrentCell(illness.getDateFrom(), illness.getDateTo(), cellTime.getTime())) {
+                    if (displayAsRequested) {
+                        gridCellItemAdapter.setHasRequestedIllness(true);
+                    } else {
+                        gridCellItemAdapter.setHasIllness(true);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -150,7 +184,7 @@ public class GridItemRow {
     }
 
 
-    private static boolean shouldTimeOffBeInCurrentCell(Date start, Date end, Date inputDate) {
+    private boolean shouldTimeOffBeInCurrentCell(Date start, Date end, Date inputDate) {
         return DateUtil.isValidDatesRange(start, end, inputDate);
     }
 

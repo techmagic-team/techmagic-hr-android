@@ -18,6 +18,9 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasDayOff;
     private boolean hasIllness;
     private boolean hasRequested;
+    private boolean hasRequestedVacation;
+    private boolean hasRequestedDayOff;
+    private boolean hasRequestedIllness;
 
 
     @Override
@@ -45,6 +48,21 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
         }
 
         if (hasIllness) {
+            holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
+            return;
+        }
+
+        if (hasRequestedVacation) {
+            holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
+            return;
+        }
+
+        if (hasRequestedDayOff) {
+            holder.itemView.setBackgroundResource(R.drawable.item_day_off_bg);
+            return;
+        }
+
+        if (hasRequestedIllness) {
             holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
             return;
         }
@@ -147,6 +165,21 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
 
     public void setHasRequested(boolean hasRequested) {
         this.hasRequested = hasRequested;
+    }
+
+
+    public void setHasRequestedVacation(boolean hasRequestedVacation) {
+        this.hasRequestedVacation = hasRequestedVacation;
+    }
+
+
+    public void setHasRequestedDayOff(boolean hasRequestedDayOff) {
+        this.hasRequestedDayOff = hasRequestedDayOff;
+    }
+
+
+    public void setHasRequestedIllness(boolean hasRequestedIllness) {
+        this.hasRequestedIllness = hasRequestedIllness;
     }
 
 
