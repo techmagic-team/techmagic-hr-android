@@ -136,7 +136,9 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
         if (getChildCount() == 0) { //First or empty layout
             //Scrap measure one child
             View scrap = recycler.getViewForPosition(0);
-            addView(scrap);
+            if (!scrollInProgress) {
+                addView(scrap);
+            }
             measureChildWithMargins(scrap, 0, 0);
 
             /*
@@ -148,7 +150,9 @@ public class FixedGridLayoutManager extends RecyclerView.LayoutManager {
             mDecoratedChildWidth = getDecoratedMeasuredWidth(scrap);
             mDecoratedChildHeight = getDecoratedMeasuredHeight(scrap);
 
-            detachAndScrapView(scrap, recycler);
+            if (!scrollInProgress) {
+                detachAndScrapView(scrap, recycler);
+            }
         }
 
         //Always update the visible row/column counts
