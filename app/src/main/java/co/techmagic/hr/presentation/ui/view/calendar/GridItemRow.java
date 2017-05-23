@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.ui.view.calendar;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,27 +29,7 @@ public class GridItemRow {
 
     public GridItemRow(EmployeeGridYitem employeeGridYitem, TimeRange timeRange, List<UserTimeOff> timeOffs, List<UserTimeOff> allRequested, List<CalendarInfoDto> calendarInfo) {
         this.employeeGridYitem = employeeGridYitem;
-        items = generateGridItems(fitItems(timeOffs, timeRange), fitItems(allRequested, timeRange), timeRange, calendarInfo);
-    }
-
-    /**
-     * Convert a list of potentially overlapping items into a list of lists containing IGridItems that don't overlap.
-     *
-     * @param list the unsorted list of IGridItems
-     * @return the list of
-     */
-
-
-    private List<UserTimeOff> fitItems(List<UserTimeOff> list, TimeRange timeRange) {
-        List<UserTimeOff> sortedTimeOffs = new ArrayList<>();
-        for (UserTimeOff userTimeOff : list) {
-            if (timeRange != null && userTimeOff.getTimeRange() != null && timeRange.overlaps(userTimeOff.getTimeRange())) {
-                sortedTimeOffs.add(userTimeOff);
-                break;
-            }
-        }
-
-        return sortedTimeOffs;
+        items = generateGridItems(timeOffs, allRequested, timeRange, calendarInfo);
     }
 
 
@@ -114,7 +93,6 @@ public class GridItemRow {
         if (dayOffs != null) {
             for (UserTimeOff dayOff : dayOffs) {
                 if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom().getTime(), dayOff.getDateTo().getTime(), cellTime.getTime())) {
-                    Log.e("dayOff", "from: " + dayOff.getDateFrom().getTime() + " to: " + dayOff.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasDayOff(true);
                     } else {
@@ -130,7 +108,6 @@ public class GridItemRow {
         if (vacations != null) {
             for (UserTimeOff vacation : vacations) {
                 if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom().getTime(), vacation.getDateTo().getTime(), cellTime.getTime())) {
-                    Log.e("vacation", "from: " + vacation.getDateFrom().getTime() + " to: " + vacation.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasVacation(true);
                     } else {
@@ -146,7 +123,6 @@ public class GridItemRow {
         if (illnesses != null) {
             for (UserTimeOff illness : illnesses) {
                 if (shouldTimeOffBeInCurrentCell(illness.getDateFrom().getTime(), illness.getDateTo().getTime(), cellTime.getTime())) {
-                    Log.e("illness", "from: " + illness.getDateFrom().getTime() + " to: " + illness.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasIllness(true);
                     } else {
