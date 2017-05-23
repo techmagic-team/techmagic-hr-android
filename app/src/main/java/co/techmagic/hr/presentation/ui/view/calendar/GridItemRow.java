@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.ui.view.calendar;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,10 +60,6 @@ public class GridItemRow {
 
         Calendar cellTime = Calendar.getInstance();
         cellTime.setTimeInMillis(timeRange.getStart().getTimeInMillis());
-        cellTime.set(Calendar.HOUR, 0);
-        cellTime.set(Calendar.MINUTE, 0);
-        cellTime.set(Calendar.SECOND, 0);
-        cellTime.set(Calendar.MILLISECOND, 0);
 
         for (int x = 0; x < columns; x++) {
             GridCellItemAdapter gridCellItemAdapter = new GridCellItemAdapter();
@@ -106,8 +103,8 @@ public class GridItemRow {
 
     /**
      * @param displayAsAccepted is used to identify how should cell be colored
-     *                           <p>true - regarding to time off (DayOff, Vacation or Illness)</p>
-     *                           <p>false - as requested color</p>
+     *                          <p>true - regarding to time off (DayOff, Vacation or Illness)</p>
+     *                          <p>false - as requested color</p>
      */
 
     private void checkForTimeOffs(List<UserTimeOff> timeOffs, Calendar cellTime, GridCellItemAdapter gridCellItemAdapter, boolean displayAsAccepted) {
@@ -115,8 +112,9 @@ public class GridItemRow {
         List<UserTimeOff> dayOffs = getTimeOff(timeOffs, TimeOffType.DAYOFF);
 
         if (dayOffs != null) {
-            for (UserTimeOff timeOff : dayOffs) {
-                if (shouldTimeOffBeInCurrentCell(timeOff.getDateFrom().getTime(), timeOff.getDateTo().getTime(), cellTime.getTime())) {
+            for (UserTimeOff dayOff : dayOffs) {
+                if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom().getTime(), dayOff.getDateTo().getTime(), cellTime.getTime())) {
+                    Log.e("dayOff", "from: " + dayOff.getDateFrom().getTime() + " to: " + dayOff.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasDayOff(true);
                     } else {
@@ -132,6 +130,7 @@ public class GridItemRow {
         if (vacations != null) {
             for (UserTimeOff vacation : vacations) {
                 if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom().getTime(), vacation.getDateTo().getTime(), cellTime.getTime())) {
+                    Log.e("vacation", "from: " + vacation.getDateFrom().getTime() + " to: " + vacation.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasVacation(true);
                     } else {
@@ -147,6 +146,7 @@ public class GridItemRow {
         if (illnesses != null) {
             for (UserTimeOff illness : illnesses) {
                 if (shouldTimeOffBeInCurrentCell(illness.getDateFrom().getTime(), illness.getDateTo().getTime(), cellTime.getTime())) {
+                    Log.e("illness", "from: " + illness.getDateFrom().getTime() + " to: " + illness.getDateTo().getTime()); // todo
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasIllness(true);
                     } else {

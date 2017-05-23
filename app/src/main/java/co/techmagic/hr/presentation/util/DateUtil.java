@@ -133,4 +133,15 @@ public class DateUtil {
 
         return start.getTime() <= inputDate.getTime() && end.getTime() >= inputDate.getTime();
     }
+
+
+    public static long calendarToMidnightMillis(@Nullable Calendar calendar) {
+        if (calendar == null) {
+            return 0;
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        return calendar.getTimeInMillis();
+    }
 }

@@ -33,6 +33,7 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -114,12 +115,12 @@ public class TimeTable extends FrameLayout {
         });
 
         setTimeRange(dateFrom, dateTo);
-        left.setTimeInMillis(calendarToMidnightMillis(left));
-        right.setTimeInMillis(calendarToMidnightMillis(right));
+        left.setTimeInMillis(DateUtil.calendarToMidnightMillis(left));
+        right.setTimeInMillis(DateUtil.calendarToMidnightMillis(right));
 
         // Generate items spanning from start(left) to end(right)
         Calendar current = Calendar.getInstance();
-        current.setTimeInMillis(calendarToMidnightMillis(left));
+        current.setTimeInMillis(DateUtil.calendarToMidnightMillis(left));
         List<WeekDayHeaderItemAdapter> headerItems = new ArrayList<>();
 
         while (current.getTimeInMillis() <= right.getTimeInMillis()) {
@@ -290,13 +291,6 @@ public class TimeTable extends FrameLayout {
             guideX.scrollToPosition(dayToScroll);
             recyclerView.scrollToPosition(dayToScroll);
         }
-    }
-
-
-    private static long calendarToMidnightMillis(Calendar calendar) {
-        Calendar c = Calendar.getInstance();
-        c.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-        return calendar.getTimeInMillis();
     }
 
 

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 /**
  * Created by Roman Ursu on 5/12/17
@@ -19,7 +20,6 @@ public class UserTimeOff {
     private boolean isPaid;
     private boolean isAccepted;
     private TimeOffType timeOffType;
-    private TimeRange timeRange;
 
     private Calendar from;
     private Calendar to;
@@ -51,6 +51,8 @@ public class UserTimeOff {
 
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
+        from.setTime(dateFrom);
+        from.setTimeInMillis(DateUtil.calendarToMidnightMillis(from));
     }
 
     public Calendar getDateTo() {
@@ -59,6 +61,8 @@ public class UserTimeOff {
 
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
+        to.setTime(dateTo);
+        to.set(to.get(Calendar.YEAR), to.get(Calendar.MONTH), to.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
     }
 
     public boolean isPaid() {
@@ -86,7 +90,6 @@ public class UserTimeOff {
     }
 
     public TimeRange getTimeRange() {
-        timeRange = new TimeRange(dateFrom, dateTo);
-        return timeRange;
+        return new TimeRange(dateFrom, dateTo);
     }
 }
