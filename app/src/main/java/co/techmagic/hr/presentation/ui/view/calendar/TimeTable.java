@@ -132,6 +132,15 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
+        /*Observable.fromCallable()
+                .doOnNext()
+                .subscribeOn(Schedulers.newThread())
+                .doOnCompleted(() -> {
+
+                })
+                .observeOn(AndroidSchedulers.mainThread());*/
+
+
         List<GridItemRow> rows = new ArrayList<>();
         for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
             EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
@@ -139,7 +148,7 @@ public class TimeTable extends FrameLayout {
             List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
             List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser,  calendarInfo);
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
             rows.add(gridRow);
         }
 
@@ -183,6 +192,7 @@ public class TimeTable extends FrameLayout {
         recyclerView.setLayoutManager(mgr);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int state;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
