@@ -56,10 +56,12 @@ android {
 
     buildTypes {
         debug {
-
+            ext.betaDistributionEmails="nazar.vrublevskyi@techmagic.co, yulia.kotsur@techmagic.co, ruslan.kuziak@techamgic.co"
         }
 
         release {
+            ext.betaDistributionEmails="nazar.vrublevskyi@techmagic.co, yulia.kotsur@techmagic.co, ruslan.kuziak@techamgic.co"
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
