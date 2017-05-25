@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -32,8 +31,13 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
+import co.techmagic.hr.presentation.ui.view.OnCalendarCallback;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.util.DateUtil;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -51,6 +55,7 @@ public class TimeTable extends FrameLayout {
     private int columns;
 
     private FastItemAdapter guideXadapter, guideYadapter, gridAdapter;
+    private Subscription subscription;
 
 
     public TimeTable(Context context) {
@@ -91,8 +96,16 @@ public class TimeTable extends FrameLayout {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(null);
 
+        // todo init subscription
         addView(view);
         requestLayout();
+    }
+
+    // todo init subscription
+    public void onPause() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
 
@@ -102,17 +115,6 @@ public class TimeTable extends FrameLayout {
 
     public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo,
                                       @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener, @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
-
-        /* Hide progress listener */
-
-        ViewTreeObserver observer = guideY.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(() -> {
-            int visibility = guideY.getVisibility();
-
-            if (visibility == VISIBLE) {
-                onCalendarViewReadyListener.onCalendarVisible();
-            }
-        });
 
         setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(DateUtil.calendarToMidnightMillis(left));
@@ -132,41 +134,42 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
-        /*Observable.fromCallable()
-                .doOnNext()
-                .subscribeOn(Schedulers.newThread())
-                .doOnCompleted(() -> {
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
 
-                })
-                .observeOn(AndroidSchedulers.mainThread());*/
+            OnCalendarCallback callback = (allGridItems, employeeItems) -> {
+                 /* Hide progress listener */
+                onCalendarViewReadyListener.onCalendarVisible();
+                /*setGridItems(allGridItems);
+                setEmployeeItems(employeeItems, onEmployeeItemClickListener);*/
+                // requestLayout();
+            };
 
+            List<GridItemRow> rows = new ArrayList<>();
+            for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
+                EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
 
-        List<GridItemRow> rows = new ArrayList<>();
-        for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
-            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
+                List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+                List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
-            List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
-            List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
-
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
-            rows.add(gridRow);
-        }
-
-        List<GridCellItemAdapter> allGridItems = new ArrayList<>();
-        List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
-
-        for (GridItemRow row : rows) {
-            List<GridCellItemAdapter> cells = row.getItems();
-            allGridItems.addAll(cells);
-
-            for (int i = 0; i < cells.size() / columns; i++) {
-                employeeItems.add(new GridEmployeeItemAdapter(row));
+                GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
+                rows.add(gridRow);
             }
-        }
 
-        setGridItems(allGridItems);
-        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
-        requestLayout();
+            List<GridCellItemAdapter> allGridItems = new ArrayList<>();
+            List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
+
+            for (GridItemRow row : rows) {
+                List<GridCellItemAdapter> cells = row.getItems();
+                allGridItems.addAll(cells);
+
+                for (int i = 0; i < cells.size() / columns; i++) {
+                    employeeItems.add(new GridEmployeeItemAdapter(row));
+                }
+            }
+
+            callback.onCalendarViewReady(allGridItems, employeeItems);
+
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 
 
