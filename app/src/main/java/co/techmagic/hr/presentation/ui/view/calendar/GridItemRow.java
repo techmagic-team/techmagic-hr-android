@@ -29,27 +29,7 @@ public class GridItemRow {
 
     public GridItemRow(EmployeeGridYitem employeeGridYitem, TimeRange timeRange, List<UserTimeOff> timeOffs, List<UserTimeOff> allRequested, List<CalendarInfoDto> calendarInfo) {
         this.employeeGridYitem = employeeGridYitem;
-        items = generateGridItems(fitItems(timeOffs, timeRange), fitItems(allRequested, timeRange), timeRange, calendarInfo);
-    }
-
-    /**
-     * Convert a list of potentially overlapping items into a list of lists containing IGridItems that don't overlap.
-     *
-     * @param list the unsorted list of IGridItems
-     * @return the list of
-     */
-
-
-    private List<UserTimeOff> fitItems(List<UserTimeOff> list, TimeRange timeRange) {
-        List<UserTimeOff> sortedTimeOffs = new ArrayList<>();
-        for (UserTimeOff userTimeOff : list) {
-            if (timeRange != null && userTimeOff.getTimeRange() != null && timeRange.overlaps(userTimeOff.getTimeRange())) {
-                sortedTimeOffs.add(userTimeOff);
-                break;
-            }
-        }
-
-        return sortedTimeOffs;
+        items = generateGridItems(timeOffs, allRequested, timeRange, calendarInfo);
     }
 
 
@@ -59,10 +39,6 @@ public class GridItemRow {
 
         Calendar cellTime = Calendar.getInstance();
         cellTime.setTimeInMillis(timeRange.getStart().getTimeInMillis());
-        cellTime.set(Calendar.HOUR, 0);
-        cellTime.set(Calendar.MINUTE, 0);
-        cellTime.set(Calendar.SECOND, 0);
-        cellTime.set(Calendar.MILLISECOND, 0);
 
         for (int x = 0; x < columns; x++) {
             GridCellItemAdapter gridCellItemAdapter = new GridCellItemAdapter();
@@ -106,8 +82,8 @@ public class GridItemRow {
 
     /**
      * @param displayAsAccepted is used to identify how should cell be colored
-     *                           <p>true - regarding to time off (DayOff, Vacation or Illness)</p>
-     *                           <p>false - as requested color</p>
+     *                          <p>true - regarding to time off (DayOff, Vacation or Illness)</p>
+     *                          <p>false - as requested color</p>
      */
 
     private void checkForTimeOffs(List<UserTimeOff> timeOffs, Calendar cellTime, GridCellItemAdapter gridCellItemAdapter, boolean displayAsAccepted) {
@@ -115,8 +91,8 @@ public class GridItemRow {
         List<UserTimeOff> dayOffs = getTimeOff(timeOffs, TimeOffType.DAYOFF);
 
         if (dayOffs != null) {
-            for (UserTimeOff timeOff : dayOffs) {
-                if (shouldTimeOffBeInCurrentCell(timeOff.getDateFrom().getTime(), timeOff.getDateTo().getTime(), cellTime.getTime())) {
+            for (UserTimeOff dayOff : dayOffs) {
+                if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom().getTime(), dayOff.getDateTo().getTime(), cellTime.getTime())) {
                     if (displayAsAccepted) {
                         gridCellItemAdapter.setHasDayOff(true);
                     } else {

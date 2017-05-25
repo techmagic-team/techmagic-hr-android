@@ -1,8 +1,7 @@
 package co.techmagic.hr.presentation.pojo;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import co.techmagic.hr.data.entity.Docs;
 
@@ -12,15 +11,14 @@ import co.techmagic.hr.data.entity.Docs;
 
 public class UserAllTimeOffsMap {
 
-    private Map<Docs, List<UserTimeOff>> map = new HashMap<>();
+    private LinkedHashMap<Docs, List<UserTimeOff>> map = new LinkedHashMap<>();
+    private LinkedHashMap<Docs, List<UserTimeOff>> requestedMap = new LinkedHashMap<>();
 
-    private Map<Docs, List<UserTimeOff>> requestedMap = new HashMap<>();
-
-    public Map<Docs, List<UserTimeOff>> getMap() {
+    public LinkedHashMap<Docs, List<UserTimeOff>> getMap() {
         return map;
     }
 
-    public Map<Docs, List<UserTimeOff>> getRequestedMap() {
+    public LinkedHashMap<Docs, List<UserTimeOff>> getRequestedMap() {
         return requestedMap;
     }
 

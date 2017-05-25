@@ -734,6 +734,9 @@
 
         </LinearLayout>
 
+        <!-- All time offs -->
+        <include layout="@layout/layout_requested_items" />
+
         <LinearLayout
             android:id="@+id/llAbout"
             android:layout_width="match_parent"
@@ -790,8 +793,6 @@
             <include layout="@layout/divider_grey" />
 
         </LinearLayout>
-
-        <include layout="@layout/layout_requested_items" />
 
     </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public CalendarPresenter() {
         employeeRepository = new EmployeeRepositoryImpl();
-
         getAllTimeOffs = new GetAllTimeOffs(employeeRepository);
         getEmployeesByDepartment = new GetEmployeesByDepartment(employeeRepository);
         getCalendar = new GetCalendar(employeeRepository);
@@ -224,7 +224,15 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             employees.clear();
             view.showNoResults();
         } else {
-            employees = result;
+
+            Collections.sort(result, (l1, l2) -> {
+                final String name1 = l1.getLastName();
+                final String name2 = l2.getLastName();
+                return (name1).compareToIgnoreCase(name2);
+            });
+
+            employees.clear();
+            employees.addAll(result);
         }
     }
 

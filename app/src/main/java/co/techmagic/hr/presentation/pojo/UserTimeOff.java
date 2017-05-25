@@ -19,7 +19,6 @@ public class UserTimeOff {
     private boolean isPaid;
     private boolean isAccepted;
     private TimeOffType timeOffType;
-    private TimeRange timeRange;
 
     private Calendar from;
     private Calendar to;
@@ -51,6 +50,7 @@ public class UserTimeOff {
 
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
+        from.setTime(dateFrom);
     }
 
     public Calendar getDateTo() {
@@ -59,6 +59,7 @@ public class UserTimeOff {
 
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
+        to.setTime(dateTo);
     }
 
     public boolean isPaid() {
@@ -86,7 +87,6 @@ public class UserTimeOff {
     }
 
     public TimeRange getTimeRange() {
-        timeRange = new TimeRange(dateFrom, dateTo);
-        return timeRange;
+        return new TimeRange(dateFrom, dateTo);
     }
 }
