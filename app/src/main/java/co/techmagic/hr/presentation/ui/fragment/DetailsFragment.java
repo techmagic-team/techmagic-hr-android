@@ -444,7 +444,11 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void handleOnPhotoClick() {
         fullSizeImageDialog.show();
-        fullSizeImageDialog.loadImage(data.getPhoto());
+        if (data.getPhotoOrigin() == null) {
+            fullSizeImageDialog.loadImage(data.getPhoto());
+        } else {
+            fullSizeImageDialog.loadImage(data.getPhotoOrigin());
+        }
     }
 
 
@@ -493,7 +497,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void showEmployeeName() {
         if (data.getFirstName() != null && data.getLastName() != null) {
-            toolbarChangeListener.setActionBarText(data.getFirstName() + " " + data.getLastName());
+            toolbarChangeListener.setActionBarTitle(data.getFirstName() + " " + data.getLastName());
         }
     }
 

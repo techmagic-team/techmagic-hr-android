@@ -11,5 +11,5 @@ public interface ActionBarChangeListener {
 
     void showBackButton();
 
-    void setActionBarText(@NonNull String title);
+    void setActionBarTitle(@NonNull String title);
 }

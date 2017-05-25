@@ -7,5 +7,7 @@ import co.techmagic.hr.data.entity.Docs;
 
 public interface FragmentCallback {
 
-    void addDetailsFragment(@NonNull Docs docs, @Nullable String tag);
+    void addDetailsFragment(@NonNull Docs docs, @NonNull ProfileTypes profileType, @Nullable String tag);
+
+    void addCalendarFragment();
 }

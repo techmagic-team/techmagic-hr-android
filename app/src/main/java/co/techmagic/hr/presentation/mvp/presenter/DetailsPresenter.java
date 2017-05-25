@@ -26,8 +26,9 @@ import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.GetIllnessRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
-import co.techmagic.hr.domain.interactor.employee.GetIllness;
-import co.techmagic.hr.domain.interactor.employee.GetTimeOff;
+import co.techmagic.hr.domain.interactor.employee.GetUserDayOffs;
+import co.techmagic.hr.domain.interactor.employee.GetUserIllness;
+import co.techmagic.hr.domain.interactor.employee.GetUserVacations;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
@@ -43,23 +44,25 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     private Docs data;
     private IEmployeeRepository employeeRepository;
-    private GetTimeOff getTimeOff;
-    private GetIllness getIllness;
+    private GetUserVacations getUserVacations;
+    private GetUserDayOffs getUserDayOffs;
+    private GetUserIllness getUserIllness;
 
 
     public DetailsPresenter() {
         super();
         employeeRepository = new EmployeeRepositoryImpl();
-        getTimeOff = new GetTimeOff(employeeRepository);
-        getIllness = new GetIllness(employeeRepository);
+        getUserVacations = new GetUserVacations(employeeRepository);
+        getUserDayOffs = new GetUserDayOffs(employeeRepository);
+        getUserIllness = new GetUserIllness(employeeRepository);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
-        getTimeOff.unsubscribe();
-        getIllness.unsubscribe();
+        getUserVacations.unsubscribe();
+        getUserIllness.unsubscribe();
     }
 
 
@@ -71,8 +74,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         }
         view.disallowChangeBottomTab();
         String userId = data.getId();
-        performGetTimeOffRequest(userId, true, firstDate);
-        performGetTimeOffRequest(userId, false, firstDate);
+        performGetUserVacationsRequest(userId, firstDate);
+        performGetUserDayOffsRequest(userId, firstDate);
         performGetIllnessesRequest(userId, firstDate);
     }
 
@@ -291,24 +294,19 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    /**
-     * @param isPaid == true (Vacation Request)
-     *               else (Day-off Request)
-     */
-
-    private void performGetTimeOffRequest(@NonNull String userId, boolean isPaid, @NonNull String firstDate) {
+    private void performGetUserVacationsRequest(@NonNull String userId, @NonNull String firstDate) {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
-        final TimeOffRequest request = new TimeOffRequest(userId, firstDay, dateAfterYear, isPaid);
-        getTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        final TimeOffRequest request = new TimeOffRequest(userId, true, firstDay, dateAfterYear);
+        getUserVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
                 view.hideProgress();
-                handleRetrievedTimeOffs(response, isPaid);
+                handleRetrievedVacations(response);
             }
 
             @Override
@@ -320,11 +318,11 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    private void handleRetrievedTimeOffs(List<RequestedTimeOff> requestedTimeOffs, boolean isPaid) {
+    private void handleRetrievedVacations(List<RequestedTimeOff> vacations) {
         String formattedText = "";
 
-        if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
-            for (RequestedTimeOff item : requestedTimeOffs) {
+        if (vacations != null && !vacations.isEmpty()) {
+            for (RequestedTimeOff item : vacations) {
                 if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
                     formattedText = buildFormattedString(formattedText, item);
                 }
@@ -332,23 +330,61 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         }
 
         if (!TextUtils.isEmpty(formattedText)) {
-            if (isPaid) {
-                view.showVacationDays(formattedText);
-            } else {
-                view.showDayOff(formattedText);
-            }
+            view.showVacationDays(formattedText);
         }
     }
+
+
+    private void performGetUserDayOffsRequest(@NonNull String userId, @NonNull String firstDate) {
+        view.showProgress();
+
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
+
+        final TimeOffRequest request = new TimeOffRequest(userId, false, firstDay, dateAfterYear);
+        getUserDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+            @Override
+            public void onNext(List<RequestedTimeOff> response) {
+                super.onNext(response);
+                view.hideProgress();
+                handleRetrievedDayOffs(response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleRetrievedDayOffs(List<RequestedTimeOff> dayOffs) {
+        String formattedText = "";
+
+        if (dayOffs != null && !dayOffs.isEmpty()) {
+            for (RequestedTimeOff item : dayOffs) {
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
+                }
+            }
+        }
+
+        if (!TextUtils.isEmpty(formattedText)) {
+            view.showDayOff(formattedText);
+        }
+    }
+
 
 
     private void performGetIllnessesRequest(@NonNull String userId, @NonNull String firstDate) {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
         final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
-        getIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getUserIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);

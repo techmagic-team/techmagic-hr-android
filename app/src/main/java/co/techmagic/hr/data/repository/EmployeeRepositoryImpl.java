@@ -2,6 +2,7 @@ package co.techmagic.hr.data.repository;
 
 import java.util.List;
 
+import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.FilterDepartment;
 import co.techmagic.hr.data.entity.FilterLead;
@@ -10,7 +11,9 @@ import co.techmagic.hr.data.exception.NetworkConnectionException;
 import co.techmagic.hr.data.manager.NetworkManager;
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
+import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
@@ -63,9 +66,9 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<RequestedTimeOff>> getAllVacations(TimeOffRequest request) {
+    public Observable<List<RequestedTimeOff>> getUserVacations(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getAllVacations(request);
+            return client.getEmployeeClient().getUserVacations(request.getUserId(), true, request.getDateFrom().getGte(), request.getDateTo().getLte());
         }
 
         return Observable.error(new NetworkConnectionException());
@@ -73,9 +76,69 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<RequestedTimeOff>> getAllIllnesses(GetIllnessRequest request) {
+    public Observable<List<RequestedTimeOff>> getUserDayOffs(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getAllIllnesses(request);
+            return client.getEmployeeClient().getUserDayOffs(request.getUserId(), false, request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getUserIllnesses(GetIllnessRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getUserIllnesses(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getAllVacations(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getAllVacations(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getAllDayOffs(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getAllDayOffs(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getAllIllnesses(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getAllIllnesses(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getAllEmployeesByDepartment(employeesByDepartmentRequest.isMyTeam(), employeesByDepartmentRequest.getDepartmentId());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getCalendar(request.getDateFrom(), request.getDateTo());
         }
 
         return Observable.error(new NetworkConnectionException());

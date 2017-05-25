@@ -8,7 +8,7 @@
     tools:context="co.techmagic.hr.presentation.ui.activity.HomeActivity">
 
     <RelativeLayout
-        android:id="@+id/llFragmentsContainer"
+        android:id="@+id/rlFragmentsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/coordinatorLayout"
@@ -38,16 +38,16 @@
             android:layout_below="@+id/flFilters"
             android:layout_gravity="bottom" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tvNoResults"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/message_no_results"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tvNoResults"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/message_no_results"
-        android:visibility="gone" />
+    </RelativeLayout>
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -73,7 +73,6 @@
                 app:menu="@menu/menu_bottom_navigation" />
 
         </FrameLayout>
-
 
     </android.support.design.widget.CoordinatorLayout>
 

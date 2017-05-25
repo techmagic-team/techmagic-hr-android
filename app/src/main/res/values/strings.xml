@@ -35,10 +35,11 @@
 
     <!-- HomeActivity -->
     <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_2">My Profile</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
+    <string name="tm_hr_home_activity_text_filters">Filters</string>
     <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
 
     <!-- SearchActivity -->
@@ -72,5 +73,23 @@
     <string name="fragment_employee_details_card_view_text_day_off">"Day off: "</string>
     <string name="fragment_employee_details_card_view_text_illness">"Illness: "</string>
     <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
+
+    <!-- CalendarFragment -->
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_from">From</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_to">To</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_invalid_date">Invalid date range</string>
+    <string name="tm_hr_calendar_fragment_to_text">to</string>
+    <string name="tm_hr_calendar_fragment_title">Calendar</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_weekday">Weekend</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_holiday">Holiday</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_vacation">Vacation</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_day_off">Day Off</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_illness">Illness</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
+
+    <!-- CalendarFiltersActivity -->
+    <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
+    <string name="tm_hr_calendar_filters_activity_text_from">From</string>
+    <string name="tm_hr_calendar_filters_activity_text_to">To</string>
 
 </resources>

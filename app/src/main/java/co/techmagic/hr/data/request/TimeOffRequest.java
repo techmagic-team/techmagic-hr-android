@@ -1,6 +1,5 @@
 package co.techmagic.hr.data.request;
 
-import com.google.gson.annotations.SerializedName;
 import co.techmagic.hr.data.entity.DateFrom;
 import co.techmagic.hr.data.entity.DateTo;
 
@@ -10,27 +9,25 @@ import co.techmagic.hr.data.entity.DateTo;
 
 public class TimeOffRequest {
 
-    @SerializedName("_user")
     private String userId;
-
-    @SerializedName("dateFrom")
+    private boolean isPaid;
     private DateFrom dateFrom;
-
-    @SerializedName("dateTo")
     private DateTo dateTo;
 
-    @SerializedName("isPaid")
-    private boolean isPaid;
 
-    public TimeOffRequest(String userId, long dateFrom, long dateTo, boolean isPaid) {
+    public TimeOffRequest(String userId, boolean isPaid, long dateFrom, long dateTo) {
         this.userId = userId;
+        this.isPaid = isPaid;
         this.dateFrom = new DateFrom(dateFrom);
         this.dateTo = new DateTo(dateTo);
-        this.isPaid = isPaid;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
     }
 
     public DateFrom getDateFrom() {
@@ -41,7 +38,5 @@ public class TimeOffRequest {
         return dateTo;
     }
 
-    public boolean isPaid() {
-        return isPaid;
-    }
+
 }

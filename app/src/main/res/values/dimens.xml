@@ -46,5 +46,22 @@
     <dimen name="fragment_employee_details_image_view_margin_bottom">16dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_vertical">16dp</dimen>
     <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- CalendarActivity -->
+    <dimen name="activity_calendar_scroll_view_margin_vertical">4dp</dimen>
+    <dimen name="activity_calendar_grid_cell_size">39dp</dimen>
+    <dimen name="activity_calendar_user_image_size">36dp</dimen>
+    <dimen name="activity_calendar_user_margin_vertical">1dp</dimen>
+    <dimen name="activity_calendar_user_margin_horizontal">8dp</dimen>
+    <dimen name="activity_layout_colors_layout_margin">4dp</dimen>
+    <dimen name="activity_layout_colors_layout_margin_vertical">8dp</dimen>
+    <dimen name="activity_layout_colors_circle_view_size">10dp</dimen>
+    <dimen name="activity_layout_colors_circle_margin_right">4dp</dimen>
+    <dimen name="activity_layout_colors_text_size">11sp</dimen>
+    <dimen name="activity_layout_grid_item_size">48dp</dimen>
+    <dimen name="activity_layout_grid_item_padding">2dp</dimen>
+    <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
+    <dimen name="calendar_fragment_cell_stroke_size">1px</dimen>
 
 </resources>

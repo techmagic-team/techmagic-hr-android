@@ -11,6 +11,7 @@ public interface IUserRepository {
 
     // String STUB_COMPANY_ID = "58593c3398c899445ecb224a"; // Testing Company (production)
     String STUB_COMPANY_ID = "585019ffff9c2c5a2b98a7ce";
+   // String STUB_COMPANY_ID = "583457c28725f715d8f010fd"; // Production Company
 
     Observable<User> login(LoginRequest loginRequest);
 

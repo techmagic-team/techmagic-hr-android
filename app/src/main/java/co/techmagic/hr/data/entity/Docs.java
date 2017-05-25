@@ -2,6 +2,7 @@ package co.techmagic.hr.data.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Docs implements Parcelable {
@@ -75,7 +76,8 @@ public class Docs implements Parcelable {
     @SerializedName("trialPeriodEnds")
     private String trialPeriodEnds;
 
-    public Docs() {}
+    public Docs() {
+    }
 
     public Docs(Parcel in) {
         department = (Department) in.readValue(Department.class.getClassLoader());
