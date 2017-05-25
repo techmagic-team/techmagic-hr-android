@@ -14,6 +14,7 @@ import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.domain.pojo.HolidayDto;
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import co.techmagic.hr.presentation.util.DateUtil;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -195,8 +196,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
             RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
             requestedTimeOffDto.setAccepted(requestedTimeOff.isAccepted());
             requestedTimeOffDto.setCompanyId(requestedTimeOff.getCompanyId());
-            requestedTimeOffDto.setDateFrom(requestedTimeOff.getDateFrom());
-            requestedTimeOffDto.setDateTo(requestedTimeOff.getDateTo());
+            requestedTimeOffDto.setDateFrom(DateUtil.parseStringDate(requestedTimeOff.getDateFrom()));
+            requestedTimeOffDto.setDateTo(DateUtil.parseStringDate(requestedTimeOff.getDateTo()));
             requestedTimeOffDto.setPaid(requestedTimeOff.isPaid());
             requestedTimeOffDto.setUserId(requestedTimeOff.getUserId());
 

@@ -25,6 +25,7 @@ public class DateUtil {
         }
 
         inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        outputFullDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try {
             Date date = inputFormat.parse(inputData);
@@ -37,16 +38,22 @@ public class DateUtil {
     }
 
 
-    public static String getFormattedFullDate(@Nullable Date inputData) {
-        String formattedDate = null;
+    public static Date parseStringDate(@Nullable String inputData) {
+        Date parsedDate = null;
 
         if (inputData == null) {
-            return formattedDate;
+            return parsedDate;
         }
 
-        formattedDate = outputFullDateFormat.format(inputData);
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        return formattedDate;
+        try {
+            parsedDate = inputFormat.parse(inputData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return parsedDate;
     }
 
 
@@ -135,13 +142,24 @@ public class DateUtil {
     }
 
 
-    public static long calendarToMidnightMillis(@Nullable Calendar calendar) {
-        if (calendar == null) {
+    public static long calendarToMidnightMillis(@Nullable Calendar inputTime) {
+        if (inputTime == null) {
             return 0;
         }
 
         Calendar c = Calendar.getInstance();
-        c.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-        return calendar.getTimeInMillis();
+        c.set(inputTime.get(Calendar.YEAR), inputTime.get(Calendar.MONTH), inputTime.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        return c.getTimeInMillis();
+    }
+
+
+    public static long calendarToEndOfTheDayMillis(@Nullable Calendar inputTime) {
+        if (inputTime == null) {
+            return 0;
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.set(inputTime.get(Calendar.YEAR), inputTime.get(Calendar.MONTH), inputTime.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+        return c.getTimeInMillis();
     }
 }
