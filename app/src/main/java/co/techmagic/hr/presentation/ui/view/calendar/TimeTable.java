@@ -31,7 +31,6 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
-import co.techmagic.hr.presentation.ui.view.OnCalendarCallback;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.util.DateUtil;
 import rx.Observable;
@@ -134,42 +133,54 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
-        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+        List<GridItemRow> rows = new ArrayList<>();
+        for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
+            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
 
-            OnCalendarCallback callback = (allGridItems, employeeItems) -> {
-                 /* Hide progress listener */
-                onCalendarViewReadyListener.onCalendarVisible();
-                /*setGridItems(allGridItems);
-                setEmployeeItems(employeeItems, onEmployeeItemClickListener);*/
-                // requestLayout();
-            };
+            List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
+            List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
 
-            List<GridItemRow> rows = new ArrayList<>();
-            for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
-                EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
+            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
+            rows.add(gridRow);
+        }
 
-                List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
-                List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
+        Observable.zip(Observable.create(subscriber -> getAllGridItems(rows)), Observable.create(subscriber -> getAllEmployeeItems(rows)),
+                (List<GridCellItemAdapter> gridCellItemAdapters, List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) -> new TimeTableItemsWrapper(gridCellItemAdapters, gridEmployeeItemAdapters)).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(timeTableItemsWrapper -> {
+                    onCalendarViewReadyListener.onCalendarVisible();
+                    setGridItems(timeTableItemsWrapper.getGridCellItemAdapters());
+                    setEmployeeItems(timeTableItemsWrapper.getGridEmployeeItemAdapters(), onEmployeeItemClickListener);
+                    requestLayout();
+                });
+    }
 
-                GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
-                rows.add(gridRow);
+
+    private List<GridCellItemAdapter> getAllGridItems(List<GridItemRow> rows) {
+        List<GridCellItemAdapter> allGridItems = new ArrayList<>();
+
+        for (GridItemRow row : rows) {
+            List<GridCellItemAdapter> cells = row.getItems();
+            allGridItems.addAll(cells);
+        }
+
+        return allGridItems;
+    }
+
+
+    private List<GridEmployeeItemAdapter> getAllEmployeeItems(List<GridItemRow> rows) {
+        List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
+
+        for (GridItemRow row : rows) {
+            List<GridCellItemAdapter> cells = row.getItems();
+
+            for (int i = 0; i < cells.size() / columns; i++) {
+                employeeItems.add(new GridEmployeeItemAdapter(row));
             }
+        }
 
-            List<GridCellItemAdapter> allGridItems = new ArrayList<>();
-            List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
-
-            for (GridItemRow row : rows) {
-                List<GridCellItemAdapter> cells = row.getItems();
-                allGridItems.addAll(cells);
-
-                for (int i = 0; i < cells.size() / columns; i++) {
-                    employeeItems.add(new GridEmployeeItemAdapter(row));
-                }
-            }
-
-            callback.onCalendarViewReady(allGridItems, employeeItems);
-
-        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+        return employeeItems;
     }
 
 
@@ -374,5 +385,33 @@ public class TimeTable extends FrameLayout {
                 return false;
             }
         };
+    }
+
+
+    class TimeTableItemsWrapper {
+
+        private List<GridCellItemAdapter> gridCellItemAdapters;
+        private List<GridEmployeeItemAdapter> gridEmployeeItemAdapters;
+
+        public TimeTableItemsWrapper(List<GridCellItemAdapter> gridCellItemAdapters, List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) {
+            this.gridCellItemAdapters = gridCellItemAdapters;
+            this.gridEmployeeItemAdapters = gridEmployeeItemAdapters;
+        }
+
+        public List<GridCellItemAdapter> getGridCellItemAdapters() {
+            return gridCellItemAdapters;
+        }
+
+        public void setGridCellItemAdapters(List<GridCellItemAdapter> gridCellItemAdapters) {
+            this.gridCellItemAdapters = gridCellItemAdapters;
+        }
+
+        public List<GridEmployeeItemAdapter> getGridEmployeeItemAdapters() {
+            return gridEmployeeItemAdapters;
+        }
+
+        public void setGridEmployeeItemAdapters(List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) {
+            this.gridEmployeeItemAdapters = gridEmployeeItemAdapters;
+        }
     }
 }
