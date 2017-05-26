@@ -82,7 +82,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void setupEmployeeItem(EmployeeViewHolder holder, final Docs docs) {
         Glide.with(holder.ivAvatar.getContext())
-                .load(docs.getPhoto())
+                .load(docs.getPhotoOrigin() == null ? docs.getPhoto() : docs.getPhotoOrigin())
                 .placeholder(R.drawable.ic_user_placeholder)
                 .dontAnimate()
                 .into(holder.ivAvatar);

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import co.techmagic.hr.common.AcceptedTimeOffType;
 import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.Employee;
@@ -352,7 +353,19 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         } else {
             UserTimeOff userTimeOff = new UserTimeOff();
             userTimeOff.setPaid(requestedTimeOffDto.isPaid());
-            userTimeOff.setAccepted(requestedTimeOffDto.isAccepted());
+
+            if (requestedTimeOffDto.getAcceptedTimeOffType() == AcceptedTimeOffType.NULL) {
+                userTimeOff.setAccepted(null);
+            }
+
+            if (requestedTimeOffDto.getAcceptedTimeOffType() == AcceptedTimeOffType.TRUE) {
+                userTimeOff.setAccepted(true);
+            }
+
+            if (requestedTimeOffDto.getAcceptedTimeOffType() == AcceptedTimeOffType.FALSE) {
+                userTimeOff.setAccepted(false);
+            }
+
             userTimeOff.setCompanyId(requestedTimeOffDto.getCompanyId());
             userTimeOff.setDateFrom(requestedTimeOffDto.getDateFrom());
             userTimeOff.setDateTo(requestedTimeOffDto.getDateTo());

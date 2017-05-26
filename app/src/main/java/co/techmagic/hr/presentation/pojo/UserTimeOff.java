@@ -18,7 +18,7 @@ public class UserTimeOff {
     private Date dateFrom;
     private Date dateTo;
     private boolean isPaid;
-    private boolean isAccepted;
+    private Boolean isAccepted;
     private TimeOffType timeOffType;
 
     private Calendar from;
@@ -73,11 +73,11 @@ public class UserTimeOff {
         isPaid = paid;
     }
 
-    public boolean isAccepted() {
-        return isAccepted;
+    public Boolean isAccepted() {
+        return isAccepted != null && isAccepted;
     }
 
-    public void setAccepted(boolean accepted) {
+    public void setAccepted(Boolean accepted) {
         isAccepted = accepted;
     }
 

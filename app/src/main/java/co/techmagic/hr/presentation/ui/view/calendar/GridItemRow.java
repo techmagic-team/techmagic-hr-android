@@ -94,9 +94,15 @@ public class GridItemRow {
             for (UserTimeOff dayOff : dayOffs) {
                 if (shouldTimeOffBeInCurrentCell(dayOff.getDateFrom().getTime(), dayOff.getDateTo().getTime(), cellTime.getTime())) {
                     if (displayAsAccepted) {
-                        gridCellItemAdapter.setHasDayOff(true);
+                        if (dayOff.isAccepted()) {
+                            gridCellItemAdapter.setHasDayOff(true);
+                        } else {
+                            gridCellItemAdapter.setAccepted(true);
+                        }
                     } else {
-                        gridCellItemAdapter.setAccepted(true);
+                        if (dayOff.isAccepted()) {
+                            gridCellItemAdapter.setHasDayOff(true);
+                        }
                     }
                 }
             }
@@ -109,9 +115,15 @@ public class GridItemRow {
             for (UserTimeOff vacation : vacations) {
                 if (shouldTimeOffBeInCurrentCell(vacation.getDateFrom().getTime(), vacation.getDateTo().getTime(), cellTime.getTime())) {
                     if (displayAsAccepted) {
-                        gridCellItemAdapter.setHasVacation(true);
+                        if (vacation.isAccepted()) {
+                            gridCellItemAdapter.setHasVacation(true);
+                        } else {
+                            gridCellItemAdapter.setAccepted(true);
+                        }
                     } else {
-                        gridCellItemAdapter.setAccepted(true);
+                        if (vacation.isAccepted()) {
+                            gridCellItemAdapter.setHasVacation(true);
+                        }
                     }
                 }
             }
@@ -124,9 +136,15 @@ public class GridItemRow {
             for (UserTimeOff illness : illnesses) {
                 if (shouldTimeOffBeInCurrentCell(illness.getDateFrom().getTime(), illness.getDateTo().getTime(), cellTime.getTime())) {
                     if (displayAsAccepted) {
-                        gridCellItemAdapter.setHasIllness(true);
+                        if (illness.isAccepted()) {
+                            gridCellItemAdapter.setHasIllness(true);
+                        } else {
+                            gridCellItemAdapter.setAccepted(true);
+                        }
                     } else {
-                        gridCellItemAdapter.setAccepted(true);
+                        if (illness.isAccepted()) {
+                            gridCellItemAdapter.setHasIllness(true);
+                        }
                     }
                 }
             }

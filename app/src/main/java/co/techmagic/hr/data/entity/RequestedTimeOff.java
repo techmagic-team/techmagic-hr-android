@@ -2,6 +2,8 @@ package co.techmagic.hr.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import co.techmagic.hr.common.AcceptedTimeOffType;
+
 public class RequestedTimeOff {
 
     @SerializedName("_user")
@@ -20,7 +22,9 @@ public class RequestedTimeOff {
     private boolean isPaid;
 
     @SerializedName("isAccepted")
-    private boolean isAccepted;
+    private Boolean stringIsAccepted;
+
+    private AcceptedTimeOffType acceptedTimeOffType = AcceptedTimeOffType.NULL;
 
 
     public String getUserId() {
@@ -43,7 +47,18 @@ public class RequestedTimeOff {
         return isPaid;
     }
 
-    public boolean isAccepted() {
-        return isAccepted;
+    public Boolean getStringIsAccepted() {
+        return stringIsAccepted;
+    }
+
+    public AcceptedTimeOffType getAcceptedTimeOffType() {
+        /*if (stringIsAccepted.equalsIgnoreCase("true")) {
+            acceptedTimeOffType = AcceptedTimeOffType.TRUE;
+
+        } else if (stringIsAccepted.equalsIgnoreCase("false")) {
+            acceptedTimeOffType = AcceptedTimeOffType.FALSE;
+        }*/
+
+        return acceptedTimeOffType;
     }
 }
