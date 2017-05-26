@@ -34,7 +34,6 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.util.DateUtil;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -54,7 +53,6 @@ public class TimeTable extends FrameLayout {
     private int columns;
 
     private FastItemAdapter guideXadapter, guideYadapter, gridAdapter;
-    private Subscription subscription;
 
 
     public TimeTable(Context context) {
@@ -95,16 +93,8 @@ public class TimeTable extends FrameLayout {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(null);
 
-        // todo init subscription
         addView(view);
         requestLayout();
-    }
-
-    // todo init subscription
-    public void onPause() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
     }
 
 

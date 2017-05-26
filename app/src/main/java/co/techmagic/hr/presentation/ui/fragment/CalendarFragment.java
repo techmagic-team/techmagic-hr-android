@@ -81,13 +81,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     @Override
-    public void onPause() {
-        super.onPause();
-        timeTable.onPause();
-    }
-
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         actionBarChangeListener.showBackButton();
