@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -33,9 +34,6 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.util.DateUtil;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -105,6 +103,17 @@ public class TimeTable extends FrameLayout {
     public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo,
                                       @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener, @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
 
+        /* Hide progress listener */
+
+        ViewTreeObserver observer = guideY.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(() -> {
+            int visibility = guideY.getVisibility();
+
+            if (visibility == VISIBLE) {
+                onCalendarViewReadyListener.onCalendarVisible();
+            }
+        });
+
         setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(DateUtil.calendarToMidnightMillis(left));
         right.setTimeInMillis(DateUtil.calendarToMidnightMillis(right));
@@ -134,43 +143,21 @@ public class TimeTable extends FrameLayout {
             rows.add(gridRow);
         }
 
-        Observable.zip(Observable.create(subscriber -> getAllGridItems(rows)), Observable.create(subscriber -> getAllEmployeeItems(rows)),
-                (List<GridCellItemAdapter> gridCellItemAdapters, List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) -> new TimeTableItemsWrapper(gridCellItemAdapters, gridEmployeeItemAdapters)).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(timeTableItemsWrapper -> {
-                    onCalendarViewReadyListener.onCalendarVisible();
-                    setGridItems(timeTableItemsWrapper.getGridCellItemAdapters());
-                    setEmployeeItems(timeTableItemsWrapper.getGridEmployeeItemAdapters(), onEmployeeItemClickListener);
-                    requestLayout();
-                });
-    }
-
-
-    private List<GridCellItemAdapter> getAllGridItems(List<GridItemRow> rows) {
         List<GridCellItemAdapter> allGridItems = new ArrayList<>();
-
-        for (GridItemRow row : rows) {
-            List<GridCellItemAdapter> cells = row.getItems();
-            allGridItems.addAll(cells);
-        }
-
-        return allGridItems;
-    }
-
-
-    private List<GridEmployeeItemAdapter> getAllEmployeeItems(List<GridItemRow> rows) {
         List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
 
         for (GridItemRow row : rows) {
             List<GridCellItemAdapter> cells = row.getItems();
+            allGridItems.addAll(cells);
 
             for (int i = 0; i < cells.size() / columns; i++) {
                 employeeItems.add(new GridEmployeeItemAdapter(row));
             }
         }
 
-        return employeeItems;
+        setGridItems(allGridItems);
+        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
+        requestLayout();
     }
 
 
@@ -375,33 +362,5 @@ public class TimeTable extends FrameLayout {
                 return false;
             }
         };
-    }
-
-
-    class TimeTableItemsWrapper {
-
-        private List<GridCellItemAdapter> gridCellItemAdapters;
-        private List<GridEmployeeItemAdapter> gridEmployeeItemAdapters;
-
-        public TimeTableItemsWrapper(List<GridCellItemAdapter> gridCellItemAdapters, List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) {
-            this.gridCellItemAdapters = gridCellItemAdapters;
-            this.gridEmployeeItemAdapters = gridEmployeeItemAdapters;
-        }
-
-        public List<GridCellItemAdapter> getGridCellItemAdapters() {
-            return gridCellItemAdapters;
-        }
-
-        public void setGridCellItemAdapters(List<GridCellItemAdapter> gridCellItemAdapters) {
-            this.gridCellItemAdapters = gridCellItemAdapters;
-        }
-
-        public List<GridEmployeeItemAdapter> getGridEmployeeItemAdapters() {
-            return gridEmployeeItemAdapters;
-        }
-
-        public void setGridEmployeeItemAdapters(List<GridEmployeeItemAdapter> gridEmployeeItemAdapters) {
-            this.gridEmployeeItemAdapters = gridEmployeeItemAdapters;
-        }
     }
 }
