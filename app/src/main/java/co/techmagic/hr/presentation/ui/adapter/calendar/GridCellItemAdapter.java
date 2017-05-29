@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.ui.adapter.calendar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 
-public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridCellItemAdapter.ViewHolder> {
+public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridCellItemAdapter.ViewHolder> implements IGridCellItem {
 
     private boolean isStart, isWeekend;
     private boolean hasHolidays;
@@ -18,6 +19,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasDayOff;
     private boolean hasIllness;
     private boolean hasRequested;
+    private String timeOffMessage;
 
 
     @Override
@@ -57,6 +59,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
         }
     }
 
+
     @Override
     public void unbindView(ViewHolder holder) {
         super.unbindView(holder);
@@ -87,6 +90,14 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     }
 
 
+    @Override
+    public void onItemClick(View view) {
+        if (timeOffMessage != null) {
+            Toast.makeText(view.getContext(), timeOffMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     public boolean isStart() {
         return isStart;
     }
@@ -105,6 +116,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     public void setIsWeekend(boolean weekend) {
         isWeekend = weekend;
     }
+
 
     public boolean hasHolidays() {
         return hasHolidays;
@@ -153,6 +165,11 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
 
     public void setHasHolidays(boolean hasHolidays) {
         this.hasHolidays = hasHolidays;
+    }
+
+
+    public void setTimeOffMessage(String timeOffMessage) {
+        this.timeOffMessage = timeOffMessage;
     }
 
 

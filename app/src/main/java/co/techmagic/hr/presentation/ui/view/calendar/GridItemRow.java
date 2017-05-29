@@ -12,6 +12,7 @@ import java.util.Locale;
 import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
+import co.techmagic.hr.domain.pojo.HolidayDto;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.util.DateUtil;
@@ -52,8 +53,9 @@ public class GridItemRow {
             if (calendarInfoList != null) {
                 for (CalendarInfoDto calendarInfoDto : calendarInfoList) {
                     if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(calendarInfoDto.getName())) {
-                        for (int i = 0; i < calendarInfoDto.getHolidays().size(); i++) {
-                            if ((cellTime.get(Calendar.DAY_OF_MONTH)) == calendarInfoDto.getHolidays().get(i).getDate()) {
+                        for (HolidayDto holiday: calendarInfoDto.getHolidays()) {
+                            if ((cellTime.get(Calendar.DAY_OF_MONTH)) == holiday.getDate()) {
+                                gridCellItemAdapter.setTimeOffMessage(holiday.getName());
                                 gridCellItemAdapter.setHasHolidays(true);
                             }
                         }
@@ -65,15 +67,7 @@ public class GridItemRow {
             checkForTimeOffs(timeOffs, cellTime, gridCellItemAdapter, false);
 
             /* Check for requested */
-
-
-            if (allRequested != null) {
-                for (UserTimeOff requested : allRequested) {
-                    if (shouldTimeOffBeInCurrentCell(requested.getDateFrom().getTime(), requested.getDateTo().getTime(), cellTime.getTime())) {
-                        checkForTimeOffs(allRequested, cellTime, gridCellItemAdapter, true);
-                    }
-                }
-            }
+            checkForTimeOffs(allRequested, cellTime, gridCellItemAdapter, true);
 
             gridItems.add(gridCellItemAdapter);
             cellTime.add(Calendar.DATE, 1); // go to next day
@@ -145,15 +139,11 @@ public class GridItemRow {
             if (dayOff.getAccepted() == null) {
                 // Item is in requested state
                 gridCellItemAdapter.setRequested(true);
-            } else {
-                if (dayOff.isAccepted()) {
-                    gridCellItemAdapter.setHasDayOff(true);
-                }
-            }
-        } else {
-            if (dayOff.isAccepted()) {
+            } else if (dayOff.isAccepted()) {
                 gridCellItemAdapter.setHasDayOff(true);
             }
+        } else if (dayOff.isAccepted()) {
+            gridCellItemAdapter.setHasDayOff(true);
         }
     }
 
@@ -163,15 +153,11 @@ public class GridItemRow {
             if (vacation.getAccepted() == null) {
                 // Item is in requested state
                 gridCellItemAdapter.setRequested(true);
-            } else {
-                if (vacation.isAccepted()) {
-                    gridCellItemAdapter.setHasVacation(true);
-                }
-            }
-        } else {
-            if (vacation.isAccepted()) {
+            } else if (vacation.isAccepted()) {
                 gridCellItemAdapter.setHasVacation(true);
             }
+        } else if (vacation.isAccepted()) {
+            gridCellItemAdapter.setHasVacation(true);
         }
     }
 
@@ -181,15 +167,11 @@ public class GridItemRow {
             if (illness.getAccepted() == null) {
                 // Item is in requested state
                 gridCellItemAdapter.setRequested(true);
-            } else {
-                if (illness.isAccepted()) {
-                    gridCellItemAdapter.setHasIllness(true);
-                }
-            }
-        } else {
-            if (illness.isAccepted()) {
+            } else if (illness.isAccepted()) {
                 gridCellItemAdapter.setHasIllness(true);
             }
+        } else if (illness.isAccepted()) {
+            gridCellItemAdapter.setHasIllness(true);
         }
     }
 

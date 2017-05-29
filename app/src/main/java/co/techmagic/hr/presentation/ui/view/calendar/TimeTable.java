@@ -29,6 +29,7 @@ import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridCellItemAdapter;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
+import co.techmagic.hr.presentation.ui.adapter.calendar.IGridCellItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IGuideYItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
@@ -242,7 +243,13 @@ public class TimeTable extends FrameLayout {
         if (gridAdapter == null) {
             gridAdapter = new FastItemAdapter<>();
             gridAdapter.setHasStableIds(true);
-            gridAdapter.withSelectable(false);
+            gridAdapter.withSelectable(true);
+            gridAdapter.withOnClickListener((v, adapter, item, position) -> {
+                if (item instanceof IGridCellItem) {
+                    ((IGridCellItem) item).onItemClick(v);
+                }
+                return true;
+            });
             recyclerView.setAdapter(gridAdapter);
         }
 
