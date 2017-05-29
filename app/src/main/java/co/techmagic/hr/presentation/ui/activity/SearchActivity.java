@@ -307,7 +307,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
         rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        FilterAdapter adapter = new FilterAdapter(this);
+        FilterAdapter adapter = new FilterAdapter(this, false);
         rvFilters.setAdapter(adapter);
 
         if (results == null) {

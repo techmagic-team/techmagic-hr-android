@@ -3,21 +3,33 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Company;
+import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;
+import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
+public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> implements FilterAdapter.OnFilterSelectionListener {
 
     @BindView(R.id.cvLogin)
     View loginView;
@@ -35,6 +47,10 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     TextView tvForgotPassword;
     @BindView(R.id.tvGoToSignIn)
     TextView tvGoToSignIn;
+    @BindView(R.id.tvSelectCompany)
+    TextView tvSelectCompany;
+
+    private AlertDialog dialog;
 
     private LoginPresenter loginPresenter;
     private boolean isLoginSelected = true;
@@ -44,12 +60,19 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        presenter.onCreate();
     }
 
 
     @Override
     protected void initLayout() {
         setContentView(R.layout.activity_login);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
 
@@ -82,8 +105,19 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
             }
 
             @Override
-            public void updateCompaniesView() {
-                // TODO: 5/29/17  
+            public void showCompanySelectionDialogView(@NonNull List<Company> companies) {
+                showSelectFilterAlertDialog(companies);
+            }
+
+            @Override
+            public void onCompanyError() {
+                showMessage(getString(R.string.please_select_company_error_text));
+            }
+
+            @Override
+            public void updateSelectedCompanyView(String name) {
+                tvSelectCompany.setText(name);
+                dismissDialogIfOpened();
             }
         };
     }
@@ -117,6 +151,18 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
     @OnClick(R.id.tvGoToSignIn)
     void onGoToSignInClick() {
         handleGoToSignIn();
+    }
+
+
+    @OnClick(R.id.tvSelectCompany)
+    void onSelectCompanyClick() {
+        presenter.handleSelectCompanyClick();
+    }
+
+
+    @Override
+    public void onFilterSelected(@NonNull String id, @NonNull String name) {
+        presenter.onCompanySelected(id, name);
     }
 
 
@@ -191,5 +237,48 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
+    }
+
+
+    private void showSelectFilterAlertDialog(@Nullable List<Company> companies) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        setupDialogViews(companies, builder);
+        dialog = builder.show();
+        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+
+    private void setupDialogViews(@Nullable List<Company> companies, AlertDialog.Builder builder) {
+        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_company_filter, null);
+        builder.setView(view);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+
+        setupSelectFilterRecyclerView(view, companies);
+        setupDialogTitle(tvTitle);
+    }
+
+
+    private void setupDialogTitle(@NonNull TextView tvTitle) {
+        tvTitle.setText(R.string.select_company_text);
+    }
+
+
+    private void setupSelectFilterRecyclerView(View view, @Nullable List<Company> companies) {
+        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
+        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        FilterAdapter adapter = new FilterAdapter(this, true);
+        rvFilters.setAdapter(adapter);
+
+        adapter.refresh(companies);
+    }
+
+
+    private void dismissDialogIfOpened() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }
