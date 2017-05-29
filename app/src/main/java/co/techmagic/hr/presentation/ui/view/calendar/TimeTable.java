@@ -132,15 +132,6 @@ public class TimeTable extends FrameLayout {
         columns = timeRange.getColumnCount();
         construct(columns);
 
-        /*Observable.fromCallable()
-                .doOnNext()
-                .subscribeOn(Schedulers.newThread())
-                .doOnCompleted(() -> {
-
-                })
-                .observeOn(AndroidSchedulers.mainThread());*/
-
-
         List<GridItemRow> rows = new ArrayList<>();
         for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
             EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name

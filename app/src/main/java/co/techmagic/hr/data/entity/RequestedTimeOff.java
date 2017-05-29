@@ -20,7 +20,7 @@ public class RequestedTimeOff {
     private boolean isPaid;
 
     @SerializedName("isAccepted")
-    private boolean isAccepted;
+    private Boolean isAccepted = null;
 
 
     public String getUserId() {
@@ -43,7 +43,11 @@ public class RequestedTimeOff {
         return isPaid;
     }
 
-    public boolean isAccepted() {
+    public Boolean getAccepted() {
         return isAccepted;
+    }
+
+    public Boolean isAccepted() {
+        return isAccepted != null && isAccepted;
     }
 }

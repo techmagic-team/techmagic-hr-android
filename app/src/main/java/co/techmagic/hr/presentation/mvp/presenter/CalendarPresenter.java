@@ -298,7 +298,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
         // sort data by user
         for (Docs doc : employees) {
-
             List<UserTimeOff> userTimeOffs = new ArrayList<>();
             List<UserTimeOff> userRequestedTimeOffs = new ArrayList<>();
 
@@ -329,11 +328,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
                     if (requestedTimeOffDto.getUserId().equals(doc.getId())) {
                         UserTimeOff requestedTimeOff = map(requestedTimeOffDto);
 
-                        if (requestedTimeOff.isAccepted()) {
-                            // save requested only
-                            requestedTimeOff.setTimeOffType(entry.getKey()); // TimeOffType.REQUESTED
-                            userRequestedTimeOffs.add(requestedTimeOff);
-                        }
+                        // save requested only
+                        requestedTimeOff.setTimeOffType(entry.getKey());
+                        userRequestedTimeOffs.add(requestedTimeOff);
 
                         // save user's requested time offs
                         userAllTimeOffsMap.getRequestedMap().put(doc, userRequestedTimeOffs);
@@ -352,10 +349,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         } else {
             UserTimeOff userTimeOff = new UserTimeOff();
             userTimeOff.setPaid(requestedTimeOffDto.isPaid());
-            userTimeOff.setAccepted(requestedTimeOffDto.isAccepted());
             userTimeOff.setCompanyId(requestedTimeOffDto.getCompanyId());
             userTimeOff.setDateFrom(requestedTimeOffDto.getDateFrom());
             userTimeOff.setDateTo(requestedTimeOffDto.getDateTo());
+            userTimeOff.setAccepted(requestedTimeOffDto.getAccepted());
 
             return userTimeOff;
         }

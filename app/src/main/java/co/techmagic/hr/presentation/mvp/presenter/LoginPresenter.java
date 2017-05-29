@@ -2,12 +2,16 @@ package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.LoginRequest;
 import co.techmagic.hr.domain.interactor.user.ForgotPassword;
+import co.techmagic.hr.domain.interactor.user.GetCompanies;
 import co.techmagic.hr.domain.interactor.user.LoginUser;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
@@ -19,6 +23,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     private IUserRepository userRepository;
     private LoginUser loginUser;
     private ForgotPassword forgotPassword;
+    private GetCompanies getCompanies;
 
 
     public LoginPresenter() {
@@ -26,6 +31,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         userRepository = new UserRepositoryImpl();
         loginUser = new LoginUser(userRepository);
         forgotPassword = new ForgotPassword(userRepository);
+        getCompanies = new GetCompanies(userRepository);
     }
 
 
@@ -33,6 +39,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     protected void onViewDetached() {
         loginUser.unsubscribe();
         forgotPassword.unsubscribe();
+        getCompanies.unsubscribe();
     }
 
 
@@ -113,5 +120,24 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             }
         });
         userRepository.forgotPassword(request);
+    }
+
+
+    private void performGetCompaniesRequest() {
+        view.showProgress();
+        getCompanies.execute(null, new DefaultSubscriber<List<Company>>(view) {
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+
+            @Override
+            public void onNext(List<Company> companies) {
+                super.onNext(companies);
+                view.hideProgress();
+                view.updateCompaniesView();
+            }
+        });
     }
 }
