@@ -179,7 +179,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                     return timeOffDtos;
                 }
 
-                if (requestedOnly && requestedTimeOffDto.isAccepted()) {
+                // Means time off is waiting for response or already accepted
+                if (requestedOnly && requestedTimeOffDto.getAccepted() == null || requestedTimeOffDto.isAccepted()) {
                     timeOffDtos.add(requestedTimeOffDto);
                 } else if (!requestedOnly) {
                     timeOffDtos.add(requestedTimeOffDto);
@@ -194,7 +195,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
     private RequestedTimeOffDto map(RequestedTimeOff requestedTimeOff) {
         if (requestedTimeOff != null) {
             RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
-            requestedTimeOffDto.setAccepted(requestedTimeOff.isAccepted());
+            requestedTimeOffDto.setAccepted(requestedTimeOff.getAccepted());
             requestedTimeOffDto.setCompanyId(requestedTimeOff.getCompanyId());
             requestedTimeOffDto.setDateFrom(DateUtil.parseStringDate(requestedTimeOff.getDateFrom()));
             requestedTimeOffDto.setDateTo(DateUtil.parseStringDate(requestedTimeOff.getDateTo()));

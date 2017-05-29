@@ -17,12 +17,14 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
     private boolean hasVacation;
     private boolean hasDayOff;
     private boolean hasIllness;
-    private boolean hasAccepted;
+    private boolean hasRequested;
 
 
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
+
+        holder.itemView.setBackgroundResource(R.drawable.item_bg);
 
         if (isWeekend) {
             holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
@@ -31,6 +33,11 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
 
         if (hasHolidays) {
             holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
+            return;
+        }
+
+        if (hasRequested) {
+            holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
             return;
         }
 
@@ -47,12 +54,6 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
         if (hasIllness) {
             holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
             return;
-        }
-
-        if (hasAccepted) {
-            holder.itemView.setBackgroundResource(R.drawable.item_accepted_bg);
-        } else {
-            holder.itemView.setBackgroundResource(R.drawable.item_bg);
         }
     }
 
@@ -141,12 +142,12 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
 
 
     public boolean isAccepted() {
-        return hasAccepted;
+        return hasRequested;
     }
 
 
-    public void setAccepted(boolean hasAccepted) {
-        this.hasAccepted = hasAccepted;
+    public void setRequested(boolean hasRequested) {
+        this.hasRequested = hasRequested;
     }
 
 

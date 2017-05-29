@@ -13,7 +13,7 @@ public class RequestedTimeOffDto {
     private Date dateFrom;
     private Date dateTo;
     private boolean isPaid;
-    private boolean isAccepted;
+    private Boolean isAccepted = null;
 
     public String getUserId() {
         return userId;
@@ -55,11 +55,15 @@ public class RequestedTimeOffDto {
         isPaid = paid;
     }
 
-    public boolean isAccepted() {
+    public Boolean getAccepted() {
         return isAccepted;
     }
 
-    public void setAccepted(boolean accepted) {
+    public Boolean isAccepted() {
+        return isAccepted != null && isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
         isAccepted = accepted;
     }
 }

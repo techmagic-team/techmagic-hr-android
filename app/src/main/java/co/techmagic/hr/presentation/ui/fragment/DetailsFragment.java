@@ -444,11 +444,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
     private void handleOnPhotoClick() {
         fullSizeImageDialog.show();
-        if (data.getPhotoOrigin() == null) {
-            fullSizeImageDialog.loadImage(data.getPhoto());
-        } else {
-            fullSizeImageDialog.loadImage(data.getPhotoOrigin());
-        }
+        fullSizeImageDialog.loadImage(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
     }
 
 

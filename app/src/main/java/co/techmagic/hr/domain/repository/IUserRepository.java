@@ -1,5 +1,8 @@
 package co.techmagic.hr.domain.repository;
 
+import java.util.List;
+
+import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
@@ -18,4 +21,6 @@ public interface IUserRepository {
     Observable<Void> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
     Observable<Docs> getMyProfile(GetMyProfileRequest getMyProfileRequest);
+
+    Observable<List<Company>> getCompanies();
 }
