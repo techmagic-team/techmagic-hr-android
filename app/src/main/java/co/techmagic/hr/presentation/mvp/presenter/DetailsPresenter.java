@@ -19,7 +19,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.common.AcceptedTimeOffType;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
@@ -324,7 +323,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         if (vacations != null && !vacations.isEmpty()) {
             for (RequestedTimeOff item : vacations) {
-                if (item.getAcceptedTimeOffType() != AcceptedTimeOffType.NULL && item.getAcceptedTimeOffType() == AcceptedTimeOffType.TRUE && item.getDateFrom() != null && item.getDateTo() != null) {
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
                     formattedText = buildFormattedString(formattedText, item);
                 }
             }
@@ -365,9 +364,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         if (dayOffs != null && !dayOffs.isEmpty()) {
             for (RequestedTimeOff item : dayOffs) {
-                if (item.getAcceptedTimeOffType() != AcceptedTimeOffType.NULL && item.getAcceptedTimeOffType() == AcceptedTimeOffType.TRUE
-                        && item.getDateFrom() != null && item.getDateTo() != null) {
-
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
                     formattedText = buildFormattedString(formattedText, item);
                 }
             }
@@ -410,9 +407,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
             for (RequestedTimeOff item : requestedTimeOffs) {
-                if (item.getAcceptedTimeOffType() != AcceptedTimeOffType.NULL && item.getAcceptedTimeOffType() == AcceptedTimeOffType.TRUE
-                        && item.getDateFrom() != null && item.getDateTo() != null) {
-
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
                     formattedText = buildFormattedString(formattedText, item);
                 }
             }

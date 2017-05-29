@@ -3,7 +3,6 @@ package co.techmagic.hr.domain.interactor.employee;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.techmagic.hr.common.AcceptedTimeOffType;
 import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Holiday;
@@ -180,7 +179,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                     return timeOffDtos;
                 }
 
-                if (requestedOnly && requestedTimeOffDto.getAcceptedTimeOffType() != AcceptedTimeOffType.NULL && requestedTimeOffDto.getAcceptedTimeOffType() == AcceptedTimeOffType.TRUE) {
+                // Means time off is waiting for response or already accepted
+                if (requestedOnly && requestedTimeOffDto.getAccepted() == null || requestedTimeOffDto.isAccepted()) {
                     timeOffDtos.add(requestedTimeOffDto);
                 } else if (!requestedOnly) {
                     timeOffDtos.add(requestedTimeOffDto);
@@ -195,7 +195,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
     private RequestedTimeOffDto map(RequestedTimeOff requestedTimeOff) {
         if (requestedTimeOff != null) {
             RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
-            requestedTimeOffDto.setAcceptedTimeOffType(requestedTimeOff.getAcceptedTimeOffType());
+            requestedTimeOffDto.setAccepted(requestedTimeOff.getAccepted());
             requestedTimeOffDto.setCompanyId(requestedTimeOff.getCompanyId());
             requestedTimeOffDto.setDateFrom(DateUtil.parseStringDate(requestedTimeOff.getDateFrom()));
             requestedTimeOffDto.setDateTo(DateUtil.parseStringDate(requestedTimeOff.getDateTo()));

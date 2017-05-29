@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.pojo;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeRange;
@@ -18,7 +19,7 @@ public class UserTimeOff {
     private Date dateFrom;
     private Date dateTo;
     private boolean isPaid;
-    private Boolean isAccepted;
+    private Boolean isAccepted = null;
     private TimeOffType timeOffType;
 
     private Calendar from;
@@ -49,9 +50,14 @@ public class UserTimeOff {
         return from;
     }
 
+    /**
+     * Sets time in UTC timezone
+     */
+
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
         from.setTime(dateFrom);
+        from.setTimeZone(TimeZone.getTimeZone("UTC"));
         from.setTimeInMillis(DateUtil.calendarToMidnightMillis(from)); /* !!! Should be set to midnight !!! */
     }
 
@@ -59,9 +65,14 @@ public class UserTimeOff {
         return to;
     }
 
+    /**
+     * Sets time in UTC timezone
+     */
+
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
         to.setTime(dateTo);
+        to.setTimeZone(TimeZone.getTimeZone("UTC"));
         to.setTimeInMillis(DateUtil.calendarToEndOfTheDayMillis(to)); /* !!! Should be set at the end of the day !!! */
     }
 
@@ -71,6 +82,10 @@ public class UserTimeOff {
 
     public void setPaid(boolean paid) {
         isPaid = paid;
+    }
+
+    public Boolean getAccepted() {
+        return isAccepted;
     }
 
     public Boolean isAccepted() {

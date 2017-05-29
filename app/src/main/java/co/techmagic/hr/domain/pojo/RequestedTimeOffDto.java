@@ -2,8 +2,6 @@ package co.techmagic.hr.domain.pojo;
 
 import java.util.Date;
 
-import co.techmagic.hr.common.AcceptedTimeOffType;
-
 /**
  * Created by Roman Ursu on 5/12/17
  */
@@ -15,7 +13,7 @@ public class RequestedTimeOffDto {
     private Date dateFrom;
     private Date dateTo;
     private boolean isPaid;
-    private AcceptedTimeOffType acceptedTimeOffType;
+    private Boolean isAccepted = null;
 
     public String getUserId() {
         return userId;
@@ -57,11 +55,15 @@ public class RequestedTimeOffDto {
         isPaid = paid;
     }
 
-    public AcceptedTimeOffType getAcceptedTimeOffType() {
-        return acceptedTimeOffType;
+    public Boolean getAccepted() {
+        return isAccepted;
     }
 
-    public void setAcceptedTimeOffType(AcceptedTimeOffType acceptedTimeOffType) {
-        this.acceptedTimeOffType = acceptedTimeOffType;
+    public Boolean isAccepted() {
+        return isAccepted != null && isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        isAccepted = accepted;
     }
 }
