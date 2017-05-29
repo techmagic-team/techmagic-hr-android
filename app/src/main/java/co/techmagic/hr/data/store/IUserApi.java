@@ -1,5 +1,8 @@
 package co.techmagic.hr.data.store;
 
+import java.util.List;
+
+import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
@@ -23,4 +26,7 @@ public interface IUserApi {
 
     @GET("/v1/users/{id}")
     Observable<Docs> getMyProfile(@Path("id") String userId);
+
+    @GET("/v1/companies")
+    Observable<List<Company>> getCompanies();
 }

@@ -15,4 +15,6 @@ public interface LoginView extends View {
     void onLoginSuccess(@NonNull User user);
 
     void onForgotPasswordRequestSent();
+
+    void updateCompaniesView();
 }

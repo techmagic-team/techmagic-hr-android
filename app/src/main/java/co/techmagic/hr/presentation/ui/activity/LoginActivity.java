@@ -80,6 +80,11 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> {
             public void onForgotPasswordRequestSent() {
                 showCheckEmailView();
             }
+
+            @Override
+            public void updateCompaniesView() {
+                // TODO: 5/29/17  
+            }
         };
     }
 
