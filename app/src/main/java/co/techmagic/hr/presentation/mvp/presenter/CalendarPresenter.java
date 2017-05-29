@@ -328,11 +328,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
                     if (requestedTimeOffDto.getUserId().equals(doc.getId())) {
                         UserTimeOff requestedTimeOff = map(requestedTimeOffDto);
 
-                        if (requestedTimeOff.isAccepted()) {
-                            // save requested only
-                            requestedTimeOff.setTimeOffType(entry.getKey()); // TimeOffType.REQUESTED
-                            userRequestedTimeOffs.add(requestedTimeOff);
-                        }
+                        // save requested only
+                        requestedTimeOff.setTimeOffType(entry.getKey());
+                        userRequestedTimeOffs.add(requestedTimeOff);
 
                         // save user's requested time offs
                         userAllTimeOffsMap.getRequestedMap().put(doc, userRequestedTimeOffs);

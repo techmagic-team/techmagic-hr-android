@@ -26,7 +26,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
 
         holder.itemView.setBackgroundResource(R.drawable.item_bg);
 
-        /*if (isWeekend) {
+        if (isWeekend) {
             holder.itemView.setBackgroundResource(R.drawable.item_weekend_bg);
             return;
         }
@@ -34,14 +34,14 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
         if (hasHolidays) {
             holder.itemView.setBackgroundResource(R.drawable.item_holiday_bg);
             return;
-        }*/
+        }
 
         if (hasRequested) {
             holder.itemView.setBackgroundResource(R.drawable.item_requested_bg);
             return;
         }
 
-        /*if (hasVacation) {
+        if (hasVacation) {
             holder.itemView.setBackgroundResource(R.drawable.item_vacation_bg);
             return;
         }
@@ -54,7 +54,7 @@ public class GridCellItemAdapter extends AbstractItem<GridCellItemAdapter, GridC
         if (hasIllness) {
             holder.itemView.setBackgroundResource(R.drawable.item_illness_bg);
             return;
-        }*/
+        }
     }
 
     @Override
