@@ -351,10 +351,10 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         } else {
             UserTimeOff userTimeOff = new UserTimeOff();
             userTimeOff.setPaid(requestedTimeOffDto.isPaid());
-            userTimeOff.setAccepted(requestedTimeOffDto.getAccepted());
             userTimeOff.setCompanyId(requestedTimeOffDto.getCompanyId());
             userTimeOff.setDateFrom(requestedTimeOffDto.getDateFrom());
             userTimeOff.setDateTo(requestedTimeOffDto.getDateTo());
+            userTimeOff.setAccepted(requestedTimeOffDto.getAccepted());
 
             return userTimeOff;
         }

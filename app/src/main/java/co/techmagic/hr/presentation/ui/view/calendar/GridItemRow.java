@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.ui.view.calendar;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,19 +61,19 @@ public class GridItemRow {
                 }
             }
 
+            /* Check for day offs, vacation, illness */
             checkForTimeOffs(timeOffs, cellTime, gridCellItemAdapter, false);
 
             /* Check for requested */
-            checkForTimeOffs(allRequested, cellTime, gridCellItemAdapter, true);
 
-            /*if (allRequested != null) {
-                Log.e("all requested", "size: " + allRequested.size());
+
+            if (allRequested != null) {
                 for (UserTimeOff requested : allRequested) {
                     if (shouldTimeOffBeInCurrentCell(requested.getDateFrom().getTime(), requested.getDateTo().getTime(), cellTime.getTime())) {
-
+                        checkForTimeOffs(allRequested, cellTime, gridCellItemAdapter, true);
                     }
                 }
-            }*/
+            }
 
             gridItems.add(gridCellItemAdapter);
             cellTime.add(Calendar.DATE, 1); // go to next day
@@ -86,7 +85,7 @@ public class GridItemRow {
     /**
      * @param displayRequestedTimeOff is used to identify how should cell be colored
      *                                <p>true - regarding to time off (DayOff, Vacation or Illness)</p>
-     *                                <p>false - as requested color</p>
+     *                                <p>false - handle as requested time off</p>
      */
 
     private void checkForTimeOffs(List<UserTimeOff> timeOffs, Calendar cellTime, GridCellItemAdapter gridCellItemAdapter, boolean displayRequestedTimeOff) {
@@ -145,15 +144,10 @@ public class GridItemRow {
         if (displayRequestedTimeOff) {
             if (dayOff.getAccepted() == null) {
                 // Item is in requested state
-                Log.e("dayOff.accepted==null", "");
-                gridCellItemAdapter.setRequested(false);
+                gridCellItemAdapter.setRequested(true);
             } else {
                 if (dayOff.isAccepted()) {
-                    Log.e("dayOff.accepted==true", "");
                     gridCellItemAdapter.setHasDayOff(true);
-                } else {
-                    Log.e("dayOff.accepted==false", "");
-                    gridCellItemAdapter.setRequested(true);
                 }
             }
         } else {
@@ -167,16 +161,11 @@ public class GridItemRow {
     private void fillVacationCell(GridCellItemAdapter gridCellItemAdapter, boolean displayRequestedTimeOff, UserTimeOff vacation) {
         if (displayRequestedTimeOff) {
             if (vacation.getAccepted() == null) {
-                Log.e("vac.accepted==null", "");
                 // Item is in requested state
-                gridCellItemAdapter.setRequested(false);
+                gridCellItemAdapter.setRequested(true);
             } else {
                 if (vacation.isAccepted()) {
-                    Log.e("vac.accepted==true", "");
                     gridCellItemAdapter.setHasVacation(true);
-                } else {
-                    Log.e("vac.accepted==false", "");
-                    gridCellItemAdapter.setRequested(true);
                 }
             }
         } else {
@@ -191,15 +180,10 @@ public class GridItemRow {
         if (displayRequestedTimeOff) {
             if (illness.getAccepted() == null) {
                 // Item is in requested state
-                Log.e("ill.accepted==null", "");
-                gridCellItemAdapter.setRequested(false);
+                gridCellItemAdapter.setRequested(true);
             } else {
                 if (illness.isAccepted()) {
-                    Log.e("ill.accepted==true", "");
                     gridCellItemAdapter.setHasIllness(true);
-                } else {
-                    Log.e("vac.accepted==false", "");
-                    gridCellItemAdapter.setRequested(true);
                 }
             }
         } else {

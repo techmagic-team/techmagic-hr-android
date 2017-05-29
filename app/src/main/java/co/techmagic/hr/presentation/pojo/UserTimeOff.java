@@ -1,5 +1,7 @@
 package co.techmagic.hr.presentation.pojo;
 
+import android.util.Log;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -85,6 +87,10 @@ public class UserTimeOff {
     }
 
     public Boolean getAccepted() {
+        Log.e("Boolean value", String.valueOf(isAccepted));
+        if (isAccepted == null) {
+            Log.e("get Boolean null", "from: " + DateUtil.getFormattedMonthAndYear(dateFrom) + " to: " + DateUtil.getFormattedMonthAndYear(dateTo));
+        }
         return isAccepted;
     }
 
@@ -94,6 +100,9 @@ public class UserTimeOff {
 
     public void setAccepted(Boolean accepted) {
         isAccepted = accepted;
+        if (isAccepted == null) {
+            Log.e("set Boolean null", "from: " + DateUtil.getFormattedMonthAndYear(dateFrom) + " to: " + DateUtil.getFormattedMonthAndYear(dateTo));
+        }
     }
 
     public TimeOffType getTimeOffType() {
