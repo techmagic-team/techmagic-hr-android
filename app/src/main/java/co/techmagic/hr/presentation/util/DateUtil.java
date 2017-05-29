@@ -115,7 +115,7 @@ public class DateUtil {
 
         try {
             Date d = inputFormat.parse(date);
-            formattedDate = outputFullDateFormat.format(d); // todo!!
+            formattedDate = outputMonthAndYearFormat.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
         }
