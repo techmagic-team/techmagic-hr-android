@@ -201,14 +201,14 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/rlFilterByProject"
+                    android:id="@+id/rlCalendarFilterByProject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:foreground="?android:attr/selectableItemBackground">
 
                     <TextView
-                        android:id="@+id/tvProject"
+                        android:id="@+id/tvCalendarProject"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -216,19 +216,19 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvSelProject"
+                        android:id="@+id/tvCalendarSelProject"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
                         android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
-                        android:layout_toLeftOf="@+id/ivProjArrow"
-                        android:layout_toStartOf="@+id/ivProjArrow"
+                        android:layout_toLeftOf="@+id/ivCalendarProjArrow"
+                        android:layout_toStartOf="@+id/ivCalendarProjArrow"
                         android:gravity="end"
                         android:maxLines="1" />
 
                     <ImageView
-                        android:id="@+id/ivProjArrow"
+                        android:id="@+id/ivCalendarProjArrow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -240,8 +240,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignParentBottom="true"
-                        android:layout_toLeftOf="@+id/ivProjArrow"
-                        android:layout_toStartOf="@+id/ivProjArrow"
+                        android:layout_toLeftOf="@+id/ivCalendarProjArrow"
+                        android:layout_toStartOf="@+id/ivCalendarProjArrow"
                         android:background="@color/colorCardViewBgGrey" />
 
                 </RelativeLayout>

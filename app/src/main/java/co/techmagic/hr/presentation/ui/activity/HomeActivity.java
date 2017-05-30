@@ -39,8 +39,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
-    private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
+    private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -60,6 +60,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private String selDepId;
     private String selLeadId;
+    private String selProjectId;
     private String searchQuery = null;
     private boolean allowChangeTab = true;
 
@@ -69,14 +70,14 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(null, selDepId, selLeadId, 0, 0, false);
+        loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
+        presenter.setupFiltersView(selDepId, selLeadId, selProjectId, searchQuery);
     }
 
 
@@ -196,9 +197,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 searchQuery = data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA);
                 selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
                 selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
+                selProjectId = data.getStringExtra(SearchActivity.PROJECT_ID_EXTRA);
             }
 
-            loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0, true);
+            loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, 0, 0, true);
         }
     }
 
@@ -269,7 +271,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         setupRecyclerView();
         selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
-        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
+        selProjectId = SharedPreferencesUtil.getSelectedProjectId();
+        presenter.setupFiltersView(selDepId, selLeadId, selProjectId,  searchQuery);
     }
 
 
@@ -325,9 +328,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         searchQuery = null;
         selDepId = null;
         selLeadId = null;
+        selProjectId = null;
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
-        loadMoreEmployees(null, selDepId, selLeadId, 0, 0, false);
+        SharedPreferencesUtil.saveSelectedProjectId(null);
+        loadMoreEmployees(null, selDepId, selLeadId, selProjectId,  0, 0, false);
     }
 
 
@@ -335,11 +340,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
      * @param visibleItemsCount Used to show whether all items are already loaded.
      */
 
-    private void loadMoreEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount, boolean isAfterFilters) {
+    private void loadMoreEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, @Nullable String selProjectId, int offset, int visibleItemsCount, boolean isAfterFilters) {
         if (isAfterFilters) {
-            presenter.loadEmployeesAfterFilters(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
+            presenter.loadEmployeesAfterFilters(searchQuery, selDepId, selLeadId, selProjectId, offset, visibleItemsCount);
         } else {
-            presenter.loadEmployees(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
+            presenter.loadEmployees(searchQuery, selDepId, selLeadId, selProjectId, offset, visibleItemsCount);
         }
     }
 
@@ -354,7 +359,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= ITEMS_COUNT) {
-                    loadMoreEmployees(searchQuery, selDepId, selLeadId, totalItemCount, totalItemCount, false);
+                    loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, totalItemCount, totalItemCount, false);
                 }
             }
         };

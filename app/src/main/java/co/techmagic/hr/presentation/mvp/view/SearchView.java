@@ -21,6 +21,12 @@ public interface SearchView extends View {
 
     void showEmptyLeadFiltersErrorMessage(int resId);
 
+    void showFilterByProjectDialog(@NonNull List<Filter> projects);
+
+    void showSelectedProjectFilter(@NonNull String id, @NonNull String filterName);
+
+    void showEmptyProjectFiltersErrorMessage(int resId);
+
     /**
      * Method should be called only in last response from the server
      * to avoid overlapping of animation by keyboard.

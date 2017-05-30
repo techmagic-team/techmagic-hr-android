@@ -24,6 +24,7 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     private IEmployeeRepository employeeRepository;
     private GetDepartmentFilters getDepartmentFilters;
     private GetProjectFilters getProjectFilters;
+
     private List<Filter> departments;
     private List<Filter> projects;
 

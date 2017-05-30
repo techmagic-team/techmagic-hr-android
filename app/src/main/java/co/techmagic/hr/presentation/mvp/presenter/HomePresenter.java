@@ -24,6 +24,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     private IEmployeeRepository employeeRepository;
     private IUserRepository userRepository;
+
     private GetEmployee getEmployee;
     private GetMyProfile getMyProfile;
 
@@ -48,8 +49,8 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void setupFiltersView(String depId, String leadId, String searchQuery) {
-        if (depId == null && leadId == null && searchQuery == null) {
+    public void setupFiltersView(String depId, String leadId, String projectId, String searchQuery) {
+        if (depId == null && leadId == null && projectId == null && searchQuery == null) {
             view.hideFiltersView();
         } else {
             view.showFiltersView();
@@ -57,16 +58,16 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void loadEmployeesAfterFilters(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+    public void loadEmployeesAfterFilters(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, @Nullable String projectId, int offset, int visibleItemsCount) {
         view.clearAdapter();
-        loadEmployees(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
+        loadEmployees(searchQuery, selDepId, selLeadId, projectId, offset, visibleItemsCount);
     }
 
 
-    public void loadEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount) {
+    public void loadEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, @Nullable String projectId, int offset, int visibleItemsCount) {
         if (!isDataLoading && (offset == 0 || visibleItemsCount != allItemsCount)) {
             view.addLoadingProgress();
-            performGetEmployeesRequest(searchQuery, selDepId, selLeadId, offset);
+            performGetEmployeesRequest(searchQuery, selDepId, selLeadId, projectId, offset);
         }
     }
 
@@ -84,7 +85,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     public void handleEmployeeItemClick(@NonNull Docs docs) {
         if (docs.getId().equals(SharedPreferencesUtil.readUser().getId())) {
-            // User clicked on it's profile
+            // User clicked on own profile
            // view.disallowChangeTabClick();
             myProfileData = docs;
             view.showMyProfile(docs);
@@ -102,9 +103,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    private void performGetEmployeesRequest(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset) {
+    private void performGetEmployeesRequest(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, @Nullable String projectId, int offset) {
         isDataLoading = true;
-        final EmployeeFiltersRequest request = new EmployeeFiltersRequest(searchQuery, selDepId, selLeadId, offset, ITEMS_COUNT, false);
+        final EmployeeFiltersRequest request = new EmployeeFiltersRequest(searchQuery, selDepId, selLeadId, projectId, offset, ITEMS_COUNT, false);
         getEmployee.execute(request, new DefaultSubscriber<Employee>(view) {
             @Override
             public void onNext(Employee employee) {
@@ -118,8 +119,6 @@ public class HomePresenter extends BasePresenter<HomeView> {
                 removeLoading();
             }
         });
-
-        employeeRepository.getEmployees(request);
     }
 
 
@@ -154,7 +153,5 @@ public class HomePresenter extends BasePresenter<HomeView> {
                 view.hideProgress();
             }
         });
-
-        userRepository.getMyProfile(request);
     }
 }

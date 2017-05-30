@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
@@ -37,12 +38,15 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     public static final String DEP_ID_EXTRA = "dep_id_extra";
     public static final String LEAD_ID_EXTRA = "lead_id_extra";
+    public static final String PROJECT_ID_EXTRA = "project_id_extra";
     public static final String SEARCH_QUERY_EXTRA = "search_query_extra";
 
     @BindView(R.id.tvSelectedDep)
     TextView tvDepartment;
     @BindView(R.id.tvSelectedLead)
     TextView tvLead;
+    @BindView(R.id.tvSelProject)
+    TextView tvSelProject;
     SearchView searchView;
 
     private FilterTypes filterTypes = FilterTypes.NONE;
@@ -50,6 +54,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     private String selDepId;
     private String selLeadId;
+    private String selProjectId;
     private String searchQuery = null;
 
 
@@ -75,7 +80,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
                 dismissDialogIfOpened();
-                showSelectFilterAlertDialog(departments, null);
+                showSelectFilterAlertDialog(departments);
             }
 
             @Override
@@ -93,7 +98,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             public void showFilterByLeadDialog(@NonNull List<FilterLead> leads) {
                 filterTypes = FilterTypes.LEAD;
                 dismissDialogIfOpened();
-                showSelectFilterAlertDialog(null, leads);
+                showSelectFilterAlertDialog(leads);
             }
 
             @Override
@@ -105,6 +110,24 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
             @Override
             public void showEmptyLeadFiltersErrorMessage(int resId) {
+                showSnackBarMessage(getString(resId));
+            }
+
+            @Override
+            public void showFilterByProjectDialog(@NonNull List<Filter> projects) {
+                filterTypes = FilterTypes.PROJECT;
+                dismissDialogIfOpened();
+                showSelectFilterAlertDialog(projects);
+            }
+
+            @Override
+            public void showSelectedProjectFilter(@NonNull String id, @NonNull String filterName) {
+                selProjectId = id;
+                tvSelProject.setText(filterName);
+            }
+
+            @Override
+            public void showEmptyProjectFiltersErrorMessage(int resId) {
                 showSnackBarMessage(getString(resId));
             }
 
@@ -171,6 +194,12 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
+    @OnClick(R.id.rlFilterByProject)
+    public void onFilterByProjectClick() {
+        presenter.onFilterByProjectClick();
+    }
+
+
     @OnClick(R.id.btnClear)
     public void onClearClick() {
         clearAllFilters();
@@ -193,6 +222,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     private void handleSelection(String id, String name) {
         dismissDialogIfOpened();
+
         switch (filterTypes) {
             case DEPARTMENT:
                 selDepId = id;
@@ -203,6 +233,11 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
                 selLeadId = id;
                 tvLead.setText(name);
                 break;
+
+            case PROJECT:
+                selProjectId = id;
+                tvSelProject.setText(name);
+                break;
         }
     }
 
@@ -211,11 +246,14 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         searchQuery = null;
         selDepId = null;
         selLeadId = null;
+        selProjectId = null;
         searchView.setQuery("", false);
         tvDepartment.setText("");
         tvLead.setText("");
+        tvSelProject.setText("");
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
+        SharedPreferencesUtil.saveSelectedProjectId(null);
         filterTypes = FilterTypes.NONE;
     }
 
@@ -223,10 +261,13 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     private void applyFilters() {
         SharedPreferencesUtil.saveSelectedDepartmentId(selDepId);
         SharedPreferencesUtil.saveSelectedLeadId(selLeadId);
+        SharedPreferencesUtil.saveSelectedProjectId(selProjectId);
+
         Intent i = new Intent();
         i.putExtra(SEARCH_QUERY_EXTRA, searchQuery);
         i.putExtra(DEP_ID_EXTRA, selDepId);
         i.putExtra(LEAD_ID_EXTRA, selLeadId);
+        i.putExtra(PROJECT_ID_EXTRA, selProjectId);
 
         setResult(Activity.RESULT_OK, i);
         finish();
@@ -271,9 +312,9 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    private void showSelectFilterAlertDialog(@Nullable List<Filter> departments, @Nullable List<FilterLead> leads) {
+    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(departments, leads, builder);
+        setupDialogViews(filters, builder);
         dialog = builder.show();
         dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
         dialog.setCancelable(false);
@@ -281,13 +322,13 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    private void setupDialogViews(@Nullable List<Filter> departments, @Nullable List<FilterLead> leads, AlertDialog.Builder builder) {
+    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
         View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
         builder.setView(view);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-
-        setupSelectFilterRecyclerView(view, departments, leads);
         setupDialogTitle(tvTitle);
+
+        setupSelectFilterRecyclerView(view, filters);
     }
 
 
@@ -300,22 +341,21 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             case LEAD:
                 tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
                 break;
+
+            case PROJECT:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_project));
+                break;
         }
     }
 
 
-    private void setupSelectFilterRecyclerView(View view, @Nullable List<Filter> results, @Nullable List<FilterLead> leads) {
+    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
         RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
         rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         FilterAdapter adapter = new FilterAdapter(this, false);
         rvFilters.setAdapter(adapter);
-
-        if (results == null) {
-            adapter.refresh(leads);
-        } else {
-            adapter.refresh(results);
-        }
+        adapter.refresh(results);
     }
 
 

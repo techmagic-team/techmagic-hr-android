@@ -15,7 +15,8 @@ import rx.Observable;
 public interface IEmployeeApi {
 
     @GET("v1/users")
-    Observable<Employee> getEmployees(@Query("q") String searchQuery, @Query("_department") String departmentId, @Query("lastWorkingDay") boolean lastWorkingDay, @Query("lead") String leadId, @Query("offset") int offset, @Query("limit") int limit);
+    Observable<Employee> getEmployees(@Query("q") String searchQuery, @Query("project") String projectId, @Query("_department") String departmentId,
+                                      @Query("lastWorkingDay") boolean lastWorkingDay, @Query("lead") String leadId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("v1/departments")
     Observable<List<Filter>> getFilterDepartments();

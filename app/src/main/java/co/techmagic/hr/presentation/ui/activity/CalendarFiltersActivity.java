@@ -55,7 +55,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     TextView tvSelectedTo;
     @BindView(R.id.tvSelDep)
     TextView tvSelDep;
-    @BindView(R.id.tvSelProject)
+    @BindView(R.id.tvCalendarSelProject)
     TextView tvSelProject;
 
     private FilterTypes filterTypes = FilterTypes.NONE;
@@ -227,7 +227,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
-    @OnClick(R.id.rlFilterByProject)
+    @OnClick(R.id.rlCalendarFilterByProject)
     public void onProjectClick() {
         presenter.onProjectFilterClick();
     }
@@ -258,6 +258,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         tvSelProject.setText("");
         selDepId = null;
         selProjectId = null;
+        filterTypes = FilterTypes.NONE;
     }
 
 
@@ -281,6 +282,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
 
     private void handleSelection(String filterId, String name) {
+        dismissDialogIfOpened();
+
         switch (filterTypes) {
             case DEPARTMENT:
                 selDepId = filterId;
@@ -292,8 +295,6 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
                 tvSelProject.setText(name);
                 break;
         }
-
-        dismissDialogIfOpened();
     }
 
 
