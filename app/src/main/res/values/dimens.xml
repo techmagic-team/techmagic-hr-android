@@ -63,5 +63,6 @@
     <dimen name="activity_layout_grid_item_padding">2dp</dimen>
     <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
     <dimen name="calendar_fragment_cell_stroke_size">1px</dimen>
+    <dimen name="activity_login_rl_filter_company_padding">12dp</dimen>
 
 </resources>
