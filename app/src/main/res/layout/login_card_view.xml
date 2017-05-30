@@ -2,7 +2,8 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:theme="@style/Theme.AppCompat.Light">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,10 +15,11 @@
             android:id="@+id/rlFilterCompany"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="12dp"
-            android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:paddingLeft="@dimen/activity_login_rl_filter_company_padding"
+            android:paddingTop="@dimen/activity_login_rl_filter_company_padding"
+            android:paddingRight="@dimen/activity_login_rl_filter_company_padding">
 
             <TextView
                 android:id="@+id/tvSelectCompany"
@@ -38,14 +40,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_keyboard_arrow_right" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_toLeftOf="@+id/ivCompanyArrow"
-                android:layout_toStartOf="@+id/ivCompanyArrow"
-                android:background="@color/colorCardViewBgGrey" />
+                android:src="@drawable/ic_arrow_downward" />
 
         </RelativeLayout>
 
