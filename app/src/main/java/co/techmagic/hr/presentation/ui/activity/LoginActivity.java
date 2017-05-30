@@ -154,7 +154,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     }
 
 
-    @OnClick(R.id.tvSelectCompany)
+    @OnClick(R.id.rlFilterCompany)
     void onSelectCompanyClick() {
         presenter.handleSelectCompanyClick();
     }
