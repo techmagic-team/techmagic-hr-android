@@ -9,9 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.domain.interactor.employee.GetDepartmentFilters;
+import co.techmagic.hr.domain.interactor.employee.GetProjectFilters;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarFiltersView;
@@ -22,7 +23,9 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
 
     private IEmployeeRepository employeeRepository;
     private GetDepartmentFilters getDepartmentFilters;
-    private List<FilterDepartment> departments;
+    private GetProjectFilters getProjectFilters;
+    private List<Filter> departments;
+    private List<Filter> projects;
 
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
@@ -32,7 +35,9 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
         super();
         employeeRepository = new EmployeeRepositoryImpl();
         getDepartmentFilters = new GetDepartmentFilters(employeeRepository);
+        getProjectFilters = new GetProjectFilters(employeeRepository);
         departments = new ArrayList<>();
+        projects = new ArrayList<>();
     }
 
 
@@ -40,12 +45,14 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     protected void onViewDetached() {
         super.onViewDetached();
         getDepartmentFilters.unsubscribe();
+        getProjectFilters.unsubscribe();
     }
 
 
     public void setupPage() {
         setDefaultDates();
         performGetDepartmentFiltersRequest();
+        performGetProjectFiltersRequest();
     }
 
 
@@ -69,7 +76,11 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
 
 
     public void onProjectFilterClick() {
-
+        if (projects == null || projects.isEmpty()) {
+            performGetProjectFiltersRequest();
+        } else {
+            view.showFilterByProjectDialog(projects);
+        }
     }
 
 
@@ -122,11 +133,11 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
 
     private void performGetDepartmentFiltersRequest() {
         view.showProgress();
-        getDepartmentFilters.execute(new DefaultSubscriber<List<FilterDepartment>>(view) {
+        getDepartmentFilters.execute(new DefaultSubscriber<List<Filter>>(view) {
             @Override
-            public void onNext(List<FilterDepartment> filterDepartments) {
-                super.onNext(filterDepartments);
-                handleSuccessDepartmentFiltersResponse(filterDepartments);
+            public void onNext(List<Filter> filters) {
+                super.onNext(filters);
+                handleSuccessDepartmentFiltersResponse(filters);
             }
 
             @Override
@@ -138,28 +149,69 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     }
 
 
-    private void handleSuccessDepartmentFiltersResponse(@NonNull List<FilterDepartment> filterDepartments) {
+    private void handleSuccessDepartmentFiltersResponse(@NonNull List<Filter> filters) {
         view.hideProgress();
-        if (filterDepartments.isEmpty()) {
+        if (filters.isEmpty()) {
             view.showEmptyDepartmentFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_department_filters);
         }
 
-        /* Sorting by alphabetical order */
-        Collections.sort(filterDepartments, (f1, f2) -> {
+        sortByAlphabeticalOrder(filters);
+        departments.addAll(filters);
+
+        final String depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
+        if (depId != null) {
+            for (Filter filter : departments) {
+                if (depId.equals(filter.getId())) {
+                    view.showSelectedDepartmentFilter(filter.getId(), filter.getName());
+                }
+            }
+        }
+    }
+
+
+    private void performGetProjectFiltersRequest() {
+        view.showProgress();
+        getProjectFilters.execute(new DefaultSubscriber<List<Filter>>(view) {
+            @Override
+            public void onNext(List<Filter> filters) {
+                super.onNext(filters);
+                handleSuccessProjectFiltersResponse(filters);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleSuccessProjectFiltersResponse(@NonNull List<Filter> filters) {
+        view.hideProgress();
+        if (filters.isEmpty()) {
+            view.showEmptyProjectFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        }
+
+        sortByAlphabeticalOrder(filters);
+        projects.addAll(filters);
+
+        final String projectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+        if (projectId != null) {
+            for (Filter filter : projects) {
+                if (projectId.equals(filter.getId())) {
+                    view.showSelectedProjectFilter(filter.getId(), filter.getName());
+                }
+            }
+        }
+    }
+
+
+    private void sortByAlphabeticalOrder(@NonNull List<Filter> filters) {
+        Collections.sort(filters, (f1, f2) -> {
             final String name1 = f1.getName();
             final String name2 = f2.getName();
             return (name1).compareToIgnoreCase(name2);
         });
-
-        departments.addAll(filterDepartments);
-
-        final String depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
-        if (depId != null) {
-            for (FilterDepartment d : departments) {
-                if (depId.equals(d.getId())) {
-                    view.showSelectedDepartmentFilter(d.getId(), d.getName());
-                }
-            }
-        }
     }
 }

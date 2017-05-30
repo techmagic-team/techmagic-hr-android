@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.domain.interactor.employee.GetDepartmentFilters;
@@ -23,7 +23,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     private GetDepartmentFilters getDepartmentFilters;
     private GetLeadFilters getLeadFilters;
 
-    private List<FilterDepartment> departments = new ArrayList<>();
+    private List<Filter> departments = new ArrayList<>();
     private List<FilterLead> leads = new ArrayList<>();
 
 
@@ -69,11 +69,11 @@ public class SearchPresenter extends BasePresenter<SearchView> {
 
     private void performGetDepartmentFiltersRequest() {
         view.showProgress();
-        getDepartmentFilters.execute(new DefaultSubscriber<List<FilterDepartment>>(view) {
+        getDepartmentFilters.execute(new DefaultSubscriber<List<Filter>>(view) {
             @Override
-            public void onNext(List<FilterDepartment> filterDepartments) {
-                super.onNext(filterDepartments);
-                handleSuccessDepartmentFiltersResponse(filterDepartments);
+            public void onNext(List<Filter> filters) {
+                super.onNext(filters);
+                handleSuccessDepartmentFiltersResponse(filters);
             }
 
             @Override
@@ -85,24 +85,24 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     }
 
 
-    private void handleSuccessDepartmentFiltersResponse(@NonNull List<FilterDepartment> filterDepartments) {
+    private void handleSuccessDepartmentFiltersResponse(@NonNull List<Filter> filters) {
         view.hideProgress();
-        if (filterDepartments.isEmpty()) {
+        if (filters.isEmpty()) {
             view.showEmptyDepartmentFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_department_filters);
         }
 
         /* Sorting by alphabetical order */
-        Collections.sort(filterDepartments, (f1, f2) -> {
+        Collections.sort(filters, (f1, f2) -> {
             final String name1 = f1.getName();
             final String name2 = f2.getName();
             return (name1).compareToIgnoreCase(name2);
         });
 
-        departments.addAll(filterDepartments);
+        departments.addAll(filters);
 
         final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
         if (depId != null) {
-            for (FilterDepartment d : departments) {
+            for (Filter d : departments) {
                 if (depId.equals(d.getId())) {
                     view.showSelectedDepartmentFilter(d.getId(), d.getName());
                 }

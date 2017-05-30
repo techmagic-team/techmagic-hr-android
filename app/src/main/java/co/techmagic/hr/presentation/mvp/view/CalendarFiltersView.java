@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.List;
 
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 
 
 public interface CalendarFiltersView extends View {
@@ -19,9 +19,15 @@ public interface CalendarFiltersView extends View {
 
     void inValidDateRange(int resId);
 
-    void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments);
+    void showFilterByDepartmentDialog(@NonNull List<Filter> departments);
 
     void showSelectedDepartmentFilter(@NonNull String id, @NonNull String filterName);
 
     void showEmptyDepartmentFiltersErrorMessage(int resId);
+
+    void showFilterByProjectDialog(@NonNull List<Filter> projects);
+
+    void showSelectedProjectFilter(@NonNull String id, @NonNull String filterName);
+
+    void showEmptyProjectFiltersErrorMessage(int resId);
 }

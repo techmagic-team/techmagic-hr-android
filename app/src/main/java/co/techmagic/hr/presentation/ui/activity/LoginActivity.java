@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,8 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Company;
-import co.techmagic.hr.data.entity.FilterDepartment;
-import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;

@@ -6,28 +6,25 @@ package co.techmagic.hr.data.request;
 
 public class EmployeesByDepartmentRequest {
 
+    private String projectId;
+    private String departmentId;
     private boolean isMyTeam;
 
-    private String departmentId;
-
-    public EmployeesByDepartmentRequest(boolean isMyTeam, String departmentId) {
-        this.isMyTeam = isMyTeam;
+    public EmployeesByDepartmentRequest(String projectId, String departmentId, boolean isMyTeam) {
+        this.projectId = projectId;
         this.departmentId = departmentId;
-    }
-
-    public boolean isMyTeam() {
-        return isMyTeam;
-    }
-
-    public void setMyTeam(boolean myTeam) {
-        isMyTeam = myTeam;
+        this.isMyTeam = isMyTeam;
     }
 
     public String getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public boolean isMyTeam() {
+        return isMyTeam;
     }
 }

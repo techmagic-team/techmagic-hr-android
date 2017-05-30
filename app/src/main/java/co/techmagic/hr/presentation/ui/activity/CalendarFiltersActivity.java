@@ -22,7 +22,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
+import co.techmagic.hr.data.entity.IFilterModel;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
@@ -38,6 +40,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public static final String SEL_FROM_DATE_EXTRA = "sel_from_date_extra";
     public static final String SEL_TO_DATE_EXTRA = "sel_to_date_extra";
     public static final String SEL_DEP_ID_EXTRA = "sel_dep_id_extra";
+    public static final String SEL_PROJECT_ID_EXTRA = "sel_project_id_extra";
 
     public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
     public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
@@ -52,7 +55,10 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     TextView tvSelectedTo;
     @BindView(R.id.tvSelDep)
     TextView tvSelDep;
+    @BindView(R.id.tvSelProject)
+    TextView tvSelProject;
 
+    private FilterTypes filterTypes = FilterTypes.NONE;
     private ActionBar actionBar;
     private AlertDialog dialog;
 
@@ -60,6 +66,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private long fromInMillis = 0;
     private long toInMillis = 0;
     private String selDepId = null;
+    private String selProjectId = null;
 
 
     @Override
@@ -115,7 +122,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             }
 
             @Override
-            public void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments) {
+            public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
+                filterTypes = FilterTypes.DEPARTMENT;
                 dismissDialogIfOpened();
                 showSelectFilterAlertDialog(departments);
             }
@@ -127,6 +135,23 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
             @Override
             public void showEmptyDepartmentFiltersErrorMessage(int resId) {
+                showSnackBarMessage(getString(resId));
+            }
+
+            @Override
+            public void showFilterByProjectDialog(@NonNull List<Filter> projects) {
+                filterTypes = FilterTypes.PROJECT;
+                dismissDialogIfOpened();
+                showSelectFilterAlertDialog(projects);
+            }
+
+            @Override
+            public void showSelectedProjectFilter(@NonNull String id, @NonNull String filterName) {
+                tvSelProject.setText(filterName);
+            }
+
+            @Override
+            public void showEmptyProjectFiltersErrorMessage(int resId) {
                 showSnackBarMessage(getString(resId));
             }
         };
@@ -225,11 +250,14 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         SharedPreferencesUtil.saveSelectedFromTime(0);
         SharedPreferencesUtil.saveSelectedToTime(0);
         SharedPreferencesUtil.saveSelectedCalendarDepartmentId(null);
+        SharedPreferencesUtil.saveSelectedCalendarProjectId(null);
 
         presenter.setDefaultDates();
         swTeam.setChecked(true);
         tvSelDep.setText("");
+        tvSelProject.setText("");
         selDepId = null;
+        selProjectId = null;
     }
 
 
@@ -238,28 +266,40 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         SharedPreferencesUtil.saveSelectedFromTime(fromInMillis);
         SharedPreferencesUtil.saveSelectedToTime(toInMillis);
         SharedPreferencesUtil.saveSelectedCalendarDepartmentId(selDepId);
+        SharedPreferencesUtil.saveSelectedCalendarProjectId(selProjectId);
 
         Intent i = new Intent();
         i.putExtra(SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         i.putExtra(SEL_FROM_DATE_EXTRA, fromInMillis);
         i.putExtra(SEL_TO_DATE_EXTRA, toInMillis);
         i.putExtra(SEL_DEP_ID_EXTRA, selDepId);
+        i.putExtra(SEL_PROJECT_ID_EXTRA, selProjectId);
 
         setResult(Activity.RESULT_OK, i);
         finish();
     }
 
 
-    private void handleSelection(String depId, String name) {
-        selDepId = depId;
+    private void handleSelection(String filterId, String name) {
+        switch (filterTypes) {
+            case DEPARTMENT:
+                selDepId = filterId;
+                tvSelDep.setText(name);
+                break;
+
+            case PROJECT:
+                selProjectId = filterId;
+                tvSelProject.setText(name);
+                break;
+        }
+
         dismissDialogIfOpened();
-        tvSelDep.setText(name);
     }
 
 
-    private void showSelectFilterAlertDialog(@Nullable List<FilterDepartment> departments) {
+    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(departments, builder);
+        setupDialogViews(filters, builder);
         dialog = builder.show();
         dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
         dialog.setCancelable(false);
@@ -267,17 +307,30 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
-    private void setupDialogViews(@Nullable List<FilterDepartment> departments, AlertDialog.Builder builder) {
+    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
         View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
         builder.setView(view);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
+        setupDialogTitle(tvTitle);
 
-        setupSelectFilterRecyclerView(view, departments);
+        setupSelectFilterRecyclerView(view, filters);
     }
 
 
-    private void setupSelectFilterRecyclerView(View view, @Nullable List<FilterDepartment> results) {
+    private void setupDialogTitle(@NonNull TextView tvTitle) {
+        switch (filterTypes) {
+            case DEPARTMENT:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
+                break;
+
+            case PROJECT:
+                tvTitle.setText(getString(R.string.tm_hr_calendar_filters_activity_filter_by_project));
+                break;
+        }
+    }
+
+
+    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
         RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
         rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -319,6 +372,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             fromInMillis = bundle.getLong(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA);
             toInMillis = bundle.getLong(CalendarFiltersActivity.SEL_TO_DATE_EXTRA);
             selDepId = bundle.getString(CalendarFiltersActivity.SEL_DEP_ID_EXTRA);
+            selProjectId = bundle.getString(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA);
         }
     }
 }

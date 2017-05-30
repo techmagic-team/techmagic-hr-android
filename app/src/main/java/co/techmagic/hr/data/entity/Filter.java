@@ -2,7 +2,7 @@ package co.techmagic.hr.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class FilterDepartment implements IFilterModel {
+public class Filter implements IFilterModel {
 
     @SerializedName("_id")
     private String id;

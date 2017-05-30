@@ -135,6 +135,18 @@ public class SharedPreferencesUtil {
     }
 
 
+    public static void saveSelectedCalendarProjectId(String projectId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY, projectId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedCalendarProjectId() {
+        return prefs.getString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY, null);
+    }
+
+
     private static void saveAccessTokenLength(int tokenLength) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, tokenLength);
@@ -158,5 +170,6 @@ public class SharedPreferencesUtil {
         String CALENDAR_FILTERS_SELECTED_FROM_KEY = "calendar_filters_selected_from_key";
         String CALENDAR_FILTERS_SELECTED_TO_KEY = "calendar_filters_selected_to_key";
         String CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY = "calendar_filters_selected_department_id_key";
+        String CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY = "calendar_filters_selected_project_id_key";
     }
 }

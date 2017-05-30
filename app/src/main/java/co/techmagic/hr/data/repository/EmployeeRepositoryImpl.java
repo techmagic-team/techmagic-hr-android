@@ -4,7 +4,7 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.exception.NetworkConnectionException;
@@ -46,7 +46,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<FilterDepartment>> getFilterDepartments() {
+    public Observable<List<Filter>> getFilterDepartments() {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getFilterDepartments();
         }
@@ -59,6 +59,16 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     public Observable<List<FilterLead>> getFilterLeads() {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getFilterLeads();
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<Filter>> getProjectFilters() {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getFilterProjects();
         }
 
         return Observable.error(new NetworkConnectionException());
@@ -128,7 +138,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getAllEmployeesByDepartment(employeesByDepartmentRequest.isMyTeam(), employeesByDepartmentRequest.getDepartmentId());
+            return client.getEmployeeClient().getAllEmployeesByDepartment(employeesByDepartmentRequest.getProjectId(), employeesByDepartmentRequest.getDepartmentId(), employeesByDepartmentRequest.isMyTeam());
         }
 
         return Observable.error(new NetworkConnectionException());

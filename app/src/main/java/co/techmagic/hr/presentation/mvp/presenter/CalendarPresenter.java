@@ -45,6 +45,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private long fromInMillis = 0;
     private long toInMillis = 0;
     private String depId;
+    private String projectId;
 
     private boolean isCalendarUpdating = false;
 
@@ -73,10 +74,11 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
         toInMillis = SharedPreferencesUtil.getSelectedToTime();
         depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
+        projectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
 
         if (fromInMillis == 0 && toInMillis == 0) {
             if (!isCalendarUpdating) {
-                updateCalendar(isMyTeam, depId, null, null);
+                updateCalendar(isMyTeam, depId, projectId, null, null);
             }
         } else {
             Calendar from = Calendar.getInstance();
@@ -101,16 +103,17 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             }
 
             if (!isCalendarUpdating) {
-                updateCalendar(isMyTeam, depId, from, to);
+                updateCalendar(isMyTeam, depId, projectId, from, to);
             }
         }
     }
 
 
-    public void updateCalendar(boolean isMyTeamChecked, String selDepId, @Nullable Calendar from, @Nullable Calendar to) {
+    public void updateCalendar(boolean isMyTeamChecked, String selDepId, String selProjectId, @Nullable Calendar from, @Nullable Calendar to) {
         isCalendarUpdating = true;
         isMyTeam = isMyTeamChecked;
         depId = selDepId;
+        projectId = selProjectId;
 
         if (noFiltersSelected(from, to)) {
             view.hideClearFilters();
@@ -192,7 +195,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
-        return isMyTeam && depId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
+        return isMyTeam && depId == null && projectId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
     }
 
 
@@ -200,7 +203,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         view.showProgress();
 
         isCalendarUpdating = true;
-        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(isMyTeam, depId);
+        final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(projectId, depId, isMyTeam);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
             public void onNext(Employee response) {

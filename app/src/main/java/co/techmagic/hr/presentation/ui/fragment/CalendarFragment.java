@@ -49,6 +49,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private long fromInMillis = 0;
     private long toInMillis = 0;
     private String selDepId = null;
+    private String selProjectId = null;
 
 
     public static CalendarFragment newInstance() {
@@ -126,6 +127,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 fromInMillis = data.getLongExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, 0);
                 toInMillis = data.getLongExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, 0);
                 selDepId = data.getStringExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA);
+                selProjectId = data.getStringExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA);
             }
 
             if (fromInMillis != 0) {
@@ -138,7 +140,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 to.setTimeInMillis(toInMillis);
             }
 
-            presenter.updateCalendar(isMyTeamChecked, selDepId, from, to);
+            presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
         }
     }
 
@@ -202,12 +204,14 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         SharedPreferencesUtil.saveSelectedFromTime(0);
         SharedPreferencesUtil.saveSelectedToTime(0);
         SharedPreferencesUtil.saveSelectedCalendarDepartmentId(null);
+        SharedPreferencesUtil.saveSelectedCalendarProjectId(null);
 
         presenter.onClearFiltersClick();
         isMyTeamChecked = true;
         fromInMillis = 0;
         toInMillis = 0;
         selDepId = null;
+        selProjectId = null;
     }
 
 
@@ -217,6 +221,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         i.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
         i.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
         i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
+        i.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
         startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
     }
 }

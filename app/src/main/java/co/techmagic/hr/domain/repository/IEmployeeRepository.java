@@ -4,7 +4,7 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
@@ -18,9 +18,11 @@ public interface IEmployeeRepository {
 
     Observable<Employee> getEmployees(EmployeeFiltersRequest request);
 
-    Observable<List<FilterDepartment>> getFilterDepartments();
+    Observable<List<Filter>> getFilterDepartments();
 
     Observable<List<FilterLead>> getFilterLeads();
+
+    Observable<List<Filter>> getProjectFilters();
 
     Observable<List<RequestedTimeOff>> getUserVacations(TimeOffRequest request);
 

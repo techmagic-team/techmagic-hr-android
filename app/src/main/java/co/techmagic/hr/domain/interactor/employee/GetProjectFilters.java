@@ -7,15 +7,15 @@ import co.techmagic.hr.domain.interactor.EmptyUseCase;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 
-public class GetDepartmentFilters extends EmptyUseCase<List<Filter>, IEmployeeRepository> {
+public class GetProjectFilters extends EmptyUseCase<List<Filter>, IEmployeeRepository> {
 
 
-    public GetDepartmentFilters(IEmployeeRepository iEmployeeRepository) {
+    public GetProjectFilters(IEmployeeRepository iEmployeeRepository) {
         super(iEmployeeRepository);
     }
 
     @Override
     protected Observable<List<Filter>> buildObservable() {
-        return repository.getFilterDepartments();
+        return repository.getProjectFilters();
     }
 }

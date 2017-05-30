@@ -4,7 +4,7 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import retrofit2.http.GET;
@@ -18,10 +18,13 @@ public interface IEmployeeApi {
     Observable<Employee> getEmployees(@Query("q") String searchQuery, @Query("_department") String departmentId, @Query("lastWorkingDay") boolean lastWorkingDay, @Query("lead") String leadId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("v1/departments")
-    Observable<List<FilterDepartment>> getFilterDepartments();
+    Observable<List<Filter>> getFilterDepartments();
 
     @GET("v1/endpoints/leads-with-employees")
     Observable<List<FilterLead>> getFilterLeads();
+
+    @GET("v1/user-group/project")
+    Observable<List<Filter>> getFilterProjects();
 
     /* Used for employee details */
 
@@ -46,7 +49,7 @@ public interface IEmployeeApi {
     Observable<List<RequestedTimeOff>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/users")
-    Observable<Employee> getAllEmployeesByDepartment(@Query("my-team") boolean isMyTeam, @Query("_department") String departmentId);
+    Observable<Employee> getAllEmployeesByDepartment(@Query("project") String projectId, @Query("_department") String departmentId, @Query("my-team") boolean isMyTeam);
 
     @GET("/v1/endpoints/calendar")
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);

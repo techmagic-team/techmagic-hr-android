@@ -24,8 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
@@ -71,7 +72,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     protected SearchViewImpl initView() {
         return new SearchViewImpl(this, findViewById(android.R.id.content)) {
             @Override
-            public void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments) {
+            public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
                 dismissDialogIfOpened();
                 showSelectFilterAlertDialog(departments, null);
@@ -270,7 +271,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    private void showSelectFilterAlertDialog(@Nullable List<FilterDepartment> departments, @Nullable List<FilterLead> leads) {
+    private void showSelectFilterAlertDialog(@Nullable List<Filter> departments, @Nullable List<FilterLead> leads) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         setupDialogViews(departments, leads, builder);
         dialog = builder.show();
@@ -280,7 +281,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    private void setupDialogViews(@Nullable List<FilterDepartment> departments, @Nullable List<FilterLead> leads, AlertDialog.Builder builder) {
+    private void setupDialogViews(@Nullable List<Filter> departments, @Nullable List<FilterLead> leads, AlertDialog.Builder builder) {
         View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
         builder.setView(view);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
@@ -303,7 +304,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     }
 
 
-    private void setupSelectFilterRecyclerView(View view, @Nullable List<FilterDepartment> results, @Nullable List<FilterLead> leads) {
+    private void setupSelectFilterRecyclerView(View view, @Nullable List<Filter> results, @Nullable List<FilterLead> leads) {
         RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
         rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -322,12 +323,5 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-    }
-
-
-    private enum FilterTypes {
-        NONE,
-        DEPARTMENT,
-        LEAD
     }
 }
