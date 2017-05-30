@@ -68,6 +68,11 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     }
 
 
+    public void onProjectFilterClick() {
+
+    }
+
+
     public void setDefaultDates() {
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();

@@ -91,5 +91,6 @@
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
     <string name="tm_hr_calendar_filters_activity_text_from">From</string>
     <string name="tm_hr_calendar_filters_activity_text_to">To</string>
+    <string name="tm_hr_calendar_filters_activity_filter_by_project">Project</string>
 
 </resources>

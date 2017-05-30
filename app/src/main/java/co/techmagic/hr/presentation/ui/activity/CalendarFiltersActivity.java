@@ -202,6 +202,12 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
+    @OnClick(R.id.rlFilterByProject)
+    public void onProjectClick() {
+        presenter.onProjectFilterClick();
+    }
+
+
     @OnClick(R.id.btnCalClear)
     public void onClearClick() {
         clearAllFilters();
