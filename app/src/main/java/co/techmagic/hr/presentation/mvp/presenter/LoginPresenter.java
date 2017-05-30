@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.techmagic.hr.R;
@@ -25,6 +26,9 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     private ForgotPassword forgotPassword;
     private GetCompanies getCompanies;
 
+    private List<Company> companyList = new ArrayList<>();
+    private String id;
+    private String name;
 
     public LoginPresenter() {
         super();
@@ -43,6 +47,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
 
+    public void onCreate() {
+        performGetCompaniesRequest();
+    }
+
+
     public void onLoginClick(String email, String password) {
         if (isValidCredentials(email, password)) {
             performLogInRequest(email, password);
@@ -52,6 +61,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     public void onSendClick(String email) {
         if (ValidatingCredentialsUtil.isValidEmail(email)) {
+            if (id == null) {
+                view.onCompanyError();
+                return;
+            }
+
             performForgotPasswordRequest(email);
         } else {
             view.onForgotPassEmailError(R.string.message_invalid_email);
@@ -59,8 +73,24 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
 
+    public void handleSelectCompanyClick() {
+        if (companyList == null || companyList.isEmpty()) {
+            view.showProgress();
+            performGetCompaniesRequest();
+        } else {
+            view.showCompanySelectionDialogView(companyList);
+        }
+    }
+
+
     private boolean isValidCredentials(String email, String password) {
-        boolean isValid = false;
+        boolean isValid;
+
+        if (id == null) {
+            view.onCompanyError();
+            return false;
+        }
+
         if (ValidatingCredentialsUtil.isValidEmail(email)) {
             isValid = true;
         } else {
@@ -81,9 +111,17 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
 
+    public void onCompanySelected(String id, String name) {
+        this.id = id;
+        this.name = name;
+
+        view.updateSelectedCompanyView(name);
+    }
+
+
     private void performLogInRequest(@NonNull String email, @NonNull String password) {
         view.showProgress();
-        final LoginRequest request = new LoginRequest(IUserRepository.STUB_COMPANY_ID, email, password);
+        final LoginRequest request = new LoginRequest(id, email, password);
         loginUser.execute(request, new DefaultSubscriber<User>(view) {
             @Override
             public void onNext(User user) {
@@ -98,13 +136,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 view.hideProgress();
             }
         });
-        userRepository.login(request);
     }
 
 
     private void performForgotPasswordRequest(@NonNull String email) {
         view.showProgress();
-        final ForgotPasswordRequest request = new ForgotPasswordRequest(IUserRepository.STUB_COMPANY_ID, email);
+        final ForgotPasswordRequest request = new ForgotPasswordRequest(id, email);
         forgotPassword.execute(request, new DefaultSubscriber<Void>(view) {
             @Override
             public void onNext(Void aVoid) {
@@ -119,12 +156,10 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 view.hideProgress();
             }
         });
-        userRepository.forgotPassword(request);
     }
 
 
     private void performGetCompaniesRequest() {
-        view.showProgress();
         getCompanies.execute(null, new DefaultSubscriber<List<Company>>(view) {
             @Override
             public void onError(Throwable e) {
@@ -136,7 +171,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             public void onNext(List<Company> companies) {
                 super.onNext(companies);
                 view.hideProgress();
-                view.updateCompaniesView();
+                companyList.addAll(companies);
             }
         });
     }

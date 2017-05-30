@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by techmagic on 5/29/17.
  */
 
-public class Company {
+public class Company implements IFilterModel {
 
     @SerializedName("_id")
     String id;

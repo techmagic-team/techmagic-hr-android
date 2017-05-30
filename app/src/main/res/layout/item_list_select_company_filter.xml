@@ -3,6 +3,8 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:theme="@style/Theme.AppCompat.Light"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ellipsize="end"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="@color/colorPrimaryDark" />
 
     </LinearLayout>
 
@@ -25,6 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"
-        android:background="@color/colorCardViewBgGrey" />
+        android:background="@color/colorPrimaryDark" />
 
 </LinearLayout>

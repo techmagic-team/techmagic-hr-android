@@ -91,6 +91,8 @@
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
     <string name="tm_hr_calendar_filters_activity_text_from">From</string>
     <string name="tm_hr_calendar_filters_activity_text_to">To</string>
+    <string name="select_company_text">Select company</string>
+    <string name="please_select_company_error_text">Please select company</string>
     <string name="tm_hr_calendar_filters_activity_filter_by_project">Project</string>
 
 </resources>
