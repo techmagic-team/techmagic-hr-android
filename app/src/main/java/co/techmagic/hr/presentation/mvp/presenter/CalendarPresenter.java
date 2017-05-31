@@ -27,7 +27,6 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
-import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
@@ -68,13 +67,14 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    public void setupPage() {
+    public void setupPage(boolean isMyTeamChecked, String selDepId, String selProjectId, long fromInMillis, long toInMillis) {
         setupDefaultCalendarRange();
-        isMyTeam = SharedPreferencesUtil.getMyTeamSelection();
-        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
-        toInMillis = SharedPreferencesUtil.getSelectedToTime();
-        depId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
-        projectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+
+        isMyTeam = isMyTeamChecked;
+        depId = selDepId;
+        projectId = selProjectId;
+        this.fromInMillis = fromInMillis;
+        this.toInMillis = toInMillis;
 
         if (fromInMillis == 0 && toInMillis == 0) {
             if (!isCalendarUpdating) {
@@ -154,6 +154,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         fromInMillis = 0;
         toInMillis = 0;
         depId = null;
+        projectId = null;
         view.hideClearFilters();
         setupDefaultCalendarRange();
         performGetEmployeesByDepartmentRequest();

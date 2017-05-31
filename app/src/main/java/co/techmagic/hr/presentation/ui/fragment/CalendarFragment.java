@@ -45,7 +45,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private ActionBarChangeListener actionBarChangeListener;
     private FragmentCallback fragmentCallback;
 
-    private boolean isMyTeamChecked = true; // by default
+    private boolean isMyTeamChecked;
     private long fromInMillis = 0;
     private long toInMillis = 0;
     private String selDepId = null;
@@ -70,6 +70,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
+        getData();
         return view;
     }
 
@@ -77,7 +78,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onStart() {
         super.onStart();
-        presenter.setupPage();
+        presenter.setupPage(isMyTeamChecked, selDepId, selProjectId, fromInMillis, toInMillis);
     }
 
 
@@ -206,12 +207,21 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         SharedPreferencesUtil.saveSelectedCalendarDepartmentId(null);
         SharedPreferencesUtil.saveSelectedCalendarProjectId(null);
 
-        presenter.onClearFiltersClick();
         isMyTeamChecked = true;
         fromInMillis = 0;
         toInMillis = 0;
         selDepId = null;
         selProjectId = null;
+        presenter.onClearFiltersClick();
+    }
+
+
+    private void getData() {
+        isMyTeamChecked = SharedPreferencesUtil.getMyTeamSelection();
+        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
+        toInMillis = SharedPreferencesUtil.getSelectedToTime();
+        selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
+        selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
     }
 
 

@@ -62,7 +62,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private ActionBar actionBar;
     private AlertDialog dialog;
 
-    private boolean isMyTeamChecked = true;
+    private boolean isMyTeamChecked;
     private long fromInMillis = 0;
     private long toInMillis = 0;
     private String selDepId = null;
