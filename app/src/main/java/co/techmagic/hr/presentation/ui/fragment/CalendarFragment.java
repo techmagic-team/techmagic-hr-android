@@ -25,6 +25,7 @@ import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
+import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
@@ -51,6 +52,9 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private String selDepId = null;
     private String selProjectId = null;
 
+    private Calendar from = null;
+    private Calendar to = null;
+
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
@@ -71,14 +75,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         ButterKnife.bind(this, view);
         getData();
-        return view;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
         presenter.setupPage(isMyTeamChecked, selDepId, selProjectId, fromInMillis, toInMillis);
+        return view;
     }
 
 
@@ -118,9 +116,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Calendar from = null;
-        Calendar to = null;
 
         if (requestCode == CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -222,6 +217,16 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         toInMillis = SharedPreferencesUtil.getSelectedToTime();
         selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
         selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+
+        if (fromInMillis != 0) {
+            from = Calendar.getInstance();
+            from.setTimeInMillis(fromInMillis);
+        }
+
+        if (toInMillis != 0) {
+            to = Calendar.getInstance();
+            to.setTimeInMillis(toInMillis);
+        }
     }
 
 

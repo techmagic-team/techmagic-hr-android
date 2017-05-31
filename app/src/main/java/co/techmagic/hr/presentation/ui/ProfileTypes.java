@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.fragment;
+package co.techmagic.hr.presentation.ui;
 
 
 public enum ProfileTypes {

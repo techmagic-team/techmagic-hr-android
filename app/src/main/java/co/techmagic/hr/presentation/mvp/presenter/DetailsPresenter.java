@@ -32,7 +32,7 @@ import co.techmagic.hr.domain.interactor.employee.GetUserVacations;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
-import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
+import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
