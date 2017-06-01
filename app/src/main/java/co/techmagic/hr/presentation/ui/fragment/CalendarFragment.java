@@ -205,6 +205,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         isMyTeamChecked = true;
         fromInMillis = 0;
         toInMillis = 0;
+        from = null;
+        to = null;
         selDepId = null;
         selProjectId = null;
         presenter.onClearFiltersClick();

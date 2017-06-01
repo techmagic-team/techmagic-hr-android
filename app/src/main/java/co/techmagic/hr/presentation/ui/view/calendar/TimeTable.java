@@ -294,11 +294,20 @@ public class TimeTable extends FrameLayout {
         if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
-            int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
-            int dayToScroll = dayOfYear - 1;
+
+            int days = getDifferenceDays(left, c);
+            int dayToScroll = days - 1;
+
             guideX.scrollToPosition(dayToScroll);
             recyclerView.scrollToPosition(dayToScroll);
         }
+    }
+
+
+    public int getDifferenceDays(Calendar left, Calendar right) {
+        long diff = right.getTime().getTime() - left.getTime().getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000) + 1;
+        return (int) diffDays;
     }
 
 
