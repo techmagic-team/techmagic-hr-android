@@ -27,6 +27,7 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.CalendarView;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
 import co.techmagic.hr.presentation.pojo.UserTimeOff;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 public class CalendarPresenter extends BasePresenter<CalendarView> {
 
@@ -93,7 +94,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
                 dateFrom = from;
             }
 
-            /* Set selected date. Otherwise to December */
+            /* Set to selected date. Otherwise - to December */
 
             if (toInMillis == 0) {
                 showToDecemberDate(to);
@@ -145,6 +146,9 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
+        dateFrom.setTimeInMillis(DateUtil.calendarToMidnightMillis(dateFrom));
+        dateTo.setTimeInMillis(DateUtil.calendarToEndOfTheDayMillis(dateTo));
+
         performGetEmployeesByDepartmentRequest();
     }
 
@@ -155,6 +159,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         toInMillis = 0;
         depId = null;
         projectId = null;
+        dateFrom = null;
+        dateTo = null;
         view.hideClearFilters();
         setupDefaultCalendarRange();
         performGetEmployeesByDepartmentRequest();
