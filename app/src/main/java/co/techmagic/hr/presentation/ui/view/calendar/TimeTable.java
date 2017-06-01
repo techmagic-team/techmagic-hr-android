@@ -292,10 +292,10 @@ public class TimeTable extends FrameLayout {
 
     public void scrollToCurrentMonth() {
         if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
+            Calendar dateToScroll = Calendar.getInstance();
+            dateToScroll.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
 
-            int days = getDifferenceDays(left, c);
+            int days = getDifferenceDaysBetween(left, dateToScroll);
             int dayToScroll = days - 1;
 
             guideX.scrollToPosition(dayToScroll);
@@ -303,8 +303,13 @@ public class TimeTable extends FrameLayout {
         }
     }
 
+    /**
+     * @param left
+     * @param right
+     * returns days between right - left
+     * */
 
-    public int getDifferenceDays(Calendar left, Calendar right) {
+    private int getDifferenceDaysBetween(Calendar left, Calendar right) {
         long diff = right.getTime().getTime() - left.getTime().getTime();
         long diffDays = diff / (24 * 60 * 60 * 1000) + 1;
         return (int) diffDays;

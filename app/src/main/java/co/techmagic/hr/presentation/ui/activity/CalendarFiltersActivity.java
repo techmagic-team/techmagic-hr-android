@@ -81,9 +81,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent();
-                setResult(Activity.RESULT_CANCELED, i);
-                finish();
+                applyFilters();
                 return true;
 
             default:
@@ -254,6 +252,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
         presenter.setDefaultDates();
         swTeam.setChecked(true);
+        fromInMillis = 0;
+        toInMillis = 0;
         tvSelDep.setText("");
         tvSelProject.setText("");
         selDepId = null;
