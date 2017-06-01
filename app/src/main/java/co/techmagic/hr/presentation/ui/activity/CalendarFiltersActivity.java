@@ -35,6 +35,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         FilterAdapter.OnFilterSelectionListener {
 
     public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
+    public static final int RESULT_FILTERS_CLEARED = 1003;
 
     public static final String SEL_MY_TEAM_EXTRA = "sel_my_team_extra";
     public static final String SEL_FROM_DATE_EXTRA = "sel_from_date_extra";
@@ -67,6 +68,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private long toInMillis = 0;
     private String selDepId = null;
     private String selProjectId = null;
+    private boolean filtersCleared = false;
 
 
     @Override
@@ -81,7 +83,9 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                applyFilters();
+                Intent i = new Intent();
+                setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
+                finish();
                 return true;
 
             default:
@@ -233,7 +237,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
     @OnClick(R.id.btnCalClear)
     public void onClearClick() {
-        clearAllFilters();
+        clearFilters();
     }
 
 
@@ -243,7 +247,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
-    private void clearAllFilters() {
+    private void clearFilters() {
         SharedPreferencesUtil.saveMyTeamSelection(true);
         SharedPreferencesUtil.saveSelectedFromTime(0);
         SharedPreferencesUtil.saveSelectedToTime(0);
@@ -259,6 +263,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         selDepId = null;
         selProjectId = null;
         filterTypes = FilterTypes.NONE;
+        filtersCleared = true;
     }
 
 

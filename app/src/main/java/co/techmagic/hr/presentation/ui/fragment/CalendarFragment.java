@@ -126,6 +126,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 selProjectId = data.getStringExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA);
             }
 
+            if (resultCode == CalendarFiltersActivity.RESULT_FILTERS_CLEARED) {
+                clearFilters();
+            }
+
             if (fromInMillis != 0) {
                 from = Calendar.getInstance();
                 from.setTimeInMillis(fromInMillis);
@@ -196,20 +200,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @OnClick(R.id.btnClearCalFilters)
     public void onClearFiltersClick() {
-        SharedPreferencesUtil.saveMyTeamSelection(true);
-        SharedPreferencesUtil.saveSelectedFromTime(0);
-        SharedPreferencesUtil.saveSelectedToTime(0);
-        SharedPreferencesUtil.saveSelectedCalendarDepartmentId(null);
-        SharedPreferencesUtil.saveSelectedCalendarProjectId(null);
-
-        isMyTeamChecked = true;
-        fromInMillis = 0;
-        toInMillis = 0;
-        from = null;
-        to = null;
-        selDepId = null;
-        selProjectId = null;
-        presenter.onClearFiltersClick();
+        clearFilters();
     }
 
 
@@ -229,6 +220,24 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             to = Calendar.getInstance();
             to.setTimeInMillis(toInMillis);
         }
+    }
+
+
+    private void clearFilters() {
+        SharedPreferencesUtil.saveMyTeamSelection(true);
+        SharedPreferencesUtil.saveSelectedFromTime(0);
+        SharedPreferencesUtil.saveSelectedToTime(0);
+        SharedPreferencesUtil.saveSelectedCalendarDepartmentId(null);
+        SharedPreferencesUtil.saveSelectedCalendarProjectId(null);
+
+        isMyTeamChecked = true;
+        fromInMillis = 0;
+        toInMillis = 0;
+        from = null;
+        to = null;
+        selDepId = null;
+        selProjectId = null;
+        presenter.onClearFiltersClick();
     }
 
 
