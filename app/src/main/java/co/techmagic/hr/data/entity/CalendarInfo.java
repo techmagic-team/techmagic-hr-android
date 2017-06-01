@@ -30,7 +30,7 @@ public class CalendarInfo {
         return name;
     }
 
-    public String getYear() {
-        return year;
+    public int getYear() {
+        return Integer.valueOf(year);
     }
 }

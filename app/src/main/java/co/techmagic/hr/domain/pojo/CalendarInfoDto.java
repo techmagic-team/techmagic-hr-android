@@ -9,7 +9,7 @@ import java.util.List;
 public class CalendarInfoDto {
 
     private String name;
-    private String year;
+    private int year;
     private List<HolidayDto> holidays;
     private boolean isCurrent;
 
@@ -21,11 +21,11 @@ public class CalendarInfoDto {
         this.name = name;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 

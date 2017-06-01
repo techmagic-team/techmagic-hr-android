@@ -146,7 +146,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
-        dateFrom.setTimeInMillis(DateUtil.calendarToMidnightMillis(dateFrom));
+       // dateFrom.setTimeInMillis(DateUtil.calendarToMidnightMillis(dateFrom));
         dateTo.setTimeInMillis(DateUtil.calendarToEndOfTheDayMillis(dateTo));
 
         performGetEmployeesByDepartmentRequest();
