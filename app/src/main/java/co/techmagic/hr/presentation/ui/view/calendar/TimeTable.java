@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -35,6 +34,10 @@ import co.techmagic.hr.presentation.ui.adapter.calendar.IWeekDayItem;
 import co.techmagic.hr.presentation.ui.adapter.calendar.WeekDayHeaderItemAdapter;
 import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.util.DateUtil;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Wiebe Geertsma on 14-11-2016.
@@ -103,18 +106,6 @@ public class TimeTable extends FrameLayout {
 
     public void setItemsWithDateRange(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Calendar dateFrom, Calendar dateTo,
                                       @NonNull OnCalendarViewReadyListener onCalendarViewReadyListener, @NonNull GridEmployeeItemAdapter.OnEmployeeItemClickListener onEmployeeItemClickListener) {
-
-        /* Hide progress listener */
-
-        ViewTreeObserver observer = guideY.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(() -> {
-            int visibility = guideY.getVisibility();
-
-            if (visibility == VISIBLE) {
-                onCalendarViewReadyListener.onCalendarVisible();
-            }
-        });
-
         setTimeRange(dateFrom, dateTo);
         left.setTimeInMillis(DateUtil.calendarToMidnightMillis(left));
         right.setTimeInMillis(DateUtil.calendarToMidnightMillis(right));
@@ -134,31 +125,51 @@ public class TimeTable extends FrameLayout {
         construct(columns);
 
         List<GridItemRow> rows = new ArrayList<>();
-        for (Docs user : userAllTimeOffsMap.getMap().keySet()) {
-            EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(user.getId(), user.getLastName() + " " + user.getFirstName(), user.getPhoto()); // Last name + first name
-
-            List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, user.getId());
-            List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, user.getId());
-
-            GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
-            rows.add(gridRow);
-        }
-
         List<GridCellItemAdapter> allGridItems = new ArrayList<>();
         List<GridEmployeeItemAdapter> employeeItems = new ArrayList<>();
 
-        for (GridItemRow row : rows) {
-            List<GridCellItemAdapter> cells = row.getItems();
-            allGridItems.addAll(cells);
+        Observable.from(userAllTimeOffsMap.getMap().keySet()).map(docs -> getGridItemRow(userAllTimeOffsMap, calendarInfo, docs))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GridItemRow>() {
+                    @Override
+                    public void onCompleted() {
+                        setGridItems(allGridItems);
+                        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
+                        requestLayout();
 
-            for (int i = 0; i < cells.size() / columns; i++) {
-                employeeItems.add(new GridEmployeeItemAdapter(row));
-            }
-        }
+                        scrollToCurrentMonth();
 
-        setGridItems(allGridItems);
-        setEmployeeItems(employeeItems, onEmployeeItemClickListener);
-        requestLayout();
+                        onCalendarViewReadyListener.onCalendarVisible();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(GridItemRow gridItemRow) {
+                        rows.add(gridItemRow);
+
+                        List<GridCellItemAdapter> cells = gridItemRow.getItems();
+                        allGridItems.addAll(cells);
+
+                        for (int i = 0; i < cells.size() / columns; i++) {
+                            employeeItems.add(new GridEmployeeItemAdapter(gridItemRow));
+                        }
+                    }
+                });
+    }
+
+
+    private GridItemRow getGridItemRow(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Docs docs) {
+        EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(docs.getId(), docs.getLastName() + " " + docs.getFirstName(), docs.getPhoto()); // Last name + first name
+
+        List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, docs.getId());
+        List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, docs.getId());
+
+        GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
+        return gridRow;
     }
 
 
@@ -292,13 +303,27 @@ public class TimeTable extends FrameLayout {
 
     public void scrollToCurrentMonth() {
         if (guideX != null && guideXadapter != null && guideXadapter.getItemCount() > 0) {
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
-            int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
-            int dayToScroll = dayOfYear - 1;
+            Calendar dateToScroll = Calendar.getInstance();
+            dateToScroll.set(Calendar.DAY_OF_MONTH, 1); // From first day of month
+
+            int days = getDifferenceDaysBetween(left, dateToScroll);
+            int dayToScroll = days - 1;
+
             guideX.scrollToPosition(dayToScroll);
             recyclerView.scrollToPosition(dayToScroll);
         }
+    }
+
+
+    /**
+     * @param left
+     * @param right returns days between right - left
+     */
+
+    private int getDifferenceDaysBetween(Calendar left, Calendar right) {
+        long diff = right.getTime().getTime() - left.getTime().getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000) + 1;
+        return (int) diffDays;
     }
 
 
