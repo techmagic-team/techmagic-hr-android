@@ -112,11 +112,14 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
     public void updateCalendar(boolean isMyTeamChecked, String selDepId, String selProjectId, @Nullable Calendar from, @Nullable Calendar to) {
         isCalendarUpdating = true;
+        dateFrom = from;
+        dateTo = to;
         isMyTeam = isMyTeamChecked;
         depId = selDepId;
         projectId = selProjectId;
 
-        if (noFiltersSelected(from, to)) {
+        if (noFiltersSelected()) {
+            setDefaultValues();
             view.hideClearFilters();
         } else {
             view.showClearFilters();
@@ -153,15 +156,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     public void onClearFiltersClick() {
-        isMyTeam = true;
-        fromInMillis = 0;
-        toInMillis = 0;
-        depId = null;
-        projectId = null;
-        dateFrom = null;
-        dateTo = null;
+        setDefaultValues();
         view.hideClearFilters();
-        setupDefaultCalendarRange();
         performGetEmployeesByDepartmentRequest();
     }
 
@@ -200,15 +196,26 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    private boolean noFiltersSelected(@Nullable Calendar from, @Nullable Calendar to) {
-        return isMyTeam && depId == null && projectId == null && from == null && to == null && fromInMillis == 0 && toInMillis == 0;
+    private boolean noFiltersSelected() {
+        return isMyTeam && depId == null && projectId == null && dateFrom == null && dateTo == null && fromInMillis == 0 && toInMillis == 0;
+    }
+
+
+    private void setDefaultValues() {
+        isMyTeam = true;
+        fromInMillis = 0;
+        toInMillis = 0;
+        depId = null;
+        projectId = null;
+        dateFrom = null;
+        dateTo = null;
+        setupDefaultCalendarRange();
     }
 
 
     private void performGetEmployeesByDepartmentRequest() {
         view.showProgress();
 
-        isCalendarUpdating = true;
         final EmployeesByDepartmentRequest request = new EmployeesByDepartmentRequest(projectId, depId, isMyTeam);
         getEmployeesByDepartment.execute(request, new DefaultSubscriber<Employee>() {
             @Override
