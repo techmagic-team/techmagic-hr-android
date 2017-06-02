@@ -110,7 +110,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     }
 
 
-    public void updateCalendar(boolean isMyTeamChecked, String selDepId, String selProjectId, @Nullable Calendar from, @Nullable Calendar to) {
+    private void updateCalendar(boolean isMyTeamChecked, String selDepId, String selProjectId, @Nullable Calendar from, @Nullable Calendar to) {
         isCalendarUpdating = true;
         dateFrom = from;
         dateTo = to;

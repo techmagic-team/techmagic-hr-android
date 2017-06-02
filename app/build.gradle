@@ -55,7 +55,7 @@ android {
 
     buildTypes {
         debug {
-            ext.betaDistributionEmails="nazar.vrublevskyi@techmagic.co, ruslan.kuziak@techmagic.co, yulia.kotsur@techmagic.co"
+            ext.betaDistributionEmails = "nazar.vrublevskyi@techmagic.co, ruslan.kuziak@techmagic.co, yulia.kotsur@techmagic.co"
         }
 
         release {
