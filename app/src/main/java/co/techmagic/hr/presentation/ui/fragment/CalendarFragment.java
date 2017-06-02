@@ -52,9 +52,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private String selDepId = null;
     private String selProjectId = null;
 
-    private Calendar from = null;
-    private Calendar to = null;
-
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
@@ -126,17 +123,11 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 selProjectId = data.getStringExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA);
             }
 
-            if (fromInMillis != 0) {
-                from = Calendar.getInstance();
-                from.setTimeInMillis(fromInMillis);
+            if (resultCode == CalendarFiltersActivity.RESULT_FILTERS_CLEARED) {
+                clearFilters();
             }
 
-            if (toInMillis != 0) {
-                to = Calendar.getInstance();
-                to.setTimeInMillis(toInMillis);
-            }
-
-            presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
+            presenter.setupPage(isMyTeamChecked, selDepId, selProjectId, fromInMillis, toInMillis);
         }
     }
 
@@ -196,6 +187,20 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     @OnClick(R.id.btnClearCalFilters)
     public void onClearFiltersClick() {
+        clearFilters();
+    }
+
+
+    private void getData() {
+        isMyTeamChecked = SharedPreferencesUtil.getMyTeamSelection();
+        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
+        toInMillis = SharedPreferencesUtil.getSelectedToTime();
+        selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
+        selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+    }
+
+
+    private void clearFilters() {
         SharedPreferencesUtil.saveMyTeamSelection(true);
         SharedPreferencesUtil.saveSelectedFromTime(0);
         SharedPreferencesUtil.saveSelectedToTime(0);
@@ -208,25 +213,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         selDepId = null;
         selProjectId = null;
         presenter.onClearFiltersClick();
-    }
-
-
-    private void getData() {
-        isMyTeamChecked = SharedPreferencesUtil.getMyTeamSelection();
-        fromInMillis = SharedPreferencesUtil.getSelectedFromTime();
-        toInMillis = SharedPreferencesUtil.getSelectedToTime();
-        selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
-        selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
-
-        if (fromInMillis != 0) {
-            from = Calendar.getInstance();
-            from.setTimeInMillis(fromInMillis);
-        }
-
-        if (toInMillis != 0) {
-            to = Calendar.getInstance();
-            to.setTimeInMillis(toInMillis);
-        }
     }
 
 

@@ -93,8 +93,15 @@ public class SharedPreferencesUtil {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
         editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
+        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH);
         editor.remove(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY);
         editor.remove(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY);
+        editor.remove(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY);
         editor.apply();
     }
 

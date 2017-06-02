@@ -25,7 +25,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.1.11"
+        versionName "1.2.1.2"
 
         ndk {
             moduleName "keys"
@@ -55,7 +55,7 @@ android {
 
     buildTypes {
         debug {
-            ext.betaDistributionEmails="nazar.vrublevskyi@techmagic.co, ruslan.kuziak@techmagic.co, yulia.kotsur@techmagic.co"
+            ext.betaDistributionEmails = "nazar.vrublevskyi@techmagic.co, ruslan.kuziak@techmagic.co, yulia.kotsur@techmagic.co"
         }
 
         release {

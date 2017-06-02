@@ -52,11 +52,14 @@ public class GridItemRow {
 
             if (calendarInfoList != null) {
                 for (CalendarInfoDto calendarInfoDto : calendarInfoList) {
-                    if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(calendarInfoDto.getName())) {
-                        for (HolidayDto holiday: calendarInfoDto.getHolidays()) {
-                            if ((cellTime.get(Calendar.DAY_OF_MONTH)) == holiday.getDate()) {
-                                gridCellItemAdapter.setTimeOffMessage(holiday.getName());
-                                gridCellItemAdapter.setHasHolidays(true);
+                    int lastTwoDigits = cellTime.get(Calendar.YEAR) % 100;
+                    if (lastTwoDigits == calendarInfoDto.getYear()) {
+                        if (cellTime.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US).equals(calendarInfoDto.getName())) {
+                            for (HolidayDto holiday : calendarInfoDto.getHolidays()) {
+                                if ((cellTime.get(Calendar.DAY_OF_MONTH)) == holiday.getDate()) {
+                                    gridCellItemAdapter.setTimeOffMessage(holiday.getName());
+                                    gridCellItemAdapter.setHasHolidays(true);
+                                }
                             }
                         }
                     }
