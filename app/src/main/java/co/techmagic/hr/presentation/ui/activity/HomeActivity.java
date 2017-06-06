@@ -178,6 +178,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 startSearchScreen();
                 return true;
 
+            case R.id.menu_item_edit_profile:
+                startEditProfileScreen();
+                return true;
+
             case R.id.menu_item_logout:
                 showLogOutDialog();
                 return true;
@@ -302,6 +306,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
+
+    private void startEditProfileScreen() {
+        startActivity(new Intent(this, EditProfileActivity.class));
     }
 
 

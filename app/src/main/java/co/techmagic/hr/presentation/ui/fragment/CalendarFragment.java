@@ -30,7 +30,7 @@ import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
-import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
+import co.techmagic.hr.presentation.ui.view.calendar.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 

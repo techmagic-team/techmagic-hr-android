@@ -27,10 +27,10 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/ivCompanyArrow"
-                android:gravity="left"
-                android:maxLines="1"
+                android:layout_toStartOf="@+id/ivCompanyArrow"
+                android:gravity="start"
                 android:singleLine="true"
-                android:text="Select company"
+                android:text="@string/tm_hr_login_activity_text_select_company"
                 android:textColor="@color/colorPrimaryDark" />
 
             <ImageView
