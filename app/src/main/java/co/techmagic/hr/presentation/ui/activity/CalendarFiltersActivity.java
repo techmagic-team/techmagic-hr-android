@@ -83,14 +83,19 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent();
-                setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
-                finish();
+                onBackPressed();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        dismissDialogIfOpened();
+        onBackClickWithSetResult();
     }
 
 
@@ -244,6 +249,13 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     @OnClick(R.id.btnCalApply)
     public void onApplyClick() {
         applyFilters();
+    }
+
+
+    private void onBackClickWithSetResult() {
+        Intent i = new Intent();
+        setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
+        finish();
     }
 
 
