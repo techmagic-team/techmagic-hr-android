@@ -8,4 +8,10 @@
         android:title="@string/tm_hr_home_activity_text_filters"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_request_time_off"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:title="@string/tm_hr_calendar_fragment_request_time_off"
+        app:showAsAction="always" />
+
 </menu>

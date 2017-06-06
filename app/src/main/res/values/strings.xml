@@ -87,6 +87,7 @@
     <string name="tm_hr_calendar_fragment_weekday_layout_day_off">Day Off</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_illness">Illness</string>
     <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
+    <string name="tm_hr_calendar_fragment_request_time_off">Request</string>
 
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>

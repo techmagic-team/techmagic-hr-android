@@ -35,6 +35,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         FilterAdapter.OnFilterSelectionListener {
 
     public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
+    public static final int CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE = 1004;
     public static final int RESULT_FILTERS_CLEARED = 1003;
 
     public static final String SEL_MY_TEAM_EXTRA = "sel_my_team_extra";

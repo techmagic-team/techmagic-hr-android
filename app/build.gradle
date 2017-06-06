@@ -15,10 +15,12 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "co.techmagic.hr"
@@ -30,10 +32,6 @@ android {
         ndk {
             moduleName "keys"
         }
-
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -43,6 +41,9 @@ android {
         release
     }
 
+    android.compileOptions.sourceCompatibility 1.8
+
+    flavorDimensions "default"
     productFlavors {
         dev {
             buildConfigField 'String', 'HOST_URL', '"http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com"'
@@ -112,12 +113,15 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.anko:anko-common:$anko_version"
 }
 
-def props = new Properties()
-props.load(new FileInputStream(rootProject.file("release.properties")))
-
-android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
-android.signingConfigs.release.storePassword props.keyStorePassword
-android.signingConfigs.release.keyAlias props.keyAlias
-android.signingConfigs.release.keyPassword props.keyAliasPassword
+//def props = new Properties()
+//props.load(new FileInputStream(rootProject.file("release.properties")))
+//
+//android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
+//android.signingConfigs.release.storePassword props.keyStorePassword
+//android.signingConfigs.release.keyAlias props.keyAlias
+//android.signingConfigs.release.keyPassword props.keyAliasPassword
