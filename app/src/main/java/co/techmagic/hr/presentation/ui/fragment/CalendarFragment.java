@@ -130,16 +130,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 clearFilters();
             }
 
-            if (fromInMillis != 0) {
-                from = Calendar.getInstance();
-                from.setTimeInMillis(fromInMillis);
-            }
-
-            if (toInMillis != 0) {
-                to = Calendar.getInstance();
-                to.setTimeInMillis(toInMillis);
-            }
-
+            getFromAndToIfExists();
             presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
         }
     }
@@ -210,7 +201,11 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         toInMillis = SharedPreferencesUtil.getSelectedToTime();
         selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
         selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+        getFromAndToIfExists();
+    }
 
+
+    private void getFromAndToIfExists() {
         if (fromInMillis != 0) {
             from = Calendar.getInstance();
             from.setTimeInMillis(fromInMillis);
