@@ -133,20 +133,21 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
             dateTo = to;
         }
 
-        Calendar c = Calendar.getInstance();
+        Calendar calendarFrom = Calendar.getInstance();
+        Calendar calendarTo = Calendar.getInstance();
 
         /* Date range didn't change earlier
         *  Set current year by default
         */
 
         if (dateFrom == null) {
-            dateFrom = c;
-            dateFrom.set(c.get(Calendar.YEAR), Calendar.JANUARY, 1);
+            dateFrom = calendarFrom;
+            dateFrom.set(calendarFrom.get(Calendar.YEAR), Calendar.JANUARY, 1);
         }
 
         if (dateTo == null) {
-            dateTo = c;
-            dateTo.set(c.get(Calendar.YEAR), Calendar.DECEMBER, 31);
+            dateTo = calendarTo;
+            dateTo.set(calendarTo.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         }
 
         dateTo.setTimeInMillis(DateUtil.calendarToEndOfTheDayMillis(dateTo));
