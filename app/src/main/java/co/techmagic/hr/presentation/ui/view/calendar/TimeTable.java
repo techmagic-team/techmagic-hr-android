@@ -316,19 +316,6 @@ public class TimeTable extends FrameLayout {
 
     /**
      * @param left
-     * @param right
-     * returns days between right - left
-     * */
-
-    private int getDifferenceDaysBetween(Calendar left, Calendar right) {
-        long diff = right.getTime().getTime() - left.getTime().getTime();
-        long diffDays = diff / (24 * 60 * 60 * 1000) + 1;
-        return (int) diffDays;
-    }
-
-
-    /**
-     * @param left
      * @param right returns days between right - left
      */
 

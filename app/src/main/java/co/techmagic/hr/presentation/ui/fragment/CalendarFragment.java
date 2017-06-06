@@ -52,6 +52,9 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private String selDepId = null;
     private String selProjectId = null;
 
+    private Calendar from = null;
+    private Calendar to = null;
+
 
     public static CalendarFragment newInstance() {
         return new CalendarFragment();
@@ -127,7 +130,17 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 clearFilters();
             }
 
-            presenter.setupPage(isMyTeamChecked, selDepId, selProjectId, fromInMillis, toInMillis);
+            if (fromInMillis != 0) {
+                from = Calendar.getInstance();
+                from.setTimeInMillis(fromInMillis);
+            }
+
+            if (toInMillis != 0) {
+                to = Calendar.getInstance();
+                to.setTimeInMillis(toInMillis);
+            }
+
+            presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
         }
     }
 
@@ -197,6 +210,16 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         toInMillis = SharedPreferencesUtil.getSelectedToTime();
         selDepId = SharedPreferencesUtil.getSelectedCalendarDepartmentId();
         selProjectId = SharedPreferencesUtil.getSelectedCalendarProjectId();
+
+        if (fromInMillis != 0) {
+            from = Calendar.getInstance();
+            from.setTimeInMillis(fromInMillis);
+        }
+
+        if (toInMillis != 0) {
+            to = Calendar.getInstance();
+            to.setTimeInMillis(toInMillis);
+        }
     }
 
 
