@@ -4,10 +4,158 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Hello" />
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:background="@color/colorCardViewBgGrey">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:splitMotionEvents="false">
+
+            <RelativeLayout
+                android:id="@+id/vgTimeOffType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:id="@+id/tvTimeOffTypeLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tm_hr_time_off_type"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTimeOffTypeSelected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_toLeftOf="@+id/ivTimeOffTypeArrow"
+                    android:layout_toStartOf="@+id/ivTimeOffTypeArrow"
+                    android:gravity="end"
+                    android:maxLines="1" />
+
+                <ImageView
+                    android:id="@+id/ivTimeOffTypeArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_keyboard_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/ivTimeOffTypeArrow"
+                    android:background="@color/colorCardViewBgGrey" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/vgFilterFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tm_hr_calendar_filters_activity_text_from"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSelectedFrom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_toLeftOf="@+id/ivFromArrow"
+                    android:layout_toStartOf="@+id/ivFromArrow"
+                    android:gravity="end"
+                    android:maxLines="1" />
+
+                <ImageView
+                    android:id="@+id/ivFromArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_keyboard_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/ivFromArrow"
+                    android:background="@color/colorCardViewBgGrey" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/vgFilterTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tm_hr_calendar_filters_activity_text_to"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSelectedTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                    android:layout_toLeftOf="@+id/ivToArrow"
+                    android:layout_toStartOf="@+id/ivToArrow"
+                    android:gravity="end"
+                    android:maxLines="1" />
+
+                <ImageView
+                    android:id="@+id/ivToArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_keyboard_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/ivToArrow"
+                    android:background="@color/colorCardViewBgGrey" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btnRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="@string/tm_hr_request_time_off"
+        android:theme="@style/AppTheme.Primary.Button" />
 
 </LinearLayout>

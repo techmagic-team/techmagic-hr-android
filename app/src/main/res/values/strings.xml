@@ -89,6 +89,10 @@
     <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
     <string name="tm_hr_calendar_fragment_request_time_off">Request</string>
 
+    <!-- Request Time Off -->
+    <string name="tm_hr_request_time_off">Request</string>
+    <string name="tm_hr_time_off_type">Time Off Type</string>
+
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
     <string name="tm_hr_calendar_filters_activity_text_from">From</string>
