@@ -8,7 +8,6 @@ import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun loadData() {
-        // TODO
         view.showProgress("loading...")
     }
 }

@@ -1,9 +1,11 @@
 package co.techmagic.hr.presentation.ui.activity
 
 import android.os.Bundle
+import android.support.v7.app.ActionBar
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
+import org.jetbrains.anko.toast
 
 /**
  * Created by Roman Ursu on 6/6/17
@@ -11,11 +13,14 @@ import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>() {
 
     private lateinit var requestTimeOffPresenter: RequestTimeOffPresenter
+    private var actionBar: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        actionBar!!.setHomeButtonEnabled(true)
+        actionBar = supportActionBar
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.title = "Request Time off"
     }
 
     override fun onStart() {
@@ -30,7 +35,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
-
+            override fun showData() {
+                toast("Data is ready")
+            }
         }
     }
 
