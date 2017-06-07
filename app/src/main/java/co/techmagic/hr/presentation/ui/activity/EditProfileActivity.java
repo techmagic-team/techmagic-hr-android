@@ -20,15 +20,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private void setupActionBar() {
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(getString(R.string.tm_hr_edit_profile_activity_title));
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -65,5 +56,14 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @Override
     protected EditProfilePresenter initPresenter() {
         return new EditProfilePresenter();
+    }
+
+
+    private void setupActionBar() {
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(getString(R.string.tm_hr_edit_profile_activity_title));
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 }

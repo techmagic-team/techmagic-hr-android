@@ -100,12 +100,16 @@
 
     <!-- EditProfileActivity -->
     <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
+    <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
     <string name="tm_hr_edit_profile_activity_hint_first_name">First name</string>
     <string name="tm_hr_edit_profile_activity_hint_last_name">Last name</string>
     <string name="tm_hr_edit_profile_activity_section_login_info">LOGIN INFO</string>
     <string name="tm_hr_edit_profile_activity_section_personal_info">PERSONAL INFO</string>
     <string name="tm_hr_edit_profile_activity_section_contacts">CONTACTS</string>
     <string name="tm_hr_edit_profile_activity_section_additional_info">ADDITIONAL INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_professional_info">PROFESSIONAL INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_pdp_info">PDP INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_out_of_the_company">OUT OF THE COMPANY</string>
     <string name="tm_hr_edit_profile_activity_text_skype">Skype</string>
     <string name="tm_hr_edit_profile_activity_text_phone_number">Phone number</string>
     <string name="tm_hr_edit_profile_activity_text_room">Room</string>
@@ -113,6 +117,13 @@
     <string name="tm_hr_edit_profile_activity_text_emergency_contact">Emergency contact</string>
     <string name="tm_hr_edit_profile_activity_text_city_of_relocation">City of relocation</string>
     <string name="tm_hr_edit_profile_activity_text_short_presentation">Short presentation</string>
+    <string name="tm_hr_edit_profile_activity_text_pdp_link">PDP link</string>
+    <string name="tm_hr_edit_profile_activity_text_one_to_one_link">One to one link</string>
+    <string name="tm_hr_edit_profile_activity_text_can_sign_in">Can sign in</string>
+    <string name="tm_hr_edit_profile_activity_text_select_the_reason">Select the reason</string>
+    <string name="tm_hr_edit_profile_activity_text_comments">Comments</string>
+    <string name="tm_hr_edit_profile_activity_text_male">Male</string>
+    <string name="tm_hr_edit_profile_activity_text_female">Female</string>
     <string name="tm_hr_edit_profile_activity_text_save">Save</string>
 
 </resources>

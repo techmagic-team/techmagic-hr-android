@@ -24,9 +24,7 @@
             android:id="@+id/tilChangeCity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:focusable="false"
-            android:focusableInTouchMode="false"
             android:hint="@string/tm_hr_edit_profile_activity_text_city_of_relocation"
             android:textColorHint="@color/colorAccent">
 
@@ -34,8 +32,7 @@
                 android:id="@+id/etChangeCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
+                android:focusableInTouchMode="true"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true"
@@ -47,16 +44,20 @@
             android:id="@+id/tilChangePresentation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_login_vertical_margin"
-            android:hint="@string/tm_hr_edit_profile_activity_text_short_presentation"
+            android:focusable="false"
+            android:hint="@string/tm_hr_edit_profile_activity_text_comments"
             android:textColorHint="@color/colorAccent">
 
             <EditText
                 android:id="@+id/etChangePresentation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
+                android:layout_height="@dimen/tm_hr_edit_profile_activity_edit_text_height"
+                android:focusableInTouchMode="true"
                 android:inputType="text"
+                android:imeOptions="actionNext"
+                android:gravity="top"
+                android:maxLength="500"
+                android:scrollbars="vertical"
                 android:textColor="@color/colorAccent" />
 
         </android.support.design.widget.TextInputLayout>

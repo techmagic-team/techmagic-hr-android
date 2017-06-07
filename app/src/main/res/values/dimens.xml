@@ -65,4 +65,7 @@
     <dimen name="calendar_fragment_cell_stroke_size">1px</dimen>
     <dimen name="activity_login_rl_filter_company_padding">12dp</dimen>
 
+    <!-- EditProfileActivity -->
+    <dimen name="tm_hr_edit_profile_activity_edit_text_height">150dp</dimen>
+
 </resources>

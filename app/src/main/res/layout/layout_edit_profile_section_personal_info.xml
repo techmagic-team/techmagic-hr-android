@@ -24,7 +24,6 @@
             android:id="@+id/tilFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_edit_profile_activity_hint_first_name"
             android:textColorHint="@color/colorAccent">
 
@@ -44,7 +43,6 @@
             android:id="@+id/tilLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_edit_profile_activity_hint_last_name"
             android:textColorHint="@color/colorAccent">
 
@@ -71,8 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/fragment_employee_details_card_view_text_date_of_birth"
-                android:textStyle="bold" />
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/fragment_employee_details_card_view_text_date_of_birth" />
 
             <TextView
                 android:id="@+id/tvDateOfBirth"
@@ -96,6 +95,27 @@
                 android:src="@drawable/ic_keyboard_arrow_right" />
 
         </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/tm_hr_edit_profile_activity_text_male" />
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tm_hr_edit_profile_activity_text_female" />
+
+        </RadioGroup>
 
     </LinearLayout>
 
