@@ -4,11 +4,20 @@ package co.techmagic.hr.presentation.mvp.view;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.List;
+
+import co.techmagic.hr.data.entity.IFilterModel;
+import co.techmagic.hr.presentation.ui.FilterTypes;
+
 public interface EditProfileView {
 
     void loadEmployeePhoto(@Nullable String photoUrl);
 
     void showDatePickerDialog();
+
+    void showSelectedFilter(@NonNull String id, @NonNull String name, FilterTypes filterType);
+
+    <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters);
 
     /* Login section */
 

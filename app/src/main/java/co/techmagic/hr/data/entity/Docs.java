@@ -16,6 +16,9 @@ public class Docs implements Parcelable {
     @SerializedName("_lead")
     private Lead lead;
 
+    @SerializedName("_reason")
+    private Reason reason;
+
     @SerializedName("_id")
     private String id;
 
@@ -82,9 +85,6 @@ public class Docs implements Parcelable {
     @SerializedName("_oneToOne")
     private String oneToOneLink;
 
-    @SerializedName("_reason")
-    private String reason;
-
     @SerializedName("reason_comments")
     private String reasonComments;
 
@@ -94,6 +94,7 @@ public class Docs implements Parcelable {
         department = (Department) in.readValue(Department.class.getClassLoader());
         room = (Room) in.readValue(Room.class.getClassLoader());
         lead = (Lead) in.readValue(Lead.class.getClassLoader());
+       // reason = (Reason) in.readValue(Reason.class.getClassLoader());
         id = in.readString();
         company = in.readString();
         birthday = in.readString();
@@ -116,7 +117,6 @@ public class Docs implements Parcelable {
         trialPeriodEnds = in.readString();
         pdpLink = in.readString();
         oneToOneLink = in.readString();
-        reason = in.readString();
         reasonComments = in.readString();
     }
 
@@ -130,6 +130,7 @@ public class Docs implements Parcelable {
         dest.writeValue(department);
         dest.writeValue(room);
         dest.writeValue(lead);
+       // dest.writeValue(reason);
         dest.writeString(id);
         dest.writeString(company);
         dest.writeString(birthday);
@@ -152,7 +153,6 @@ public class Docs implements Parcelable {
         dest.writeString(trialPeriodEnds);
         dest.writeString(pdpLink);
         dest.writeString(oneToOneLink);
-        dest.writeString(reason);
         dest.writeString(reasonComments);
     }
 
@@ -178,6 +178,10 @@ public class Docs implements Parcelable {
 
     public Lead getLead() {
         return lead;
+    }
+
+    public Reason getReason() {
+        return new Reason();
     }
 
     public String getId() {
@@ -266,10 +270,6 @@ public class Docs implements Parcelable {
 
     public String getOneToOneLink() {
         return oneToOneLink;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
     public String getReasonComments() {

@@ -5,5 +5,7 @@ public enum FilterTypes {
     NONE,
     DEPARTMENT,
     LEAD,
-    PROJECT
+    PROJECT,
+    ROOM,
+    REASON
 }

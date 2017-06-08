@@ -52,6 +52,8 @@
     <string name="tm_hr_search_activity_text_filter_by_department">Department</string>
     <string name="tm_hr_search_activity_text_filter_by_lead">Lead</string>
     <string name="tm_hr_search_activity_text_filter_by_project">Project</string>
+    <string name="tm_hr_search_activity_text_filter_by_room">Room</string>
+    <string name="tm_hr_search_activity_text_filter_by_reason">Reason</string>
     <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
     <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
 

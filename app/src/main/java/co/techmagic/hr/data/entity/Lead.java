@@ -36,6 +36,10 @@ public class Lead implements Parcelable {
         return lastName;
     }
 
+    public String getName() {
+        return getFirstName() + " " + getLastName();
+    }
+
     public Lead(Parcel in) {
         id = in.readString();
         lastWorkingDay = in.readString();

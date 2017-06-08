@@ -5,10 +5,16 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.data.entity.EmergencyContact;
+import co.techmagic.hr.data.entity.Filter;
+import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.data.request.GetMyProfileRequest;
@@ -19,6 +25,7 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
@@ -34,7 +41,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     private GetAllFilters getAllFilters;
 
     private Docs data;
-    private EditProfileFiltersDto editProfileFiltersDto;
+    private EditProfileFiltersDto profileFilters;
 
 
     public EditProfilePresenter() {
@@ -63,12 +70,42 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void onRoomClick() {
+        final List<Filter> rooms = profileFilters.getRooms();
+        if (rooms.isEmpty()) {
+            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        } else {
+            view.showFiltersInDialog(rooms);
+        }
+    }
 
+
+    public void onDepartmentClick() {
+        final List<Filter> departments = profileFilters.getDepartments();
+        if (departments.isEmpty()) {
+            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        } else {
+            view.showFiltersInDialog(departments);
+        }
+    }
+
+
+    public void onLeadClick() {
+        final List<FilterLead> leads = profileFilters.getLeads();
+        if (leads.isEmpty()) {
+            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        } else {
+            view.showFiltersInDialog(leads);
+        }
     }
 
 
     public void onReasonClick() {
-
+        final List<Filter> reasons = profileFilters.getReasons();
+        if (reasons.isEmpty()) {
+            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        } else {
+            view.showFiltersInDialog(reasons);
+        }
     }
 
 
@@ -102,6 +139,8 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         handlePersonalSection();
         handleContactsSection();
         handleAdditionalSection();
+
+        handleFilters();
 
         /* Show next info only for HR or Admin */
         final int userRole = data.getRole();
@@ -250,12 +289,55 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         if (data.getReason() != null) {
-            view.showReason(data.getReason());
+            view.showReason(data.getReason().getName());
         }
 
         if (data.getReasonComments() != null) {
             view.showComments(data.getReasonComments());
         }
+    }
+
+
+    private void handleFilters() {
+        if (!profileFilters.getDepartments().isEmpty()) {
+            for (Filter f : profileFilters.getDepartments()) {
+                Department dep = data.getDepartment();
+                if (dep.getId().equals(f.getId())) {
+                    view.showSelectedFilter(dep.getId(), dep.getName(), FilterTypes.DEPARTMENT);
+                    break;
+                }
+            }
+        }
+
+        if (!profileFilters.getLeads().isEmpty()) {
+            for (FilterLead f : profileFilters.getLeads()) {
+                Lead lead = data.getLead();
+                if (lead.getId().equals(f.getId())) {
+                    view.showSelectedFilter(lead.getId(), lead.getName(), FilterTypes.LEAD);
+                    break;
+                }
+            }
+        }
+
+        if (!profileFilters.getRooms().isEmpty()) {
+            for (Filter f : profileFilters.getRooms()) {
+                Room room = data.getRoom();
+                if (room.getId().equals(f.getId())) {
+                    view.showSelectedFilter(room.getId(), room.getName(), FilterTypes.ROOM);
+                    break;
+                }
+            }
+        }
+
+        /*if (!profileFilters.getReasons().isEmpty()) {
+            for (Filter f : profileFilters.getReasons()) {
+                Reason reason = data.getReason();
+                if (reason.getId().equals(f.getId())) {
+                    view.showSelectedFilter(reason.getId(), reason.getName(), FilterTypes.REASON);
+                    break;
+                }
+            }
+        }*/
     }
 
 
@@ -298,7 +380,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private void handleSuccessAllFiltersResponse(EditProfileFiltersDto editProfileFiltersDto) {
         view.hideProgress();
-        this.editProfileFiltersDto = editProfileFiltersDto;
+        profileFilters = editProfileFiltersDto;
         showData();
     }
 }

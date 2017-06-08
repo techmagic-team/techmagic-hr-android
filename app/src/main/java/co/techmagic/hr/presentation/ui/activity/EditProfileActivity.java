@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,15 +18,20 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
+import co.techmagic.hr.presentation.ui.FilterTypes;
+import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
 
-public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> {
+public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> implements FilterAdapter.OnFilterSelectionListener {
 
     public static final String DATE_PICKER_FRAGMENT_TAG = "date_picker_fragment_tag";
 
@@ -97,11 +106,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @BindView(R.id.tvLastWorkingDay)
     TextView tvLastWorkingDay;
     @BindView(R.id.tvReason)
-    TextView tvReason;
+    TextView tvSelectedReason;
     @BindView(R.id.etComments)
     EditText etComments;
 
-    private ActionBar actionBar;
+    private AlertDialog dialog;
+    private FilterTypes filterType = FilterTypes.ROOM;
 
 
     @Override
@@ -149,6 +159,18 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             public void showDatePickerDialog() {
                 DatePickerFragment datePicker = DatePickerFragment.newInstance();
                 datePicker.show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT_TAG);
+            }
+
+            @Override
+            public void showSelectedFilter(@NonNull String id, @NonNull String name, FilterTypes type) {
+                filterType = type;
+                onFilterSelected(id, name);
+            }
+
+            @Override
+            public <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters) {
+                dismissDialogIfOpened();
+                showSelectFilterAlertDialog(filters);
             }
 
             @Override
@@ -314,7 +336,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void showReason(@NonNull String text) {
-                tvReason.setText(text);
+                tvSelectedReason.setText(text);
             }
 
             @Override
@@ -328,6 +350,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @Override
     protected EditProfilePresenter initPresenter() {
         return new EditProfilePresenter();
+    }
+
+
+    @Override
+    public void onFilterSelected(@NonNull String id, @NonNull String name) {
+        displaySelectedFilter(id, name);
     }
 
 
@@ -345,19 +373,22 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.rlEditRoom)
     public void onRoomClick() {
+        filterType = FilterTypes.ROOM;
         presenter.onRoomClick();
     }
 
 
     @OnClick(R.id.rlEditDepartment)
     public void onDepartmentClick() {
-        presenter.onRoomClick();
+        filterType = FilterTypes.DEPARTMENT;
+        presenter.onDepartmentClick();
     }
 
 
     @OnClick(R.id.rlEditLead)
     public void onLeadClick() {
-        presenter.onRoomClick();
+        filterType = FilterTypes.LEAD;
+        presenter.onLeadClick();
     }
 
 
@@ -387,6 +418,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.rlEditSelectReason)
     public void onReasonClick() {
+        filterType = FilterTypes.REASON;
         presenter.onReasonClick();
     }
 
@@ -403,6 +435,85 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
+    private void displaySelectedFilter(String id, String filterName) {
+        switch (filterType) {
+            case DEPARTMENT:
+                tvSelectedDep.setText(filterName);
+                break;
+
+            case LEAD:
+                tvSelectedLead.setText(filterName);
+                break;
+
+            case ROOM:
+                tvSelectedRoom.setText(filterName);
+                break;
+
+            case REASON:
+                tvSelectedReason.setText(filterName);
+                break;
+        }
+    }
+
+
+    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        setupDialogViews(filters, builder);
+        dialog = builder.show();
+        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+
+    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
+        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
+        builder.setView(view);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        setupDialogTitle(tvTitle);
+
+        setupSelectFilterRecyclerView(view, filters);
+    }
+
+
+    private void setupDialogTitle(@NonNull TextView tvTitle) {
+        switch (filterType) {
+            case DEPARTMENT:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
+                break;
+
+            case LEAD:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
+                break;
+
+            case ROOM:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_room));
+                break;
+
+            case REASON:
+                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_reason));
+                break;
+        }
+    }
+
+
+    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
+        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
+        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        FilterAdapter adapter = new FilterAdapter(this, false);
+        rvFilters.setAdapter(adapter);
+        adapter.refresh(results);
+    }
+
+
+    private void dismissDialogIfOpened() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+
     private void initUi() {
         setupActionBar();
         ivDownload.setVisibility(View.GONE);
@@ -411,7 +522,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     private void setupActionBar() {
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.tm_hr_edit_profile_activity_title));
             actionBar.setDisplayHomeAsUpEnabled(true);
