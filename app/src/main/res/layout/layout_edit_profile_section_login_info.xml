@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvLoginInfo"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -65,8 +66,8 @@
             android:id="@+id/cbCanSignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/tm_hr_edit_profile_activity_text_can_sign_in" />
+            android:text="@string/tm_hr_edit_profile_activity_text_can_sign_in"
+            android:visibility="gone" />
 
     </LinearLayout>
 

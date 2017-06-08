@@ -20,7 +20,7 @@ public interface IEmployeeRepository {
 
     Observable<List<Filter>> getFilterDepartments();
 
-    Observable<List<FilterLead>> getFilterLeads();
+    Observable<List<FilterLead>> getFilterLeadsWithEmployees();
 
     Observable<List<Filter>> getProjectFilters();
 
@@ -39,4 +39,10 @@ public interface IEmployeeRepository {
     Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
+
+    Observable<List<Filter>> getRooms();
+
+    Observable<List<FilterLead>> getFilterLeads();
+
+    Observable<List<Filter>> getReasons();
 }

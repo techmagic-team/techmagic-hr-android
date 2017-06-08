@@ -38,9 +38,9 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class DetailsPresenter extends BasePresenter<DetailsView> {
 
-    private static final int ROLE_USER = 0;
-    private static final int ROLE_HR = 1;
-    private static final int ROLE_ADMIN = 2;
+    static final int ROLE_USER = 0;
+    static final int ROLE_HR = 1;
+    static final int ROLE_ADMIN = 2;
 
     private Docs data;
     private IEmployeeRepository employeeRepository;
