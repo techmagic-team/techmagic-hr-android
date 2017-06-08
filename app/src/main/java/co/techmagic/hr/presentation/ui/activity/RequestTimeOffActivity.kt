@@ -2,23 +2,25 @@ package co.techmagic.hr.presentation.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
 import android.view.ViewGroup
-import android.widget.DatePicker
 import android.widget.TextView
-import butterknife.OnClick
 import co.techmagic.hr.R
+import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
-import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * Created by Roman Ursu on 6/6/17
  */
-class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>(), DatePickerFragment.OnDatePickerFragmentListener {
+class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>() {
 
     private var actionBar: ActionBar? = null
     private lateinit var vgTimeOffType: ViewGroup
@@ -27,6 +29,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var tvTimeOffTypeSelected: TextView
     private lateinit var tvSelectedFrom: TextView
     private lateinit var tvSelectedTo: TextView
+    private val dateFormat: DateFormat = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +43,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         super.onStart()
 
         presenter.loadData()
+
+        tvTimeOffTypeSelected.setText(R.string.tm_hr_vacation_time_off_name)
+        initTimeOffDate()
     }
 
     override fun initLayout() {
@@ -51,23 +57,38 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         tvSelectedFrom = find(R.id.tvSelectedFrom)
         tvSelectedTo = find(R.id.tvSelectedTo)
 
-        vgTimeOffType.setOnClickListener { toast("clicked") }
+        vgTimeOffType.setOnClickListener { presenter.onTimeOffTypeClicked() }
         vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
         vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
     }
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun selectTimeOff(timeOffType: TimeOffType) {
+                when (timeOffType) {
+                    TimeOffType.VACATION -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_vacation_time_off_name) }
+                    TimeOffType.DAYOFF -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_dayoff_time_off_name) }
+                    TimeOffType.ILLNESS -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_illness_time_off_name) }
+                    else -> run { toast("wrong type") }
+                }
+            }
+
             override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean) {
-                val fragment : RequestTimeOffDatePickerFragment = RequestTimeOffDatePickerFragment()
+                val fragment: RequestTimeOffDatePickerFragment = RequestTimeOffDatePickerFragment()
 
                 fragment.listener = object : RequestTimeOffDatePickerFragment.DateSetListener {
                     override fun onDateSet(year: Int, month: Int, dayOfMonth: Int) {
-                        initFromDate(year, month, dayOfMonth)
+                        if (isDateFromPicker) {
+                            presenter.onFromDateSet(year, month, dayOfMonth)
+                        } else {
+                            presenter.onToDateSet(year, month, dayOfMonth)
+                        }
+
+                        initTimeOffDate()
                     }
                 }
 
-                val bundle : Bundle = Bundle()
+                val bundle: Bundle = Bundle()
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, from)
 
                 fragment.arguments = bundle
@@ -75,7 +96,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
 
             override fun showTimeOffsDialog() {
-                toast("showTimeOffsDialog")
+                showSelectTimeOffTypeDialog()
             }
         }
     }
@@ -84,59 +105,30 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         return RequestTimeOffPresenter()
     }
 
-    override fun addDatePickerFragment(from: Calendar?, to: Calendar?, isDateFromPicker: Boolean) {
-        if (isDateFromPicker) {
-
-        }
-
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun initTimeOffDate() {
+        setDate(tvSelectedFrom, presenter.dateFrom.time)
+        setDate(tvSelectedTo, presenter.dateTo.time)
     }
 
-    override fun displaySelectedFromDate(date: String, from: Calendar?, to: Calendar?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun setDate(dateView: TextView, date: Date) {
+        val dateString: String = dateFormat.format(date)
+        dateView.text = dateString
     }
 
-    override fun displaySelectedToDate(date: String, from: Calendar?, to: Calendar?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun setTimeOffType(timeOffTypeString: String) {
+        val timeOffType: TimeOffType = TimeOffType.valueOf(timeOffTypeString)
+        presenter.onTimeOffTypeSelected(timeOffType)
     }
 
-    override fun invalidDateRangeSelected(resId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun showSelectTimeOffTypeDialog() {
+        val itemsList: List<String> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }.map { timeOffType -> timeOffType.name }
+        val items: Array<String> = itemsList.toTypedArray()
+
+        AlertDialog.Builder(this)
+                .setTitle(R.string.tm_hr_select_time_off_type)
+                .setSingleChoiceItems(items, 0) { dialog, which ->
+                    setTimeOffType(items[which])
+                    dialog.dismiss()
+                }.show()
     }
-
-    fun initFromDate(year: Int, month: Int, dayOfMonth: Int) {
-
-    }
-
-
-//    @Override
-//    public void addDatePickerFragment(@Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker) {
-//        DatePickerFragment fragment = DatePickerFragment.newInstance();
-//        Bundle b = new Bundle();
-//
-//        b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
-//        b.putSerializable(CALENDAR_FROM_KEY, from);
-//        b.putSerializable(CALENDAR_TO_KEY, to);
-//        fragment.setArguments(b);
-//        fragment.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
-//    }
-
-//    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        setupDialogViews(filters, builder);
-//        dialog = builder.show();
-//        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-//        dialog.setCancelable(false);
-//        dialog.show();
-//    }
-//
-//
-//    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
-//        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
-//        builder.setView(view);
-//        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-//        setupDialogTitle(tvTitle);
-//
-//        setupSelectFilterRecyclerView(view, filters);
-//    }
 }
