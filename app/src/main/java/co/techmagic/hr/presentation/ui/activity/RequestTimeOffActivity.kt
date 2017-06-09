@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
@@ -29,6 +30,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var tvTimeOffTypeSelected: TextView
     private lateinit var tvSelectedFrom: TextView
     private lateinit var tvSelectedTo: TextView
+    private lateinit var btnRequest: Button
     private val dateFormat: DateFormat = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +38,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
         actionBar = supportActionBar
         actionBar?.setHomeButtonEnabled(true)
-        actionBar?.title = "Request Time off"
+        actionBar?.setTitle(R.string.tm_hr_request_time_off_title)
     }
 
     override fun onStart() {
@@ -56,10 +58,13 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         tvTimeOffTypeSelected = find(R.id.tvTimeOffTypeSelected)
         tvSelectedFrom = find(R.id.tvSelectedFrom)
         tvSelectedTo = find(R.id.tvSelectedTo)
+        btnRequest = find(R.id.btnRequest)
 
         vgTimeOffType.setOnClickListener { presenter.onTimeOffTypeClicked() }
         vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
         vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
+        btnRequest.setOnClickListener { presenter.onRequestButtonClicked() }
+
     }
 
     override fun initView(): RequestTimeOffViewImpl {
@@ -124,11 +129,35 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         val itemsList: List<String> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }.map { timeOffType -> timeOffType.name }
         val items: Array<String> = itemsList.toTypedArray()
 
+        val selectedItem: Int = getSelectedTimeOffItemIndex()
+
         AlertDialog.Builder(this)
                 .setTitle(R.string.tm_hr_select_time_off_type)
-                .setSingleChoiceItems(items, 0) { dialog, which ->
+                .setSingleChoiceItems(items, selectedItem) { dialog, which ->
                     setTimeOffType(items[which])
                     dialog.dismiss()
                 }.show()
+    }
+
+    private fun getSelectedTimeOffItemIndex(): Int {
+        val selectedTimeOffString: String = tvTimeOffTypeSelected.text.toString()
+
+        if (selectedTimeOffString.isEmpty()) {
+            return 0
+        }
+
+        try {
+            val timeOffType: TimeOffType = TimeOffType.valueOf(selectedTimeOffString.toUpperCase())
+            val values: List<TimeOffType> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }
+
+            values.indices
+                    .filter { values[it] == timeOffType }
+                    .forEach { return it }
+
+            return 0
+
+        } catch (e: Exception) {
+            return 0
+        }
     }
 }

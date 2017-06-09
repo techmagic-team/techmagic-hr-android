@@ -96,6 +96,8 @@
     <string name="tm_hr_vacation_time_off_name">Vacation</string>
     <string name="tm_hr_dayoff_time_off_name">Dayoff</string>
     <string name="tm_hr_illness_time_off_name">Illness</string>
+    <string name="tm_hr_request_time_off_title">Request Time off</string>
+
 
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
