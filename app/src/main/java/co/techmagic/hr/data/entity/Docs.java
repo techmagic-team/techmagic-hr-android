@@ -172,12 +172,24 @@ public class Docs implements Parcelable {
         return department;
     }
 
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     public Room getRoom() {
         return room;
     }
 
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
     public Lead getLead() {
         return lead;
+    }
+
+    public void setLead(Lead lead) {
+        this.lead = lead;
     }
 
     /*public Reason getReason() {
@@ -188,91 +200,183 @@ public class Docs implements Parcelable {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getCompany() {
         return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getBirthday() {
         return birthday;
     }
 
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public EmergencyContact getEmergencyContact() {
         return emergencyContact;
+    }
+
+    public void setEmergencyContact(EmergencyContact emergencyContact) {
+        this.emergencyContact = emergencyContact;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getFirstWorkingDay() {
         return firstWorkingDay;
     }
 
+    public void setFirstWorkingDay(String firstWorkingDay) {
+        this.firstWorkingDay = firstWorkingDay;
+    }
+
     public String getGeneralFirstWorkingDay() {
         return generalFirstWorkingDay;
+    }
+
+    public void setGeneralFirstWorkingDay(String generalFirstWorkingDay) {
+        this.generalFirstWorkingDay = generalFirstWorkingDay;
     }
 
     public String getLastWorkingDay() {
         return lastWorkingDay;
     }
 
+    public void setLastWorkingDay(String lastWorkingDay) {
+        this.lastWorkingDay = lastWorkingDay;
+    }
+
     public int getGender() {
         return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
     public String getPhone() {
         return phone;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getPhoto() {
         return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getPhotoOrigin() {
         return photoOrigin;
     }
 
+    public void setPhotoOrigin(String photoOrigin) {
+        this.photoOrigin = photoOrigin;
+    }
+
     public String getRelocationCity() {
         return relocationCity;
+    }
+
+    public void setRelocationCity(String relocationCity) {
+        this.relocationCity = relocationCity;
     }
 
     public int getRole() {
         return role;
     }
 
+    public void setRole(int role) {
+        this.role = role;
+    }
+
     public String getSkype() {
         return skype;
+    }
+
+    public void setSkype(String skype) {
+        this.skype = skype;
     }
 
     public boolean isActive() {
         return isActive;
     }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public String getTrialPeriodEnds() {
         return trialPeriodEnds;
+    }
+
+    public void setTrialPeriodEnds(String trialPeriodEnds) {
+        this.trialPeriodEnds = trialPeriodEnds;
     }
 
     public String getPdpLink() {
         return pdpLink;
     }
 
+    public void setPdpLink(String pdpLink) {
+        this.pdpLink = pdpLink;
+    }
+
     public String getOneToOneLink() {
         return oneToOneLink;
     }
 
+    public void setOneToOneLink(String oneToOneLink) {
+        this.oneToOneLink = oneToOneLink;
+    }
+
     public String getReasonComments() {
         return reasonComments;
+    }
+
+    public void setReasonComments(String reasonComments) {
+        this.reasonComments = reasonComments;
     }
 }

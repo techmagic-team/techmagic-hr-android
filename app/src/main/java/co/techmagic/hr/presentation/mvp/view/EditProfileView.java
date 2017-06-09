@@ -19,6 +19,10 @@ public interface EditProfileView {
 
     <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters);
 
+    void showConfirmationDialog();
+
+    void onBackClick();
+
     /* Login section */
 
     void showLoginSection();
@@ -28,6 +32,14 @@ public interface EditProfileView {
     void showPassword(@NonNull String password);
 
     void showCanSignInView(boolean canSignIn);
+
+    void hideEmailError();
+
+    void onEmailError();
+
+    void onPasswordError();
+
+    void hidePasswordError();
 
     /* Personal section */
 

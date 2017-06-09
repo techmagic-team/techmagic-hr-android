@@ -31,6 +31,7 @@ import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
+import co.techmagic.hr.presentation.util.ValidatingCredentialsUtil;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -46,6 +47,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private Docs data;
     private EditProfileFiltersDto profileFilters;
+
+    private String password;
+    private boolean hasChanges = false;
 
 
     public EditProfilePresenter() {
@@ -117,13 +121,167 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
+    public void handleEmailChange(String newEmail) {
+        final String email = data.getEmail();
+
+        if (ValidatingCredentialsUtil.isValidEmail(newEmail)) {
+            view.hideEmailError();
+
+            if (email.equals(newEmail)) {
+                data.setEmail(email);
+                hasChanges = false;
+            } else {
+                data.setEmail(newEmail);
+                hasChanges = true;
+            }
+        } else {
+            view.onEmailError();
+        }
+    }
+
+
+    public void handlePasswordChange(String newPassword) {
+        if (ValidatingCredentialsUtil.isValidPassword(newPassword)) {
+            view.hidePasswordError();
+            password = newPassword;
+        } else {
+            view.onPasswordError();
+        }
+    }
+
+
+    public void handleFirstNameChange(String newFirstName) {
+        final String firstName = data.getFirstName();
+
+        if (firstName.equals(newFirstName)) {
+            data.setFirstName(firstName);
+            hasChanges = false;
+        } else {
+            data.setEmail(newFirstName);
+            hasChanges = true;
+        }
+    }
+
+
+    public void handleLastNameChange(String newLastName) {
+        final String lastName = data.getLastName();
+
+        if (lastName.equals(newLastName)) {
+            data.setFirstName(lastName);
+            hasChanges = false;
+        } else {
+            data.setEmail(newLastName);
+            hasChanges = true;
+        }
+    }
+
+
+    public void handleDateOfBirthChange() {
+
+    }
+
+
+    public void handleGenderChange() {
+
+    }
+
+
+    public void handleSkypeChange() {
+
+    }
+
+
+    public void handlePhoneChange() {
+
+    }
+
+
+    public void handleEmergencyContactNumberChange() {
+
+    }
+
+
+    public void handleEmergencyContactChange() {
+
+    }
+
+
+    public void handleRoomChange() {
+
+    }
+
+
+    public void handleCityOfRelocationChange() {
+
+    }
+
+
+    public void handlePresentationChange() {
+
+    }
+
+
+    public void handleDepartmentChange() {
+
+    }
+
+
+    public void handleLeadChange() {
+
+    }
+
+
+    public void handleFirstDayChange() {
+
+    }
+
+
+    public void handleFirstDayInItChange() {
+
+    }
+
+
+    public void handleTrialPeriodChange() {
+
+    }
+
+
+    public void handlePdpChange() {
+
+    }
+
+
+    public void handleOneToOneChange() {
+
+    }
+
+
+    public void handleLastDayChange() {
+
+    }
+
+
+    public void handleReasonChange() {
+
+    }
+
+
+    public void handleCommentsChange() {
+
+    }
+
+
     public void showDatePickerDialog() {
         view.showDatePickerDialog();
     }
 
 
     public void onCancelClick() {
-
+        if (hasChanges) {
+            view.showConfirmationDialog();
+        } else {
+            view.onBackClick();
+        }
     }
 
 
@@ -408,7 +566,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private void performSaveUserRequest() {
         view.showProgress();
-        final EditProfileRequest request = new EditProfileRequest(data);
+        final EditProfileRequest request = new EditProfileRequest(data, password);
         saveEditedUserProfile.execute(request, new DefaultSubscriber<EditProfile>(view) {
             @Override
             public void onNext(EditProfile profile) {

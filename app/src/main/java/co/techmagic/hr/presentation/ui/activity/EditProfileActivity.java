@@ -3,10 +3,13 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +52,10 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     EditText etChangePassword;
     @BindView(R.id.cbCanSignIn)
     CheckBox cbCanSignIn;
+    @BindView(R.id.tilChangeEmail)
+    TextInputLayout tilEmail;
+    @BindView(R.id.tilChangePassword)
+    TextInputLayout tilPassword;
     @BindView(R.id.cvPersonalInfo)
     View cvPersonalInfo;
     @BindView(R.id.etFirstName)
@@ -174,6 +181,16 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void showConfirmationDialog() {
+
+            }
+
+            @Override
+            public void onBackClick() {
+                onBackPressed();
+            }
+
+            @Override
             public void showLoginSection() {
                 cvLoginInfo.setVisibility(View.VISIBLE);
             }
@@ -192,6 +209,26 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             public void showCanSignInView(boolean canSignIn) {
                 cbCanSignIn.setVisibility(View.VISIBLE);
                 cbCanSignIn.setChecked(canSignIn);
+            }
+
+            @Override
+            public void hideEmailError() {
+                tilEmail.setErrorEnabled(false);
+            }
+
+            @Override
+            public void onEmailError() {
+                tilEmail.setError(getString(R.string.message_invalid_email));
+            }
+
+            @Override
+            public void onPasswordError() {
+                tilPassword.setError(getString(R.string.message_invalid_password));
+            }
+
+            @Override
+            public void hidePasswordError() {
+                tilPassword.setErrorEnabled(false);
             }
 
             @Override
@@ -518,6 +555,54 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         setupActionBar();
         ivDownload.setVisibility(View.GONE);
         presenter.setupPage();
+        setListeners();
+    }
+
+
+    private void setListeners() {
+        tilEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                tilEmail.setErrorEnabled(false);
+        });
+
+        etChangeEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handleEmailChange(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        tilPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus)
+                tilPassword.setErrorEnabled(false);
+        });
+
+        etChangePassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handlePasswordChange(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
 

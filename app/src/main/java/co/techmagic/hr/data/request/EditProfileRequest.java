@@ -41,6 +41,9 @@ public class EditProfileRequest {
     @SerializedName("email")
     private String email;
 
+    @SerializedName("password")
+    private String password;
+
     @SerializedName("emergencyContact")
     private EmergencyContact emergencyContact;
 
@@ -95,27 +98,7 @@ public class EditProfileRequest {
     @SerializedName("reason_comments")
     private String reasonComments;
 
-    public EditProfileRequest(@NonNull Docs user) {
-        /*Department dep = user.getDepartment();
-        if (dep != null) {
-            department = new DepartmentRequest(dep.getId(), dep.getName());
-        }
-
-        Room r = user.getRoom();
-        if (r != null) {
-            room = new RoomRequest(r.getId(), r.getName());
-        }
-
-        Lead l = user.getLead();
-        if (l != null) {
-            lead = new LeadRequest(l.getId(), l.getLastWorkingDay(), l.getFirstName(), l.getLastName());
-        }*/
-
-        /*Reason rsn = user.getReason();
-        if (rsn != null) {
-            reason = new RoomRequest(rsn.getId(), rsn.getName());
-        }*/
-
+    public EditProfileRequest(@NonNull Docs user, String password) {
         Department dep = user.getDepartment();
         if (dep == null) {
             department = null;
@@ -161,41 +144,10 @@ public class EditProfileRequest {
         pdpLink = user.getPdpLink();
         oneToOneLink = user.getOneToOneLink();
         reasonComments = user.getReasonComments();
+        this.password = password;
     }
 
-    /*@Override
-    public String toString() {
-        return "{" +
-                "department=" + department.toString() + '\'' +
-                ", room=" + room.toString() + '\'' +
-                ", lead=" + lead.toString() + '\'' +
-                ", id='" + id + '\'' +
-                ", company='" + company + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", description='" + description + '\'' +
-                ", email='" + email + '\'' +
-                ", emergencyContact=" + emergencyContact +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", firstWorkingDay=" + firstWorkingDay +
-                ", generalFirstWorkingDay=" + generalFirstWorkingDay +
-                ", lastWorkingDay=" + lastWorkingDay +
-                ", gender=" + gender +
-                ", phone='" + phone + '\'' +
-                ", photo='" + photo + '\'' +
-                ", photoOrigin='" + photoOrigin + '\'' +
-                ", relocationCity='" + relocationCity + '\'' +
-                ", role=" + role +
-                ", skype='" + skype + '\'' +
-                ", isActive=" + isActive +
-                ", trialPeriodEnds='" + trialPeriodEnds + '\'' +
-                ", pdpLink='" + pdpLink + '\'' +
-                ", oneToOneLink='" + oneToOneLink + '\'' +
-                ", reasonComments='" + reasonComments + '\'' +
-                '}';
-    }
-
-    public DepartmentRequest getDepartment() {
+    /*public DepartmentRequest getDepartment() {
         return department;
     }
 
