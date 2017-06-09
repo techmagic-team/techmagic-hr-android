@@ -49,6 +49,7 @@
 
     <style name="EmployeeDetailsLayoutContent">
         <item name="android:layout_marginTop">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
         <item name="android:layout_marginLeft">0dp</item>
     </style>
 

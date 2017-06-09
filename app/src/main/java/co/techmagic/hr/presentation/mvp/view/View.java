@@ -10,6 +10,8 @@ public interface View {
 
     void showSnackBarMessage(String message);
 
+    void showSnackBarMessage(int messageResId);
+
     void showSnackBarWrongLoginCredentialsError();
 
     void showSnackBarWrongCompanyOrEmailError();

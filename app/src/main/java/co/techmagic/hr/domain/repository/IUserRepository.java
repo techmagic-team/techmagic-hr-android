@@ -4,7 +4,9 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.EditProfile;
 import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.data.request.LoginRequest;
@@ -19,4 +21,6 @@ public interface IUserRepository {
     Observable<Docs> getMyProfile(GetMyProfileRequest getMyProfileRequest);
 
     Observable<List<Company>> getCompanies();
+
+    Observable<EditProfile> saveEditedProfile(EditProfileRequest editProfileRequest);
 }

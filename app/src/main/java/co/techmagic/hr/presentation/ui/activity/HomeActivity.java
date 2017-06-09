@@ -35,7 +35,9 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String DOCS_OBJECT_PARAM = "docs_object_param";
+    public static final String USER_ID_PARAM = "user_id_param";
+    public static final String FULL_NAME_PARAM = "full_name_param";
+    public static final String PHOTO_URL_PARAM = "photo_url_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
@@ -233,10 +235,16 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs docs, @NonNull ProfileTypes profileType, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull Docs user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
+
+        bundle.putString(USER_ID_PARAM, user.getId());
+        bundle.putString(PHOTO_URL_PARAM, user.getPhotoOrigin() == null ? user.getPhoto() : user.getPhotoOrigin());
+
+        if (user.getFirstName() != null && user.getLastName() != null) {
+            bundle.putString(FULL_NAME_PARAM, user.getFirstName() + " " + user.getLastName());
+        }
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);

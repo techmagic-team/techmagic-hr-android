@@ -6,9 +6,9 @@ import co.techmagic.hr.domain.interactor.DataUseCase;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import rx.Observable;
 
-public class GetMyProfile extends DataUseCase<GetMyProfileRequest, Docs, IUserRepository> {
+public class GetUserProfile extends DataUseCase<GetMyProfileRequest, Docs, IUserRepository> {
 
-    public GetMyProfile(IUserRepository iUserRepository) {
+    public GetUserProfile(IUserRepository iUserRepository) {
         super(iUserRepository);
     }
 

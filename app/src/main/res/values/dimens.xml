@@ -38,7 +38,7 @@
     <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
     <dimen name="fragment_employee_details_line_spacing_extra">4dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
-    <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_vertical">12dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_bottom">12dp</dimen>
 

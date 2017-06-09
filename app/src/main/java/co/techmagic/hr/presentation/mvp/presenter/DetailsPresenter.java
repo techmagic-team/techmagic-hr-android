@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +25,16 @@ import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
+import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.domain.interactor.employee.GetUserDayOffs;
 import co.techmagic.hr.domain.interactor.employee.GetUserIllness;
 import co.techmagic.hr.domain.interactor.employee.GetUserVacations;
+import co.techmagic.hr.domain.interactor.user.GetUserProfile;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
@@ -43,15 +48,21 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     static final int ROLE_ADMIN = 2;
 
     private Docs data;
+    private IUserRepository userRepository;
     private IEmployeeRepository employeeRepository;
+    private GetUserProfile getUserProfile;
     private GetUserVacations getUserVacations;
     private GetUserDayOffs getUserDayOffs;
     private GetUserIllness getUserIllness;
 
+    private ProfileTypes profileType = ProfileTypes.NONE;
+
 
     public DetailsPresenter() {
         super();
+        userRepository = new UserRepositoryImpl();
         employeeRepository = new EmployeeRepositoryImpl();
+        getUserProfile = new GetUserProfile(userRepository);
         getUserVacations = new GetUserVacations(employeeRepository);
         getUserDayOffs = new GetUserDayOffs(employeeRepository);
         getUserIllness = new GetUserIllness(employeeRepository);
@@ -66,7 +77,13 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    public void performGetTimeOffRequestsIfNeeded() {
+    public void performRequests(@NonNull String userId , ProfileTypes profileType) {
+        this.profileType = profileType;
+        performGetUserProfileAndTimeOffRequests(userId);
+    }
+
+
+    private void performGetTimeOffRequestsIfNeeded() {
         String firstDate = data.getFirstWorkingDay();
         if (firstDate == null) {
             view.allowChangeBottomTab();
@@ -80,13 +97,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    public void setupUiWithData(Docs data, ProfileTypes profileType) {
-        this.data = data;
-        showData(data, profileType);
-    }
-
-
-    private void showData(@NonNull Docs data, ProfileTypes profileType) {
+    private void showData() {
         view.loadEmployeePhoto(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
 
         if (data.getEmail() != null) {
@@ -189,7 +200,12 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             i.setComponent(new ComponentName("com.skype.raider", "com.skype.raider.Main"));
             i.setData(Uri.parse("skype:" + skypeId + "?chat"));
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
+
+            try {
+                context.startActivity(i);
+            } catch (ActivityNotFoundException ex) {
+                view.showMessage(R.string.message_no_installed_application);
+            }
         }
     }
 
@@ -277,6 +293,28 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
                 .load(photoUrl)
                 .placeholder(R.drawable.ic_user_placeholder)
                 .into(ivPhoto);
+    }
+
+
+    private void performGetUserProfileAndTimeOffRequests(@NonNull String userId) {
+        view.showProgress();
+        final GetMyProfileRequest request = new GetMyProfileRequest(userId);
+        getUserProfile.execute(request, new DefaultSubscriber<Docs>() {
+            @Override
+            public void onNext(Docs docs) {
+                super.onNext(docs);
+                data = docs;
+                view.hideProgress();
+                showData();
+                performGetTimeOffRequestsIfNeeded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
     }
 
 

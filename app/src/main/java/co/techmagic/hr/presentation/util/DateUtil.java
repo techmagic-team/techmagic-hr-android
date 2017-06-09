@@ -162,4 +162,24 @@ public class DateUtil {
         c.set(inputTime.get(Calendar.YEAR), inputTime.get(Calendar.MONTH), inputTime.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
         return c.getTimeInMillis();
     }
+
+
+    public static long getFormattedDateInMillis(@Nullable String inputData) {
+        long millis = 0;
+
+        if (inputData == null) {
+            return millis;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            Date date = inputFormat.parse(inputData);
+            millis = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return millis;
+    }
 }

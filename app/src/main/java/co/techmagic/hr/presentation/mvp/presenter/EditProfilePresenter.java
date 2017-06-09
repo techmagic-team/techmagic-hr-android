@@ -10,6 +10,7 @@ import java.util.List;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.EditProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
@@ -17,9 +18,11 @@ import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
+import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.domain.interactor.employee.GetAllFilters;
-import co.techmagic.hr.domain.interactor.user.GetMyProfile;
+import co.techmagic.hr.domain.interactor.user.GetUserProfile;
+import co.techmagic.hr.domain.interactor.user.SaveEditedUserProfile;
 import co.techmagic.hr.domain.pojo.EditProfileFiltersDto;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.domain.repository.IUserRepository;
@@ -37,8 +40,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private IUserRepository userRepository;
     private IEmployeeRepository employeeRepository;
-    private GetMyProfile getMyProfile;
+    private GetUserProfile getUserProfile;
     private GetAllFilters getAllFilters;
+    private SaveEditedUserProfile saveEditedUserProfile;
 
     private Docs data;
     private EditProfileFiltersDto profileFilters;
@@ -48,14 +52,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         super();
         employeeRepository = new EmployeeRepositoryImpl();
         userRepository = new UserRepositoryImpl();
-        getMyProfile = new GetMyProfile(userRepository);
+        getUserProfile = new GetUserProfile(userRepository);
         getAllFilters = new GetAllFilters(employeeRepository);
+        saveEditedUserProfile = new SaveEditedUserProfile(userRepository);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
+        getUserProfile.unsubscribe();
+        getAllFilters.unsubscribe();
+        saveEditedUserProfile.unsubscribe();
     }
 
 
@@ -120,7 +128,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void onSaveClick() {
-
+        performSaveUserRequest();
     }
 
 
@@ -288,9 +296,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             view.showLastWorkingDay(lastDayDate);
         }
 
-        if (data.getReason() != null) {
-            view.showReason(data.getReason().getName());
-        }
+        // TODO
+
+        /*if (data.getReason() != null && data.getReason().getId()) {
+            if (!profileFilters.getReasons().isEmpty()) {
+                for (Filter f : profileFilters.getReasons()) {
+                    if (data.getReason().getId().equals(f.getId())) {
+                        view.showReason(f.getName());
+                        break;
+                    }
+                }
+            }
+        }*/
 
         if (data.getReasonComments() != null) {
             view.showComments(data.getReasonComments());
@@ -329,12 +346,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             }
         }
 
-        /*if (!profileFilters.getReasons().isEmpty()) {
-            for (Filter f : profileFilters.getReasons()) {
-                Reason reason = data.getReason();
-                if (reason.getId().equals(f.getId())) {
-                    view.showSelectedFilter(reason.getId(), reason.getName(), FilterTypes.REASON);
-                    break;
+        // TODO
+
+        /*if (data.getReason() != null && data.getReason().getId()) {
+            if (!profileFilters.getReasons().isEmpty()) {
+                for (Filter f : profileFilters.getReasons()) {
+                    final String reasonId = data.getReasonId();
+                    if (reasonId.equals(f.getId())) {
+                        view.showSelectedFilter(reasonId, f.getName(), FilterTypes.REASON);
+                        break;
+                    }
                 }
             }
         }*/
@@ -345,7 +366,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         view.showProgress();
         final String userId = SharedPreferencesUtil.readUser().getId();
         final GetMyProfileRequest request = new GetMyProfileRequest(userId);
-        getMyProfile.execute(request, new DefaultSubscriber<Docs>() {
+        getUserProfile.execute(request, new DefaultSubscriber<Docs>() {
             @Override
             public void onNext(Docs docs) {
                 super.onNext(docs);
@@ -382,5 +403,26 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         view.hideProgress();
         profileFilters = editProfileFiltersDto;
         showData();
+    }
+
+
+    private void performSaveUserRequest() {
+        view.showProgress();
+        final EditProfileRequest request = new EditProfileRequest(data);
+        saveEditedUserProfile.execute(request, new DefaultSubscriber<EditProfile>(view) {
+            @Override
+            public void onNext(EditProfile profile) {
+                super.onNext(profile);
+                view.hideProgress();
+                view.showSnackBarMessage(R.string.message_successfully_saved);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+                view.showSnackBarMessage(R.string.message_error);
+            }
+        });
     }
 }
