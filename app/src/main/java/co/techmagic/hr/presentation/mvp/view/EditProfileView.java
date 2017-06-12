@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.IFilterModel;
+import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 
 public interface EditProfileView {
@@ -16,6 +17,8 @@ public interface EditProfileView {
     void showDatePickerDialog();
 
     void showSelectedFilter(@NonNull String id, @NonNull String name, FilterTypes filterType);
+
+    void showSelectedLead(@NonNull Lead lead, FilterTypes filterType);
 
     <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters);
 
@@ -50,6 +53,8 @@ public interface EditProfileView {
     void showLastName(@NonNull String lastName);
 
     void showBirthDate(@NonNull String date);
+
+    void allowClickOnBirthDateView();
 
     void showGenderView();
 

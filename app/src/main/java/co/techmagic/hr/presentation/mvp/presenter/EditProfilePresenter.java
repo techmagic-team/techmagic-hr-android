@@ -47,18 +47,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private Docs data;
     private EditProfileFiltersDto profileFilters;
+    private EmergencyContact emergencyContact;
 
-    private String password;
     private boolean hasChanges = false;
 
 
     public EditProfilePresenter() {
         super();
-        employeeRepository = new EmployeeRepositoryImpl();
         userRepository = new UserRepositoryImpl();
+        employeeRepository = new EmployeeRepositoryImpl();
         getUserProfile = new GetUserProfile(userRepository);
         getAllFilters = new GetAllFilters(employeeRepository);
         saveEditedUserProfile = new SaveEditedUserProfile(userRepository);
+        emergencyContact = new EmergencyContact();
     }
 
 
@@ -143,9 +144,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handlePasswordChange(String newPassword) {
         if (ValidatingCredentialsUtil.isValidPassword(newPassword)) {
             view.hidePasswordError();
-            password = newPassword;
+            data.setPassword(newPassword);
         } else {
             view.onPasswordError();
+            data.setPassword(null);
         }
     }
 
@@ -157,7 +159,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             data.setFirstName(firstName);
             hasChanges = false;
         } else {
-            data.setEmail(newFirstName);
+            data.setFirstName(newFirstName);
             hasChanges = true;
         }
     }
@@ -167,107 +169,357 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         final String lastName = data.getLastName();
 
         if (lastName.equals(newLastName)) {
-            data.setFirstName(lastName);
+            data.setLastName(lastName);
             hasChanges = false;
         } else {
-            data.setEmail(newLastName);
+            data.setLastName(newLastName);
             hasChanges = true;
         }
     }
 
 
-    public void handleDateOfBirthChange() {
+    public void handleDateOfBirthChange(String date) {
+        if (date != null) {
+            hasChanges = true;
+            data.setBirthday(date);
+            view.showBirthDate(date);
+        }
 
+        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
+
+        if (selectedDate != null) {
+            hasChanges = true;
+            view.showBirthDate(selectedDate);
+        }*/
     }
 
 
-    public void handleGenderChange() {
+    public void handleGenderChange(boolean isMaleChecked) {
+        final int gender = data.getGender();
 
+        if (isMaleChecked && gender == GENDER_MALE || !isMaleChecked && gender == GENDER_FEMALE) {
+            hasChanges = false;
+        } else {
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
+        }
     }
 
 
-    public void handleSkypeChange() {
+    public void handleSkypeChange(String newSkype) {
+        final String skype = data.getSkype();
 
+        if (skype.equals(newSkype)) {
+            data.setSkype(skype);
+            hasChanges = false;
+        } else {
+            data.setSkype(newSkype);
+            hasChanges = true;
+        }
     }
 
 
-    public void handlePhoneChange() {
+    public void handlePhoneChange(String newPhone) {
+        final String phone = data.getPhone();
 
+        if (phone.equals(newPhone)) {
+            data.setPhone(phone);
+            hasChanges = false;
+        } else {
+            data.setPhone(newPhone);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleEmergencyContactNumberChange() {
+    public void handleEmergencyContactNumberChange(String newNumber) {
+        if (newNumber == null) {
+            return;
+        }
 
+        if (data.getEmergencyContact() == null) {
+            emergencyContact.setPhone(newNumber);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
+            return;
+        }
+
+        final String phone = data.getEmergencyContact().getPhone();
+
+        if (phone.equals(newNumber)) {
+            emergencyContact.setPhone(phone);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = false;
+        } else {
+            emergencyContact.setPhone(newNumber);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleEmergencyContactChange() {
+    public void handleEmergencyContactChange(String newName) {
+        if (newName == null) {
+            return;
+        }
 
+        if (data.getEmergencyContact() == null) {
+            emergencyContact.setName(newName);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
+            return;
+        }
+
+        final String name = data.getEmergencyContact().getName();
+
+        if (name.equals(newName)) {
+            emergencyContact.setName(newName);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = false;
+        } else {
+            emergencyContact.setName(newName);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleRoomChange() {
+    public void handleRoomChange(String id, String name) {
+        if (id == null || name == null) {
+            return;
+        }
 
+        Room room = new Room();
+
+        if (data.getRoom() == null) {
+            room.setId(id);
+            room.setName(name);
+            data.setRoom(room);
+            hasChanges = true;
+            return;
+        }
+
+        final String roomId = data.getRoom().getId();
+
+        if (roomId.equals(id)) {
+            room.setId(roomId);
+            hasChanges = false;
+        } else {
+            room.setId(id);
+            hasChanges = true;
+        }
+
+        room.setName(name);
+        data.setRoom(room);
     }
 
 
-    public void handleCityOfRelocationChange() {
+    public void handleCityOfRelocationChange(String newCity) {
+        final String city = data.getRelocationCity();
 
+        if (city.equals(newCity)) {
+            data.setRelocationCity(city);
+            hasChanges = false;
+        } else {
+            data.setRelocationCity(newCity);
+            hasChanges = true;
+        }
     }
 
 
-    public void handlePresentationChange() {
+    public void handlePresentationChange(String newDescription) {
+        final String desc = data.getDescription();
 
+        if (desc.equals(newDescription)) {
+            data.setDescription(desc);
+            hasChanges = false;
+        } else {
+            data.setDescription(newDescription);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleDepartmentChange() {
+    public void handleDepartmentChange(String newDepId, String name) {
+        if (newDepId == null || name == null) {
+            return;
+        }
 
+        Department dep = new Department();
+
+        if (data.getDepartment() == null) {
+            dep.setId(newDepId);
+            dep.setName(name);
+            data.setDepartment(dep);
+            hasChanges = true;
+            return;
+        }
+
+        final String depId = data.getDepartment().getId();
+
+        if (depId.equals(newDepId)) {
+            dep.setId(depId);
+            hasChanges = false;
+        } else {
+            dep.setId(newDepId);
+            hasChanges = true;
+        }
+
+        dep.setName(name);
+        data.setDepartment(dep);
     }
 
 
-    public void handleLeadChange() {
+    public void handleLeadChange(@NonNull Lead newLead) {
+        Lead lead = new Lead();
 
+        if (data.getLead() == null) {
+            lead.setId(newLead.getId());
+            lead.setFirstName(newLead.getFirstName());
+            lead.setLastName(newLead.getLastName());
+            lead.setLastWorkingDay(newLead.getLastWorkingDay());
+            data.setLead(lead);
+            hasChanges = true;
+            return;
+        }
+
+        final String leadId = data.getLead().getId();
+
+        if (leadId.equals(newLead.getId())) {
+            lead.setId(leadId);
+            hasChanges = false;
+        } else {
+            lead.setId(newLead.getId());
+            hasChanges = true;
+        }
+
+        lead.setFirstName(newLead.getFirstName());
+        lead.setLastName(newLead.getLastName());
+        lead.setLastWorkingDay(newLead.getLastWorkingDay());
+        data.setLead(lead);
     }
 
 
-    public void handleFirstDayChange() {
+    public void handleFirstDayChange(String date) {
+        if (date != null) {
+            hasChanges = true;
+            data.setFirstWorkingDay(date);
+        }
+        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
 
+        if (selectedDate != null) {
+            hasChanges = true;
+            view.showFirstWorkingDay(selectedDate);
+        }*/
     }
 
 
-    public void handleFirstDayInItChange() {
+    public void handleFirstDayInItChange(String date) {
+        if (date != null) {
+            hasChanges = true;
+            data.setGeneralFirstWorkingDay(date);
+        }
 
+        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
+
+        if (selectedDate != null) {
+            hasChanges = true;
+            view.showFirstWorkingDayInIt(selectedDate);
+        }*/
     }
 
 
-    public void handleTrialPeriodChange() {
+    public void handleTrialPeriodChange(String date) {
+        if (date != null) {
+            hasChanges = true;
+            data.setTrialPeriodEnds(date);
+        }
 
+        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
+
+        if (selectedDate != null) {
+            hasChanges = true;
+            view.showTrialPeriodEnds(selectedDate);
+        }*/
     }
 
 
-    public void handlePdpChange() {
+    public void handlePdpChange(String newLink) {
+        final String link = data.getPdpLink();
 
+        if (link.equals(newLink)) {
+            data.setPdpLink(link);
+            hasChanges = false;
+        } else {
+            data.setPdpLink(newLink);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleOneToOneChange() {
+    public void handleOneToOneChange(String newLink) {
+        final String link = data.getOneToOneLink();
 
+        if (link.equals(newLink)) {
+            data.setOneToOneLink(link);
+            hasChanges = false;
+        } else {
+            data.setOneToOneLink(newLink);
+            hasChanges = true;
+        }
     }
 
 
-    public void handleLastDayChange() {
+    public void handleLastDayChange(String date) {
+        final String selectedDate = DateUtil.getFormattedFullDate(date);
 
+        if (selectedDate != null) {
+            hasChanges = true;
+            view.showLastWorkingDay(selectedDate);
+        }
+    }
+
+    // todo
+
+    public void handleReasonChange(String newReasonId, String name) {
+        /*Reason reason = new Reason();
+
+        if (data.getReason() == null) {
+            reason.setId(newReasonId);
+            reason.setName(name);
+            data.setReason(reason);
+            hasChanges = true;
+            return;
+        }
+
+        final String reasonId = data.getReason().getId();
+
+        if (reasonId.equals(newReasonId)) {
+            reason.setId(reasonId);
+            hasChanges = false;
+        } else {
+            reason.setId(newReasonId);
+            hasChanges = true;
+        }
+
+        reason.setName(name);
+        data.setReason(reason);*/
     }
 
 
-    public void handleReasonChange() {
+    public void handleCommentsChange(String newComments) {
+        final String comments = data.getReasonComments();
 
-    }
-
-
-    public void handleCommentsChange() {
-
+        if (comments.equals(newComments)) {
+            data.setReasonComments(comments);
+            hasChanges = false;
+        } else {
+            data.setReasonComments(newComments);
+            hasChanges = true;
+        }
     }
 
 
@@ -276,7 +528,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void onCancelClick() {
+    public void onBackClick() {
         if (hasChanges) {
             view.showConfirmationDialog();
         } else {
@@ -306,7 +558,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         handleContactsSection();
         handleAdditionalSection();
 
-        handleFilters();
+        // handleFilters();
 
         /* Show next info only for HR or Admin */
         final int userRole = data.getRole();
@@ -387,6 +639,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     private void showFullDetailsIfAvailable() {
+        view.allowClickOnBirthDateView();
         view.showCanSignInView(data.isActive());
         view.showGenderView();
 
@@ -488,7 +741,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             for (FilterLead f : profileFilters.getLeads()) {
                 Lead lead = data.getLead();
                 if (lead.getId().equals(f.getId())) {
-                    view.showSelectedFilter(lead.getId(), lead.getName(), FilterTypes.LEAD);
+                    //  view.showSelectedLead(lead, FilterTypes.LEAD);
                     break;
                 }
             }
@@ -566,11 +819,12 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private void performSaveUserRequest() {
         view.showProgress();
-        final EditProfileRequest request = new EditProfileRequest(data, password);
+        final EditProfileRequest request = new EditProfileRequest(data);
         saveEditedUserProfile.execute(request, new DefaultSubscriber<EditProfile>(view) {
             @Override
             public void onNext(EditProfile profile) {
                 super.onNext(profile);
+                hasChanges = false;
                 view.hideProgress();
                 view.showSnackBarMessage(R.string.message_successfully_saved);
             }

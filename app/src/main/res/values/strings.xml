@@ -103,6 +103,8 @@
     <string name="tm_hr_calendar_filters_activity_text_empty_project_filters">There are no project yet</string>
 
     <!-- EditProfileActivity -->
+    <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>
+    <string name="tm_hr_edit_profile_activity_alert_dialog_message">You have unsaved changes. Do you want to return back?</string>
     <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
     <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
     <string name="tm_hr_edit_profile_activity_hint_first_name">First name</string>

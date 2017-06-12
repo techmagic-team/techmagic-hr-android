@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cvAdditional"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvAdditional"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
+            android:focusableInTouchMode="true"
             android:hint="@string/tm_hr_edit_profile_activity_text_city_of_relocation"
             android:textColorHint="@color/colorAccent">
 
@@ -33,7 +34,6 @@
                 android:id="@+id/etChangeCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true"
@@ -45,19 +45,18 @@
             android:id="@+id/tilChangePresentation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:hint="@string/tm_hr_edit_profile_activity_text_short_presentation"
+            android:focusableInTouchMode="true"
             android:textColorHint="@color/colorAccent">
 
             <EditText
                 android:id="@+id/etChangePresentation"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tm_hr_edit_profile_activity_edit_text_height"
-                android:focusableInTouchMode="true"
-                android:inputType="text"
-                android:imeOptions="actionNext"
                 android:gravity="top"
+                android:inputType="textCapWords|textMultiLine"
                 android:maxLength="500"
+                android:maxLines="10"
                 android:scrollbars="vertical"
                 android:textColor="@color/colorAccent" />
 

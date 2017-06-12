@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -28,8 +29,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.IFilterModel;
+import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
+import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
@@ -62,6 +65,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     EditText etFirstName;
     @BindView(R.id.etLastName)
     EditText etLastName;
+    @BindView(R.id.rlEditDateOfBirth)
+    RelativeLayout rlEditDateOfBirth;
     @BindView(R.id.tvDateOfBirth)
     TextView tvSelectedDateOfBirth;
     @BindView(R.id.rgGender)
@@ -119,13 +124,23 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     private AlertDialog dialog;
     private FilterTypes filterType = FilterTypes.ROOM;
+    private Lead selectedLead;
 
+    private String selectedFilterId;
+    private String selectedName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.setupPage();
     }
 
 
@@ -144,7 +159,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed(); // todo
+        super.onBackPressed();
+       // presenter.onBackClick();
+        finish();
     }
 
 
@@ -175,6 +192,13 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void showSelectedLead(@NonNull Lead lead, FilterTypes type) {
+                filterType = type;
+                selectedLead = lead;
+                onFilterSelected(lead.getId(), lead.getName());
+            }
+
+            @Override
             public <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters) {
                 dismissDialogIfOpened();
                 showSelectFilterAlertDialog(filters);
@@ -182,7 +206,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void showConfirmationDialog() {
-
+                showSaveChangesDialog();
             }
 
             @Override
@@ -198,11 +222,13 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void showEmail(@NonNull String email) {
                 etChangeEmail.setText(email);
+                etChangeEmail.setEnabled(true);
             }
 
             @Override
             public void showPassword(@NonNull String password) {
                 etChangePassword.setText(password);
+                etChangePassword.setEnabled(true);
             }
 
             @Override
@@ -239,16 +265,23 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void showFirstName(@NonNull String firstName) {
                 etFirstName.setText(firstName);
+                etFirstName.setEnabled(true);
             }
 
             @Override
             public void showLastName(@NonNull String lastName) {
                 etLastName.setText(lastName);
+                etLastName.setEnabled(true);
             }
 
             @Override
             public void showBirthDate(@NonNull String date) {
                 tvSelectedDateOfBirth.setText(date);
+            }
+
+            @Override
+            public void allowClickOnBirthDateView() {
+                rlEditDateOfBirth.setClickable(true);
             }
 
             @Override
@@ -462,7 +495,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.btnCancel)
     public void onCancelClick() {
-        presenter.onCancelClick();
+        presenter.onBackClick();
     }
 
 
@@ -473,6 +506,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     private void displaySelectedFilter(String id, String filterName) {
+        selectedFilterId = id;
+        selectedName = filterName;
         switch (filterType) {
             case DEPARTMENT:
                 tvSelectedDep.setText(filterName);
@@ -554,7 +589,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private void initUi() {
         setupActionBar();
         ivDownload.setVisibility(View.GONE);
-        presenter.setupPage();
         setListeners();
     }
 
@@ -565,44 +599,50 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 tilEmail.setErrorEnabled(false);
         });
 
-        etChangeEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.handleEmailChange(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
         tilPassword.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus)
                 tilPassword.setErrorEnabled(false);
         });
 
-        etChangePassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        rgGender.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rbMale:
+                    presenter.handleGenderChange(true);
+                    break;
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.handlePasswordChange(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+                case R.id.rbFemale:
+                    presenter.handleGenderChange(false);
+                    break;
             }
         });
+
+        etChangeEmail.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMAIL));
+        etChangePassword.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PASSWORD));
+        etFirstName.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_NAME));
+        etLastName.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LAST_NAME));
+        tvSelectedDateOfBirth.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_DATE_OF_BIRTH));
+
+        etChangeSkype.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_SKYPE));
+        etChangePhone.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PHONE));
+        etChangeEmergencyNumber.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMERGENCY_NUMBER));
+        etChangeEmergencyContact.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMERGENCY_CONTACT));
+        tvSelectedRoom.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_ROOM));
+
+        etChangeCity.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_CITY_OF_RELOCATION));
+        etChangePresentation.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PRESENTATION));
+
+        tvSelectedDep.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_DEPARTMENT));
+        tvSelectedLead.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LEAD));
+        tvSelectedFirstDay.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_DAY));
+        tvSelectedFirstDayInIt.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_DAY_IN_IT));
+        tvSelectedTrialEnd.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_TRIAL_PERIOD));
+
+        etChangePdpLink.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PDP_LINK));
+        etChangeOneToOneLink.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_ONE_TO_ONE_LINK));
+
+        tvLastWorkingDay.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LAST_WORKING_DAY));
+        tvSelectedReason.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_REASON));
+        etComments.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_COMMENTS));
     }
 
 
@@ -611,6 +651,129 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.tm_hr_edit_profile_activity_title));
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+
+    protected void showSaveChangesDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_save_changes))
+                .setMessage(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_message))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> finish())
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+
+    private TextWatcher getTextChangeListener(final EditProfileFields field) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // todo  handleSelectedField(s.toString(), field);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+
+    private void handleSelectedField(String selectedContent, EditProfileFields field) {
+        switch (field) {
+            case CHANGE_EMAIL:
+                presenter.handleEmailChange(selectedContent);
+                break;
+
+            case CHANGE_PASSWORD:
+                presenter.handlePasswordChange(selectedContent);
+                break;
+
+            case CHANGE_FIRST_NAME:
+                presenter.handleFirstNameChange(selectedContent);
+                break;
+
+            case CHANGE_LAST_NAME:
+                presenter.handleLastNameChange(selectedContent);
+                break;
+
+            case CHANGE_DATE_OF_BIRTH:
+                presenter.handleDateOfBirthChange(selectedContent);
+                break;
+
+            case CHANGE_SKYPE:
+                presenter.handleSkypeChange(selectedContent);
+                break;
+
+            case CHANGE_PHONE:
+                presenter.handlePhoneChange(selectedContent);
+                break;
+
+            case CHANGE_EMERGENCY_NUMBER:
+                presenter.handleEmergencyContactNumberChange(selectedContent);
+                break;
+
+            case CHANGE_EMERGENCY_CONTACT:
+                presenter.handleEmergencyContactChange(selectedContent);
+                break;
+
+            case CHANGE_ROOM:
+                presenter.handleRoomChange(selectedFilterId, selectedName);
+                break;
+
+            case CHANGE_CITY_OF_RELOCATION:
+                presenter.handleCityOfRelocationChange(selectedContent);
+                break;
+
+            case CHANGE_PRESENTATION:
+                presenter.handlePresentationChange(selectedContent);
+                break;
+
+            case CHANGE_DEPARTMENT:
+                presenter.handleDepartmentChange(selectedFilterId, selectedName);
+                break;
+
+            case CHANGE_LEAD:
+                presenter.handleLeadChange(selectedLead);
+                break;
+
+            case CHANGE_FIRST_DAY:
+                presenter.handleFirstDayChange(selectedContent);
+                break;
+
+            case CHANGE_FIRST_DAY_IN_IT:
+                presenter.handleFirstDayInItChange(selectedContent);
+                break;
+
+            case CHANGE_TRIAL_PERIOD:
+                presenter.handleTrialPeriodChange(selectedContent);
+                break;
+
+            case CHANGE_PDP_LINK:
+                presenter.handlePdpChange(selectedContent);
+                break;
+
+            case CHANGE_ONE_TO_ONE_LINK:
+                presenter.handleOneToOneChange(selectedContent);
+                break;
+
+            case CHANGE_LAST_WORKING_DAY:
+                presenter.handleLastDayChange(selectedContent);
+                break;
+
+            case CHANGE_REASON:
+                presenter.handleReasonChange(selectedFilterId, selectedName);
+                break;
+
+            case CHANGE_COMMENTS:
+                presenter.handleCommentsChange(selectedContent);
+                break;
         }
     }
 }

@@ -20,20 +20,38 @@ public class Lead implements Parcelable {
     @SerializedName("lastName")
     private String lastName;
 
+    public Lead() {}
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLastWorkingDay() {
         return lastWorkingDay;
     }
 
+    public void setLastWorkingDay(String lastWorkingDay) {
+        this.lastWorkingDay = lastWorkingDay;
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getName() {

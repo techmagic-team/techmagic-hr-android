@@ -13,12 +13,23 @@ public class EmergencyContact implements Parcelable {
     @SerializedName("phone")
     private String phone;
 
+    public EmergencyContact() {
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPhone() {
         return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public EmergencyContact(Parcel in) {

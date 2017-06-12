@@ -119,6 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
+            android:focusableInTouchMode="true"
             android:hint="@string/tm_hr_edit_profile_activity_text_comments"
             android:textColorHint="@color/colorAccent">
 
@@ -129,7 +130,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="top"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textCapWords|textMultiLine"
                 android:maxLength="500"
                 android:scrollbars="vertical"
                 android:textColor="@color/colorAccent" />

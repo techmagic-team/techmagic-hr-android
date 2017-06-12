@@ -16,9 +16,6 @@ public class Docs implements Parcelable {
     @SerializedName("_lead")
     private Lead lead;
 
-    /*@SerializedName("_reason")
-    private Reason reason;*/
-
     @SerializedName("_id")
     private String id;
 
@@ -88,13 +85,14 @@ public class Docs implements Parcelable {
     @SerializedName("reason_comments")
     private String reasonComments;
 
+    private String password;
+
     public Docs() {}
 
     protected Docs(Parcel in) {
         department = (Department) in.readValue(Department.class.getClassLoader());
         room = (Room) in.readValue(Room.class.getClassLoader());
         lead = (Lead) in.readValue(Lead.class.getClassLoader());
-       // reason = (Reason) in.readValue(Reason.class.getClassLoader());
         id = in.readString();
         company = in.readString();
         birthday = in.readString();
@@ -118,6 +116,7 @@ public class Docs implements Parcelable {
         pdpLink = in.readString();
         oneToOneLink = in.readString();
         reasonComments = in.readString();
+        password = in.readString();
     }
 
     @Override
@@ -130,7 +129,6 @@ public class Docs implements Parcelable {
         dest.writeValue(department);
         dest.writeValue(room);
         dest.writeValue(lead);
-       // dest.writeValue(reason);
         dest.writeString(id);
         dest.writeString(company);
         dest.writeString(birthday);
@@ -154,6 +152,7 @@ public class Docs implements Parcelable {
         dest.writeString(pdpLink);
         dest.writeString(oneToOneLink);
         dest.writeString(reasonComments);
+        dest.writeString(password);
     }
 
     public static final Parcelable.Creator<Docs> CREATOR = new Parcelable.Creator<Docs>() {
@@ -234,6 +233,14 @@ public class Docs implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public EmergencyContact getEmergencyContact() {

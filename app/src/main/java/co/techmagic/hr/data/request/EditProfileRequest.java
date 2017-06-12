@@ -98,7 +98,7 @@ public class EditProfileRequest {
     @SerializedName("reason_comments")
     private String reasonComments;
 
-    public EditProfileRequest(@NonNull Docs user, String password) {
+    public EditProfileRequest(@NonNull Docs user) {
         Department dep = user.getDepartment();
         if (dep == null) {
             department = null;
@@ -126,6 +126,7 @@ public class EditProfileRequest {
         birthday = user.getBirthday();
         description = user.getDescription();
         email = user.getEmail();
+        password = user.getPassword();
         emergencyContact = user.getEmergencyContact();
         firstName = user.getFirstName();
         lastName = user.getLastName();
@@ -147,107 +148,7 @@ public class EditProfileRequest {
         this.password = password;
     }
 
-    /*public DepartmentRequest getDepartment() {
-        return department;
-    }
-
-    public RoomRequest getRoom() {
-        return room;
-    }
-
-    public LeadRequest getLead() {
-        return lead;
-    }*/
-
     public String getId() {
         return id;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public EmergencyContact getEmergencyContact() {
-        return emergencyContact;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public long getFirstWorkingDay() {
-        return firstWorkingDay;
-    }
-
-    public long getGeneralFirstWorkingDay() {
-        return generalFirstWorkingDay;
-    }
-
-    public long getLastWorkingDay() {
-        return lastWorkingDay;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public String getPhotoOrigin() {
-        return photoOrigin;
-    }
-
-    public String getRelocationCity() {
-        return relocationCity;
-    }
-
-    public int getRole() {
-        return role;
-    }
-
-    public String getSkype() {
-        return skype;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public String getTrialPeriodEnds() {
-        return trialPeriodEnds;
-    }
-
-    public String getPdpLink() {
-        return pdpLink;
-    }
-
-    public String getOneToOneLink() {
-        return oneToOneLink;
-    }
-
-    public String getReasonComments() {
-        return reasonComments;
     }
 }
