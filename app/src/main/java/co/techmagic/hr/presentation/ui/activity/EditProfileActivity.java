@@ -160,7 +160,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-       // presenter.onBackClick();
         finish();
     }
 
@@ -425,6 +424,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @Override
     public void onFilterSelected(@NonNull String id, @NonNull String name) {
+        dismissDialogIfOpened();
         displaySelectedFilter(id, name);
     }
 
@@ -616,33 +616,32 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
         });
 
-        etChangeEmail.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMAIL));
-        etChangePassword.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PASSWORD));
-        etFirstName.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_NAME));
-        etLastName.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LAST_NAME));
-        tvSelectedDateOfBirth.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_DATE_OF_BIRTH));
+        etChangePassword.addTextChangedListener(getTextChangeListener(etChangePassword, EditProfileFields.CHANGE_PASSWORD));
+        etFirstName.addTextChangedListener(getTextChangeListener(etFirstName, EditProfileFields.CHANGE_FIRST_NAME));
+        etLastName.addTextChangedListener(getTextChangeListener(etLastName, EditProfileFields.CHANGE_LAST_NAME));
+        tvSelectedDateOfBirth.addTextChangedListener(getTextChangeListener(tvSelectedDateOfBirth, EditProfileFields.CHANGE_DATE_OF_BIRTH));
 
-        etChangeSkype.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_SKYPE));
-        etChangePhone.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PHONE));
-        etChangeEmergencyNumber.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMERGENCY_NUMBER));
-        etChangeEmergencyContact.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_EMERGENCY_CONTACT));
-        tvSelectedRoom.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_ROOM));
+        etChangeSkype.addTextChangedListener(getTextChangeListener(etChangeSkype, EditProfileFields.CHANGE_SKYPE));
+        etChangePhone.addTextChangedListener(getTextChangeListener(etChangePhone, EditProfileFields.CHANGE_PHONE));
+        etChangeEmergencyNumber.addTextChangedListener(getTextChangeListener(etChangeEmergencyNumber, EditProfileFields.CHANGE_EMERGENCY_NUMBER));
+        etChangeEmergencyContact.addTextChangedListener(getTextChangeListener(etChangeEmergencyContact, EditProfileFields.CHANGE_EMERGENCY_CONTACT));
+        tvSelectedRoom.addTextChangedListener(getTextChangeListener(tvSelectedRoom, EditProfileFields.CHANGE_ROOM));
 
-        etChangeCity.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_CITY_OF_RELOCATION));
-        etChangePresentation.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PRESENTATION));
+        etChangeCity.addTextChangedListener(getTextChangeListener(etChangeCity, EditProfileFields.CHANGE_CITY_OF_RELOCATION));
+        etChangePresentation.addTextChangedListener(getTextChangeListener(etChangePresentation, EditProfileFields.CHANGE_PRESENTATION));
 
-        tvSelectedDep.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_DEPARTMENT));
-        tvSelectedLead.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LEAD));
-        tvSelectedFirstDay.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_DAY));
-        tvSelectedFirstDayInIt.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_FIRST_DAY_IN_IT));
-        tvSelectedTrialEnd.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_TRIAL_PERIOD));
+        tvSelectedDep.addTextChangedListener(getTextChangeListener(tvSelectedDep, EditProfileFields.CHANGE_DEPARTMENT));
+        tvSelectedLead.addTextChangedListener(getTextChangeListener(tvSelectedLead, EditProfileFields.CHANGE_LEAD));
+        tvSelectedFirstDay.addTextChangedListener(getTextChangeListener(tvSelectedFirstDay, EditProfileFields.CHANGE_FIRST_DAY));
+        tvSelectedFirstDayInIt.addTextChangedListener(getTextChangeListener(tvSelectedFirstDayInIt, EditProfileFields.CHANGE_FIRST_DAY_IN_IT));
+        tvSelectedTrialEnd.addTextChangedListener(getTextChangeListener(tvSelectedTrialEnd, EditProfileFields.CHANGE_TRIAL_PERIOD));
 
-        etChangePdpLink.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_PDP_LINK));
-        etChangeOneToOneLink.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_ONE_TO_ONE_LINK));
+        etChangePdpLink.addTextChangedListener(getTextChangeListener(etChangePdpLink, EditProfileFields.CHANGE_PDP_LINK));
+        etChangeOneToOneLink.addTextChangedListener(getTextChangeListener(etChangeOneToOneLink, EditProfileFields.CHANGE_ONE_TO_ONE_LINK));
 
-        tvLastWorkingDay.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_LAST_WORKING_DAY));
-        tvSelectedReason.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_REASON));
-        etComments.addTextChangedListener(getTextChangeListener(EditProfileFields.CHANGE_COMMENTS));
+        tvLastWorkingDay.addTextChangedListener(getTextChangeListener(tvLastWorkingDay, EditProfileFields.CHANGE_LAST_WORKING_DAY));
+        tvSelectedReason.addTextChangedListener(getTextChangeListener(tvSelectedReason, EditProfileFields.CHANGE_REASON));
+        etComments.addTextChangedListener(getTextChangeListener(etComments, EditProfileFields.CHANGE_COMMENTS));
     }
 
 
@@ -665,7 +664,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private TextWatcher getTextChangeListener(final EditProfileFields field) {
+    private TextWatcher getTextChangeListener(final TextView textView, final EditProfileFields field) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -674,7 +673,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // todo  handleSelectedField(s.toString(), field);
+                textView.removeTextChangedListener(this);
+                handleSelectedField(s.toString(), field);
+                textView.addTextChangedListener(this);
             }
 
             @Override

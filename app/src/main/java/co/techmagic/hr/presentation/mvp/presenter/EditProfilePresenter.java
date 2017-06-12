@@ -128,7 +128,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (ValidatingCredentialsUtil.isValidEmail(newEmail)) {
             view.hideEmailError();
 
-            if (email.equals(newEmail)) {
+            if (newEmail.equals(email)) {
                 data.setEmail(email);
                 hasChanges = false;
             } else {
@@ -155,7 +155,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleFirstNameChange(String newFirstName) {
         final String firstName = data.getFirstName();
 
-        if (firstName.equals(newFirstName)) {
+        if (newFirstName.equals(firstName)) {
             data.setFirstName(firstName);
             hasChanges = false;
         } else {
@@ -168,7 +168,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleLastNameChange(String newLastName) {
         final String lastName = data.getLastName();
 
-        if (lastName.equals(newLastName)) {
+        if (newLastName.equals(lastName)) {
             data.setLastName(lastName);
             hasChanges = false;
         } else {
@@ -184,13 +184,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             data.setBirthday(date);
             view.showBirthDate(date);
         }
-
-        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
-
-        if (selectedDate != null) {
-            hasChanges = true;
-            view.showBirthDate(selectedDate);
-        }*/
     }
 
 
@@ -212,7 +205,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleSkypeChange(String newSkype) {
         final String skype = data.getSkype();
 
-        if (skype.equals(newSkype)) {
+        if (newSkype.equals(skype)) {
             data.setSkype(skype);
             hasChanges = false;
         } else {
@@ -225,7 +218,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handlePhoneChange(String newPhone) {
         final String phone = data.getPhone();
 
-        if (phone.equals(newPhone)) {
+        if (newPhone.equals(phone)) {
             data.setPhone(phone);
             hasChanges = false;
         } else {
@@ -320,7 +313,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleCityOfRelocationChange(String newCity) {
         final String city = data.getRelocationCity();
 
-        if (city.equals(newCity)) {
+        if (newCity.equals(city)) {
             data.setRelocationCity(city);
             hasChanges = false;
         } else {
@@ -333,7 +326,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handlePresentationChange(String newDescription) {
         final String desc = data.getDescription();
 
-        if (desc.equals(newDescription)) {
+        if (newDescription.equals(desc)) {
             data.setDescription(desc);
             hasChanges = false;
         } else {
@@ -408,12 +401,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
             data.setFirstWorkingDay(date);
         }
-        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
-
-        if (selectedDate != null) {
-            hasChanges = true;
-            view.showFirstWorkingDay(selectedDate);
-        }*/
     }
 
 
@@ -422,13 +409,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
             data.setGeneralFirstWorkingDay(date);
         }
-
-        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
-
-        if (selectedDate != null) {
-            hasChanges = true;
-            view.showFirstWorkingDayInIt(selectedDate);
-        }*/
     }
 
 
@@ -437,20 +417,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
             data.setTrialPeriodEnds(date);
         }
-
-        /*final String selectedDate = DateUtil.getFormattedFullDate(date);
-
-        if (selectedDate != null) {
-            hasChanges = true;
-            view.showTrialPeriodEnds(selectedDate);
-        }*/
     }
 
 
     public void handlePdpChange(String newLink) {
         final String link = data.getPdpLink();
 
-        if (link.equals(newLink)) {
+        if (newLink.equals(link)) {
             data.setPdpLink(link);
             hasChanges = false;
         } else {
@@ -463,7 +436,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleOneToOneChange(String newLink) {
         final String link = data.getOneToOneLink();
 
-        if (link.equals(newLink)) {
+        if (newLink.equals(link)) {
             data.setOneToOneLink(link);
             hasChanges = false;
         } else {
@@ -513,7 +486,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleCommentsChange(String newComments) {
         final String comments = data.getReasonComments();
 
-        if (comments.equals(newComments)) {
+        if (newComments.equals(comments)) {
             data.setReasonComments(comments);
             hasChanges = false;
         } else {
