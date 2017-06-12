@@ -14,7 +14,7 @@ import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
-import co.techmagic.hr.data.request.RequestTimeOffRequest;
+import co.techmagic.hr.data.request.RemainedTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
@@ -158,7 +158,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Void> requestTimeOff(RequestTimeOffRequest request) {
+    public Observable<Void> requestTimeOff(RemainedTimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
             // TODO: 6/12/17 implement
             return null;

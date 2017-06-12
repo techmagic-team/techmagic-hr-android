@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
-import co.techmagic.hr.domain.pojo.AllTimeOffsDto
+import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
@@ -70,7 +70,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
-            override fun showTimeOffsData(allTimeOffsDto: AllTimeOffsDto) {
+            override fun showTimeOffsData(allTimeOffsDto: RemainedTimeOffsAmountDto) {
 
             }
 

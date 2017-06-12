@@ -1,10 +1,12 @@
 package co.techmagic.hr.presentation.mvp.presenter
 
 import co.techmagic.hr.common.TimeOffType
+import co.techmagic.hr.data.entity.DateFrom
+import co.techmagic.hr.data.entity.DateTo
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
-import co.techmagic.hr.data.request.TimeOffAllRequest
-import co.techmagic.hr.domain.interactor.employee.GetAllTimeOffs
-import co.techmagic.hr.domain.pojo.AllTimeOffsDto
+import co.techmagic.hr.data.request.RemainedTimeOffRequest
+import co.techmagic.hr.domain.interactor.employee.GetRemainedTimeOffs
+import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import java.util.*
@@ -14,7 +16,7 @@ import java.util.*
  */
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
-    var getAllTimeOffs : GetAllTimeOffs = GetAllTimeOffs(EmployeeRepositoryImpl())
+    var getAllTimeOffs: GetRemainedTimeOffs = GetRemainedTimeOffs(EmployeeRepositoryImpl())
 
     var dateFrom: Calendar = Calendar.getInstance()
         private set
@@ -28,19 +30,18 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun loadTimeOffDataData() {
         view.showProgress()
 
+        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest("userId", DateFrom(dateFrom.timeInMillis), DateTo(dateTo.timeInMillis))
+        getAllTimeOffs.execute(remainedTimeOffRequest, object : DefaultSubscriber<RemainedTimeOffsAmountDto>() {
+            override fun onNext(remainedDays: RemainedTimeOffsAmountDto) {
+                view?.showTimeOffsData(remainedDays)
+            }
 
-//        val request = TimeOffAllRequest(dateFrom.timeInMillis, dateTo.timeInMillis)
-//        getAllTimeOffs.execute(request, object : DefaultSubscriber<AllTimeOffsDto>() {
-//            override fun onNext(allTimeOffsDto: AllTimeOffsDto) {
-//                view?.showTimeOffsData(allTimeOffsDto)
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                super.onError(e)
-//                view?.showTimeOffsDataError()
-//                view?.hideProgress()
-//            }
-//        })
+            override fun onError(e: Throwable) {
+                super.onError(e)
+                view?.showTimeOffsDataError()
+                view?.hideProgress()
+            }
+        })
     }
 
     override fun onViewDetached() {
