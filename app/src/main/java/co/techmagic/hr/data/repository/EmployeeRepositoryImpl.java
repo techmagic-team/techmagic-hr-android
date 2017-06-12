@@ -7,17 +7,20 @@ import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
+import co.techmagic.hr.data.entity.TimeOffAmount;
 import co.techmagic.hr.data.exception.NetworkConnectionException;
 import co.techmagic.hr.data.manager.NetworkManager;
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.RequestTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by techmagic on 4/3/17.
@@ -152,5 +155,64 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
         }
 
         return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<Void> requestTimeOff(RequestTimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            // TODO: 6/12/17 implement
+            return null;
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<Integer> getTotalVacation(TimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getTotalVacation(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte())
+                    .map(new Func1<TimeOffAmount, Integer>() {
+                        @Override
+                        public Integer call(TimeOffAmount timeOffAmount) {
+                            if (timeOffAmount != null) {
+                                return timeOffAmount.getAvailableDays();
+
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<Integer> getTotalDayOff(TimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getTotalVacation(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte())
+                    .map(new Func1<TimeOffAmount, Integer>() {
+                        @Override
+                        public Integer call(TimeOffAmount timeOffAmount) {
+                            if (timeOffAmount != null) {
+                                return timeOffAmount.getAvailableDays();
+
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<Integer> getTotalIllness(TimeOffRequest request) {
+        return null;
     }
 }

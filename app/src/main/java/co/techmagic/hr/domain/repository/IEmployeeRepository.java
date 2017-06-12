@@ -10,6 +10,7 @@ import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.RequestTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import rx.Observable;
@@ -39,4 +40,12 @@ public interface IEmployeeRepository {
     Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
+
+    Observable<Void> requestTimeOff(RequestTimeOffRequest request);
+
+    Observable<Integer> getTotalVacation(TimeOffRequest request);
+
+    Observable<Integer> getTotalDayOff(TimeOffRequest request);
+
+    Observable<Integer> getTotalIllness(TimeOffRequest request);
 }

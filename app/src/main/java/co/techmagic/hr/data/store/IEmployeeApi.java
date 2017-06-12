@@ -7,6 +7,7 @@ import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
+import co.techmagic.hr.data.entity.TimeOffAmount;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -54,4 +55,13 @@ public interface IEmployeeApi {
 
     @GET("/v1/endpoints/calendar")
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=true")
+    Observable<TimeOffAmount> getTotalVacation(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=false")
+    Observable<TimeOffAmount> getTotalDayOff(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/illness/user/{user_id}/totaldays?isPaid=true")
+    Observable<TimeOffAmount> getTotalIllness(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 }

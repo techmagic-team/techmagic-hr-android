@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
+import co.techmagic.hr.domain.pojo.AllTimeOffsDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
@@ -44,7 +45,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     override fun onStart() {
         super.onStart()
 
-        presenter.loadData()
+        presenter.loadTimeOffDataData()
 
         tvTimeOffTypeSelected.setText(R.string.tm_hr_vacation_time_off_name)
         initTimeOffDate()
@@ -69,6 +70,14 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showTimeOffsData(allTimeOffsDto: AllTimeOffsDto) {
+
+            }
+
+            override fun showTimeOffsDataError() {
+
+            }
+
             override fun selectTimeOff(timeOffType: TimeOffType) {
                 when (timeOffType) {
                     TimeOffType.VACATION -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_vacation_time_off_name) }

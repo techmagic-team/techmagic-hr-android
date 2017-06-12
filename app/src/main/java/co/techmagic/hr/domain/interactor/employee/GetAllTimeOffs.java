@@ -24,11 +24,9 @@ import rx.functions.Func1;
 
 public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDto, IEmployeeRepository> {
 
-
     public GetAllTimeOffs(IEmployeeRepository iEmployeeRepository) {
         super(iEmployeeRepository);
     }
-
 
     @Override
     protected Observable<AllTimeOffsDto> buildObservable(TimeOffAllRequest timeOffAllRequest) {
@@ -108,7 +106,6 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
 
         return Observable.zip(observables, args -> (AllTimeOffsDto) args[0]);
     }
-
 
     private List<CalendarInfoDto> mapCalendarInfoCollection(List<CalendarInfo> calendarInfos) {
         List<CalendarInfoDto> calendarInfoDtos = new ArrayList<>();
