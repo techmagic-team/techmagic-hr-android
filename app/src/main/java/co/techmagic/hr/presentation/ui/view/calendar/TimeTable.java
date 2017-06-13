@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmployeeGridYitem;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
@@ -161,11 +161,11 @@ public class TimeTable extends FrameLayout {
     }
 
 
-    private GridItemRow getGridItemRow(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, Docs docs) {
-        EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(docs.getId(), docs.getLastName() + " " + docs.getFirstName(), docs.getPhoto()); // Last name + first name
+    private GridItemRow getGridItemRow(UserAllTimeOffsMap userAllTimeOffsMap, List<CalendarInfoDto> calendarInfo, UserProfile userProfile) {
+        EmployeeGridYitem employeeGridYitem = new EmployeeGridYitem(userProfile.getId(), userProfile.getLastName() + " " + userProfile.getFirstName(), userProfile.getPhoto()); // Last name + first name
 
-        List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, docs.getId());
-        List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, docs.getId());
+        List<UserTimeOff> timeOffsForUser = getTimeOffsForUser(userAllTimeOffsMap, userProfile.getId());
+        List<UserTimeOff> requestedOffsForUser = getRequestedTimeOffsForUser(userAllTimeOffsMap, userProfile.getId());
 
         GridItemRow gridRow = new GridItemRow(employeeGridYitem, new TimeRange(left, right), timeOffsForUser, requestedOffsForUser, calendarInfo);
         return gridRow;
@@ -327,10 +327,10 @@ public class TimeTable extends FrameLayout {
 
 
     private List<UserTimeOff> getTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
-        Set<Docs> users = userAllTimeOffsMap.getMap().keySet();
+        Set<UserProfile> users = userAllTimeOffsMap.getMap().keySet();
         List<UserTimeOff> timeOffsForUser = new ArrayList<>();
 
-        for (Docs user : users) {
+        for (UserProfile user : users) {
             if (userId.equals(user.getId())) {
                 timeOffsForUser.addAll(userAllTimeOffsMap.getMap().get(user));
                 break;
@@ -342,10 +342,10 @@ public class TimeTable extends FrameLayout {
 
 
     private List<UserTimeOff> getRequestedTimeOffsForUser(UserAllTimeOffsMap userAllTimeOffsMap, String userId) {
-        Set<Docs> users = userAllTimeOffsMap.getRequestedMap().keySet();
+        Set<UserProfile> users = userAllTimeOffsMap.getRequestedMap().keySet();
         List<UserTimeOff> requestedTimeOffsForUser = new ArrayList<>();
 
-        for (Docs user : users) {
+        for (UserProfile user : users) {
             if (userId.equals(user.getId())) {
                 requestedTimeOffsForUser.addAll(userAllTimeOffsMap.getRequestedMap().get(user));
                 break;

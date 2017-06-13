@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
@@ -30,7 +30,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
     private boolean isDataLoading = false;
     private int allItemsCount;
-    private Docs myProfileData = null;
+    private UserProfile myProfileData = null;
 
 
     public HomePresenter() {
@@ -83,16 +83,16 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
 
-    public void handleEmployeeItemClick(@NonNull Docs docs) {
-        if (docs.getId().equals(SharedPreferencesUtil.readUser().getId())) {
+    public void handleEmployeeItemClick(@NonNull UserProfile userProfile) {
+        if (userProfile.getId().equals(SharedPreferencesUtil.readUser().getId())) {
             // User clicked on own profile
            // view.disallowChangeTabClick();
-            myProfileData = docs;
-            view.showMyProfile(docs);
+            myProfileData = userProfile;
+            view.showMyProfile(userProfile);
         } else {
             // User clicked on Employee's profile
             view.allowChangeTabClick();
-            view.showEmployeeDetails(docs);
+            view.showEmployeeDetails(userProfile);
         }
     }
 
@@ -138,13 +138,13 @@ public class HomePresenter extends BasePresenter<HomeView> {
         view.showProgress();
         final String userId = SharedPreferencesUtil.readUser().getId();
         final GetMyProfileRequest request = new GetMyProfileRequest(userId);
-        getUserProfile.execute(request, new DefaultSubscriber<Docs>(view) {
+        getUserProfile.execute(request, new DefaultSubscriber<UserProfile>(view) {
             @Override
-            public void onNext(Docs docs) {
-                super.onNext(docs);
-                myProfileData = docs;
+            public void onNext(UserProfile userProfile) {
+                super.onNext(userProfile);
+                myProfileData = userProfile;
                 view.hideProgress();
-                view.showMyProfile(docs);
+                view.showMyProfile(userProfile);
             }
 
             @Override

@@ -1,13 +1,13 @@
 package co.techmagic.hr.domain.interactor.user;
 
-import co.techmagic.hr.data.entity.EditProfile;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.domain.interactor.DataUseCase;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import rx.Observable;
 
 
-public class SaveEditedUserProfile extends DataUseCase<EditProfileRequest, EditProfile, IUserRepository> {
+public class SaveEditedUserProfile extends DataUseCase<EditProfileRequest, UserProfile, IUserRepository> {
 
 
     public SaveEditedUserProfile(IUserRepository iUserRepository) {
@@ -16,7 +16,7 @@ public class SaveEditedUserProfile extends DataUseCase<EditProfileRequest, EditP
 
 
     @Override
-    protected Observable<EditProfile> buildObservable(EditProfileRequest editProfileRequest) {
+    protected Observable<UserProfile> buildObservable(EditProfileRequest editProfileRequest) {
         return repository.saveEditedProfile(editProfileRequest);
     }
 }

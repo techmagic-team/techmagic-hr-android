@@ -3,8 +3,7 @@ package co.techmagic.hr.data.store;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
-import co.techmagic.hr.data.entity.Docs;
-import co.techmagic.hr.data.entity.EditProfile;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
@@ -31,13 +30,13 @@ public interface IUserApi {
     Observable<Void> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
 
     @GET("/v1/users/{id}")
-    Observable<Docs> getMyProfile(@Path("id") String userId);
+    Observable<UserProfile> getMyProfile(@Path("id") String userId);
 
     @GET("/v1/companies")
     Observable<List<Company>> getCompanies();
 
     @PATCH("/v1/users/{id}")
-    Observable<EditProfile> saveEditedProfile(@Path("id") String userId, @Body EditProfileRequest editProfileRequest);
+    Observable<UserProfile> saveEditedProfile(@Path("id") String userId, @Body EditProfileRequest editProfileRequest);
 
     @Multipart
     @POST("/v1/users/{id}/photo")

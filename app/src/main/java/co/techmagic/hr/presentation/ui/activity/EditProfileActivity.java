@@ -598,6 +598,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
         if (isValidUri(imageUri)) {
             presenter.sendPhoto(imageUri);
+        } else {
+            view.showMessage(getString(R.string.message_invalid_file_extension));
         }
     }
 

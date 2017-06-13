@@ -10,6 +10,7 @@
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_wrong_company_or_email">Wrong company or email</string>
     <string name="message_wrong_url">Wrong url</string>
+    <string name="message_invalid_file_extension">Invalid extension. Please try again.</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>

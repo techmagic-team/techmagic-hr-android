@@ -3,8 +3,7 @@ package co.techmagic.hr.domain.repository;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
-import co.techmagic.hr.data.entity.Docs;
-import co.techmagic.hr.data.entity.EditProfile;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
@@ -19,11 +18,11 @@ public interface IUserRepository {
 
     Observable<Void> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
-    Observable<Docs> getMyProfile(GetMyProfileRequest getMyProfileRequest);
+    Observable<UserProfile> getMyProfile(GetMyProfileRequest getMyProfileRequest);
 
     Observable<List<Company>> getCompanies();
 
-    Observable<EditProfile> saveEditedProfile(EditProfileRequest editProfileRequest);
+    Observable<UserProfile> saveEditedProfile(EditProfileRequest editProfileRequest);
 
     Observable<Void> uploadPhoto(UploadPhotoRequest uploadPhotoRequest);
 }

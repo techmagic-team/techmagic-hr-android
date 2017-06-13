@@ -3,8 +3,7 @@ package co.techmagic.hr.data.repository;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
-import co.techmagic.hr.data.entity.Docs;
-import co.techmagic.hr.data.entity.EditProfile;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.exception.NetworkConnectionException;
 import co.techmagic.hr.data.manager.NetworkManager;
@@ -54,7 +53,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
 
     @Override
-    public Observable<Docs> getMyProfile(GetMyProfileRequest getMyProfileRequest) {
+    public Observable<UserProfile> getMyProfile(GetMyProfileRequest getMyProfileRequest) {
         if (networkManager.isNetworkAvailable()) {
             return client.getUserApiClient().getMyProfile(getMyProfileRequest.getUserId());
         }
@@ -74,7 +73,7 @@ public class UserRepositoryImpl implements IUserRepository {
 
 
     @Override
-    public Observable<EditProfile> saveEditedProfile(EditProfileRequest editProfileRequest) {
+    public Observable<UserProfile> saveEditedProfile(EditProfileRequest editProfileRequest) {
         if (networkManager.isNetworkAvailable()) {
             return client.getUserApiClient().saveEditedProfile(editProfileRequest.getId(), editProfileRequest);
         }

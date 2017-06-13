@@ -20,7 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
@@ -47,7 +47,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     static final int ROLE_HR = 1;
     static final int ROLE_ADMIN = 2;
 
-    private Docs data;
+    private UserProfile data;
     private IUserRepository userRepository;
     private IEmployeeRepository employeeRepository;
     private GetUserProfile getUserProfile;
@@ -151,7 +151,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    private void showFullDetailsIfAvailable(@NonNull Docs data) {
+    private void showFullDetailsIfAvailable(@NonNull UserProfile data) {
         final String birthdayDate = getCorrectDateFormat(data, true);
         if (birthdayDate != null) {
             view.showBirthday(birthdayDate);
@@ -299,11 +299,11 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void performGetUserProfileAndTimeOffRequests(@NonNull String userId) {
         view.showProgress();
         final GetMyProfileRequest request = new GetMyProfileRequest(userId);
-        getUserProfile.execute(request, new DefaultSubscriber<Docs>() {
+        getUserProfile.execute(request, new DefaultSubscriber<UserProfile>() {
             @Override
-            public void onNext(Docs docs) {
-                super.onNext(docs);
-                data = docs;
+            public void onNext(UserProfile userProfile) {
+                super.onNext(userProfile);
+                data = userProfile;
                 view.hideProgress();
                 showData();
                 performGetTimeOffRequestsIfNeeded();
@@ -474,7 +474,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     @Nullable
-    private String getCorrectDateFormat(Docs data, boolean fullDate) {
+    private String getCorrectDateFormat(UserProfile data, boolean fullDate) {
         return fullDate ? DateUtil.getFormattedFullDate(data.getBirthday()) : DateUtil.getFormattedMonthAndDay(data.getBirthday());
     }
 }

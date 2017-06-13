@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Docs implements Parcelable {
+public class UserProfile implements Parcelable {
 
     @SerializedName("_department")
     private Department department;
@@ -15,6 +15,9 @@ public class Docs implements Parcelable {
 
     @SerializedName("_lead")
     private Lead lead;
+
+    @SerializedName("_reason")
+    private Reason reason;
 
     @SerializedName("_id")
     private String id;
@@ -87,12 +90,13 @@ public class Docs implements Parcelable {
 
     private String password;
 
-    public Docs() {}
+    public UserProfile() {}
 
-    protected Docs(Parcel in) {
+    protected UserProfile(Parcel in) {
         department = (Department) in.readValue(Department.class.getClassLoader());
         room = (Room) in.readValue(Room.class.getClassLoader());
         lead = (Lead) in.readValue(Lead.class.getClassLoader());
+        reason = (Reason) in.readValue(Reason.class.getClassLoader());
         id = in.readString();
         company = in.readString();
         birthday = in.readString();
@@ -129,6 +133,7 @@ public class Docs implements Parcelable {
         dest.writeValue(department);
         dest.writeValue(room);
         dest.writeValue(lead);
+        dest.writeValue(reason);
         dest.writeString(id);
         dest.writeString(company);
         dest.writeString(birthday);
@@ -155,15 +160,15 @@ public class Docs implements Parcelable {
         dest.writeString(password);
     }
 
-    public static final Parcelable.Creator<Docs> CREATOR = new Parcelable.Creator<Docs>() {
+    public static final Parcelable.Creator<UserProfile> CREATOR = new Parcelable.Creator<UserProfile>() {
         @Override
-        public Docs createFromParcel(Parcel in) {
-            return new Docs(in);
+        public UserProfile createFromParcel(Parcel in) {
+            return new UserProfile(in);
         }
 
         @Override
-        public Docs[] newArray(int size) {
-            return new Docs[size];
+        public UserProfile[] newArray(int size) {
+            return new UserProfile[size];
         }
     };
 
@@ -191,9 +196,13 @@ public class Docs implements Parcelable {
         this.lead = lead;
     }
 
-    /*public Reason getReason() {
+    public void setReason(Reason reason) {
+        this.reason = reason;
+    }
+
+    public Reason getReason() {
         return reason;
-    }*/
+    }
 
     public String getId() {
         return id;

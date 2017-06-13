@@ -11,13 +11,13 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Department;
-import co.techmagic.hr.data.entity.Docs;
-import co.techmagic.hr.data.entity.EditProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.Reason;
 import co.techmagic.hr.data.entity.Room;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.data.request.EditProfileRequest;
@@ -52,7 +52,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     private UploadPhoto uploadPhoto;
     private SaveEditedUserProfile saveEditedUserProfile;
 
-    private Docs data;
+    private UserProfile data;
     private EditProfileFiltersDto profileFilters;
     private EmergencyContact emergencyContact;
 
@@ -67,7 +67,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         uploadPhoto = new UploadPhoto(userRepository);
         getAllFilters = new GetAllFilters(employeeRepository);
         saveEditedUserProfile = new SaveEditedUserProfile(userRepository);
-        data = new Docs();
         emergencyContact = new EmergencyContact();
     }
 
@@ -95,7 +94,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void sendPhoto(Uri uri) {
         File file = new File(uri.getPath());
         RequestBody requestFile = RequestBody.create(MultipartBody.FORM, file);
-        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
         performUploadPhotoRequest(multipartBody);
     }
@@ -489,10 +488,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
     }
 
-    // todo
 
     public void handleReasonChange(String newReasonId, String name) {
-        /*Reason reason = new Reason();
+        Reason reason = new Reason();
 
         if (data.getReason() == null) {
             reason.setId(newReasonId);
@@ -504,7 +502,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String reasonId = data.getReason().getId();
 
-        if (reasonId.equals(newReasonId)) {
+        if (newReasonId.equals(reasonId)) {
             reason.setId(reasonId);
             hasChanges = false;
         } else {
@@ -513,7 +511,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         reason.setName(name);
-        data.setReason(reason);*/
+        data.setReason(reason);
     }
 
 
@@ -722,9 +720,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             view.showLastWorkingDay(lastDayDate);
         }
 
-        // TODO
-
-        /*if (data.getReason() != null && data.getReason().getId()) {
+        if (data.getReason() != null) {
             if (!profileFilters.getReasons().isEmpty()) {
                 for (Filter f : profileFilters.getReasons()) {
                     if (data.getReason().getId().equals(f.getId())) {
@@ -733,7 +729,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                     }
                 }
             }
-        }*/
+        }
 
         if (data.getReasonComments() != null) {
             view.showComments(data.getReasonComments());
@@ -778,19 +774,17 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             }
         }
 
-        // TODO
-
-        /*if (data.getReason() != null && data.getReason().getId()) {
+        if (data.getReason() != null) {
             if (!profileFilters.getReasons().isEmpty()) {
                 for (Filter f : profileFilters.getReasons()) {
-                    final String reasonId = data.getReasonId();
+                    final String reasonId = data.getReason().getId();
                     if (reasonId.equals(f.getId())) {
                         view.showSelectedFilter(reasonId, f.getName(), EditProfileFields.CHANGE_REASON);
                         break;
                     }
                 }
             }
-        }*/
+        }
     }
 
 
@@ -798,11 +792,11 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         view.showProgress();
         final String userId = SharedPreferencesUtil.readUser().getId();
         final GetMyProfileRequest request = new GetMyProfileRequest(userId);
-        getUserProfile.execute(request, new DefaultSubscriber<Docs>() {
+        getUserProfile.execute(request, new DefaultSubscriber<UserProfile>() {
             @Override
-            public void onNext(Docs docs) {
-                super.onNext(docs);
-                data = docs;
+            public void onNext(UserProfile userProfile) {
+                super.onNext(userProfile);
+                data = userProfile;
                 performGetAllFiltersRequest();
             }
 
@@ -861,9 +855,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     private void performSaveUserRequest() {
         view.showProgress();
         final EditProfileRequest request = new EditProfileRequest(data);
-        saveEditedUserProfile.execute(request, new DefaultSubscriber<EditProfile>(view) {
+        saveEditedUserProfile.execute(request, new DefaultSubscriber<UserProfile>(view) {
             @Override
-            public void onNext(EditProfile profile) {
+            public void onNext(UserProfile profile) {
                 super.onNext(profile);
                 hasChanges = false;
                 view.hideProgress();

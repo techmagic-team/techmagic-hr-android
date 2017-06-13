@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 import co.techmagic.hr.data.entity.Department;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.data.entity.Room;
@@ -98,7 +98,7 @@ public class EditProfileRequest {
     @SerializedName("reason_comments")
     private String reasonComments;
 
-    public EditProfileRequest(@NonNull Docs user) {
+    public EditProfileRequest(@NonNull UserProfile user) {
         Department dep = user.getDepartment();
         if (dep == null) {
             department = null;

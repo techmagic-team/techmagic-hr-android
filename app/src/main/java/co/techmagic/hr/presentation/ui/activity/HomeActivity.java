@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
@@ -118,7 +118,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeesList(List<Docs> docs) {
+            public void showEmployeesList(List<UserProfile> docs) {
                 tvNoResults.setVisibility(View.GONE);
                 adapter.refresh(docs);
                 rvEmployees.setVisibility(View.VISIBLE);
@@ -130,13 +130,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeeDetails(@NonNull Docs data) {
+            public void showEmployeeDetails(@NonNull UserProfile data) {
                 allowChangeTab = true;
                 addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
-            public void showMyProfile(@NonNull Docs data) {
+            public void showMyProfile(@NonNull UserProfile data) {
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
@@ -229,13 +229,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void onEmployeeItemClicked(@NonNull Docs docs) {
-        presenter.handleEmployeeItemClick(docs);
+    public void onEmployeeItemClicked(@NonNull UserProfile userProfile) {
+        presenter.handleEmployeeItemClick(userProfile);
     }
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs user, @NonNull ProfileTypes profileType, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
 
