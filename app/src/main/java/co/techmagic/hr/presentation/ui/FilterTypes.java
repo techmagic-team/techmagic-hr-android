@@ -7,5 +7,10 @@ public enum FilterTypes {
     LEAD,
     PROJECT,
     ROOM,
-    REASON
+    REASON,
+    DATE_OF_BIRTH,
+    FIRST_WORKING_DAY,
+    FIRST_WORKING_DAY_IN_IT,
+    TRIAL_PERIOD_ENDS,
+    LAST_WORKING_DAY
 }

@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.ui.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -14,9 +15,18 @@ import co.techmagic.hr.presentation.util.DateUtil;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    private onDatePickerSelectionListener datePickerSelectionListener;
+
 
     public static DatePickerFragment newInstance() {
         return new DatePickerFragment();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        datePickerSelectionListener = (onDatePickerSelectionListener) context;
     }
 
 
@@ -42,10 +52,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         c.set(year, month, dayOfMonth);
         Date date = c.getTime();
 
-        final String fmtDate = DateUtil.getFormattedMonthAndYear(date);
+        final String fmtDate = DateUtil.getFormattedFullDate(date);
 
         if (fmtDate != null) {
-
+            datePickerSelectionListener.onDateSelected(fmtDate);
         }
+    }
+
+
+    public interface onDatePickerSelectionListener {
+        void onDateSelected(@NonNull String formattedDate);
     }
 }

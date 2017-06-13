@@ -28,10 +28,10 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
-import co.techmagic.hr.presentation.ui.FilterTypes;
+import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
-import co.techmagic.hr.presentation.util.ValidatingCredentialsUtil;
+import co.techmagic.hr.presentation.util.TextUtil;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -125,7 +125,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleEmailChange(String newEmail) {
         final String email = data.getEmail();
 
-        if (ValidatingCredentialsUtil.isValidEmail(newEmail)) {
+        if (TextUtil.isValidEmail(newEmail)) {
             view.hideEmailError();
 
             if (newEmail.equals(email)) {
@@ -142,7 +142,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handlePasswordChange(String newPassword) {
-        if (ValidatingCredentialsUtil.isValidPassword(newPassword)) {
+        if (TextUtil.isValidPassword(newPassword)) {
             view.hidePasswordError();
             data.setPassword(newPassword);
         } else {
@@ -400,6 +400,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (date != null) {
             hasChanges = true;
             data.setFirstWorkingDay(date);
+            view.showFirstWorkingDay(date);
         }
     }
 
@@ -408,6 +409,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (date != null) {
             hasChanges = true;
             data.setGeneralFirstWorkingDay(date);
+            view.showFirstWorkingDayInIt(date);
         }
     }
 
@@ -416,6 +418,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (date != null) {
             hasChanges = true;
             data.setTrialPeriodEnds(date);
+            view.showTrialPeriodEnds(date);
         }
     }
 
@@ -423,12 +426,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handlePdpChange(String newLink) {
         final String link = data.getPdpLink();
 
-        if (newLink.equals(link)) {
-            data.setPdpLink(link);
-            hasChanges = false;
+        if (TextUtil.containsValidUrl(newLink)) {
+            view.hidePdpError();
+
+            if (newLink.equals(link)) {
+                data.setPdpLink(link);
+                hasChanges = false;
+            } else {
+                data.setPdpLink(newLink);
+                hasChanges = true;
+            }
         } else {
-            data.setPdpLink(newLink);
-            hasChanges = true;
+            view.showPdpError();
         }
     }
 
@@ -436,22 +445,27 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void handleOneToOneChange(String newLink) {
         final String link = data.getOneToOneLink();
 
-        if (newLink.equals(link)) {
-            data.setOneToOneLink(link);
-            hasChanges = false;
+        if (TextUtil.containsValidUrl(newLink)) {
+            view.hideOneToOneError();
+
+            if (newLink.equals(link)) {
+                data.setOneToOneLink(link);
+                hasChanges = false;
+            } else {
+                data.setOneToOneLink(newLink);
+                hasChanges = true;
+            }
         } else {
-            data.setOneToOneLink(newLink);
-            hasChanges = true;
+            view.showOneToOneError();
         }
     }
 
 
     public void handleLastDayChange(String date) {
-        final String selectedDate = DateUtil.getFormattedFullDate(date);
-
-        if (selectedDate != null) {
+        if (date != null) {
             hasChanges = true;
-            view.showLastWorkingDay(selectedDate);
+            data.setLastWorkingDay(date);
+            view.showLastWorkingDay(date);
         }
     }
 
@@ -531,7 +545,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         handleContactsSection();
         handleAdditionalSection();
 
-        // handleFilters();
+        handleFilters();
 
         /* Show next info only for HR or Admin */
         final int userRole = data.getRole();
@@ -642,19 +656,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             view.showLead(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        final String firstDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
-        if (firstDate != null) {
-            view.showFirstWorkingDay(firstDate);
+        if (data.getFirstWorkingDay() != null) {
+            final String firstDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
+            if (firstDate != null) {
+                view.showFirstWorkingDay(firstDate);
+            }
         }
 
-        final String firstDayInItDate = DateUtil.getFormattedFullDate(data.getGeneralFirstWorkingDay());
-        if (firstDayInItDate != null) {
-            view.showFirstWorkingDayInIt(firstDayInItDate);
+        if (data.getGeneralFirstWorkingDay() != null) {
+            final String firstDayInItDate = DateUtil.getFormattedFullDate(data.getGeneralFirstWorkingDay());
+            if (firstDayInItDate != null) {
+                view.showFirstWorkingDayInIt(firstDayInItDate);
+            }
         }
 
-        final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());
-        if (trialPeriodDate != null) {
-            view.showTrialPeriodEnds(trialPeriodDate);
+        if (data.getTrialPeriodEnds() != null) {
+            final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());
+            if (trialPeriodDate != null) {
+                view.showTrialPeriodEnds(trialPeriodDate);
+            }
         }
     }
 
@@ -703,9 +723,11 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (!profileFilters.getDepartments().isEmpty()) {
             for (Filter f : profileFilters.getDepartments()) {
                 Department dep = data.getDepartment();
-                if (dep.getId().equals(f.getId())) {
-                    view.showSelectedFilter(dep.getId(), dep.getName(), FilterTypes.DEPARTMENT);
-                    break;
+                if (dep != null) {
+                    if (dep.getId().equals(f.getId())) {
+                        view.showSelectedFilter(dep.getId(), dep.getName(), EditProfileFields.CHANGE_DEPARTMENT);
+                        break;
+                    }
                 }
             }
         }
@@ -713,9 +735,11 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (!profileFilters.getLeads().isEmpty()) {
             for (FilterLead f : profileFilters.getLeads()) {
                 Lead lead = data.getLead();
-                if (lead.getId().equals(f.getId())) {
-                    //  view.showSelectedLead(lead, FilterTypes.LEAD);
-                    break;
+                if (lead != null) {
+                    if (lead.getId().equals(f.getId())) {
+                        view.showSelectedLead(lead, EditProfileFields.CHANGE_LEAD);
+                        break;
+                    }
                 }
             }
         }
@@ -723,9 +747,11 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (!profileFilters.getRooms().isEmpty()) {
             for (Filter f : profileFilters.getRooms()) {
                 Room room = data.getRoom();
-                if (room.getId().equals(f.getId())) {
-                    view.showSelectedFilter(room.getId(), room.getName(), FilterTypes.ROOM);
-                    break;
+                if (room != null) {
+                    if (room.getId().equals(f.getId())) {
+                        view.showSelectedFilter(room.getId(), room.getName(), EditProfileFields.CHANGE_ROOM);
+                        break;
+                    }
                 }
             }
         }
@@ -737,7 +763,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 for (Filter f : profileFilters.getReasons()) {
                     final String reasonId = data.getReasonId();
                     if (reasonId.equals(f.getId())) {
-                        view.showSelectedFilter(reasonId, f.getName(), FilterTypes.REASON);
+                        view.showSelectedFilter(reasonId, f.getName(), EditProfileFields.CHANGE_REASON);
                         break;
                     }
                 }

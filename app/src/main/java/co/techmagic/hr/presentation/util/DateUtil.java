@@ -38,6 +38,27 @@ public class DateUtil {
     }
 
 
+    public static String getFormattedFullDate(@Nullable Date inputDate) {
+        String formattedDate = null;
+
+        if (inputDate == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            formattedDate = outputFullDateFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+
     public static Date parseStringDate(@Nullable String inputData) {
         Date parsedDate = null;
 

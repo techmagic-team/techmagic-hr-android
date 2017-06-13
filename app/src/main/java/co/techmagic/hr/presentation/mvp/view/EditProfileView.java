@@ -8,7 +8,7 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.Lead;
-import co.techmagic.hr.presentation.ui.FilterTypes;
+import co.techmagic.hr.presentation.ui.EditProfileFields;
 
 public interface EditProfileView {
 
@@ -16,9 +16,9 @@ public interface EditProfileView {
 
     void showDatePickerDialog();
 
-    void showSelectedFilter(@NonNull String id, @NonNull String name, FilterTypes filterType);
+    void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields editProfileField);
 
-    void showSelectedLead(@NonNull Lead lead, FilterTypes filterType);
+    void showSelectedLead(@NonNull Lead lead, EditProfileFields editProfileField);
 
     <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters);
 
@@ -107,6 +107,14 @@ public interface EditProfileView {
     void showPdpLink(@NonNull String link);
 
     void showOneToOneLink(@NonNull String link);
+
+    void hidePdpError();
+
+    void showPdpError();
+
+    void hideOneToOneError();
+
+    void showOneToOneError();
 
     /* Out of the company section */
 

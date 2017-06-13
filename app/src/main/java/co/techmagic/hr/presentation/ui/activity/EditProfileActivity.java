@@ -33,11 +33,10 @@ import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
-import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
 
-public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> implements FilterAdapter.OnFilterSelectionListener {
+public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> implements FilterAdapter.OnFilterSelectionListener, DatePickerFragment.onDatePickerSelectionListener {
 
     public static final String DATE_PICKER_FRAGMENT_TAG = "date_picker_fragment_tag";
 
@@ -109,8 +108,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     TextView tvSelectedTrialEnd;
     @BindView(R.id.cvPdp)
     View cvPdp;
+    @BindView(R.id.tilPdpLink)
+    TextInputLayout tilPdpLink;
     @BindView(R.id.etChangePdpLink)
     EditText etChangePdpLink;
+    @BindView(R.id.tilOneToOneLink)
+    TextInputLayout tilOneToOneLink;
     @BindView(R.id.etChangeOneToOneLink)
     EditText etChangeOneToOneLink;
     @BindView(R.id.cvOutOfTheCompany)
@@ -123,9 +126,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     EditText etComments;
 
     private AlertDialog dialog;
-    private FilterTypes filterType = FilterTypes.ROOM;
-    private Lead selectedLead;
 
+    private EditProfileFields editProfileField = EditProfileFields.NONE;
+    private Lead selectedLead;
     private String selectedFilterId;
     private String selectedName;
 
@@ -185,14 +188,14 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
-            public void showSelectedFilter(@NonNull String id, @NonNull String name, FilterTypes type) {
-                filterType = type;
+            public void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields field) {
+                editProfileField = field;
                 onFilterSelected(id, name);
             }
 
             @Override
-            public void showSelectedLead(@NonNull Lead lead, FilterTypes type) {
-                filterType = type;
+            public void showSelectedLead(@NonNull Lead lead, EditProfileFields field) {
+                editProfileField = field;
                 selectedLead = lead;
                 onFilterSelected(lead.getId(), lead.getName());
             }
@@ -394,6 +397,26 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void hidePdpError() {
+                tilPdpLink.setErrorEnabled(false);
+            }
+
+            @Override
+            public void showPdpError() {
+                tilPdpLink.setError(getString(R.string.message_wrong_url));
+            }
+
+            @Override
+            public void hideOneToOneError() {
+                tilOneToOneLink.setErrorEnabled(false);
+            }
+
+            @Override
+            public void showOneToOneError() {
+                tilOneToOneLink.setError(getString(R.string.message_wrong_url));
+            }
+
+            @Override
             public void showOutOfCompanySection() {
                 cvOutOfTheCompany.setVisibility(View.VISIBLE);
             }
@@ -429,6 +452,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
+    @Override
+    public void onDateSelected(@NonNull String formattedDate) {
+        handleSelectedDate(formattedDate);
+    }
+
+
     @OnClick(R.id.btnUploadPhoto)
     public void uploadPhotoClick() {
         presenter.onUploadPhotoClick();
@@ -437,58 +466,63 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.rlEditDateOfBirth)
     public void onDateOfBirthClick() {
+        editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditRoom)
     public void onRoomClick() {
-        filterType = FilterTypes.ROOM;
+        editProfileField = EditProfileFields.CHANGE_ROOM;
         presenter.onRoomClick();
     }
 
 
     @OnClick(R.id.rlEditDepartment)
     public void onDepartmentClick() {
-        filterType = FilterTypes.DEPARTMENT;
+        editProfileField = EditProfileFields.CHANGE_DEPARTMENT;
         presenter.onDepartmentClick();
     }
 
 
     @OnClick(R.id.rlEditLead)
     public void onLeadClick() {
-        filterType = FilterTypes.LEAD;
+        editProfileField = EditProfileFields.CHANGE_LEAD;
         presenter.onLeadClick();
     }
 
 
     @OnClick(R.id.rlEditFirstDay)
     public void onFirstDayClick() {
+        editProfileField = EditProfileFields.CHANGE_FIRST_DAY;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditFirstDayInIt)
     public void onFirstDayInItClick() {
+        editProfileField = EditProfileFields.CHANGE_FIRST_DAY_IN_IT;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditTrialEnd)
     public void onTrialEndClick() {
+        editProfileField = EditProfileFields.CHANGE_TRIAL_PERIOD;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditLastWorkingDay)
     public void onLastDayClick() {
+        editProfileField = EditProfileFields.CHANGE_LAST_WORKING_DAY;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditSelectReason)
     public void onReasonClick() {
-        filterType = FilterTypes.REASON;
+        editProfileField = EditProfileFields.CHANGE_REASON;
         presenter.onReasonClick();
     }
 
@@ -508,21 +542,46 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private void displaySelectedFilter(String id, String filterName) {
         selectedFilterId = id;
         selectedName = filterName;
-        switch (filterType) {
-            case DEPARTMENT:
+        switch (editProfileField) {
+            case CHANGE_DEPARTMENT:
                 tvSelectedDep.setText(filterName);
                 break;
 
-            case LEAD:
+            case CHANGE_LEAD:
                 tvSelectedLead.setText(filterName);
                 break;
 
-            case ROOM:
+            case CHANGE_ROOM:
                 tvSelectedRoom.setText(filterName);
                 break;
 
-            case REASON:
+            case CHANGE_REASON:
                 tvSelectedReason.setText(filterName);
+                break;
+        }
+    }
+
+
+    private void handleSelectedDate(String formattedDate) {
+        switch (editProfileField) {
+            case CHANGE_DATE_OF_BIRTH:
+                presenter.handleDateOfBirthChange(formattedDate);
+                break;
+
+            case CHANGE_FIRST_DAY:
+                presenter.handleFirstDayChange(formattedDate);
+                break;
+
+            case CHANGE_FIRST_DAY_IN_IT:
+                presenter.handleFirstDayInItChange(formattedDate);
+                break;
+
+            case CHANGE_TRIAL_PERIOD:
+                presenter.handleTrialPeriodChange(formattedDate);
+                break;
+
+            case CHANGE_LAST_WORKING_DAY:
+                presenter.handleLastDayChange(formattedDate);
                 break;
         }
     }
@@ -549,20 +608,20 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     private void setupDialogTitle(@NonNull TextView tvTitle) {
-        switch (filterType) {
-            case DEPARTMENT:
+        switch (editProfileField) {
+            case CHANGE_DEPARTMENT:
                 tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
                 break;
 
-            case LEAD:
+            case CHANGE_LEAD:
                 tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
                 break;
 
-            case ROOM:
+            case CHANGE_ROOM:
                 tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_room));
                 break;
 
-            case REASON:
+            case CHANGE_REASON:
                 tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_reason));
                 break;
         }
@@ -704,10 +763,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 presenter.handleLastNameChange(selectedContent);
                 break;
 
-            case CHANGE_DATE_OF_BIRTH:
-                presenter.handleDateOfBirthChange(selectedContent);
-                break;
-
             case CHANGE_SKYPE:
                 presenter.handleSkypeChange(selectedContent);
                 break;
@@ -744,28 +799,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 presenter.handleLeadChange(selectedLead);
                 break;
 
-            case CHANGE_FIRST_DAY:
-                presenter.handleFirstDayChange(selectedContent);
-                break;
-
-            case CHANGE_FIRST_DAY_IN_IT:
-                presenter.handleFirstDayInItChange(selectedContent);
-                break;
-
-            case CHANGE_TRIAL_PERIOD:
-                presenter.handleTrialPeriodChange(selectedContent);
-                break;
-
             case CHANGE_PDP_LINK:
                 presenter.handlePdpChange(selectedContent);
                 break;
 
             case CHANGE_ONE_TO_ONE_LINK:
                 presenter.handleOneToOneChange(selectedContent);
-                break;
-
-            case CHANGE_LAST_WORKING_DAY:
-                presenter.handleLastDayChange(selectedContent);
                 break;
 
             case CHANGE_REASON:
