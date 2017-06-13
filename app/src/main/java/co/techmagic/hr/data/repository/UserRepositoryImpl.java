@@ -13,6 +13,7 @@ import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.data.request.LoginRequest;
+import co.techmagic.hr.data.request.UploadPhotoRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import rx.Observable;
@@ -76,6 +77,16 @@ public class UserRepositoryImpl implements IUserRepository {
     public Observable<EditProfile> saveEditedProfile(EditProfileRequest editProfileRequest) {
         if (networkManager.isNetworkAvailable()) {
             return client.getUserApiClient().saveEditedProfile(editProfileRequest.getId(), editProfileRequest);
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<Void> uploadPhoto(UploadPhotoRequest uploadPhotoRequest) {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getUserApiClient().uploadPhoto(uploadPhotoRequest.getUserId(), uploadPhotoRequest.getMultipartBody());
         }
 
         return Observable.error(new NetworkConnectionException());

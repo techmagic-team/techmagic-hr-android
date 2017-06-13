@@ -12,6 +12,8 @@ import co.techmagic.hr.presentation.ui.EditProfileFields;
 
 public interface EditProfileView {
 
+    void pickUpPhoto();
+
     void loadEmployeePhoto(@Nullable String photoUrl);
 
     void showDatePickerDialog();

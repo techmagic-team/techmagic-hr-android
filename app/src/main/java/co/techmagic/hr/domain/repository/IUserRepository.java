@@ -10,6 +10,7 @@ import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.data.request.LoginRequest;
+import co.techmagic.hr.data.request.UploadPhotoRequest;
 import rx.Observable;
 
 public interface IUserRepository {
@@ -23,4 +24,6 @@ public interface IUserRepository {
     Observable<List<Company>> getCompanies();
 
     Observable<EditProfile> saveEditedProfile(EditProfileRequest editProfileRequest);
+
+    Observable<Void> uploadPhoto(UploadPhotoRequest uploadPhotoRequest);
 }

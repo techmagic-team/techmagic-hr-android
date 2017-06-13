@@ -1,5 +1,9 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,10 +39,12 @@ import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
+import co.techmagic.hr.presentation.util.ImagePickerUtil;
 
 public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> implements FilterAdapter.OnFilterSelectionListener, DatePickerFragment.onDatePickerSelectionListener {
 
     public static final String DATE_PICKER_FRAGMENT_TAG = "date_picker_fragment_tag";
+    private static final int RC_GET_IMAGE = 1005;
 
     @BindView(R.id.ivPhoto)
     ImageView ivPhoto;
@@ -132,18 +138,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private String selectedFilterId;
     private String selectedName;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        presenter.setupPage();
     }
 
 
@@ -168,6 +168,29 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case RC_READ_EXTERNAL_STORAGE_PERMISSION: {
+                    startActivityForResult(ImagePickerUtil.getPickImageChooserIntent(this), RC_GET_IMAGE);
+                    break;
+                }
+            }
+        } else {
+            view.showMessage(getString(R.string.message_permission_denied));
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_GET_IMAGE && resultCode == Activity.RESULT_OK) {
+            handlePickedImageResult(data);
+        }
+    }
+
+
+    @Override
     protected void initLayout() {
         setContentView(R.layout.activity_edit_profile);
     }
@@ -176,6 +199,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @Override
     protected EditProfileViewImpl initView() {
         return new EditProfileViewImpl(this, findViewById(android.R.id.content)) {
+            @Override
+            public void pickUpPhoto() {
+                startChooserIntentIfPermissionGranted();
+            }
+
             @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
                 presenter.loadPhoto(photoUrl, ivPhoto);
@@ -539,6 +567,33 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
+    private void startChooserIntentIfPermissionGranted() {
+        if (isReadExternalStoragePermissionGranted()) {
+            startActivityForResult(ImagePickerUtil.getPickImageChooserIntent(this), RC_GET_IMAGE);
+        } else {
+            requestReadExternalStoragePermission();
+        }
+    }
+
+
+    private void handlePickedImageResult(Intent data) {
+        Uri imageUri = ImagePickerUtil.getPickImageResultUri(data, this);
+        if (imageUri == null) {
+            return;
+        }
+
+        if (isValidUri(imageUri)) {
+            presenter.sendPhoto(imageUri);
+        }
+    }
+
+
+    private boolean isValidUri(Uri uriImg) {
+        String mimeType = ImagePickerUtil.getMimeType(this, uriImg);
+        return mimeType.equals(ImagePickerUtil.EXTENSION_JPEG) || mimeType.equals(ImagePickerUtil.EXTENSION_JPG) || mimeType.equals(ImagePickerUtil.EXTENSION_PNG);
+    }
+
+
     private void displaySelectedFilter(String id, String filterName) {
         selectedFilterId = id;
         selectedName = filterName;
@@ -648,6 +703,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private void initUi() {
         setupActionBar();
         ivDownload.setVisibility(View.GONE);
+        presenter.setupPage();
         setListeners();
     }
 
