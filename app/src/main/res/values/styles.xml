@@ -49,6 +49,7 @@
 
     <style name="EmployeeDetailsLayoutContent">
         <item name="android:layout_marginTop">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/fragment_employee_details_text_layout_margin_vertical</item>
         <item name="android:layout_marginLeft">0dp</item>
     </style>
 
@@ -112,6 +113,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
+    <style name="CardViewStyle">
+        <item name="android:layout_marginLeft">@dimen/fragment_employee_details_margin</item>
+        <item name="android:layout_marginRight">@dimen/fragment_employee_details_margin</item>
+        <item name="android:layout_marginTop">@dimen/fragment_employee_details_margin</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

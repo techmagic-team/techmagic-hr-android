@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Docs implements Parcelable {
+public class UserProfile implements Parcelable {
 
     @SerializedName("_department")
     private Department department;
@@ -15,6 +15,9 @@ public class Docs implements Parcelable {
 
     @SerializedName("_lead")
     private Lead lead;
+
+    @SerializedName("_reason")
+    private Reason reason;
 
     @SerializedName("_id")
     private String id;
@@ -76,13 +79,24 @@ public class Docs implements Parcelable {
     @SerializedName("trialPeriodEnds")
     private String trialPeriodEnds;
 
-    public Docs() {
-    }
+    @SerializedName("_pdp")
+    private String pdpLink;
 
-    public Docs(Parcel in) {
+    @SerializedName("_oneToOne")
+    private String oneToOneLink;
+
+    @SerializedName("reason_comments")
+    private String reasonComments;
+
+    private String password;
+
+    public UserProfile() {}
+
+    protected UserProfile(Parcel in) {
         department = (Department) in.readValue(Department.class.getClassLoader());
         room = (Room) in.readValue(Room.class.getClassLoader());
         lead = (Lead) in.readValue(Lead.class.getClassLoader());
+        reason = (Reason) in.readValue(Reason.class.getClassLoader());
         id = in.readString();
         company = in.readString();
         birthday = in.readString();
@@ -103,6 +117,10 @@ public class Docs implements Parcelable {
         skype = in.readString();
         isActive = in.readByte() != 0x00;
         trialPeriodEnds = in.readString();
+        pdpLink = in.readString();
+        oneToOneLink = in.readString();
+        reasonComments = in.readString();
+        password = in.readString();
     }
 
     @Override
@@ -115,6 +133,7 @@ public class Docs implements Parcelable {
         dest.writeValue(department);
         dest.writeValue(room);
         dest.writeValue(lead);
+        dest.writeValue(reason);
         dest.writeString(id);
         dest.writeString(company);
         dest.writeString(birthday);
@@ -135,17 +154,21 @@ public class Docs implements Parcelable {
         dest.writeString(skype);
         dest.writeByte((byte) (isActive ? 0x01 : 0x00));
         dest.writeString(trialPeriodEnds);
+        dest.writeString(pdpLink);
+        dest.writeString(oneToOneLink);
+        dest.writeString(reasonComments);
+        dest.writeString(password);
     }
 
-    public static final Parcelable.Creator<Docs> CREATOR = new Parcelable.Creator<Docs>() {
+    public static final Parcelable.Creator<UserProfile> CREATOR = new Parcelable.Creator<UserProfile>() {
         @Override
-        public Docs createFromParcel(Parcel in) {
-            return new Docs(in);
+        public UserProfile createFromParcel(Parcel in) {
+            return new UserProfile(in);
         }
 
         @Override
-        public Docs[] newArray(int size) {
-            return new Docs[size];
+        public UserProfile[] newArray(int size) {
+            return new UserProfile[size];
         }
     };
 
@@ -153,91 +176,223 @@ public class Docs implements Parcelable {
         return department;
     }
 
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     public Room getRoom() {
         return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public Lead getLead() {
         return lead;
     }
 
+    public void setLead(Lead lead) {
+        this.lead = lead;
+    }
+
+    public void setReason(Reason reason) {
+        this.reason = reason;
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCompany() {
         return company;
     }
 
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     public String getBirthday() {
         return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public EmergencyContact getEmergencyContact() {
         return emergencyContact;
     }
 
+    public void setEmergencyContact(EmergencyContact emergencyContact) {
+        this.emergencyContact = emergencyContact;
+    }
+
     public String getFirstName() {
         return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getFirstWorkingDay() {
         return firstWorkingDay;
+    }
+
+    public void setFirstWorkingDay(String firstWorkingDay) {
+        this.firstWorkingDay = firstWorkingDay;
     }
 
     public String getGeneralFirstWorkingDay() {
         return generalFirstWorkingDay;
     }
 
+    public void setGeneralFirstWorkingDay(String generalFirstWorkingDay) {
+        this.generalFirstWorkingDay = generalFirstWorkingDay;
+    }
+
     public String getLastWorkingDay() {
         return lastWorkingDay;
+    }
+
+    public void setLastWorkingDay(String lastWorkingDay) {
+        this.lastWorkingDay = lastWorkingDay;
     }
 
     public int getGender() {
         return gender;
     }
 
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
     public String getPhone() {
         return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPhoto() {
         return photo;
     }
 
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public String getPhotoOrigin() {
         return photoOrigin;
+    }
+
+    public void setPhotoOrigin(String photoOrigin) {
+        this.photoOrigin = photoOrigin;
     }
 
     public String getRelocationCity() {
         return relocationCity;
     }
 
+    public void setRelocationCity(String relocationCity) {
+        this.relocationCity = relocationCity;
+    }
+
     public int getRole() {
         return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 
     public String getSkype() {
         return skype;
     }
 
+    public void setSkype(String skype) {
+        this.skype = skype;
+    }
+
     public boolean isActive() {
         return isActive;
     }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public String getTrialPeriodEnds() {
         return trialPeriodEnds;
+    }
+
+    public void setTrialPeriodEnds(String trialPeriodEnds) {
+        this.trialPeriodEnds = trialPeriodEnds;
+    }
+
+    public String getPdpLink() {
+        return pdpLink;
+    }
+
+    public void setPdpLink(String pdpLink) {
+        this.pdpLink = pdpLink;
+    }
+
+    public String getOneToOneLink() {
+        return oneToOneLink;
+    }
+
+    public void setOneToOneLink(String oneToOneLink) {
+        this.oneToOneLink = oneToOneLink;
+    }
+
+    public String getReasonComments() {
+        return reasonComments;
+    }
+
+    public void setReasonComments(String reasonComments) {
+        this.reasonComments = reasonComments;
     }
 }

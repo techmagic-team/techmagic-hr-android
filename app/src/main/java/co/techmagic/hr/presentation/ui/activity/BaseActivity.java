@@ -1,11 +1,15 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,6 +29,8 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     protected abstract VIEW initView();
 
     protected abstract PRESENTER initPresenter();
+
+    protected static final int RC_READ_EXTERNAL_STORAGE_PERMISSION = 1004;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,6 +103,20 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
 
     protected void removeFragmentFromBackStack() {
         getSupportFragmentManager().popBackStack();
+    }
+
+
+    protected boolean isReadExternalStoragePermissionGranted() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    protected void requestReadExternalStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RC_READ_EXTERNAL_STORAGE_PERMISSION);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, RC_READ_EXTERNAL_STORAGE_PERMISSION);
+        }
     }
 
 

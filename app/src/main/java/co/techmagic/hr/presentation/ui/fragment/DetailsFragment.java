@@ -24,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
@@ -116,7 +115,9 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     @BindView(R.id.tvEmergContact)
     TextView tvEmergContact;
 
-    private Docs data;
+    private String userId;
+    private String userName;
+    private String photoUrl;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
     private ChangeBottomTabListener changeBottomTabListener;
@@ -143,6 +144,13 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         ButterKnife.bind(this, view);
         init();
         return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.performRequests(userId, profileTypes);
     }
 
 
@@ -431,21 +439,14 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
 
 
     private void init() {
-        fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
         getData();
-        initUi();
-    }
-
-
-    private void initUi() {
-        presenter.setupUiWithData(data, profileTypes);
-        presenter.performGetTimeOffRequestsIfNeeded();
+        fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
     }
 
 
     private void handleOnPhotoClick() {
         fullSizeImageDialog.show();
-        fullSizeImageDialog.loadImage(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
+        fullSizeImageDialog.loadImage(photoUrl);
     }
 
 
@@ -486,16 +487,16 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private void getData() {
         Bundle b = getArguments();
         if (b != null) {
-            data = b.getParcelable(HomeActivity.DOCS_OBJECT_PARAM);
+            userId = b.getString(HomeActivity.USER_ID_PARAM);
+            userName = b.getString(HomeActivity.FULL_NAME_PARAM, "");
+            photoUrl = b.getString(HomeActivity.PHOTO_URL_PARAM);
             profileTypes = (ProfileTypes) b.getSerializable(HomeActivity.PROFILE_TYPE_PARAM);
         }
     }
 
 
     private void showEmployeeName() {
-        if (data.getFirstName() != null && data.getLastName() != null) {
-            toolbarChangeListener.setActionBarTitle(data.getFirstName() + " " + data.getLastName());
-        }
+        toolbarChangeListener.setActionBarTitle(userName);
     }
 
 

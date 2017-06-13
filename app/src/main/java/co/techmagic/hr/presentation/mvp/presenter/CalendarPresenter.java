@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import co.techmagic.hr.common.TimeOffType;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
@@ -36,7 +36,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     private GetCalendar getCalendar;
     private GetAllTimeOffs getAllTimeOffs;
 
-    private List<Docs> employees;
+    private List<UserProfile> employees;
 
     private Calendar dateFrom = null;
     private Calendar dateTo = null;
@@ -164,8 +164,8 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     public void onEmployeeClick(@NonNull String employeeId) {
-        Docs selectedEmployee = null;
-        for (Docs d : employees) {
+        UserProfile selectedEmployee = null;
+        for (UserProfile d : employees) {
             if (d.getId().equals(employeeId)) {
                 selectedEmployee = d;
             }
@@ -236,7 +236,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
 
 
     private void handleEmployeesByDepartmentSuccessResponse(@NonNull Employee response) {
-        final List<Docs> result = response.getDocs();
+        final List<UserProfile> result = response.getDocs();
         if (result == null || result.isEmpty()) {
             employees.clear();
             view.showNoResults();
@@ -295,7 +295,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         UserAllTimeOffsMap userAllTimeOffsMap = new UserAllTimeOffsMap();
 
         List<String> userIds = new ArrayList<>(employees.size());
-        for (Docs doc : employees) {
+        for (UserProfile doc : employees) {
             userIds.add(doc.getId());
         }
 
@@ -314,7 +314,7 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
         }
 
         // sort data by user
-        for (Docs doc : employees) {
+        for (UserProfile doc : employees) {
             List<UserTimeOff> userTimeOffs = new ArrayList<>();
             List<UserTimeOff> userRequestedTimeOffs = new ArrayList<>();
 

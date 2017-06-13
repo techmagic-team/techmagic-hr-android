@@ -17,7 +17,7 @@ import co.techmagic.hr.domain.interactor.user.LoginUser;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.LoginView;
-import co.techmagic.hr.presentation.util.ValidatingCredentialsUtil;
+import co.techmagic.hr.presentation.util.TextUtil;
 
 public class LoginPresenter extends BasePresenter<LoginView> {
 
@@ -60,7 +60,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     public void onSendClick(String email) {
-        if (ValidatingCredentialsUtil.isValidEmail(email)) {
+        if (TextUtil.isValidEmail(email)) {
             if (id == null) {
                 view.onCompanyError();
                 return;
@@ -91,7 +91,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             return false;
         }
 
-        if (ValidatingCredentialsUtil.isValidEmail(email)) {
+        if (TextUtil.isValidEmail(email)) {
             isValid = true;
         } else {
             isValid = false;
@@ -99,7 +99,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         }
 
         if (isValid) {
-            if (ValidatingCredentialsUtil.isValidPassword(password)) {
+            if (TextUtil.isValidPassword(password)) {
                 isValid = true;
             } else {
                 isValid = false;
