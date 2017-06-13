@@ -577,6 +577,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     private void handleLoginSection() {
+        view.disAllowClickOnBirthDateView();
         view.showLoginSection();
 
         if (data.getEmail() != null) {

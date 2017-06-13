@@ -32,7 +32,11 @@ public interface EditProfileView {
 
     void showLoginSection();
 
+    void enableEmail();
+
     void showEmail(@NonNull String email);
+
+    void enablePassword();
 
     void showPassword(@NonNull String password);
 
@@ -50,13 +54,19 @@ public interface EditProfileView {
 
     void showPersonalSection();
 
+    void enableFirstName();
+
     void showFirstName(@NonNull String firstName);
+
+    void enableLastName();
 
     void showLastName(@NonNull String lastName);
 
-    void showBirthDate(@NonNull String date);
-
     void allowClickOnBirthDateView();
+
+    void disAllowClickOnBirthDateView();
+
+    void showBirthDate(@NonNull String date);
 
     void showGenderView();
 

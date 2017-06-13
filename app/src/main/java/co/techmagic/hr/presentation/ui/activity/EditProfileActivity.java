@@ -250,15 +250,23 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void enableEmail() {
+                etChangeEmail.setEnabled(true);
+            }
+
+            @Override
             public void showEmail(@NonNull String email) {
                 etChangeEmail.setText(email);
-                etChangeEmail.setEnabled(true);
+            }
+
+            @Override
+            public void enablePassword() {
+                etChangePassword.setEnabled(true);
             }
 
             @Override
             public void showPassword(@NonNull String password) {
                 etChangePassword.setText(password);
-                etChangePassword.setEnabled(true);
             }
 
             @Override
@@ -293,25 +301,38 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void enableFirstName() {
+                etFirstName.setEnabled(true);
+            }
+
+            @Override
             public void showFirstName(@NonNull String firstName) {
                 etFirstName.setText(firstName);
-                etFirstName.setEnabled(true);
+            }
+
+            @Override
+            public void enableLastName() {
+                etLastName.setEnabled(true);
             }
 
             @Override
             public void showLastName(@NonNull String lastName) {
                 etLastName.setText(lastName);
-                etLastName.setEnabled(true);
+            }
+
+            @Override
+            public void allowClickOnBirthDateView() {
+                rlEditDateOfBirth.setOnClickListener(getOnClickListener());
+            }
+
+            @Override
+            public void disAllowClickOnBirthDateView() {
+                rlEditDateOfBirth.setOnClickListener(null);
             }
 
             @Override
             public void showBirthDate(@NonNull String date) {
                 tvSelectedDateOfBirth.setText(date);
-            }
-
-            @Override
-            public void allowClickOnBirthDateView() {
-                rlEditDateOfBirth.setClickable(true);
             }
 
             @Override
@@ -489,13 +510,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @OnClick(R.id.btnUploadPhoto)
     public void uploadPhotoClick() {
         presenter.onUploadPhotoClick();
-    }
-
-
-    @OnClick(R.id.rlEditDateOfBirth)
-    public void onDateOfBirthClick() {
-        editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
-        presenter.showDatePickerDialog();
     }
 
 
@@ -757,6 +771,14 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         tvLastWorkingDay.addTextChangedListener(getTextChangeListener(tvLastWorkingDay, EditProfileFields.CHANGE_LAST_WORKING_DAY));
         tvSelectedReason.addTextChangedListener(getTextChangeListener(tvSelectedReason, EditProfileFields.CHANGE_REASON));
         etComments.addTextChangedListener(getTextChangeListener(etComments, EditProfileFields.CHANGE_COMMENTS));
+    }
+
+
+    private View.OnClickListener getOnClickListener() {
+        return v -> {
+            editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
+            presenter.showDatePickerDialog();
+        };
     }
 
 
