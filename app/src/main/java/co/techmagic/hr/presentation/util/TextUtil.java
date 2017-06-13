@@ -25,4 +25,10 @@ public class TextUtil {
         Pattern pattern = Pattern.compile(URL_PATTERN);
         return pattern.matcher(text).find();
     }
+
+
+    public static String getFormattedText(String rawText) {
+        String fmtMsg = rawText.replaceAll("(?m)(^ *| +(?= |$))", "").replaceAll("(?m)^$([\r\n]+?)(^$[\r\n]+?^)+", "$1");
+        return fmtMsg.replace("\n\n", "\n");
+    }
 }

@@ -733,7 +733,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 textView.removeTextChangedListener(this);
-                handleSelectedField(s.toString(), field);
+                handleSelectedField(s.toString().trim(), field);
                 textView.addTextChangedListener(this);
             }
 

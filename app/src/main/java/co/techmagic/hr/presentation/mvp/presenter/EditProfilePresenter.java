@@ -325,12 +325,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     public void handlePresentationChange(String newDescription) {
         final String desc = data.getDescription();
+        final String fmtDesc = TextUtil.getFormattedText(newDescription);
 
-        if (newDescription.equals(desc)) {
+        if (fmtDesc.equals(desc)) {
             data.setDescription(desc);
             hasChanges = false;
         } else {
-            data.setDescription(newDescription);
+            data.setDescription(fmtDesc);
             hasChanges = true;
         }
     }
@@ -499,12 +500,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     public void handleCommentsChange(String newComments) {
         final String comments = data.getReasonComments();
+        final String fmtDesc = TextUtil.getFormattedText(newComments);
 
-        if (newComments.equals(comments)) {
+        if (fmtDesc.equals(comments)) {
             data.setReasonComments(comments);
             hasChanges = false;
         } else {
-            data.setReasonComments(newComments);
+            data.setReasonComments(fmtDesc);
             hasChanges = true;
         }
     }
