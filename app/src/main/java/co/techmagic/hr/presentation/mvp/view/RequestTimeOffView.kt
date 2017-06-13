@@ -11,6 +11,6 @@ interface RequestTimeOffView : View {
     fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean)
     fun showTimeOffsDialog()
     fun selectTimeOff(timeOffType: TimeOffType)
-    fun showTimeOffsData(allTimeOffsDto: RemainedTimeOffsAmountDto)
+    fun showTimeOffsData()
     fun showTimeOffsDataError()
 }

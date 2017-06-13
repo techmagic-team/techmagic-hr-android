@@ -57,11 +57,11 @@ public interface IEmployeeApi {
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=true")
-    Observable<TimeOffAmount> getTotalVacation(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    Observable<TimeOffAmount> getTotalVacation(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=false")
-    Observable<TimeOffAmount> getTotalDayOff(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    Observable<TimeOffAmount> getTotalDayOff(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/time-off/illness/user/{user_id}/totaldays?isPaid=true")
-    Observable<TimeOffAmount> getTotalIllness(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+    Observable<TimeOffAmount> getTotalIllness(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 }

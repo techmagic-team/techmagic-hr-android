@@ -4,6 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/tm_hr_time_available_vacations"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAvailableVacations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="end" />
+
+    </RelativeLayout>
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,48 +40,62 @@
             android:orientation="vertical"
             android:splitMotionEvents="false">
 
-            <RelativeLayout
-                android:id="@+id/vgTimeOffType"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvTimeOffTypeLabel"
+                <RelativeLayout
+                    android:id="@+id/vgTimeOffType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/tm_hr_time_off_type"
-                    android:textStyle="bold" />
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/tvTimeOffTypeLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/tm_hr_time_off_type"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTimeOffTypeSelected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                        android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                        android:layout_toLeftOf="@+id/ivTimeOffTypeArrow"
+                        android:layout_toStartOf="@+id/ivTimeOffTypeArrow"
+                        android:gravity="end"
+                        android:maxLines="1" />
+
+                    <ImageView
+                        android:id="@+id/ivTimeOffTypeArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_keyboard_arrow_right" />
+                </RelativeLayout>
 
                 <TextView
-                    android:id="@+id/tvTimeOffTypeSelected"
+                    android:id="@+id/tvAvailableDays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
-                    android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
-                    android:layout_toLeftOf="@+id/ivTimeOffTypeArrow"
-                    android:layout_toStartOf="@+id/ivTimeOffTypeArrow"
-                    android:gravity="end"
-                    android:maxLines="1" />
-
-                <ImageView
-                    android:id="@+id/ivTimeOffTypeArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_keyboard_arrow_right" />
+                    android:layout_marginBottom="5dp"
+                    android:gravity="end"
+                    android:text="tratata" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/ivTimeOffTypeArrow"
                     android:background="@color/colorCardViewBgGrey" />
+            </LinearLayout>
 
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/vgFilterFrom"

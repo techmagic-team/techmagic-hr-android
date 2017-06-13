@@ -9,6 +9,7 @@ import co.techmagic.hr.domain.interactor.employee.GetRemainedTimeOffs
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import java.util.*
 
 /**
@@ -27,13 +28,32 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var timeOffType: TimeOffType? = null
         private set
 
+    var remainedDays: RemainedTimeOffsAmountDto? = null
+        private set
+
     fun loadTimeOffDataData() {
         view.showProgress()
 
-        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest("userId", DateFrom(dateFrom.timeInMillis), DateTo(dateTo.timeInMillis))
+        val userId: String = SharedPreferencesUtil.readUser().id
+
+        val calendarFrom: Calendar = Calendar.getInstance()
+        val calendarTo: Calendar = Calendar.getInstance()
+
+        calendarFrom.set(Calendar.MONTH, 0)
+        calendarFrom.set(Calendar.DAY_OF_MONTH, 0)
+
+        calendarTo.set(Calendar.MONTH, 11)
+        calendarTo.set(Calendar.DAY_OF_MONTH, 31)
+
+        val dateFromInMillis: Long = calendarFrom.timeInMillis
+        val dateToInMillis: Long = calendarTo.timeInMillis
+
+        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(dateFromInMillis), DateTo(dateToInMillis))
         getAllTimeOffs.execute(remainedTimeOffRequest, object : DefaultSubscriber<RemainedTimeOffsAmountDto>() {
             override fun onNext(remainedDays: RemainedTimeOffsAmountDto) {
-                view?.showTimeOffsData(remainedDays)
+                this@RequestTimeOffPresenter.remainedDays = remainedDays
+                view?.hideProgress()
+                view?.showTimeOffsData()
             }
 
             override fun onError(e: Throwable) {

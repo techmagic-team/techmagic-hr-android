@@ -168,7 +168,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalVacation(TimeOffRequest request) {
+    public Observable<Integer> getTotalVacation(RemainedTimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client
                     .getEmployeeClient()
@@ -190,11 +190,11 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalDayOff(TimeOffRequest request) {
+    public Observable<Integer> getTotalDayOff(RemainedTimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client
                     .getEmployeeClient()
-                    .getTotalVacation(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte())
+                    .getTotalDayOff(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte())
                     .map(new Func1<TimeOffAmount, Integer>() {
                         @Override
                         public Integer call(TimeOffAmount timeOffAmount) {
@@ -212,7 +212,24 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalIllness(TimeOffRequest request) {
-        return null;
+    public Observable<Integer> getTotalIllness(RemainedTimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getTotalIllness(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte())
+                    .map(new Func1<TimeOffAmount, Integer>() {
+                        @Override
+                        public Integer call(TimeOffAmount timeOffAmount) {
+                            if (timeOffAmount != null) {
+                                return timeOffAmount.getAvailableDays();
+
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+        }
+
+        return Observable.error(new NetworkConnectionException());
     }
 }

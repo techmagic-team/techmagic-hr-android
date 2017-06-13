@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.ui.activity
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -31,6 +32,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var tvTimeOffTypeSelected: TextView
     private lateinit var tvSelectedFrom: TextView
     private lateinit var tvSelectedTo: TextView
+    private lateinit var tvAvailableDays: TextView
     private lateinit var btnRequest: Button
     private val dateFormat: DateFormat = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
 
@@ -40,6 +42,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         actionBar = supportActionBar
         actionBar?.setHomeButtonEnabled(true)
         actionBar?.setTitle(R.string.tm_hr_request_time_off_title)
+
+        if (presenter.timeOffType == null) {
+            presenter.onTimeOffTypeSelected(TimeOffType.VACATION)
+        }
     }
 
     override fun onStart() {
@@ -53,29 +59,30 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initLayout() {
         setContentView(R.layout.activity_request_timeoff)
+
         vgTimeOffType = find(R.id.vgTimeOffType)
         vgFilterFrom = find(R.id.vgFilterFrom)
         vgFilterTo = find(R.id.vgFilterTo)
         tvTimeOffTypeSelected = find(R.id.tvTimeOffTypeSelected)
         tvSelectedFrom = find(R.id.tvSelectedFrom)
         tvSelectedTo = find(R.id.tvSelectedTo)
+        tvAvailableDays = find(R.id.tvAvailableDays)
         btnRequest = find(R.id.btnRequest)
 
         vgTimeOffType.setOnClickListener { presenter.onTimeOffTypeClicked() }
         vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
         vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
         btnRequest.setOnClickListener { presenter.onRequestButtonClicked() }
-
     }
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
-            override fun showTimeOffsData(allTimeOffsDto: RemainedTimeOffsAmountDto) {
-
+            override fun showTimeOffsData() {
+                showRemainedTimeOffs()
             }
 
             override fun showTimeOffsDataError() {
-
+                toast(R.string.tm_hr_request_time_off_error_retrieving_time_off_data)
             }
 
             override fun selectTimeOff(timeOffType: TimeOffType) {
@@ -85,6 +92,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     TimeOffType.ILLNESS -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_illness_time_off_name) }
                     else -> run { toast("wrong type") }
                 }
+
+                showRemainedTimeOffs()
             }
 
             override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean) {
@@ -112,6 +121,35 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             override fun showTimeOffsDialog() {
                 showSelectTimeOffTypeDialog()
             }
+        }
+    }
+
+    private fun showRemainedTimeOffs() {
+        val allTimeOffsDto: RemainedTimeOffsAmountDto? = presenter.remainedDays
+
+        if (allTimeOffsDto != null) {
+            when (presenter.timeOffType) {
+                TimeOffType.VACATION -> run {
+                    val daysAmount = allTimeOffsDto.map[TimeOffType.VACATION]
+                    tvAvailableDays.visibility = View.VISIBLE
+                    tvAvailableDays.text = "Available days $daysAmount"
+
+                }
+                TimeOffType.DAYOFF -> run {
+                    val daysAmount = allTimeOffsDto.map[TimeOffType.DAYOFF]
+                    tvAvailableDays.visibility = View.VISIBLE
+                    tvAvailableDays.text = "Available days $daysAmount"
+                }
+                TimeOffType.ILLNESS -> run {
+                    val daysAmount = allTimeOffsDto.map[TimeOffType.ILLNESS]
+                    tvAvailableDays.visibility = View.VISIBLE
+                    tvAvailableDays.text = "Available days $daysAmount"
+                }
+                else -> run { tvAvailableDays.visibility = View.GONE }
+            }
+
+        } else {
+            tvAvailableDays.visibility = View.GONE
         }
     }
 

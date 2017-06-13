@@ -43,9 +43,9 @@ public interface IEmployeeRepository {
 
     Observable<Void> requestTimeOff(RemainedTimeOffRequest request);
 
-    Observable<Integer> getTotalVacation(TimeOffRequest request);
+    Observable<Integer> getTotalVacation(RemainedTimeOffRequest request);
 
-    Observable<Integer> getTotalDayOff(TimeOffRequest request);
+    Observable<Integer> getTotalDayOff(RemainedTimeOffRequest request);
 
     Observable<Integer> getTotalIllness(RemainedTimeOffRequest request);
 }

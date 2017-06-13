@@ -97,6 +97,8 @@
     <string name="tm_hr_dayoff_time_off_name">Dayoff</string>
     <string name="tm_hr_illness_time_off_name">Illness</string>
     <string name="tm_hr_request_time_off_title">Request Time off</string>
+    <string name="tm_hr_request_time_off_error_retrieving_time_off_data">Error retrieving time off data</string>
+    <string name="tm_hr_time_available_vacations">Available vacations</string>
 
 
     <!-- CalendarFiltersActivity -->
