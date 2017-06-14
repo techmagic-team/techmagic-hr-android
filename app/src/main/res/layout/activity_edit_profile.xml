@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     android:orientation="vertical"
     tools:context="co.techmagic.hr.presentation.ui.activity.EditProfileActivity">
 
@@ -21,13 +22,14 @@
                 android:id="@+id/btnUploadPhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_add_a_photo_white"
-                android:drawableStart="@drawable/ic_add_a_photo_white"
-                android:drawablePadding="4dp"
-                android:gravity="center"
                 android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_add_a_photo_white"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_add_a_photo_white"
+                android:gravity="center"
                 android:text="@string/tm_hr_edit_profile_activity_text_upload_photo"
-                android:theme="@style/AppTheme.Primary.Button" />
+                android:theme="@style/AppTheme.Primary.Button"
+                android:visibility="gone" />
 
             <include layout="@layout/layout_edit_profile_section_login_info" />
 

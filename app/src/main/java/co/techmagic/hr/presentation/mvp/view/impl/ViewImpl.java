@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.mvp.view.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,8 +11,10 @@ import android.widget.Toast;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
+import co.techmagic.hr.presentation.ui.activity.LoginActivity;
 import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog;
 import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public abstract class ViewImpl implements View {
 
@@ -115,13 +118,24 @@ public abstract class ViewImpl implements View {
 
 
     @Override
-    public void showSnackBarWrongCompanyOrEmailError() {
-        Snackbar.make(contentView, getContext().getString(R.string.message_wrong_company_or_email), Snackbar.LENGTH_LONG).show();
+    public void logOut() {
+        SharedPreferencesUtil.clearPreferences();
+        startLoginScreen();
     }
 
 
     public void initSwipeToRefresh(SwipeRefreshLayout swipeRefreshLayout, BasePresenter presenter) {
         swipeRefreshLayout.setOnRefreshListener(() -> swipeRefreshLayout.setRefreshing(false));
+    }
+
+
+    private void startLoginScreen() {
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(i);
+        if (activity != null) {
+            activity.finish();
+        }
     }
 
 

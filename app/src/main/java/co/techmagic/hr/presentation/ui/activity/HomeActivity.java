@@ -307,7 +307,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         selProjectId = SharedPreferencesUtil.getSelectedProjectId();
-        presenter.setupFiltersView(selDepId, selLeadId, selProjectId,  searchQuery);
     }
 
 

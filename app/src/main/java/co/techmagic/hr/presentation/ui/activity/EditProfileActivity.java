@@ -200,6 +200,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     protected EditProfileViewImpl initView() {
         return new EditProfileViewImpl(this, findViewById(android.R.id.content)) {
             @Override
+            public void allowPickUpPhoto() {
+                btnUploadPhoto.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void pickUpPhoto() {
                 startChooserIntentIfPermissionGranted();
             }
@@ -257,11 +262,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void showEmail(@NonNull String email) {
                 etChangeEmail.setText(email);
-            }
-
-            @Override
-            public void enablePassword() {
-                etChangePassword.setEnabled(true);
             }
 
             @Override
