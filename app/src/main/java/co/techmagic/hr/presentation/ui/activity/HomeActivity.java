@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +58,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @BindView(R.id.tvNoResults)
     TextView tvNoResults;
 
+    private FirebaseAnalytics firebaseAnalytics;
+
     private ActionBar actionBar;
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
@@ -71,6 +75,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initUi();
         loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
@@ -132,11 +137,24 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             @Override
             public void showEmployeeDetails(@NonNull UserProfile data) {
                 allowChangeTab = true;
+
+                Bundle analyticsBundle = new Bundle();
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Employee Profile click");
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                 addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
             public void showMyProfile(@NonNull UserProfile data) {
+                Bundle analyticsBundle = new Bundle();
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "MyProfile click");
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
@@ -255,6 +273,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public void addCalendarFragment() {
         CalendarFragment fragment = CalendarFragment.newInstance();
+
+        Bundle analyticsBundle = new Bundle();
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar click");
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
     }
 
@@ -293,6 +316,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
+                        Bundle analyticsBundle = new Bundle();
+                        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Ninjas click");
+                        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                         clearFragmentsBackStack(this);
                     }
                     break;
@@ -312,6 +339,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private void startSearchScreen() {
         Intent i = new Intent(this, SearchActivity.class);
+
+        Bundle analyticsBundle = new Bundle();
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Search click");
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
     }
