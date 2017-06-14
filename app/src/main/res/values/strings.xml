@@ -76,6 +76,8 @@
     <string name="fragment_employee_details_card_view_text_first_working_day_in_it">"First working day in IT: "</string>
     <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
     <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
+    <string name="fragment_employee_details_card_view_text_reason">"Reason: "</string>
+    <string name="fragment_employee_details_card_view_text_comment">"Comment: "</string>
     <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
     <string name="fragment_employee_details_card_view_text_vacation">"Vacation: "</string>
     <string name="fragment_employee_details_card_view_text_day_off">"Day off: "</string>
