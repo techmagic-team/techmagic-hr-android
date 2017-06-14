@@ -645,9 +645,12 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     private void showFullDetailsIfAvailable() {
+        view.allowPickUpPhoto();
         view.allowClickOnBirthDateView();
-        view.showCanSignInView(data.isActive());
         view.showGenderView();
+        view.enableEmail();
+        view.enableFirstName();
+        view.enableLastName();
 
         if (data.getGender() == GENDER_MALE) {
             view.showGenderMale();
@@ -871,7 +874,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 super.onNext(profile);
                 hasChanges = false;
                 view.hideProgress();
-                view.showSnackBarMessage(R.string.message_successfully_saved);
+                view.onBackClick();
             }
 
             @Override

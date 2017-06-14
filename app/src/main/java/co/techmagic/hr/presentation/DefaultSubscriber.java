@@ -54,7 +54,7 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
                 break;
 
             case HttpURLConnection.HTTP_FORBIDDEN:
-                view.showSnackBarWrongCompanyOrEmailError();
+                view.logOut();
                 break;
         }
     }

@@ -64,6 +64,10 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llTrialPeriod;
     @BindView(R.id.llLastDay)
     View llLastDay;
+    @BindView(R.id.llReason)
+    View llReason;
+    @BindView(R.id.llComment)
+    View llComment;
     @BindView(R.id.llEmergencyPhoneNumber)
     View llEmergencyPhoneNumber;
     @BindView(R.id.llEmergencyContact)
@@ -102,6 +106,10 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvTrialPeriod;
     @BindView(R.id.tvLastDay)
     TextView tvLastDay;
+    @BindView(R.id.tvReason)
+    TextView tvReason;
+    @BindView(R.id.tvComment)
+    TextView tvComment;
     @BindView(R.id.tvVacation)
     TextView tvVacation;
     @BindView(R.id.tvDayOff)
@@ -292,6 +300,18 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             public void showLastWorkingDay(@NonNull String date) {
                 llLastDay.setVisibility(View.VISIBLE);
                 tvLastDay.setText(getString(R.string.fragment_employee_details_card_view_text_last_working_day) + date);
+            }
+
+            @Override
+            public void showReason(@NonNull String reason) {
+                llReason.setVisibility(View.VISIBLE);
+                tvReason.setText(getString(R.string.fragment_employee_details_card_view_text_reason) + reason);
+            }
+
+            @Override
+            public void showComment(@NonNull String comment) {
+                llComment.setVisibility(View.VISIBLE);
+                tvComment.setText(getString(R.string.fragment_employee_details_card_view_text_comment) + comment);
             }
 
             @Override

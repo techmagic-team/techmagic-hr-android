@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
 import co.techmagic.hr.presentation.ui.fragment.BaseFragment;
-import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePresenter> extends AppCompatActivity {
 
@@ -69,14 +67,6 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void startLoginScreen() {
-        Intent i = new Intent(this, LoginActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-        finish();
-    }
-
-
     protected void replaceFragment(BaseFragment fragment, String tag) {
         if (tag == null) {
             tag = fragment.getClass().getName();
@@ -124,14 +114,8 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.message_alert_dialog_title_log_out))
                 .setMessage(getString(R.string.message_alert_dialog_message_are_you_sure_you_want_to_log_out))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> logOut())
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> view.logOut())
                 .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .show();
-    }
-
-
-    private void logOut() {
-        SharedPreferencesUtil.clearPreferences();
-        startLoginScreen();
     }
 }

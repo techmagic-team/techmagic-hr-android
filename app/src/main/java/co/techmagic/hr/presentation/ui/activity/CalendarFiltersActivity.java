@@ -377,7 +377,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private void setupActionBar() {
         actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("");
+            actionBar.setTitle(getString(R.string.tm_hr_calendar_filters_activity_title));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

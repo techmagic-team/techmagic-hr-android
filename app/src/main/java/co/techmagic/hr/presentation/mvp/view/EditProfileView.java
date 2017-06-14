@@ -12,6 +12,8 @@ import co.techmagic.hr.presentation.ui.EditProfileFields;
 
 public interface EditProfileView {
 
+    void allowPickUpPhoto();
+
     void pickUpPhoto();
 
     void loadEmployeePhoto(@Nullable String photoUrl);
@@ -35,8 +37,6 @@ public interface EditProfileView {
     void enableEmail();
 
     void showEmail(@NonNull String email);
-
-    void enablePassword();
 
     void showPassword(@NonNull String password);
 

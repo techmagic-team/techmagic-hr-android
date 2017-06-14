@@ -77,7 +77,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    public void performRequests(@NonNull String userId , ProfileTypes profileType) {
+    public void performRequests(@NonNull String userId, ProfileTypes profileType) {
         this.profileType = profileType;
         performGetUserProfileAndTimeOffRequests(userId);
     }
@@ -167,10 +167,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             view.showTrialPeriodEndsDate(trialPeriodDate);
         }
 
-        final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
-        if (lastDayDate != null) {
-            view.showLastWorkingDay(lastDayDate);
-        }
+        handleLastWorkingDaySection(data);
 
         final EmergencyContact emergencyContact = data.getEmergencyContact();
         if (emergencyContact != null && emergencyContact.getPhone() != null) {
@@ -179,6 +176,24 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         if (emergencyContact != null && emergencyContact.getName() != null) {
             view.showEmergencyContact(emergencyContact.getName());
+        }
+    }
+
+
+    private void handleLastWorkingDaySection(@NonNull UserProfile data) {
+        final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
+        if (lastDayDate == null) {
+            return;
+        }
+
+        view.showLastWorkingDay(lastDayDate);
+
+        if (data.getReason() != null) {
+            view.showReason(data.getReason().getName());
+        }
+
+        if (data.getReasonComments() != null) {
+            view.showComment(data.getReasonComments());
         }
     }
 
@@ -412,7 +427,6 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             view.showDayOff(formattedText);
         }
     }
-
 
 
     private void performGetIllnessesRequest(@NonNull String userId, @NonNull String firstDate) {
