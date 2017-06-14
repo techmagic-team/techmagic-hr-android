@@ -6,9 +6,12 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
+import co.techmagic.hr.domain.pojo.DatePeriodDto
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
@@ -34,6 +37,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var tvSelectedTo: TextView
     private lateinit var tvAvailableDays: TextView
     private lateinit var btnRequest: Button
+    private lateinit var rgPeriods: RadioGroup
+    private lateinit var rbFirstPeriod: RadioButton
+    private lateinit var rbSecondPeriod: RadioButton
+
     private val dateFormat: DateFormat = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +58,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     override fun onStart() {
         super.onStart()
 
-        presenter.loadTimeOffDataData()
+        presenter.loadData()
 
         tvTimeOffTypeSelected.setText(R.string.tm_hr_vacation_time_off_name)
         initTimeOffDate()
@@ -68,7 +75,17 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         tvSelectedTo = find(R.id.tvSelectedTo)
         tvAvailableDays = find(R.id.tvAvailableDays)
         btnRequest = find(R.id.btnRequest)
+        rgPeriods = find(R.id.rgPeriods)
+        rbFirstPeriod = find(R.id.rbFirstPeriod)
+        rbSecondPeriod = find(R.id.rbSecondPeriod)
 
+
+        rgPeriods.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.rbFirstPeriod -> run { toast("First radio") }
+                R.id.rbSecondPeriod -> run { toast("Second radio") }
+            }
+        }
         vgTimeOffType.setOnClickListener { presenter.onTimeOffTypeClicked() }
         vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
         vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
@@ -77,6 +94,11 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showPeriods(datePeriodDto: List<DatePeriodDto>) {
+                rbFirstPeriod.text = dateFormat.format(datePeriodDto[0].dateFrom) + " - " + dateFormat.format(datePeriodDto[0].dateTo)
+                rbSecondPeriod.text = dateFormat.format(datePeriodDto[1].dateFrom) + " - " + dateFormat.format(datePeriodDto[1].dateTo)
+            }
+
             override fun showTimeOffsData() {
                 showRemainedTimeOffs()
             }
@@ -158,8 +180,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     }
 
     fun initTimeOffDate() {
-        setDate(tvSelectedFrom, presenter.dateFrom.time)
-        setDate(tvSelectedTo, presenter.dateTo.time)
+        setDate(tvSelectedFrom, presenter.requestTimeOffDateFrom.time)
+        setDate(tvSelectedTo, presenter.requestTimeOffDateTo.time)
     }
 
     private fun setDate(dateView: TextView, date: Date) {

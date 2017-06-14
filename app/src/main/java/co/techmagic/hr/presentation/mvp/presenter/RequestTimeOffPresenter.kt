@@ -6,6 +6,8 @@ import co.techmagic.hr.data.entity.DateTo
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
 import co.techmagic.hr.data.request.RemainedTimeOffRequest
 import co.techmagic.hr.domain.interactor.employee.GetRemainedTimeOffs
+import co.techmagic.hr.domain.interactor.employee.GetUserPeriods
+import co.techmagic.hr.domain.pojo.DatePeriodDto
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
@@ -18,11 +20,15 @@ import java.util.*
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     var getAllTimeOffs: GetRemainedTimeOffs = GetRemainedTimeOffs(EmployeeRepositoryImpl())
+    var getUserPeriods: GetUserPeriods = GetUserPeriods(EmployeeRepositoryImpl())
 
-    var dateFrom: Calendar = Calendar.getInstance()
+    var userPeriods: List<DatePeriodDto>? = null
         private set
 
-    var dateTo: Calendar = Calendar.getInstance()
+    var requestTimeOffDateFrom: Calendar = Calendar.getInstance()
+        private set
+
+    var requestTimeOffDateTo: Calendar = Calendar.getInstance()
         private set
 
     var timeOffType: TimeOffType? = null
@@ -31,24 +37,38 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var remainedDays: RemainedTimeOffsAmountDto? = null
         private set
 
-    fun loadTimeOffDataData() {
-        view.showProgress()
+    private val userId: String = SharedPreferencesUtil.readUser().id
 
-        val userId: String = SharedPreferencesUtil.readUser().id
+    fun loadData() {
+        loadTimePeriods()
+    }
 
-        val calendarFrom: Calendar = Calendar.getInstance()
-        val calendarTo: Calendar = Calendar.getInstance()
+    override fun onViewDetached() {
+        super.onViewDetached()
+        getAllTimeOffs.unsubscribe()
+    }
 
-        calendarFrom.set(Calendar.MONTH, 0)
-        calendarFrom.set(Calendar.DAY_OF_MONTH, 0)
+    private fun loadTimePeriods() {
+        getUserPeriods.execute(userId, object : DefaultSubscriber<List<DatePeriodDto>>() {
+            override fun onNext(datePeriods: List<DatePeriodDto>?) {
+                this@RequestTimeOffPresenter.userPeriods = datePeriods
 
-        calendarTo.set(Calendar.MONTH, 11)
-        calendarTo.set(Calendar.DAY_OF_MONTH, 31)
+                if (datePeriods != null) {
+                    loadTimeOffData(datePeriods[0])
+                    view?.showPeriods(datePeriods)
+                }
+            }
 
-        val dateFromInMillis: Long = calendarFrom.timeInMillis
-        val dateToInMillis: Long = calendarTo.timeInMillis
+            override fun onError(e: Throwable?) {
+                super.onError(e)
+                view?.showTimeOffsDataError()
+                view?.hideProgress()
+            }
+        })
+    }
 
-        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(dateFromInMillis), DateTo(dateToInMillis))
+    private fun loadTimeOffData(datePeriodDto: DatePeriodDto) {
+        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(datePeriodDto.dateFrom.time), DateTo(datePeriodDto.dateTo.time))
         getAllTimeOffs.execute(remainedTimeOffRequest, object : DefaultSubscriber<RemainedTimeOffsAmountDto>() {
             override fun onNext(remainedDays: RemainedTimeOffsAmountDto) {
                 this@RequestTimeOffPresenter.remainedDays = remainedDays
@@ -64,19 +84,14 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         })
     }
 
-    override fun onViewDetached() {
-        super.onViewDetached()
-        getAllTimeOffs.unsubscribe()
-    }
-
     fun onFromDateClicked() {
         view?.hideProgress()
-        view?.showDatePicker(dateFrom, dateTo, isDateFromPicker = true)
+        view?.showDatePicker(requestTimeOffDateFrom, requestTimeOffDateTo, isDateFromPicker = true)
     }
 
     fun onToDateClicked() {
         view?.hideProgress()
-        view?.showDatePicker(dateFrom, dateTo, isDateFromPicker = false)
+        view?.showDatePicker(requestTimeOffDateFrom, requestTimeOffDateTo, isDateFromPicker = false)
     }
 
     fun onTimeOffTypeClicked() {
@@ -90,15 +105,15 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFromDateSet(year: Int, month: Int, dayOfMonth: Int) {
-        dateFrom.set(Calendar.YEAR, year)
-        dateFrom.set(Calendar.MONTH, month)
-        dateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        requestTimeOffDateFrom.set(Calendar.YEAR, year)
+        requestTimeOffDateFrom.set(Calendar.MONTH, month)
+        requestTimeOffDateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
     }
 
     fun onToDateSet(year: Int, month: Int, dayOfMonth: Int) {
-        dateFrom.set(Calendar.YEAR, year)
-        dateFrom.set(Calendar.MONTH, month)
-        dateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        requestTimeOffDateFrom.set(Calendar.YEAR, year)
+        requestTimeOffDateFrom.set(Calendar.MONTH, month)
+        requestTimeOffDateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
     }
 
     fun onRequestButtonClicked() {

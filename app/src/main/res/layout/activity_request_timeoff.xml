@@ -4,28 +4,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <RadioGroup
+        android:id="@+id/rgPeriods"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp">
+        android:layout_margin="15dp"
+        android:checkedButton="@+id/rbFirstPeriod"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rbFirstPeriod"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="@string/tm_hr_time_available_vacations"
-            android:textStyle="bold" />
+            android:layout_marginBottom="7dp"/>
 
-        <TextView
-            android:id="@+id/tvAvailableVacations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="end" />
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rbSecondPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
 
-    </RelativeLayout>
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:text="@string/tm_hr_time_available_vacations"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tvAvailableVacations"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:gravity="end" />-->
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

@@ -1,8 +1,18 @@
 package co.techmagic.hr.data.repository;
 
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import co.techmagic.hr.data.entity.CalendarInfo;
+import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
@@ -18,6 +28,7 @@ import co.techmagic.hr.data.request.RemainedTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
+import co.techmagic.hr.domain.pojo.DatePeriodDto;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 import rx.functions.Func1;
@@ -28,15 +39,17 @@ import rx.functions.Func1;
 
 public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
+    private static final String TAG = EmployeeRepositoryImpl.class.getSimpleName();
     private ApiClient client;
     private NetworkManager networkManager;
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
 
 
     public EmployeeRepositoryImpl() {
         client = ApiClient.getApiClient();
         this.networkManager = NetworkManagerImpl.getNetworkManager();
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
-
 
     @Override
     public Observable<Employee> getEmployees(EmployeeFiltersRequest request) {
@@ -226,6 +239,37 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
                             } else {
                                 return 0;
                             }
+                        }
+                    });
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<List<DatePeriodDto>> getUserPeriods(String userId) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getUserPeriod(userId)
+                    .map(new Func1<List<DatePeriod>, List<DatePeriodDto>>() {
+                        @Override
+                        public List<DatePeriodDto> call(List<DatePeriod> datePeriods) {
+                            List<DatePeriodDto> datePeriodDtos = new ArrayList<>(2);
+                            try {
+                                if (datePeriods != null && datePeriods.size() > 1) {
+                                    for (DatePeriod datePeriod : datePeriods) {
+                                        Date dateFrom = DATE_FORMAT.parse(datePeriod.getDateFrom());
+                                        Date dateTo = DATE_FORMAT.parse(datePeriod.getDateTo());
+
+                                        datePeriodDtos.add(new DatePeriodDto(dateFrom, dateTo));
+                                    }
+                                }
+                            } catch (ParseException e) {
+                                Log.e(TAG, "Error parsing date", e);
+                            }
+
+                            return datePeriodDtos;
                         }
                     });
         }

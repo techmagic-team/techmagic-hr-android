@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.mvp.view
 
 import co.techmagic.hr.common.TimeOffType
+import co.techmagic.hr.domain.pojo.DatePeriodDto
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import java.util.*
 
@@ -13,4 +14,5 @@ interface RequestTimeOffView : View {
     fun selectTimeOff(timeOffType: TimeOffType)
     fun showTimeOffsData()
     fun showTimeOffsDataError()
+    fun showPeriods(datePeriodDto: List<DatePeriodDto>)
 }

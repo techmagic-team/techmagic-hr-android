@@ -13,6 +13,7 @@ import co.techmagic.hr.data.request.GetIllnessRequest;
 import co.techmagic.hr.data.request.RemainedTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
+import co.techmagic.hr.domain.pojo.DatePeriodDto;
 import rx.Observable;
 
 public interface IEmployeeRepository {
@@ -48,4 +49,6 @@ public interface IEmployeeRepository {
     Observable<Integer> getTotalDayOff(RemainedTimeOffRequest request);
 
     Observable<Integer> getTotalIllness(RemainedTimeOffRequest request);
+
+    Observable<List<DatePeriodDto>> getUserPeriods(String userId);
 }
