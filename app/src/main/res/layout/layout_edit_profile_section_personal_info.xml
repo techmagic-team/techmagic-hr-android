@@ -37,7 +37,7 @@
                 android:enabled="false"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName|textCapWords"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -55,7 +55,7 @@
                 android:enabled="false"
                 android:imeOptions="actionDone"
                 android:inputType="textPersonName|textCapWords"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -84,7 +84,8 @@
                 android:layout_toLeftOf="@+id/ivDateOfBirth"
                 android:layout_toStartOf="@+id/ivDateOfBirth"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivDateOfBirth"
@@ -109,13 +110,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/tm_hr_edit_profile_activity_text_male" />
+                android:text="@string/tm_hr_edit_profile_activity_text_male"
+                android:textColor="@color/colorBlack" />
 
             <RadioButton
                 android:id="@+id/rbFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tm_hr_edit_profile_activity_text_female" />
+                android:text="@string/tm_hr_edit_profile_activity_text_female"
+                android:textColor="@color/colorBlack" />
 
         </RadioGroup>
 

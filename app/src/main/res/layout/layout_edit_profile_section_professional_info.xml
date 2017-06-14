@@ -48,7 +48,8 @@
                 android:layout_toLeftOf="@+id/ivDepArrow"
                 android:layout_toStartOf="@+id/ivDepArrow"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivDepArrow"
@@ -94,7 +95,8 @@
                 android:layout_toLeftOf="@+id/ivLeadArrow"
                 android:layout_toStartOf="@+id/ivLeadArrow"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivLeadArrow"
@@ -140,7 +142,8 @@
                 android:layout_toLeftOf="@+id/ivSelectedFirstDayLeadArrow"
                 android:layout_toStartOf="@+id/ivSelectedFirstDayLeadArrow"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivSelectedFirstDayLeadArrow"
@@ -186,7 +189,8 @@
                 android:layout_toLeftOf="@+id/ivFirstDayInItArrow"
                 android:layout_toStartOf="@+id/ivFirstDayInItArrow"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivFirstDayInItArrow"
@@ -232,7 +236,8 @@
                 android:layout_toLeftOf="@+id/ivTrialEndArrow"
                 android:layout_toStartOf="@+id/ivTrialEndArrow"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivTrialEndArrow"

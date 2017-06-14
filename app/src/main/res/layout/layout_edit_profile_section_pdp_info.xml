@@ -38,7 +38,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -58,7 +58,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 

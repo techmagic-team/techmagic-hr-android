@@ -37,7 +37,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -58,7 +58,7 @@
                 android:maxLength="500"
                 android:maxLines="10"
                 android:scrollbars="vertical"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -44,6 +44,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
                 android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:textColor="@color/colorBlack"
                 android:layout_toLeftOf="@+id/ivLastWorkingDay"
                 android:layout_toStartOf="@+id/ivLastWorkingDay"
                 android:gravity="end"
@@ -90,6 +91,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
                 android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:textColor="@color/colorBlack"
                 android:layout_toLeftOf="@+id/ivReason"
                 android:layout_toStartOf="@+id/ivReason"
                 android:gravity="end"
@@ -133,7 +135,7 @@
                 android:inputType="textCapWords|textMultiLine"
                 android:maxLength="500"
                 android:scrollbars="vertical"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
 
