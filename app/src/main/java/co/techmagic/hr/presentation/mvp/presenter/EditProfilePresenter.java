@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import co.techmagic.hr.presentation.util.TextUtil;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
@@ -91,12 +93,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void sendPhoto(Uri uri) {
-        File file = new File(uri.getPath());
-        RequestBody requestFile = RequestBody.create(MultipartBody.FORM, file);
-        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-
-        performUploadPhotoRequest(multipartBody);
+    public void sendPhoto(Uri uri, Context context) {
+        MultipartBody.Part multipartBody = prepareFilePart("photo", uri, context);
+        performUploadPhotoRequestAndUpdateUser(multipartBody);
     }
 
 
@@ -788,6 +787,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
+    private MultipartBody.Part prepareFilePart(String partName, Uri uri, Context context) {
+        File file = new File(uri.getPath());
+        RequestBody requestFile = RequestBody.create(
+                MediaType.parse(context.getContentResolver().getType(uri)),
+                file);
+
+        return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+    }
+
+
     private void performGetMyProfileAndAllFiltersRequest() {
         view.showProgress();
         final String userId = SharedPreferencesUtil.readUser().getId();
@@ -832,7 +841,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    private void performUploadPhotoRequest(@NonNull MultipartBody.Part multipartBody) {
+    private void performUploadPhotoRequestAndUpdateUser(@NonNull MultipartBody.Part multipartBody) {
         view.showProgress();
         final String userId = SharedPreferencesUtil.readUser().getId();
         final UploadPhotoRequest request = new UploadPhotoRequest(userId, multipartBody);
@@ -841,6 +850,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             public void onNext(Void aVoid) {
                 super.onNext(aVoid);
                 view.hideProgress();
+                performGetMyProfileAndAllFiltersRequest();
             }
 
             @Override
