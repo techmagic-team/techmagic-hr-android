@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
@@ -32,7 +32,7 @@ import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
-import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
+import co.techmagic.hr.presentation.ui.view.calendar.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
@@ -169,8 +169,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             }
 
             @Override
-            public void addDetailsFragment(@NonNull Docs docs) {
-                fragmentCallback.addDetailsFragment(docs, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
+            public void addDetailsFragment(@NonNull UserProfile userProfile) {
+                fragmentCallback.addDetailsFragment(userProfile, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
             }
         };
     }

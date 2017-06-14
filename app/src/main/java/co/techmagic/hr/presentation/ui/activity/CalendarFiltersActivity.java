@@ -28,10 +28,10 @@ import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
-import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
+import co.techmagic.hr.presentation.ui.fragment.NumberDatePickerFragment;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImpl, CalendarFiltersPresenter> implements DatePickerFragment.OnDatePickerFragmentListener,
+public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImpl, CalendarFiltersPresenter> implements NumberDatePickerFragment.OnDatePickerFragmentListener,
         FilterAdapter.OnFilterSelectionListener {
 
     public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
@@ -43,7 +43,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public static final String SEL_DEP_ID_EXTRA = "sel_dep_id_extra";
     public static final String SEL_PROJECT_ID_EXTRA = "sel_project_id_extra";
 
-    public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
+    public static final String NUMBER_DATE_PICKER_FRAGMENT_TAG = "number_date_picker_fragment_tag";
     public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
     public static final String CALENDAR_FROM_KEY = "calendar_from_key";
     public static final String CALENDAR_TO_KEY = "calendar_to_key";
@@ -83,14 +83,19 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent();
-                setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
-                finish();
+                onBackPressed();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        dismissDialogIfOpened();
+        onBackClickWithSetResult();
     }
 
 
@@ -200,14 +205,14 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
     @Override
     public void addDatePickerFragment(@Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker) {
-        DatePickerFragment fragment = DatePickerFragment.newInstance();
+        NumberDatePickerFragment fragment = NumberDatePickerFragment.newInstance();
         Bundle b = new Bundle();
 
         b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
         b.putSerializable(CALENDAR_FROM_KEY, from);
         b.putSerializable(CALENDAR_TO_KEY, to);
         fragment.setArguments(b);
-        fragment.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
+        fragment.show(getSupportFragmentManager(), NUMBER_DATE_PICKER_FRAGMENT_TAG);
     }
 
 
@@ -244,6 +249,13 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     @OnClick(R.id.btnCalApply)
     public void onApplyClick() {
         applyFilters();
+    }
+
+
+    private void onBackClickWithSetResult() {
+        Intent i = new Intent();
+        setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
+        finish();
     }
 
 

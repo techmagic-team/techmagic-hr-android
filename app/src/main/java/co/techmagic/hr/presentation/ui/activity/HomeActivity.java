@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
@@ -37,7 +37,9 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String DOCS_OBJECT_PARAM = "docs_object_param";
+    public static final String USER_ID_PARAM = "user_id_param";
+    public static final String FULL_NAME_PARAM = "full_name_param";
+    public static final String PHOTO_URL_PARAM = "photo_url_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
@@ -121,7 +123,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeesList(List<Docs> docs) {
+            public void showEmployeesList(List<UserProfile> docs) {
                 tvNoResults.setVisibility(View.GONE);
                 adapter.refresh(docs);
                 rvEmployees.setVisibility(View.VISIBLE);
@@ -133,7 +135,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeeDetails(@NonNull Docs data) {
+            public void showEmployeeDetails(@NonNull UserProfile data) {
                 allowChangeTab = true;
 
                 Bundle analyticsBundle = new Bundle();
@@ -146,7 +148,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showMyProfile(@NonNull Docs data) {
+            public void showMyProfile(@NonNull UserProfile data) {
                 Bundle analyticsBundle = new Bundle();
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
@@ -196,6 +198,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 startSearchScreen();
                 return true;
 
+            case R.id.menu_item_edit_profile:
+                startEditProfileScreen();
+                return true;
+
             case R.id.menu_item_logout:
                 showLogOutDialog();
                 return true;
@@ -241,16 +247,22 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void onEmployeeItemClicked(@NonNull Docs docs) {
-        presenter.handleEmployeeItemClick(docs);
+    public void onEmployeeItemClicked(@NonNull UserProfile userProfile) {
+        presenter.handleEmployeeItemClick(userProfile);
     }
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs docs, @NonNull ProfileTypes profileType, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
+
+        bundle.putString(USER_ID_PARAM, user.getId());
+        bundle.putString(PHOTO_URL_PARAM, user.getPhotoOrigin() == null ? user.getPhoto() : user.getPhotoOrigin());
+
+        if (user.getFirstName() != null && user.getLastName() != null) {
+            bundle.putString(FULL_NAME_PARAM, user.getFirstName() + " " + user.getLastName());
+        }
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
@@ -334,6 +346,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
+
+    private void startEditProfileScreen() {
+        startActivity(new Intent(this, EditProfileActivity.class));
     }
 
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="co.techmagic.hr.presentation.ui.activity.EditProfileActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_user_photo" />
+
+            <Button
+                android:id="@+id/btnUploadPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_add_a_photo_white"
+                android:drawableStart="@drawable/ic_add_a_photo_white"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/tm_hr_edit_profile_activity_text_upload_photo"
+                android:theme="@style/AppTheme.Primary.Button" />
+
+            <include layout="@layout/layout_edit_profile_section_login_info" />
+
+            <include layout="@layout/layout_edit_profile_section_personal_info" />
+
+            <include layout="@layout/layout_edit_profile_section_contacts" />
+
+            <include layout="@layout/layout_edit_profile_section_additional_info" />
+
+            <include layout="@layout/layout_edit_profile_section_professional_info" />
+
+            <include layout="@layout/layout_edit_profile_section_pdp_info" />
+
+            <include layout="@layout/layout_edit_profile_section_out_of_the_company" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_employee_details_margin"
+                android:orientation="horizontal"
+                android:splitMotionEvents="false">
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tm_hr_search_activity_text_cancel"
+                    android:theme="@style/AppTheme.Primary.Button" />
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tm_hr_edit_profile_activity_text_save"
+                    android:theme="@style/AppTheme.Primary.Button" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

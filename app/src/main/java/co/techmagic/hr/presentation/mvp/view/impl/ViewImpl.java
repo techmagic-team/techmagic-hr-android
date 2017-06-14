@@ -104,6 +104,11 @@ public abstract class ViewImpl implements View {
 
 
     @Override
+    public void showSnackBarMessage(int messageResId) {
+        Snackbar.make(contentView, messageResId, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
     public void showSnackBarWrongLoginCredentialsError() {
         Snackbar.make(contentView, getContext().getString(R.string.message_wrong_password_or_email), Snackbar.LENGTH_LONG).show();
     }

@@ -38,6 +38,27 @@ public class DateUtil {
     }
 
 
+    public static String getFormattedFullDate(@Nullable Date inputDate) {
+        String formattedDate = null;
+
+        if (inputDate == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            formattedDate = outputFullDateFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+
     public static Date parseStringDate(@Nullable String inputData) {
         Date parsedDate = null;
 
@@ -161,5 +182,25 @@ public class DateUtil {
         Calendar c = Calendar.getInstance();
         c.set(inputTime.get(Calendar.YEAR), inputTime.get(Calendar.MONTH), inputTime.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
         return c.getTimeInMillis();
+    }
+
+
+    public static long getFormattedDateInMillis(@Nullable String inputData) {
+        long millis = 0;
+
+        if (inputData == null) {
+            return millis;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            Date date = inputFormat.parse(inputData);
+            millis = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return millis;
     }
 }

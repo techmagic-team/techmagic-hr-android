@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cvLogin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -38,7 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_login_activity_hint_password"
-            android:textColorHint="@color/colorAccent">
+            android:textColorHint="@color/colorAccent"
+            app:passwordToggleEnabled="true">
 
             <EditText
                 android:id="@+id/etPassword"
