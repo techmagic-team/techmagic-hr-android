@@ -138,8 +138,20 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
     }
 
+    /**
+     * Handling of content entered or selected by user.
+     */
 
     public void handleEmailChange(String newEmail) {
+        String email = data.getEmail();
+
+        if (newEmail.equals(email)) {
+            view.hideEmailError();
+            data.setEmail(email);
+            hasChanges = false;
+            return;
+        }
+
         if (TextUtil.isValidEmail(newEmail)) {
             view.hideEmailError();
             data.setEmail(newEmail);
@@ -149,7 +161,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         // In case if user left field empty
-        if (newEmail != null && newEmail.isEmpty()) {
+        if (newEmail.isEmpty()) {
             view.showEmptyEmailError();
             hasChanges = true;
         }
@@ -157,6 +169,15 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handlePasswordChange(String newPassword) {
+        String pass = data.getPassword();
+
+        if (newPassword.equals(pass)) {
+            view.hidePasswordError();
+            data.setPassword(pass);
+            hasChanges = false;
+            return;
+        }
+
         if (TextUtil.isValidPassword(newPassword)) {
             view.hidePasswordError();
             data.setPassword(newPassword);
@@ -166,7 +187,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         // In case if user left field empty
-        if (newPassword != null && newPassword.isEmpty()) {
+        if (newPassword.isEmpty()) {
             view.showEmptyPasswordError();
             hasChanges = true;
         }
@@ -174,6 +195,15 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleFirstNameChange(String newFirstName) {
+        String firstName = data.getFirstName();
+
+        if (newFirstName.equals(firstName)) {
+            view.hideFirstNameError();
+            data.setFirstName(firstName);
+            hasChanges = false;
+            return;
+        }
+
         if (TextUtil.isValidName(newFirstName)) {
             view.hideFirstNameError();
             data.setFirstName(newFirstName);
@@ -183,7 +213,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         // In case if user left field empty
-        if (newFirstName != null && newFirstName.isEmpty()) {
+        if (newFirstName.isEmpty()) {
             view.showEmptyFirstNameError();
             hasChanges = true;
         }
@@ -191,6 +221,15 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleLastNameChange(String newLastName) {
+        String lastName = data.getLastName();
+
+        if (newLastName.equals(lastName)) {
+            view.hideLastNameError();
+            data.setLastName(lastName);
+            hasChanges = false;
+            return;
+        }
+
         if (TextUtil.isValidName(newLastName)) {
             view.hideLastNameError();
             data.setLastName(newLastName);
@@ -200,7 +239,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         // In case if user left field empty
-        if (newLastName != null && newLastName.isEmpty()) {
+        if (newLastName.isEmpty()) {
             view.showEmptyLastNameError();
             hasChanges = true;
         }
@@ -268,6 +307,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleEmergencyContactNumberChange(String newNumber) {
+        EmergencyContact emergency = data.getEmergencyContact();
+        if (emergency != null) {
+            if (newNumber.equals(emergency.getPhone())) {
+                emergencyContact.setPhone(newNumber);
+                data.setEmergencyContact(emergencyContact);
+                hasChanges = false;
+                return;
+            }
+        }
+
         if (newNumber == null || newNumber.isEmpty()) {
             emergencyContact.setPhone(null);
             data.setEmergencyContact(emergencyContact);
@@ -297,6 +346,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleEmergencyContactChange(String newName) {
+        EmergencyContact emergency = data.getEmergencyContact();
+        if (emergency != null) {
+            if (newName.equals(emergency.getName())) {
+                emergencyContact.setName(newName);
+                data.setEmergencyContact(emergencyContact);
+                hasChanges = false;
+                return;
+            }
+        }
+
         if (newName == null || newName.isEmpty()) {
             emergencyContact.setName(null);
             data.setEmergencyContact(emergencyContact);
@@ -356,27 +415,36 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleCityOfRelocationChange(String newCity) {
-        if (newCity.isEmpty()) {
-            data.setRelocationCity(null);
-            hasChanges = true;
+        String city = data.getRelocationCity();
+
+        if (newCity.equals(city)) {
+            data.setRelocationCity(city);
+            hasChanges = false;
             return;
         }
 
-        data.setRelocationCity(newCity);
-        hasChanges = true;
+        // In case if user left field empty
+        if (newCity.isEmpty()) {
+            data.setRelocationCity(null);
+            hasChanges = true;
+        }
     }
 
 
     public void handlePresentationChange(String newDescription) {
-        final String fmtDesc = TextUtil.getFormattedText(newDescription);
+        String desc = data.getDescription();
+        String fmtDesc = TextUtil.getFormattedText(newDescription);
+
         if (fmtDesc.isEmpty()) {
             data.setDescription(null);
             hasChanges = true;
             return;
         }
 
-        data.setDescription(fmtDesc);
-        hasChanges = true;
+        if (fmtDesc.equals(desc)) {
+            data.setDescription(fmtDesc);
+            hasChanges = false;
+        }
     }
 
 
@@ -555,14 +623,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleCommentsChange(String newComments) {
-        final String fmtDesc = TextUtil.getFormattedText(newComments);
-        if (fmtDesc.isEmpty()) {
+        String comment = data.getReasonComments();
+        String fmtCmnt = TextUtil.getFormattedText(newComments);
+
+        if (fmtCmnt.isEmpty()) {
             data.setReasonComments(null);
             hasChanges = true;
+            return;
         }
 
-        data.setReasonComments(fmtDesc);
-        hasChanges = true;
+        if (fmtCmnt.equals(comment)) {
+            data.setDescription(fmtCmnt);
+            hasChanges = false;
+        }
     }
 
 
