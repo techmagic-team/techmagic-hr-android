@@ -10,11 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +33,9 @@ import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
 import co.techmagic.hr.presentation.util.ImagePickerUtil;
@@ -66,6 +65,10 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     TextInputLayout tilPassword;
     @BindView(R.id.cvPersonalInfo)
     View cvPersonalInfo;
+    @BindView(R.id.tilFirstName)
+    TextInputLayout tilFirstName;
+    @BindView(R.id.tilLastName)
+    TextInputLayout tilLastName;
     @BindView(R.id.etFirstName)
     EditText etFirstName;
     @BindView(R.id.etLastName)
@@ -131,7 +134,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     @BindView(R.id.etComments)
     EditText etComments;
 
-    private AlertDialog dialog;
+    private FilterDialogManager dialogManager;
 
     private EditProfileFields editProfileField = EditProfileFields.NONE;
     private Lead selectedLead;
@@ -151,19 +154,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                presenter.onBackClick();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 
 
@@ -235,8 +231,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters) {
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(filters);
+                dialogManager.dismissDialogIfOpened();
+                setupCorrectFilterType(filters);
             }
 
             @Override
@@ -246,7 +242,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onBackClick() {
-                onBackPressed();
+                finish();
             }
 
             @Override
@@ -286,6 +282,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void showEmptyEmailError() {
+                tilEmail.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
             public void onPasswordError() {
                 tilPassword.setError(getString(R.string.message_invalid_password));
             }
@@ -293,6 +294,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void hidePasswordError() {
                 tilPassword.setErrorEnabled(false);
+            }
+
+            @Override
+            public void showEmptyPasswordError() {
+                tilPassword.setError(getString(R.string.message_you_can_not_leave_this_empty));
             }
 
             @Override
@@ -311,6 +317,21 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void onFirstNameError() {
+                tilFirstName.setError(getString(R.string.message_invalid_first_name));
+            }
+
+            @Override
+            public void showEmptyFirstNameError() {
+                tilFirstName.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
+            public void hideFirstNameError() {
+                tilFirstName.setErrorEnabled(false);
+            }
+
+            @Override
             public void enableLastName() {
                 etLastName.setEnabled(true);
             }
@@ -318,6 +339,21 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void showLastName(@NonNull String lastName) {
                 etLastName.setText(lastName);
+            }
+
+            @Override
+            public void onLastNameError() {
+                tilLastName.setError(getString(R.string.message_invalid_last_name));
+            }
+
+            @Override
+            public void showEmptyLastNameError() {
+                tilLastName.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
+            public void hideLastNameError() {
+                tilLastName.setErrorEnabled(false);
             }
 
             @Override
@@ -496,7 +532,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @Override
     public void onFilterSelected(@NonNull String id, @NonNull String name) {
-        dismissDialogIfOpened();
+        dialogManager.dismissDialogIfOpened();
         displaySelectedFilter(id, name);
     }
 
@@ -577,7 +613,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.btnSave)
     public void onSaveClick() {
-        presenter.onSaveClick();
+        if (!fieldContainsError()) {
+            presenter.onSaveClick();
+        }
     }
 
 
@@ -607,6 +645,47 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private boolean isValidUri(Uri uriImg) {
         String mimeType = ImagePickerUtil.getMimeType(this, uriImg);
         return mimeType.equals(ImagePickerUtil.EXTENSION_JPEG) || mimeType.equals(ImagePickerUtil.EXTENSION_JPG) || mimeType.equals(ImagePickerUtil.EXTENSION_PNG);
+    }
+
+
+    private <T extends IFilterModel> void setupCorrectFilterType(List<T> filters) {
+        switch (editProfileField) {
+            case CHANGE_DEPARTMENT:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.DEPARTMENT);
+                break;
+
+            case CHANGE_LEAD:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.LEAD);
+                break;
+
+            case CHANGE_ROOM:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.ROOM);
+                break;
+
+            case CHANGE_REASON:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.REASON);
+                break;
+
+            case CHANGE_DATE_OF_BIRTH:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.DATE_OF_BIRTH);
+                break;
+
+            case CHANGE_FIRST_DAY:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.FIRST_WORKING_DAY);
+                break;
+
+            case CHANGE_FIRST_DAY_IN_IT:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.FIRST_WORKING_DAY_IN_IT);
+                break;
+
+            case CHANGE_TRIAL_PERIOD:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.TRIAL_PERIOD_ENDS);
+                break;
+
+            case CHANGE_LAST_WORKING_DAY:
+                dialogManager.showSelectFilterAlertDialog(filters, FilterTypes.LAST_WORKING_DAY);
+                break;
+        }
     }
 
 
@@ -658,65 +737,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(filters, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        setupDialogTitle(tvTitle);
-
-        setupSelectFilterRecyclerView(view, filters);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        switch (editProfileField) {
-            case CHANGE_DEPARTMENT:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
-                break;
-
-            case CHANGE_LEAD:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
-                break;
-
-            case CHANGE_ROOM:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_room));
-                break;
-
-            case CHANGE_REASON:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_reason));
-                break;
-        }
-    }
-
-
-    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, false);
-        rvFilters.setAdapter(adapter);
-        adapter.refresh(results);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-
     private void initUi() {
+        dialogManager = new FilterDialogManager(this, this);
         setupActionBar();
         ivDownload.setVisibility(View.GONE);
         presenter.setupPage();
@@ -747,6 +769,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
         });
 
+        etChangeEmail.addTextChangedListener(getTextChangeListener(etChangeEmail, EditProfileFields.CHANGE_EMAIL));
         etChangePassword.addTextChangedListener(getTextChangeListener(etChangePassword, EditProfileFields.CHANGE_PASSWORD));
         etFirstName.addTextChangedListener(getTextChangeListener(etFirstName, EditProfileFields.CHANGE_FIRST_NAME));
         etLastName.addTextChangedListener(getTextChangeListener(etLastName, EditProfileFields.CHANGE_LAST_NAME));
@@ -793,7 +816,13 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    protected void showSaveChangesDialog() {
+    private boolean fieldContainsError() {
+        return tilEmail.isErrorEnabled() || tilPassword.isErrorEnabled() || tilFirstName.isErrorEnabled() || tilLastName.isErrorEnabled()
+                || tilPdpLink.isErrorEnabled() || tilOneToOneLink.isErrorEnabled();
+    }
+
+
+    private void showSaveChangesDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_save_changes))
                 .setMessage(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_message))

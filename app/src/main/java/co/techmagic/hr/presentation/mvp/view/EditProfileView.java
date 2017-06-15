@@ -46,9 +46,13 @@ public interface EditProfileView {
 
     void onEmailError();
 
+    void showEmptyEmailError();
+
     void onPasswordError();
 
     void hidePasswordError();
+
+    void showEmptyPasswordError();
 
     /* Personal section */
 
@@ -58,9 +62,21 @@ public interface EditProfileView {
 
     void showFirstName(@NonNull String firstName);
 
+    void onFirstNameError();
+
+    void showEmptyFirstNameError();
+
+    void hideFirstNameError();
+
     void enableLastName();
 
     void showLastName(@NonNull String lastName);
+
+    void onLastNameError();
+
+    void showEmptyLastNameError();
+
+    void hideLastNameError();
 
     void allowClickOnBirthDateView();
 

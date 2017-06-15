@@ -46,6 +46,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
 
+    private static final String FIREBASE_ANALYTICS_EMPLOYEE_PROFILE_CLICK = "Employee Profile click";
+    private static final String FIREBASE_ANALYTICS_MY_PROFILE_CLICK = "MyProfile click";
+    private static final String FIREBASE_ANALYTICS_CALENDAR_CLICK = "Calendar click";
+    private static final String FIREBASE_ANALYTICS_HOME_CLICK = "Home click";
+    private static final String FIREBASE_ANALYTICS_SEARCH_CLICK = "Search click";
+
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
 
@@ -141,7 +147,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 Bundle analyticsBundle = new Bundle();
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
-                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Employee Profile click");
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_EMPLOYEE_PROFILE_CLICK);
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
 
                 addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
@@ -152,7 +158,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 Bundle analyticsBundle = new Bundle();
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
                 analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
-                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "MyProfile click");
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_MY_PROFILE_CLICK);
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
 
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
@@ -275,7 +281,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         CalendarFragment fragment = CalendarFragment.newInstance();
 
         Bundle analyticsBundle = new Bundle();
-        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar click");
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_CALENDAR_CLICK );
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
 
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
@@ -316,7 +322,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
                         Bundle analyticsBundle = new Bundle();
-                        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Ninjas click");
+                        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_HOME_CLICK);
                         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
 
                         clearFragmentsBackStack(this);
@@ -340,7 +346,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
 
         Bundle analyticsBundle = new Bundle();
-        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Search click");
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_SEARCH_CLICK);
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
 
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
