@@ -11,10 +11,10 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
-import co.techmagic.hr.domain.pojo.DatePeriodDto
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
+import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
@@ -82,8 +82,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
         rgPeriods.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.rbFirstPeriod -> run { toast("First radio") }
-                R.id.rbSecondPeriod -> run { toast("Second radio") }
+                R.id.rbFirstPeriod -> run { presenter.onFirstPeriodSelected() }
+                R.id.rbSecondPeriod -> run { presenter.onSecondPeriodSelected() }
             }
         }
         vgTimeOffType.setOnClickListener { presenter.onTimeOffTypeClicked() }
@@ -94,13 +94,17 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
-            override fun showPeriods(datePeriodDto: List<DatePeriodDto>) {
-                rbFirstPeriod.text = dateFormat.format(datePeriodDto[0].dateFrom) + " - " + dateFormat.format(datePeriodDto[0].dateTo)
-                rbSecondPeriod.text = dateFormat.format(datePeriodDto[1].dateFrom) + " - " + dateFormat.format(datePeriodDto[1].dateTo)
+            override fun showData(availableTimeOffsData: AvailableTimeOffsData) {
+                with(availableTimeOffsData.timeOffsMap.keys) {
+                    rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
+                    rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)
+
+                    presenter.onFirstPeriodSelected()
+                }
             }
 
-            override fun showTimeOffsData() {
-                showRemainedTimeOffs()
+            override fun showTimeOffsData(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
+                showRemainedTimeOffs(remainedTimeOffs)
             }
 
             override fun showTimeOffsDataError() {
@@ -115,7 +119,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     else -> run { toast("wrong type") }
                 }
 
-                showRemainedTimeOffs()
+                when (rgPeriods.checkedRadioButtonId) {
+                    R.id.rbFirstPeriod -> run {presenter.onFirstPeriodSelected()}
+                    R.id.rbSecondPeriod -> run {presenter.onSecondPeriodSelected()}
+                }
             }
 
             override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean) {
@@ -146,8 +153,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         }
     }
 
-    private fun showRemainedTimeOffs() {
-        val allTimeOffsDto: RemainedTimeOffsAmountDto? = presenter.remainedDays
+    private fun showRemainedTimeOffs(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
+        val allTimeOffsDto: RemainedTimeOffsAmountDto? = remainedTimeOffs
 
         if (allTimeOffsDto != null) {
             when (presenter.timeOffType) {
