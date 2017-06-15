@@ -5,17 +5,11 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,10 +20,10 @@ import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
-import co.techmagic.hr.data.entity.IFilterModel;
-import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.SearchPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.SearchViewImpl;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -49,8 +43,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
     TextView tvSelProject;
     SearchView searchView;
 
+    private FilterDialogManager dialogManager;
     private FilterTypes filterTypes = FilterTypes.NONE;
-    private AlertDialog dialog;
 
     private String selDepId;
     private String selLeadId;
@@ -63,6 +57,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
+        dialogManager = new FilterDialogManager(this, this);
         presenter.performGetFiltersRequests();
     }
 
@@ -79,8 +74,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             @Override
             public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(departments);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(departments, filterTypes);
             }
 
             @Override
@@ -97,8 +92,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             @Override
             public void showFilterByLeadDialog(@NonNull List<FilterLead> leads) {
                 filterTypes = FilterTypes.LEAD;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(leads);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(leads, filterTypes);
             }
 
             @Override
@@ -116,8 +111,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             @Override
             public void showFilterByProjectDialog(@NonNull List<Filter> projects) {
                 filterTypes = FilterTypes.PROJECT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(projects);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(projects, filterTypes);
             }
 
             @Override
@@ -171,8 +166,8 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     @Override
     public void onBackPressed() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+        if (dialogManager.isDialogActive()) {
+            dialogManager.dismissDialogIfOpened();
         } else {
             KeyboardUtil.hideKeyboard(this, getCurrentFocus());
             Intent i = new Intent();
@@ -221,7 +216,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
 
     private void handleSelection(String id, String name) {
-        dismissDialogIfOpened();
+        dialogManager.dismissDialogIfOpened();
 
         switch (filterTypes) {
             case DEPARTMENT:
@@ -309,59 +304,5 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
                 return false;
             }
         });
-    }
-
-
-    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(filters, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        setupDialogTitle(tvTitle);
-
-        setupSelectFilterRecyclerView(view, filters);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        switch (filterTypes) {
-            case DEPARTMENT:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
-                break;
-
-            case LEAD:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_lead));
-                break;
-
-            case PROJECT:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_project));
-                break;
-        }
-    }
-
-
-    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, false);
-        rvFilters.setAdapter(adapter);
-        adapter.refresh(results);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
     }
 }

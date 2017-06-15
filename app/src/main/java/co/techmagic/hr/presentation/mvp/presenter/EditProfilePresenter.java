@@ -140,20 +140,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleEmailChange(String newEmail) {
-        final String email = data.getEmail();
-
         if (TextUtil.isValidEmail(newEmail)) {
             view.hideEmailError();
-
-            if (newEmail.equals(email)) {
-                data.setEmail(email);
-                hasChanges = false;
-            } else {
-                data.setEmail(newEmail);
-                hasChanges = true;
-            }
+            data.setEmail(newEmail);
+            hasChanges = true;
         } else {
             view.onEmailError();
+        }
+
+        // In case if user left field empty
+        if (newEmail != null && newEmail.isEmpty()) {
+            view.showEmptyEmailError();
+            hasChanges = true;
         }
     }
 
@@ -162,34 +160,48 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (TextUtil.isValidPassword(newPassword)) {
             view.hidePasswordError();
             data.setPassword(newPassword);
+            hasChanges = true;
         } else {
             view.onPasswordError();
-            data.setPassword(null);
+        }
+
+        // In case if user left field empty
+        if (newPassword != null && newPassword.isEmpty()) {
+            view.showEmptyPasswordError();
+            hasChanges = true;
         }
     }
 
 
     public void handleFirstNameChange(String newFirstName) {
-        final String firstName = data.getFirstName();
-
-        if (newFirstName.equals(firstName)) {
-            data.setFirstName(firstName);
-            hasChanges = false;
-        } else {
+        if (TextUtil.isValidName(newFirstName)) {
+            view.hideFirstNameError();
             data.setFirstName(newFirstName);
+            hasChanges = true;
+        } else {
+            view.onFirstNameError();
+        }
+
+        // In case if user left field empty
+        if (newFirstName != null && newFirstName.isEmpty()) {
+            view.showEmptyFirstNameError();
             hasChanges = true;
         }
     }
 
 
     public void handleLastNameChange(String newLastName) {
-        final String lastName = data.getLastName();
-
-        if (newLastName.equals(lastName)) {
-            data.setLastName(lastName);
-            hasChanges = false;
-        } else {
+        if (TextUtil.isValidName(newLastName)) {
+            view.hideLastNameError();
             data.setLastName(newLastName);
+            hasChanges = true;
+        } else {
+            view.onLastNameError();
+        }
+
+        // In case if user left field empty
+        if (newLastName != null && newLastName.isEmpty()) {
+            view.showEmptyLastNameError();
             hasChanges = true;
         }
     }
@@ -213,9 +225,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
         }
 
-        if (hasChanges) {
-            data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
-        }
+        data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
     }
 
 
@@ -227,6 +237,12 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = false;
         } else {
             data.setSkype(newSkype);
+            hasChanges = true;
+        }
+
+        // In case if user left field empty
+        if (newSkype.isEmpty()) {
+            data.setSkype(null);
             hasChanges = true;
         }
     }
@@ -242,11 +258,20 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             data.setPhone(newPhone);
             hasChanges = true;
         }
+
+        // In case if user left field empty
+        if (newPhone.isEmpty()) {
+            data.setPhone(null);
+            hasChanges = true;
+        }
     }
 
 
     public void handleEmergencyContactNumberChange(String newNumber) {
-        if (newNumber == null) {
+        if (newNumber == null || newNumber.isEmpty()) {
+            emergencyContact.setPhone(null);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
             return;
         }
 
@@ -272,7 +297,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleEmergencyContactChange(String newName) {
-        if (newName == null) {
+        if (newName == null || newName.isEmpty()) {
+            emergencyContact.setName(null);
+            data.setEmergencyContact(emergencyContact);
+            hasChanges = true;
             return;
         }
 
@@ -328,29 +356,27 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleCityOfRelocationChange(String newCity) {
-        final String city = data.getRelocationCity();
-
-        if (newCity.equals(city)) {
-            data.setRelocationCity(city);
-            hasChanges = false;
-        } else {
-            data.setRelocationCity(newCity);
+        if (newCity.isEmpty()) {
+            data.setRelocationCity(null);
             hasChanges = true;
+            return;
         }
+
+        data.setRelocationCity(newCity);
+        hasChanges = true;
     }
 
 
     public void handlePresentationChange(String newDescription) {
-        final String desc = data.getDescription();
         final String fmtDesc = TextUtil.getFormattedText(newDescription);
-
-        if (fmtDesc.equals(desc)) {
-            data.setDescription(desc);
-            hasChanges = false;
-        } else {
-            data.setDescription(fmtDesc);
+        if (fmtDesc.isEmpty()) {
+            data.setDescription(null);
             hasChanges = true;
+            return;
         }
+
+        data.setDescription(fmtDesc);
+        hasChanges = true;
     }
 
 
@@ -457,6 +483,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         } else {
             view.showPdpError();
         }
+
+        // In case if user left field empty
+        if (newLink.isEmpty()) {
+            view.hidePdpError();
+            data.setPdpLink(null);
+            hasChanges = true;
+        }
     }
 
 
@@ -475,6 +508,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             }
         } else {
             view.showOneToOneError();
+        }
+
+        // In case if user left field empty
+        if (newLink.isEmpty()) {
+            view.hideOneToOneError();
+            data.setOneToOneLink(null);
+            hasChanges = true;
         }
     }
 
@@ -515,16 +555,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleCommentsChange(String newComments) {
-        final String comments = data.getReasonComments();
         final String fmtDesc = TextUtil.getFormattedText(newComments);
-
-        if (fmtDesc.equals(comments)) {
-            data.setReasonComments(comments);
-            hasChanges = false;
-        } else {
-            data.setReasonComments(fmtDesc);
+        if (fmtDesc.isEmpty()) {
+            data.setReasonComments(null);
             hasChanges = true;
         }
+
+        data.setReasonComments(fmtDesc);
+        hasChanges = true;
     }
 
 

@@ -6,12 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,10 +18,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Filter;
-import co.techmagic.hr.data.entity.IFilterModel;
-import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.NumberDatePickerFragment;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -59,9 +54,9 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     @BindView(R.id.tvCalendarSelProject)
     TextView tvSelProject;
 
+    private FilterDialogManager dialogManager;
     private FilterTypes filterTypes = FilterTypes.NONE;
     private ActionBar actionBar;
-    private AlertDialog dialog;
 
     private boolean isMyTeamChecked;
     private long fromInMillis = 0;
@@ -94,7 +89,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
     @Override
     public void onBackPressed() {
-        dismissDialogIfOpened();
+        dialogManager.dismissDialogIfOpened();
         onBackClickWithSetResult();
     }
 
@@ -131,8 +126,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             @Override
             public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(departments);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(departments, filterTypes);
             }
 
             @Override
@@ -148,8 +143,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             @Override
             public void showFilterByProjectDialog(@NonNull List<Filter> projects) {
                 filterTypes = FilterTypes.PROJECT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(projects);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(projects, filterTypes);
             }
 
             @Override
@@ -299,7 +294,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
 
     private void handleSelection(String filterId, String name) {
-        dismissDialogIfOpened();
+        dialogManager.dismissDialogIfOpened();
 
         switch (filterTypes) {
             case DEPARTMENT:
@@ -315,57 +310,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
-    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(filters, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        setupDialogTitle(tvTitle);
-
-        setupSelectFilterRecyclerView(view, filters);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        switch (filterTypes) {
-            case DEPARTMENT:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
-                break;
-
-            case PROJECT:
-                tvTitle.setText(getString(R.string.tm_hr_calendar_filters_activity_filter_by_project));
-                break;
-        }
-    }
-
-
-    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, false);
-        rvFilters.setAdapter(adapter);
-        adapter.refresh(results);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-
     private void initUi() {
+        dialogManager = new FilterDialogManager(this, this);
         setupActionBar();
         getData();
         swTeam.setChecked(isMyTeamChecked);

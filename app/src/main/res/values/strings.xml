@@ -7,8 +7,10 @@
     <string name="message_connection_error">Please check your internet connection</string>
     <string name="message_invalid_email">Invalid Email</string>
     <string name="message_invalid_password">Invalid Password</string>
+    <string name="message_invalid_first_name">Invalid first name</string>
+    <string name="message_invalid_last_name">Invalid last name</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
-    <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <string name="message_you_can_not_leave_this_empty">You can’t leave this empty</string>
     <string name="message_wrong_url">Wrong url</string>
     <string name="message_invalid_file_extension">Invalid extension. Please try again.</string>
     <!--EmployeeDetailsFragment-->
@@ -53,11 +55,17 @@
     <string name="tm_hr_search_activity_text_cancel">Cancel</string>
     <string name="tm_hr_search_activity_text_apply">Apply Filters</string>
     <string name="tm_hr_search_activity_text_filter_by">FILTER BY</string>
+    <string name="tm_hr_search_activity_text_filter_company">Select company</string>
     <string name="tm_hr_search_activity_text_filter_by_department">Department</string>
     <string name="tm_hr_search_activity_text_filter_by_lead">Lead</string>
     <string name="tm_hr_search_activity_text_filter_by_project">Project</string>
     <string name="tm_hr_search_activity_text_filter_by_room">Room</string>
     <string name="tm_hr_search_activity_text_filter_by_reason">Reason</string>
+    <string name="tm_hr_search_activity_text_filter_date_of_birth">Date of birth</string>
+    <string name="tm_hr_search_activity_text_filter_first_working_day">First working day</string>
+    <string name="tm_hr_search_activity_text_filter_first_day_in_it">First day in IT</string>
+    <string name="tm_hr_search_activity_text_filter_trial_period">Trial period ends</string>
+    <string name="tm_hr_search_activity_text_filter_last_working">Last working day</string>
     <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
     <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
 
