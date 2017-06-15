@@ -212,7 +212,12 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void showDatePickerDialog() {
-                DatePickerFragment datePicker = DatePickerFragment.newInstance();
+                DatePickerFragment datePicker;
+                if (editProfileField == EditProfileFields.CHANGE_TRIAL_PERIOD || editProfileField == EditProfileFields.CHANGE_LAST_WORKING_DAY) {
+                    datePicker = DatePickerFragment.newInstance(true);
+                } else {
+                    datePicker = DatePickerFragment.newInstance(false);
+                }
                 datePicker.show(getSupportFragmentManager(), DATE_PICKER_FRAGMENT_TAG);
             }
 

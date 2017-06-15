@@ -5,10 +5,11 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 import co.techmagic.hr.data.entity.Department;
-import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.Reason;
 import co.techmagic.hr.data.entity.Room;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.util.DateUtil;
 
 
@@ -23,8 +24,8 @@ public class EditProfileRequest {
     @SerializedName("_lead")
     private Lead lead;
 
-    /*@SerializedName("_reason")
-    private Reason reason;*/
+    @SerializedName("_reason")
+    private Reason reason;
 
     @SerializedName("_id")
     private String id;
@@ -54,13 +55,13 @@ public class EditProfileRequest {
     private String lastName;
 
     @SerializedName("firstWorkingDay")
-    private long firstWorkingDay;
+    private Long firstWorkingDay;
 
     @SerializedName("generalFirstWorkingDay")
-    private long generalFirstWorkingDay;
+    private Long generalFirstWorkingDay;
 
     @SerializedName("lastWorkingDay")
-    private long lastWorkingDay;
+    private Long lastWorkingDay;
 
     @SerializedName("gender")
     private int gender;
@@ -100,26 +101,16 @@ public class EditProfileRequest {
 
     public EditProfileRequest(@NonNull UserProfile user) {
         Department dep = user.getDepartment();
-        if (dep == null) {
-            department = null;
-        } else {
-            department = dep;
-        }
+        department = dep == null ? null : dep;
 
         Room r = user.getRoom();
-        if (r != null) {
-            room = r;
-        }
+        room = r == null ? null : r;
 
         Lead l = user.getLead();
-        if (l != null) {
-            lead = l;
-        }
+        lead = l == null ? null : l;
 
-        /*Reason rsn = user.getReason();
-        if (rsn != null) {
-            reason = new RoomRequest(rsn.getId(), rsn.getName());
-        }*/
+        Reason rsn = user.getReason();
+        reason = rsn == null ? null : rsn;
 
         id = user.getId();
         company = user.getCompany();
@@ -145,7 +136,7 @@ public class EditProfileRequest {
         pdpLink = user.getPdpLink();
         oneToOneLink = user.getOneToOneLink();
         reasonComments = user.getReasonComments();
-        this.password = password;
+        password = user.getPassword();
     }
 
     public String getId() {

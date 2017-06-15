@@ -435,16 +435,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         String desc = data.getDescription();
         String fmtDesc = TextUtil.getFormattedText(newDescription);
 
-        if (fmtDesc.isEmpty()) {
-            data.setDescription(null);
-            hasChanges = true;
-            return;
-        }
-
         if (fmtDesc.equals(desc)) {
             data.setDescription(fmtDesc);
             hasChanges = false;
+            return;
         }
+
+        if (fmtDesc.isEmpty()) {
+            data.setDescription(null);
+        } else {
+            data.setDescription(newDescription);
+        }
+
+        hasChanges = true;
     }
 
 
@@ -626,16 +629,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         String comment = data.getReasonComments();
         String fmtCmnt = TextUtil.getFormattedText(newComments);
 
-        if (fmtCmnt.isEmpty()) {
-            data.setReasonComments(null);
-            hasChanges = true;
+        if (fmtCmnt.equals(comment)) {
+            data.setReasonComments(fmtCmnt);
+            hasChanges = false;
             return;
         }
 
-        if (fmtCmnt.equals(comment)) {
-            data.setDescription(fmtCmnt);
-            hasChanges = false;
+        if (fmtCmnt.isEmpty()) {
+            data.setReasonComments(null);
+        } else {
+            data.setReasonComments(fmtCmnt);
         }
+
+        hasChanges = true;
     }
 
 

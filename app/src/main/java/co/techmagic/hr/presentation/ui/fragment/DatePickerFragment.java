@@ -15,11 +15,16 @@ import co.techmagic.hr.presentation.util.DateUtil;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    private static final String ALLOW_SELECT_FUTURE_DATE = "allow_select_future_date";
     private onDatePickerSelectionListener datePickerSelectionListener;
 
 
-    public static DatePickerFragment newInstance() {
-        return new DatePickerFragment();
+    public static DatePickerFragment newInstance(boolean allowFutureDate) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ALLOW_SELECT_FUTURE_DATE, allowFutureDate);
+        DatePickerFragment fragment = new DatePickerFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
@@ -33,13 +38,20 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Bundle b = getArguments();
+        boolean allowFutureDate = false;
+
+        if (b != null) {
+            allowFutureDate = b.getBoolean(ALLOW_SELECT_FUTURE_DATE);
+        }
+
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
-        dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+        dialog.getDatePicker().setMaxDate(allowFutureDate ? DateUtil.getDateAfterYearInMillis() : c.getTimeInMillis());
         dialog.setCancelable(false);
 
         return dialog;
@@ -57,6 +69,13 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         if (fmtDate != null) {
             datePickerSelectionListener.onDateSelected(fmtDate);
         }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        datePickerSelectionListener = null;
     }
 
 
