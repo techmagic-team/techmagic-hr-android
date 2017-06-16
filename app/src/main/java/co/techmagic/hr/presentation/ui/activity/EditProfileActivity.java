@@ -206,6 +206,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void showImageSizeIsTooBigMessage() {
+                view.showMessage(getString(R.string.message_image_too_big));
+            }
+
+            @Override
             public void loadEmployeePhoto(@Nullable String photoUrl) {
                 presenter.loadPhoto(photoUrl, ivPhoto);
             }
@@ -640,7 +645,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         }
 
         if (isValidUri(imageUri)) {
-            presenter.sendPhoto(imageUri, this);
+            presenter.preparePhotoAndSend(imageUri, this);
         } else {
             view.showMessage(getString(R.string.message_invalid_file_extension));
         }
@@ -649,7 +654,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     private boolean isValidUri(Uri uriImg) {
         String mimeType = ImagePickerUtil.getMimeType(this, uriImg);
-        return mimeType.equals(ImagePickerUtil.EXTENSION_JPEG) || mimeType.equals(ImagePickerUtil.EXTENSION_JPG) || mimeType.equals(ImagePickerUtil.EXTENSION_PNG);
+        return ImagePickerUtil.EXTENSION_JPEG.equals(mimeType) || ImagePickerUtil.EXTENSION_JPG.equals(mimeType) || ImagePickerUtil.EXTENSION_PNG.equals(mimeType);
     }
 
 

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -35,6 +36,7 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.util.DateUtil;
+import co.techmagic.hr.presentation.util.ImagePickerUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import co.techmagic.hr.presentation.util.TextUtil;
 import okhttp3.MediaType;
@@ -46,6 +48,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private static final int GENDER_MALE = 0;
     private static final int GENDER_FEMALE = 1;
+    private static final long IMAGE_SIZE_5MB = 5242880;
 
     private IUserRepository userRepository;
     private IEmployeeRepository employeeRepository;
@@ -93,8 +96,21 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void sendPhoto(Uri uri, Context context) {
-        MultipartBody.Part multipartBody = prepareFilePart("photo", uri, context);
+    public void preparePhotoAndSend(Uri uri, Context context) {
+        File file = new File(uri.getPath());
+        byte[] compressedImage = ImagePickerUtil.compressImage(uri, context);
+
+        if (file.length() > IMAGE_SIZE_5MB) {
+            view.showImageSizeIsTooBigMessage();
+            return;
+        }
+
+        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+
+        if (multipartBody == null) {
+            return;
+        }
+
         performUploadPhotoRequestAndUpdateUser(multipartBody);
     }
 
@@ -318,7 +334,8 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         if (newNumber == null || newNumber.isEmpty()) {
-            emergencyContact.setPhone(null);
+            // Should put empty string here
+            emergencyContact.setPhone("");
             data.setEmergencyContact(emergencyContact);
             hasChanges = true;
             return;
@@ -357,7 +374,8 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         if (newName == null || newName.isEmpty()) {
-            emergencyContact.setName(null);
+            // Should put empty string here
+            emergencyContact.setName("");
             data.setEmergencyContact(emergencyContact);
             hasChanges = true;
             return;
@@ -907,13 +925,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    private MultipartBody.Part prepareFilePart(String partName, Uri uri, Context context) {
-        File file = new File(uri.getPath());
-        RequestBody requestFile = RequestBody.create(
-                MediaType.parse(context.getContentResolver().getType(uri)),
-                file);
+    private MultipartBody.Part prepareFilePart(String partName, String fileName, byte[] compressedImage, Context context, Uri uri) {
+        String mimeType = ImagePickerUtil.getMimeType(context, uri);
 
-        return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+        if (mimeType == null) {
+            return null;
+        }
+
+        RequestBody requestFile = RequestBody.create(
+                MediaType.parse(mimeType),
+                compressedImage);
+
+        return MultipartBody.Part.createFormData(partName, fileName, requestFile);
     }
 
 
@@ -984,7 +1007,12 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     private void performSaveUserRequest() {
         view.showProgress();
+
         final EditProfileRequest request = new EditProfileRequest(data);
+        String objectBodyAsString = new Gson().toJson(request);
+
+        System.out.println(objectBodyAsString);
+
         saveEditedUserProfile.execute(request, new DefaultSubscriber<UserProfile>(view) {
             @Override
             public void onNext(UserProfile profile) {

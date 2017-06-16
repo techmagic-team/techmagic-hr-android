@@ -2,8 +2,6 @@ package co.techmagic.hr.data.request;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.SerializedName;
-
 import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
@@ -15,105 +13,50 @@ import co.techmagic.hr.presentation.util.DateUtil;
 
 public class EditProfileRequest {
 
-    @SerializedName("_department")
-    private Department department;
-
-    @SerializedName("_room")
-    private Room room;
-
-    @SerializedName("_lead")
-    private Lead lead;
-
-    @SerializedName("_reason")
-    private Reason reason;
-
-    @SerializedName("_id")
-    private String id;
-
-    @SerializedName("_company")
-    private String company;
-
-    @SerializedName("birthday")
+    private Department _department;
+    private Room _room;
+    private Lead _lead;
+    private Reason _reason;
+    private String _id;
+    private String _company;
     private String birthday;
-
-    @SerializedName("description")
     private String description;
-
-    @SerializedName("email")
     private String email;
-
-    @SerializedName("password")
     private String password;
-
-    @SerializedName("emergencyContact")
     private EmergencyContact emergencyContact;
-
-    @SerializedName("firstName")
     private String firstName;
-
-    @SerializedName("lastName")
     private String lastName;
-
-    @SerializedName("firstWorkingDay")
-    private Long firstWorkingDay;
-
-    @SerializedName("generalFirstWorkingDay")
-    private Long generalFirstWorkingDay;
-
-    @SerializedName("lastWorkingDay")
-    private Long lastWorkingDay;
-
-    @SerializedName("gender")
+    private Long firstWorkingDay = null;
+    private Long generalFirstWorkingDay = null;
+    private Long lastWorkingDay = null;
     private int gender;
-
-    @SerializedName("phone")
     private String phone;
-
-    @SerializedName("photo")
     private String photo;
-
-    @SerializedName("photoOrigin")
     private String photoOrigin;
-
-    @SerializedName("relocationCity")
     private String relocationCity;
-
-    @SerializedName("role")
     private int role;
-
-    @SerializedName("skype")
     private String skype;
-
-    @SerializedName("isActive")
     private boolean isActive;
-
-    @SerializedName("trialPeriodEnds")
-    private String trialPeriodEnds;
-
-    @SerializedName("_pdp")
-    private String pdpLink;
-
-    @SerializedName("_oneToOne")
-    private String oneToOneLink;
-
-    @SerializedName("reason_comments")
-    private String reasonComments;
+    private String trialPeriodEnds = null;
+    private String _pdp;
+    private String _oneToOne;
+    private String reason_comments;
 
     public EditProfileRequest(@NonNull UserProfile user) {
         Department dep = user.getDepartment();
-        department = dep == null ? null : dep;
+        _department = dep == null ? null : dep;
 
         Room r = user.getRoom();
-        room = r == null ? null : r;
+        _room = r == null ? null : r;
 
         Lead l = user.getLead();
-        lead = l == null ? null : l;
+        _lead = l == null ? null : l;
 
         Reason rsn = user.getReason();
-        reason = rsn == null ? null : rsn;
+        _reason = rsn == null ? null : rsn;
 
-        id = user.getId();
-        company = user.getCompany();
+        _id = user.getId();
+        _company = user.getCompany();
         birthday = user.getBirthday();
         description = user.getDescription();
         email = user.getEmail();
@@ -121,9 +64,25 @@ public class EditProfileRequest {
         emergencyContact = user.getEmergencyContact();
         firstName = user.getFirstName();
         lastName = user.getLastName();
-        firstWorkingDay = DateUtil.getFormattedDateInMillis(user.getFirstWorkingDay());
-        generalFirstWorkingDay = DateUtil.getFormattedDateInMillis(user.getGeneralFirstWorkingDay());
-        lastWorkingDay = DateUtil.getFormattedDateInMillis(user.getLastWorkingDay());
+
+        if (user.getFirstWorkingDay() == null) {
+            firstWorkingDay = null;
+        } else {
+            firstWorkingDay = DateUtil.getFormattedDateInMillis(user.getFirstWorkingDay());
+        }
+
+        if (user.getGeneralFirstWorkingDay() == null) {
+            generalFirstWorkingDay = null;
+        } else {
+            generalFirstWorkingDay = DateUtil.getFormattedDateInMillis(user.getGeneralFirstWorkingDay());
+        }
+
+        if (user.getLastWorkingDay() == null) {
+            lastWorkingDay = null;
+        } else {
+            lastWorkingDay = DateUtil.getFormattedDateInMillis(user.getLastWorkingDay());
+        }
+
         gender = user.getGender();
         phone = user.getPhone();
         photo = user.getPhoto();
@@ -133,13 +92,13 @@ public class EditProfileRequest {
         skype = user.getSkype();
         isActive = user.isActive();
         trialPeriodEnds = user.getTrialPeriodEnds();
-        pdpLink = user.getPdpLink();
-        oneToOneLink = user.getOneToOneLink();
-        reasonComments = user.getReasonComments();
+        _pdp = user.getPdpLink();
+        _oneToOne = user.getOneToOneLink();
+        reason_comments = user.getReasonComments();
         password = user.getPassword();
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 }

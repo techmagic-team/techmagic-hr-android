@@ -16,6 +16,8 @@ public interface EditProfileView {
 
     void pickUpPhoto();
 
+    void showImageSizeIsTooBigMessage();
+
     void loadEmployeePhoto(@Nullable String photoUrl);
 
     void showDatePickerDialog();

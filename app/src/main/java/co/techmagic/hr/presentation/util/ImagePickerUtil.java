@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +24,9 @@ import java.util.List;
  */
 public class ImagePickerUtil {
 
-    public static final String EXTENSION_JPEG = "jpeg";
-    public static final String EXTENSION_JPG = "jpg";
-    public static final String EXTENSION_PNG = "png";
+    public static final String EXTENSION_JPEG = "image/jpeg";
+    public static final String EXTENSION_JPG = "image/jpg";
+    public static final String EXTENSION_PNG = "image/png";
 
     private static final String CHOOSER_TITLE = "Select image to upload";
     private static final String CAMERA_IMG_NAME = "cameraImage.jpeg";
@@ -117,20 +120,40 @@ public class ImagePickerUtil {
 
 
     public static String getMimeType(Context context, Uri uri) {
-        String extension;
+        String mimeType = null;
 
-        //Check uri format to avoid null
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            //If scheme is a content
-            final MimeTypeMap mime = MimeTypeMap.getSingleton();
-            extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
         } else {
-            //If scheme is a File
-            //This will replace white spaces with %20 and also other special characters. This will avoid returning null values on file name with spaces and special characters.
-            extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
 
+
+    public static byte[] compressImage(Uri uri, Context context) {
+        Bitmap bitmap = getBitmapFromUri(context, uri);
+
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+            return stream.toByteArray();
         }
 
-        return extension;
+        return new byte[0];
+    }
+
+
+    private static Bitmap getBitmapFromUri(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 }

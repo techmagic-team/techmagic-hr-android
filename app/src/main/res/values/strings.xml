@@ -27,6 +27,9 @@
     <string name="message_copied_to_clipboard">Copied to clipboard!</string>
     <string name="message_successfully_saved">Successfully saved</string>
     <string name="message_error">Error while saving changes</string>
+    <!-- EditProfileActivity -->
+    <string name="message_image_too_big">Filesize exceeds 5mb. Resize the picture or choose a different one</string>
+
 
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
