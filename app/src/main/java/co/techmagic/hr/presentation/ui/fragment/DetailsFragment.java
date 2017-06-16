@@ -200,7 +200,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     protected DetailsViewImpl initView() {
         return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
-            public void loadEmployeePhoto(@Nullable String photoUrl) {
+            public void loadEmployeePhoto(@Nullable String url) {
+                photoUrl = url;
                 presenter.loadPhoto(photoUrl, ivPhoto);
                 if (photoUrl == null) {
                     setupNoPhotoLayout();
