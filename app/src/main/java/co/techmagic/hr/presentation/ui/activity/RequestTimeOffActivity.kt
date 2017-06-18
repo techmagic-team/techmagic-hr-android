@@ -15,6 +15,7 @@ import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
+import co.techmagic.hr.presentation.pojo.PeriodPair
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
@@ -49,10 +50,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         actionBar = supportActionBar
         actionBar?.setHomeButtonEnabled(true)
         actionBar?.setTitle(R.string.tm_hr_request_time_off_title)
-
-        if (presenter.timeOffType == null) {
-            presenter.onTimeOffTypeSelected(TimeOffType.VACATION)
-        }
     }
 
     override fun onStart() {
@@ -94,8 +91,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
-            override fun showData(availableTimeOffsData: AvailableTimeOffsData) {
-                with(availableTimeOffsData.timeOffsMap.keys) {
+            override fun showUserPeriods(userPeriods: List<PeriodPair>) {
+                with(userPeriods) {
                     rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
                     rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)
 
@@ -103,9 +100,26 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 }
             }
 
-            override fun showTimeOffsData(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
-                showRemainedTimeOffs(remainedTimeOffs)
+            override fun showTimeOffsData(daysAmount: Int?) {
+                if (daysAmount == null) {
+                    tvAvailableDays.visibility = View.GONE
+                } else {
+                    tvAvailableDays.visibility = View.VISIBLE
+                    tvAvailableDays.text = "Available days $daysAmount"
+                }
             }
+//            override fun showData(availableTimeOffsData: AvailableTimeOffsData) {
+//                with(availableTimeOffsData.timeOffsMap.keys) {
+//                    rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
+//                    rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)
+//
+//                    presenter.onFirstPeriodSelected()
+//                }
+//            }
+//
+//            override fun showTimeOffsData(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
+//                showRemainedTimeOffs(remainedTimeOffs)
+//            }
 
             override fun showTimeOffsDataError() {
                 toast(R.string.tm_hr_request_time_off_error_retrieving_time_off_data)
@@ -120,8 +134,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 }
 
                 when (rgPeriods.checkedRadioButtonId) {
-                    R.id.rbFirstPeriod -> run {presenter.onFirstPeriodSelected()}
-                    R.id.rbSecondPeriod -> run {presenter.onSecondPeriodSelected()}
+                    R.id.rbFirstPeriod -> run { presenter.onFirstPeriodSelected() }
+                    R.id.rbSecondPeriod -> run { presenter.onSecondPeriodSelected() }
                 }
             }
 
@@ -150,35 +164,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             override fun showTimeOffsDialog() {
                 showSelectTimeOffTypeDialog()
             }
-        }
-    }
-
-    private fun showRemainedTimeOffs(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
-        val allTimeOffsDto: RemainedTimeOffsAmountDto? = remainedTimeOffs
-
-        if (allTimeOffsDto != null) {
-            when (presenter.timeOffType) {
-                TimeOffType.VACATION -> run {
-                    val daysAmount = allTimeOffsDto.map[TimeOffType.VACATION]
-                    tvAvailableDays.visibility = View.VISIBLE
-                    tvAvailableDays.text = "Available days $daysAmount"
-
-                }
-                TimeOffType.DAYOFF -> run {
-                    val daysAmount = allTimeOffsDto.map[TimeOffType.DAYOFF]
-                    tvAvailableDays.visibility = View.VISIBLE
-                    tvAvailableDays.text = "Available days $daysAmount"
-                }
-                TimeOffType.ILLNESS -> run {
-                    val daysAmount = allTimeOffsDto.map[TimeOffType.ILLNESS]
-                    tvAvailableDays.visibility = View.VISIBLE
-                    tvAvailableDays.text = "Available days $daysAmount"
-                }
-                else -> run { tvAvailableDays.visibility = View.GONE }
-            }
-
-        } else {
-            tvAvailableDays.visibility = View.GONE
         }
     }
 

@@ -16,8 +16,6 @@ import java.util.*
  * Created by Roman Ursu on 6/6/17
  */
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
-
-//    var getAllTimeOffs: GetRemainedTimeOffs = GetRemainedTimeOffs(EmployeeRepositoryImpl())
     var getUserPeriods: GetUserPeriods = GetUserPeriods(EmployeeRepositoryImpl())
 
     var availableTimeOffsData: AvailableTimeOffsData? = null
@@ -29,29 +27,20 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var requestTimeOffDateTo: Calendar = Calendar.getInstance()
         private set
 
-    var timeOffType: TimeOffType? = null
-        private set
+    private var timeOffType: TimeOffType? = null
 
     private val userId: String = SharedPreferencesUtil.readUser().id
 
     private var selectedPeriod: PeriodPair? = null
 
     fun loadData() {
-        loadTimePeriods()
-    }
-
-    override fun onViewDetached() {
-        super.onViewDetached()
-        getUserPeriods.unsubscribe()
-    }
-
-    private fun loadTimePeriods() {
         getUserPeriods.execute(userId, object : DefaultSubscriber<AvailableTimeOffsData>() {
             override fun onNext(timeOffsData: AvailableTimeOffsData?) {
                 this@RequestTimeOffPresenter.availableTimeOffsData = timeOffsData
 
                 if (timeOffsData != null) {
-                    view?.showData(timeOffsData)
+                    val periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
+                    view?.showUserPeriods(periodPairsList)
                 }
             }
 
@@ -61,6 +50,11 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 view?.hideProgress()
             }
         })
+    }
+
+    override fun onViewDetached() {
+        super.onViewDetached()
+        getUserPeriods.unsubscribe()
     }
 
     fun onFromDateClicked() {
@@ -100,20 +94,24 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFirstPeriodSelected() {
-        return showTimeOffsData(0)
+        selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(0)
+        return showTimeOffsData()
     }
 
     fun onSecondPeriodSelected() {
-        return showTimeOffsData(1)
+        selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(1)
+        return showTimeOffsData()
     }
 
-    private fun showTimeOffsData(index: Int) {
+    private fun showTimeOffsData() {
         if (availableTimeOffsData != null) {
-            val periodPair: PeriodPair = availableTimeOffsData!!.timeOffsMap.keys.elementAt(index)
-            val remainedTimeOffs: RemainedTimeOffsAmountDto? = availableTimeOffsData?.timeOffsMap!![periodPair]
+            val remainedTimeOffs: RemainedTimeOffsAmountDto? = availableTimeOffsData?.timeOffsMap!![selectedPeriod]
 
-            view?.showTimeOffsData(remainedTimeOffs)
+            if (timeOffType == null) {
+                timeOffType = TimeOffType.VACATION
+            }
 
+            view?.showTimeOffsData(remainedTimeOffs!!.map[timeOffType])
         }
     }
 }

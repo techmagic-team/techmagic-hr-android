@@ -7,6 +7,5 @@ import java.util.*
  * Created by Roman Ursu on 6/15/17
  */
 class AvailableTimeOffsData {
-    var timeOffsMap: MutableMap<PeriodPair, RemainedTimeOffsAmountDto> = Collections.synchronizedMap(HashMap())
-        private set
+    val timeOffsMap: MutableMap<PeriodPair, RemainedTimeOffsAmountDto> = Collections.synchronizedMap(HashMap())
 }
