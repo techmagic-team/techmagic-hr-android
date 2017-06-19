@@ -58,4 +58,12 @@ public class Reason implements Parcelable {
             return new Reason[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=\"" + id + '\"' +
+                ", name=\"" + name + '\"' +
+                '}';
+    }
 }

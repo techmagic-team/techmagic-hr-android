@@ -37,7 +37,7 @@
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
     <string name="tm_hr_login_activity_text_select_company">Select company</string>
     <string name="tm_hr_login_activity_text_forgot_password">Forgot Password</string>
-    <string name="tm_hr_login_activity_hint_email">Email</string>
+    <string name="tm_hr_login_activity_hint_email">Email *</string>
     <string name="tm_hr_login_activity_hint_password">Password</string>
     <string name="tm_hr_login_activity_text_send">Send</string>
     <string name="tm_hr_login_activity_text_go_to_sign_in">Go To Sign In</string>
@@ -124,8 +124,8 @@
     <string name="tm_hr_edit_profile_activity_alert_dialog_message">You have unsaved changes. Do you want to return back?</string>
     <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
     <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
-    <string name="tm_hr_edit_profile_activity_hint_first_name">First name</string>
-    <string name="tm_hr_edit_profile_activity_hint_last_name">Last name</string>
+    <string name="tm_hr_edit_profile_activity_hint_first_name">First name * </string>
+    <string name="tm_hr_edit_profile_activity_hint_last_name">Last name * </string>
     <string name="tm_hr_edit_profile_activity_section_login_info">LOGIN INFO</string>
     <string name="tm_hr_edit_profile_activity_section_personal_info">PERSONAL INFO</string>
     <string name="tm_hr_edit_profile_activity_section_contacts">CONTACTS</string>
@@ -140,6 +140,8 @@
     <string name="tm_hr_edit_profile_activity_text_emergency_contact">Emergency contact</string>
     <string name="tm_hr_edit_profile_activity_text_city_of_relocation">City of relocation</string>
     <string name="tm_hr_edit_profile_activity_text_short_presentation">Short presentation</string>
+    <string name="tm_hr_edit_profile_activity_text_lead">Lead *</string>
+    <string name="tm_hr_edit_profile_activity_text_first_working_day">First working day * :</string>
     <string name="tm_hr_edit_profile_activity_text_pdp_link">PDP link</string>
     <string name="tm_hr_edit_profile_activity_text_one_to_one_link">One to one link</string>
     <string name="tm_hr_edit_profile_activity_text_can_sign_in">Can sign in</string>

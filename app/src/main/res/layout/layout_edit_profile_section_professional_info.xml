@@ -83,7 +83,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
-                android:text="@string/tm_hr_search_activity_text_filter_by_lead" />
+                android:text="@string/tm_hr_edit_profile_activity_text_lead" />
 
             <TextView
                 android:id="@+id/tvSelectedLead"
@@ -130,7 +130,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
-                android:text="@string/fragment_employee_details_card_view_text_first_working_day" />
+                android:text="@string/tm_hr_edit_profile_activity_text_first_working_day" />
 
             <TextView
                 android:id="@+id/tvSelectedFirstDay"

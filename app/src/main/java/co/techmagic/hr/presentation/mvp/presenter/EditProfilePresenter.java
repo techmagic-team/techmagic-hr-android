@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -146,11 +145,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void onReasonClick() {
-        final List<Filter> reasons = profileFilters.getReasons();
-        if (reasons.isEmpty()) {
-            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        // If Last Working Day Selected not selected
+        if (data.getLastWorkingDay() == null) {
+
         } else {
-            view.showFiltersInDialog(reasons);
+            final List<Filter> reasons = profileFilters.getReasons();
+            if (reasons.isEmpty()) {
+                view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+            } else {
+                view.showFiltersInDialog(reasons);
+            }
         }
     }
 
@@ -1007,10 +1011,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         view.showProgress();
 
         final EditProfileRequest request = new EditProfileRequest(data);
-        String objectBodyAsString = new Gson().toJson(request);
-
-        System.out.println(objectBodyAsString);
-
         saveEditedUserProfile.execute(request, new DefaultSubscriber<UserProfile>(view) {
             @Override
             public void onNext(UserProfile profile) {

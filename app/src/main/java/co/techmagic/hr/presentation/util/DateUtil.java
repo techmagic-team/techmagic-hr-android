@@ -185,8 +185,8 @@ public class DateUtil {
     }
 
 
-    public static long getFormattedDateInMillis(@Nullable String inputData) {
-        long millis = 0;
+    public static Long getFormattedDateInMillis(@Nullable String inputData) {
+        Long millis = null;
 
         if (inputData == null) {
             return millis;

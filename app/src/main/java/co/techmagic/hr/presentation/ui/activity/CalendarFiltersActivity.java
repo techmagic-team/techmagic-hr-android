@@ -89,8 +89,11 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
     @Override
     public void onBackPressed() {
-        dialogManager.dismissDialogIfOpened();
-        onBackClickWithSetResult();
+        if (dialogManager.isDialogActive()) {
+            dialogManager.dismissDialogIfOpened();
+        } else {
+            onBackClickWithSetResult();
+        }
     }
 
 

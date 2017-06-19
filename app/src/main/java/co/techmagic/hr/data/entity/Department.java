@@ -59,4 +59,13 @@ public class Department implements Parcelable {
             return new Department[size];
         }
     };
+
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=\"" + id + '\"' +
+                ", name=\"" + name + '\"' +
+                '}';
+    }
 }

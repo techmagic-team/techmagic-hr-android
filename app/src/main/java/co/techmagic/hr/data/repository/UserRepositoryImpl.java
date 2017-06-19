@@ -71,11 +71,14 @@ public class UserRepositoryImpl implements IUserRepository {
         return Observable.error(new NetworkConnectionException());
     }
 
+    /**
+     * client.getSerializableNullsUserClient() should be used here for serialization
+     * */
 
     @Override
     public Observable<UserProfile> saveEditedProfile(EditProfileRequest editProfileRequest) {
         if (networkManager.isNetworkAvailable()) {
-            return client.getUserApiClient().saveEditedProfile(editProfileRequest.getId(), editProfileRequest);
+            return client.getSerializableNullsUserClient().saveEditedProfile(editProfileRequest.getId(), editProfileRequest);
         }
 
         return Observable.error(new NetworkConnectionException());

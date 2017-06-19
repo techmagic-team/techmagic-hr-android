@@ -187,6 +187,16 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
+    public void onBackPressed() {
+        if (dialogManager.isDialogActive()) {
+            dialogManager.dismissDialogIfOpened();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
     protected void initLayout() {
         setContentView(R.layout.activity_edit_profile);
     }

@@ -89,4 +89,14 @@ public class Lead implements Parcelable {
             return new Lead[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=\"" + id + '\"' +
+                ", lastWorkingDay=\"" + lastWorkingDay + '\"' +
+                ", firstName=\"" + firstName + '\"' +
+                ", lastName=\"" + lastName + '\"' +
+                '}';
+    }
 }

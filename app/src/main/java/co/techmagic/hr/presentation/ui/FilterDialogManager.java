@@ -39,7 +39,6 @@ public class FilterDialogManager {
         setupDialogViews(filters, builder);
         dialog = builder.show();
         dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
         dialog.show();
     }
 

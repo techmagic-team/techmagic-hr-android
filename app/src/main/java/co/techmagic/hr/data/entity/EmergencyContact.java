@@ -13,8 +13,7 @@ public class EmergencyContact implements Parcelable {
     @SerializedName("phone")
     private String phone;
 
-    public EmergencyContact() {
-    }
+    public EmergencyContact() {}
 
     public String getName() {
         return name;
@@ -48,7 +47,6 @@ public class EmergencyContact implements Parcelable {
         dest.writeString(phone);
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<EmergencyContact> CREATOR = new Parcelable.Creator<EmergencyContact>() {
         @Override
         public EmergencyContact createFromParcel(Parcel in) {
@@ -60,4 +58,12 @@ public class EmergencyContact implements Parcelable {
             return new EmergencyContact[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "{" +
+                "name=\"" + name + '\"' +
+                ", phone=\"" + phone + '\"' +
+                '}';
+    }
 }

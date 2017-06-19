@@ -59,4 +59,12 @@ public class Room implements Parcelable {
             return new Room[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=\"" + id + '\"' +
+                ", name=\"" + name + '\"' +
+                '}';
+    }
 }
