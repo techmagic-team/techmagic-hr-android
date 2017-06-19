@@ -185,12 +185,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handlePasswordChange(String newPassword) {
-        String pass = data.getPassword();
-
-        if (newPassword.equals(pass)) {
+        if (newPassword.isEmpty()) {
+            view.setPasswordToggleEnabled(false);
             view.hidePasswordError();
-            data.setPassword(pass);
-            hasChanges = false;
+            hasChanges = true;
+            return;
+        }
+
+        if (newPassword.length() < TextUtil.PASSWORD_MINIMUM_LENGTH) {
+            view.showShortPasswordMessage();
+            hasChanges = true;
             return;
         }
 
@@ -200,12 +204,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
         } else {
             view.onPasswordError();
-        }
-
-        // In case if user left field empty
-        if (newPassword.isEmpty()) {
-            view.showEmptyPasswordError();
-            hasChanges = true;
         }
     }
 

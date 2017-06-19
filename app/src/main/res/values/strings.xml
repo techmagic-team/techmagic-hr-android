@@ -29,6 +29,7 @@
     <string name="message_error">Error while saving changes</string>
     <!-- EditProfileActivity -->
     <string name="message_image_too_big">Filesize exceeds 5mb. Resize the picture or choose a different one</string>
+    <string name="message_short_password">Password must contain at least 6 characters</string>
 
 
     <!-- LoginActivity -->

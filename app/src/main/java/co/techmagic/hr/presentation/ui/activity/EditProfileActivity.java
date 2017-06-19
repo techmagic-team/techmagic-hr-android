@@ -272,6 +272,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void showPassword(@NonNull String password) {
+                tilPassword.setPasswordVisibilityToggleEnabled(true);
                 etChangePassword.setText(password);
             }
 
@@ -298,17 +299,25 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onPasswordError() {
+                setPasswordToggleEnabled(true);
                 tilPassword.setError(getString(R.string.message_invalid_password));
             }
 
             @Override
             public void hidePasswordError() {
+                setPasswordToggleEnabled(true);
                 tilPassword.setErrorEnabled(false);
             }
 
             @Override
-            public void showEmptyPasswordError() {
-                tilPassword.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            public void setPasswordToggleEnabled(boolean enabled) {
+                tilPassword.setPasswordVisibilityToggleEnabled(enabled);
+            }
+
+            @Override
+            public void showShortPasswordMessage() {
+                setPasswordToggleEnabled(true);
+                tilPassword.setError(getString(R.string.message_short_password));
             }
 
             @Override
@@ -852,7 +861,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 textView.removeTextChangedListener(this);
-                handleSelectedField(s.toString().trim(), field);
+                // Do not cut spaces for Password field
+                handleSelectedField(field == EditProfileFields.CHANGE_PASSWORD ? s.toString() : s.toString().trim(), field);
                 textView.addTextChangedListener(this);
             }
 

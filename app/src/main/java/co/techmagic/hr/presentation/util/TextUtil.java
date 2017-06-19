@@ -9,7 +9,7 @@ public class TextUtil {
     private static final String NAME_PATTERN = "^[a-zA-Z\\s]+";
     private static final int NAME_MINIMUM_LENGTH = 1;
     private static final int NAME_MAXIMUM_LENGTH = 30;
-    private static final int PASSWORD_MINIMUM_LENGTH = 6;
+    public static final int PASSWORD_MINIMUM_LENGTH = 6;
     private static final int PASSWORD_MAXIMUM_LENGTH = 25;
 
 
@@ -20,7 +20,7 @@ public class TextUtil {
 
 
     public static boolean isValidPassword(String password) {
-        return password != null && password.length() >= PASSWORD_MINIMUM_LENGTH && password.length() <= PASSWORD_MAXIMUM_LENGTH && !password.contains(" ");
+        return password != null && password.length() >= PASSWORD_MINIMUM_LENGTH && password.length() <= PASSWORD_MAXIMUM_LENGTH;
     }
 
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvLoginInfo"
     style="@style/CardViewStyle"
@@ -47,8 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/tm_hr_login_activity_hint_password"
-            android:textColorHint="@color/colorAccent"
-            app:passwordToggleEnabled="true">
+            android:textColorHint="@color/colorAccent">
 
             <EditText
                 android:id="@+id/etChangePassword"

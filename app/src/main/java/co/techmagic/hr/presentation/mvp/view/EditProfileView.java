@@ -54,7 +54,9 @@ public interface EditProfileView {
 
     void hidePasswordError();
 
-    void showEmptyPasswordError();
+    void setPasswordToggleEnabled(boolean enabled);
+
+    void showShortPasswordMessage();
 
     /* Personal section */
 
