@@ -156,8 +156,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 val calendarFrom: Calendar = Calendar.getInstance()
                 val calendarTo: Calendar = Calendar.getInstance()
 
-                calendarFrom.timeInMillis = presenter.selectedPeriod!!.startDate.time
-                calendarTo.timeInMillis = presenter.selectedPeriod!!.endDate.time
+                calendarFrom.timeInMillis = presenter.selectedPeriod.startDate.time
+                calendarTo.timeInMillis = presenter.selectedPeriod.endDate.time
 
                 val bundle: Bundle = Bundle()
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, from)
@@ -165,7 +165,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.END_DATE, calendarTo)
 
                 fragment.arguments = bundle
-                fragment.show(fragmentManager, CalendarFiltersActivity.DIALOG_FRAGMENT_TAG)
+                fragment.show(fragmentManager, RequestTimeOffDatePickerFragment.toString())
             }
 
             override fun showTimeOffsDialog() {
