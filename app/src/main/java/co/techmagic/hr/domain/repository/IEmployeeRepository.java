@@ -14,6 +14,7 @@ import co.techmagic.hr.data.request.RemainedTimeOffRequest;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.domain.pojo.DatePeriodDto;
+import co.techmagic.hr.domain.pojo.RequestedTimeOffDto;
 import rx.Observable;
 
 public interface IEmployeeRepository {
@@ -42,7 +43,9 @@ public interface IEmployeeRepository {
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
 
-    Observable<Void> requestTimeOff(RemainedTimeOffRequest request);
+    Observable<RequestedTimeOffDto> requestVacation(TimeOffRequest request);
+
+    Observable<RequestedTimeOffDto> requestIllness(TimeOffRequest request);
 
     Observable<Integer> getTotalVacation(RemainedTimeOffRequest request);
 

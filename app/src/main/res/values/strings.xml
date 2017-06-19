@@ -99,7 +99,11 @@
     <string name="tm_hr_request_time_off_title">Request Time off</string>
     <string name="tm_hr_request_time_off_error_retrieving_time_off_data">Error retrieving time off data</string>
     <string name="tm_hr_time_available_vacations">Available vacations</string>
-
+    <string name="tm_hr_select_period">Select Period</string>
+    <string name="tm_hr_wrong_date">Wrong date range</string>
+    <string name="tm_hr_invalid_input_data">Invalid input data</string>
+    <string name="tm_hr_failed_request_time_off">Failed to request time off</string>
+    <string name="tm_hr_successfully_requested_time_off">Successfully requested time off</string>
 
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>

@@ -20,57 +20,48 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
 
         val availableTimeOffsData: AvailableTimeOffsData = AvailableTimeOffsData()
 
-        return repository.getUserPeriods(userId).flatMap { periodsList ->
-            val timeOffsObservableList: MutableList<Observable<AvailableTimeOffsData>> = mutableListOf()
+        return repository.getUserPeriods(userId)
+                .flatMap { periodsList ->
+                    val timeOffsObservableList: MutableList<Observable<AvailableTimeOffsData>> = mutableListOf()
 
-            for ((dateFrom, dateTo) in periodsList) {
-                val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
-                val observable = getLoadTimeOffsObservable(remainedTimeOffRequest)
-                        .flatMap { remainedTimeOffsAmountDto ->
-                            val periodPair: PeriodPair = PeriodPair(dateFrom, dateTo)
-                            availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
-                            Observable.just(availableTimeOffsData)
-                        }
+                    for ((dateFrom, dateTo) in periodsList) {
+                        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
+                        val observable = getLoadTimeOffsObservable(remainedTimeOffRequest)
+                                .map { remainedTimeOffsAmountDto ->
+                                    val periodPair: PeriodPair = PeriodPair(dateFrom, dateTo)
+                                    availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
+                                    availableTimeOffsData
+                                }
 
 
-                timeOffsObservableList.add(observable)
-            }
+                        timeOffsObservableList.add(observable)
+                    }
 
-            Observable.zip(timeOffsObservableList, { availableTimeOffsData })
-        }
+                    Observable.zip(timeOffsObservableList, { availableTimeOffsData })
+                }
     }
 
     fun getLoadTimeOffsObservable(remainedTimeOffRequest: RemainedTimeOffRequest): Observable<RemainedTimeOffsAmountDto> {
 
         val remainedTimeOffsAmountDto = RemainedTimeOffsAmountDto()
 
-        val totalIllnessObservable = prepareAvailableDaysObservable(remainedTimeOffsAmountDto, remainedTimeOffRequest, TimeOffType.ILLNESS)
-        val totalVacationObservable = prepareAvailableDaysObservable(remainedTimeOffsAmountDto, remainedTimeOffRequest, TimeOffType.VACATION)
-        val totalDayOffsObservable = prepareAvailableDaysObservable(remainedTimeOffsAmountDto, remainedTimeOffRequest, TimeOffType.DAYOFF)
+        val totalIllnessObservable: Observable<Int> = repository.getTotalIllness(remainedTimeOffRequest)
+        val totalVacationObservable: Observable<Int> = repository.getTotalVacation(remainedTimeOffRequest)
+        val totalDayOffsObservable: Observable<Int> = repository.getTotalDayOff(remainedTimeOffRequest)
 
         return Observable.zip(
                 totalIllnessObservable,
                 totalVacationObservable,
-                totalDayOffsObservable
-        ) { remainedTimeOffsAmountDto1, remainedTimeOffsAmountDto2, remainedTimeOffsAmountDto3 -> remainedTimeOffsAmountDto }
-    }
-
-    private fun prepareAvailableDaysObservable(remainedTimeOffsAmountDto: RemainedTimeOffsAmountDto, remainedTimeOffRequest: RemainedTimeOffRequest, timeOffType: TimeOffType): Observable<RemainedTimeOffsAmountDto> {
-        val observable = getTotalDaysObservableByTimeOffType(timeOffType, remainedTimeOffRequest) ?: return Observable.just(remainedTimeOffsAmountDto)
-
-        return observable.flatMap { daysAmount ->
-            remainedTimeOffsAmountDto.map.put(timeOffType, daysAmount)
-            Observable.just(remainedTimeOffsAmountDto)
+                totalDayOffsObservable)
+        { totalIllness, totalVacation, totalDayOffs ->
+            processResult(remainedTimeOffsAmountDto, totalIllness, totalVacation, totalDayOffs)
         }
     }
 
-    private fun getTotalDaysObservableByTimeOffType(timeOffType: TimeOffType, remainedTimeOffRequest: RemainedTimeOffRequest): Observable<Int>? {
-        when (timeOffType) {
-            TimeOffType.ILLNESS -> repository.getTotalIllness(remainedTimeOffRequest)
-            TimeOffType.VACATION -> repository.getTotalVacation(remainedTimeOffRequest)
-            TimeOffType.DAYOFF -> repository.getTotalDayOff(remainedTimeOffRequest)
-        }
-
-        return null
+    private fun processResult(remainedTimeOffsAmountDto: RemainedTimeOffsAmountDto, totalIllness: Int?, totalVacation: Int?, totalDayOffs: Int?): RemainedTimeOffsAmountDto {
+        remainedTimeOffsAmountDto.map.put(TimeOffType.ILLNESS, totalIllness)
+        remainedTimeOffsAmountDto.map.put(TimeOffType.VACATION, totalVacation)
+        remainedTimeOffsAmountDto.map.put(TimeOffType.DAYOFF, totalDayOffs)
+        return remainedTimeOffsAmountDto
     }
 }

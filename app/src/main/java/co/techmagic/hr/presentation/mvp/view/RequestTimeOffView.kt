@@ -13,9 +13,10 @@ interface RequestTimeOffView : View {
     fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean)
     fun showTimeOffsDialog()
     fun selectTimeOff(timeOffType: TimeOffType)
-//    fun showTimeOffsData(remainedTimeOffs: RemainedTimeOffsAmountDto?)
     fun showTimeOffsData(daysAmount: Int?)
     fun showUserPeriods(userPeriods: List<PeriodPair>)
     fun showTimeOffsDataError()
-//    fun showData(availableTimeOffsData: AvailableTimeOffsData)
+    fun showInvalidInputData()
+    fun showRequestTimeOffError()
+    fun showRequestTimeOffSuccess()
 }

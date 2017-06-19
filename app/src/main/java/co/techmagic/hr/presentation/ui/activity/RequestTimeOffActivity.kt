@@ -42,7 +42,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var rbFirstPeriod: RadioButton
     private lateinit var rbSecondPeriod: RadioButton
 
-    private val dateFormat: DateFormat = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
+    private val dateFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +76,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         rbFirstPeriod = find(R.id.rbFirstPeriod)
         rbSecondPeriod = find(R.id.rbSecondPeriod)
 
-
         rgPeriods.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rbFirstPeriod -> run { presenter.onFirstPeriodSelected() }
@@ -91,6 +90,18 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showInvalidInputData() {
+                toast(R.string.tm_hr_invalid_input_data)
+            }
+
+            override fun showRequestTimeOffError() {
+                toast(R.string.tm_hr_failed_request_time_off)
+            }
+
+            override fun showRequestTimeOffSuccess() {
+                toast(R.string.tm_hr_successfully_requested_time_off)
+            }
+
             override fun showUserPeriods(userPeriods: List<PeriodPair>) {
                 with(userPeriods) {
                     rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
@@ -108,18 +119,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     tvAvailableDays.text = "Available days $daysAmount"
                 }
             }
-//            override fun showData(availableTimeOffsData: AvailableTimeOffsData) {
-//                with(availableTimeOffsData.timeOffsMap.keys) {
-//                    rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
-//                    rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)
-//
-//                    presenter.onFirstPeriodSelected()
-//                }
-//            }
-//
-//            override fun showTimeOffsData(remainedTimeOffs: RemainedTimeOffsAmountDto?) {
-//                showRemainedTimeOffs(remainedTimeOffs)
-//            }
 
             override fun showTimeOffsDataError() {
                 toast(R.string.tm_hr_request_time_off_error_retrieving_time_off_data)
@@ -154,8 +153,16 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     }
                 }
 
+                val calendarFrom: Calendar = Calendar.getInstance()
+                val calendarTo: Calendar = Calendar.getInstance()
+
+                calendarFrom.timeInMillis = presenter.selectedPeriod!!.startDate.time
+                calendarTo.timeInMillis = presenter.selectedPeriod!!.endDate.time
+
                 val bundle: Bundle = Bundle()
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, from)
+                bundle.putSerializable(RequestTimeOffDatePickerFragment.START_DATE, calendarFrom)
+                bundle.putSerializable(RequestTimeOffDatePickerFragment.END_DATE, calendarTo)
 
                 fragment.arguments = bundle
                 fragment.show(fragmentManager, CalendarFiltersActivity.DIALOG_FRAGMENT_TAG)

@@ -10,10 +10,10 @@ public class RequestedTimeOff {
     @SerializedName("_company")
     private String companyId;
 
-    @SerializedName("requestTimeOffDateFrom")
+    @SerializedName("dateFrom")
     private String dateFrom;
 
-    @SerializedName("requestTimeOffDateTo")
+    @SerializedName("dateTo")
     private String dateTo;
 
     @SerializedName("isPaid")

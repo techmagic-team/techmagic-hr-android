@@ -1,10 +1,13 @@
 package co.techmagic.hr.presentation.mvp.presenter
 
+import android.util.Log
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
-import co.techmagic.hr.domain.interactor.employee.GetRemainedTimeOffs
 import co.techmagic.hr.domain.interactor.employee.GetUserPeriods
+import co.techmagic.hr.domain.interactor.employee.RequestTimeOff
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
+import co.techmagic.hr.domain.pojo.RequestTimeOffDto
+import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
@@ -17,6 +20,7 @@ import java.util.*
  */
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var getUserPeriods: GetUserPeriods = GetUserPeriods(EmployeeRepositoryImpl())
+    var requestTimeOff: RequestTimeOff = RequestTimeOff(EmployeeRepositoryImpl())
 
     var availableTimeOffsData: AvailableTimeOffsData? = null
         private set
@@ -27,17 +31,24 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var requestTimeOffDateTo: Calendar = Calendar.getInstance()
         private set
 
-    private var timeOffType: TimeOffType? = null
+    lateinit var selectedPeriod: PeriodPair
+        private set
+
+    private var selectedTimeOffType: TimeOffType? = null
 
     private val userId: String = SharedPreferencesUtil.readUser().id
 
-    private var selectedPeriod: PeriodPair? = null
+    companion object {
+        private val TAG: String = RequestTimeOffPresenter.toString()
+
+    }
 
     fun loadData() {
         getUserPeriods.execute(userId, object : DefaultSubscriber<AvailableTimeOffsData>() {
             override fun onNext(timeOffsData: AvailableTimeOffsData?) {
                 this@RequestTimeOffPresenter.availableTimeOffsData = timeOffsData
 
+                view?.hideProgress()
                 if (timeOffsData != null) {
                     val periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
                     view?.showUserPeriods(periodPairsList)
@@ -73,7 +84,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onTimeOffTypeSelected(timeOffType: TimeOffType) {
-        this.timeOffType = timeOffType
+        this.selectedTimeOffType = timeOffType
         view?.selectTimeOff(timeOffType)
     }
 
@@ -84,13 +95,33 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onToDateSet(year: Int, month: Int, dayOfMonth: Int) {
-        requestTimeOffDateFrom.set(Calendar.YEAR, year)
-        requestTimeOffDateFrom.set(Calendar.MONTH, month)
-        requestTimeOffDateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        requestTimeOffDateTo.set(Calendar.YEAR, year)
+        requestTimeOffDateTo.set(Calendar.MONTH, month)
+        requestTimeOffDateTo.set(Calendar.DAY_OF_MONTH, dayOfMonth)
     }
 
     fun onRequestButtonClicked() {
+        if (inputDataValid()) {
+            val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!)
 
+            view?.showProgress()
+
+            requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
+                override fun onNext(t: RequestedTimeOffDto?) {
+                    view?.hideProgress()
+                    view?.showRequestTimeOffSuccess()
+                    loadData()
+                }
+
+                override fun onError(e: Throwable?) {
+                    Log.e(TAG, e?.message, e)
+                    view?.hideProgress()
+                    view?.showRequestTimeOffError()
+                }
+            })
+        } else {
+            view!!.showInvalidInputData()
+        }
     }
 
     fun onFirstPeriodSelected() {
@@ -103,15 +134,42 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         return showTimeOffsData()
     }
 
+    private fun inputDataValid(): Boolean {
+        val periodStartCalendar: Calendar = Calendar.getInstance()
+        periodStartCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        periodStartCalendar.set(Calendar.MINUTE, 0)
+        periodStartCalendar.set(Calendar.SECOND, 0)
+
+        val periodEndCalendar: Calendar = Calendar.getInstance()
+        periodEndCalendar.timeInMillis = selectedPeriod.endDate.time
+
+        if (availableTimeOffsData != null && selectedTimeOffType != null) {
+            val availableDays: Int? = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[selectedTimeOffType]
+            if (availableDays == null || availableDays <= 0) {
+                return false
+            }
+
+            if (((requestTimeOffDateFrom == periodStartCalendar) || requestTimeOffDateFrom.after(periodStartCalendar))
+                    && requestTimeOffDateFrom.before(periodEndCalendar)
+                    && requestTimeOffDateTo.after(periodStartCalendar)
+                    && ((requestTimeOffDateTo == periodEndCalendar) || requestTimeOffDateTo.before(periodEndCalendar))) {
+
+                return true
+            }
+        }
+
+        return false
+    }
+
     private fun showTimeOffsData() {
         if (availableTimeOffsData != null) {
             val remainedTimeOffs: RemainedTimeOffsAmountDto? = availableTimeOffsData?.timeOffsMap!![selectedPeriod]
 
-            if (timeOffType == null) {
-                timeOffType = TimeOffType.VACATION
+            if (selectedTimeOffType == null) {
+                selectedTimeOffType = TimeOffType.VACATION
             }
 
-            view?.showTimeOffsData(remainedTimeOffs!!.map[timeOffType])
+            view?.showTimeOffsData(remainedTimeOffs!!.map[selectedTimeOffType])
         }
     }
 }

@@ -5,6 +5,8 @@ import android.app.Dialog
 import android.app.DialogFragment
 import android.os.Bundle
 import android.widget.DatePicker
+import co.techmagic.hr.R
+import org.jetbrains.anko.toast
 import java.util.*
 
 
@@ -15,6 +17,8 @@ class RequestTimeOffDatePickerFragment : DialogFragment(), DatePickerDialog.OnDa
 
     companion object {
         val DATE = "DATE"
+        val START_DATE = "START_DATE"
+        val END_DATE = "END_DATE"
     }
 
     interface DateSetListener {
@@ -24,8 +28,20 @@ class RequestTimeOffDatePickerFragment : DialogFragment(), DatePickerDialog.OnDa
     var listener: DateSetListener? = null
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        listener?.onDateSet(year, month, dayOfMonth)
-        dismiss()
+        val startDateCalendar: Calendar = arguments.get(START_DATE) as Calendar
+        val endDateCalendar: Calendar = arguments.get(END_DATE) as Calendar
+        val selectedCalendar: Calendar = Calendar.getInstance()
+
+        selectedCalendar.set(Calendar.MONTH, month)
+        selectedCalendar.set(Calendar.YEAR, year)
+        selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+        if (selectedCalendar.before(endDateCalendar) && selectedCalendar.after(startDateCalendar)) {
+            listener?.onDateSet(year, month, dayOfMonth)
+            dismiss()
+        } else {
+            toast(R.string.tm_hr_wrong_date)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

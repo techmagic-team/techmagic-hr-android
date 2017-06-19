@@ -2,7 +2,6 @@ package co.techmagic.hr.data.repository;
 
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.RequestTimeOff;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.entity.TimeOffAmount;
 import co.techmagic.hr.data.exception.NetworkConnectionException;
@@ -29,12 +29,13 @@ import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.pojo.DatePeriodDto;
+import co.techmagic.hr.domain.pojo.RequestedTimeOffDto;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by techmagic on 4/3/17.
+ * Created by techmagic on 4/3/17
  */
 
 public class EmployeeRepositoryImpl implements IEmployeeRepository {
@@ -171,10 +172,30 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Void> requestTimeOff(RemainedTimeOffRequest request) {
+    public Observable<RequestedTimeOffDto> requestVacation(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            // TODO: 6/12/17 implement
-            return null;
+            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid());
+
+            return client
+                    .getEmployeeClient()
+                    .requestVacation(requestTimeOff)
+                    .map(getMapper());
+
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<RequestedTimeOffDto> requestIllness(TimeOffRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid());
+
+            return client
+                    .getEmployeeClient()
+                    .requestIllness(requestTimeOff)
+                    .map(getMapper());
+
         }
 
         return Observable.error(new NetworkConnectionException());
@@ -275,5 +296,31 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
         }
 
         return Observable.error(new NetworkConnectionException());
+    }
+
+    private Func1<RequestedTimeOff, RequestedTimeOffDto> getMapper() {
+        return new Func1<RequestedTimeOff, RequestedTimeOffDto>() {
+            @Override
+            public RequestedTimeOffDto call(RequestedTimeOff requestedTimeOff) {
+                Date dateFrom = null;
+                Date dateTo = null;
+                try {
+                    dateFrom = DATE_FORMAT.parse(requestedTimeOff.getDateFrom());
+                    dateTo = DATE_FORMAT.parse(requestedTimeOff.getDateTo());
+
+                } catch (ParseException e) {
+                    Log.e(TAG, "Error parsing date", e);
+                }
+
+                RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
+                requestedTimeOffDto.setAccepted(requestedTimeOff.getAccepted());
+                requestedTimeOffDto.setCompanyId(requestedTimeOff.getCompanyId());
+                requestedTimeOffDto.setDateFrom(dateFrom);
+                requestedTimeOffDto.setDateTo(dateTo);
+                requestedTimeOffDto.setPaid(requestedTimeOff.isPaid());
+                requestedTimeOffDto.setUserId(requestedTimeOff.getUserId());
+                return requestedTimeOffDto;
+            }
+        };
     }
 }
