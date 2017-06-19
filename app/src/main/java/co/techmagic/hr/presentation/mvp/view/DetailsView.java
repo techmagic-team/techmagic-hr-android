@@ -38,6 +38,10 @@ public interface DetailsView extends View {
 
     void showLastWorkingDay(@NonNull String date);
 
+    void showReason(@NonNull String reason);
+
+    void showComment(@NonNull String comment);
+
     void showVacationDays(@NonNull String dates);
 
     void showDayOff(@NonNull String dates);

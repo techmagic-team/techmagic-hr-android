@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvProfessional"
+    style="@style/CardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorCardViewBgGrey"
+    android:visibility="gone"
+    tools:showIn="@layout/activity_edit_profile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        android:splitMotionEvents="false">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tm_hr_edit_profile_activity_section_professional_info"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/rlEditDepartment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:id="@+id/tvDep"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/tm_hr_search_activity_text_filter_by_department" />
+
+            <TextView
+                android:id="@+id/tvSelectedDep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_toLeftOf="@+id/ivDepArrow"
+                android:layout_toStartOf="@+id/ivDepArrow"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/ivDepArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/ivDepArrow"
+                android:layout_toStartOf="@+id/ivDepArrow"
+                android:background="@color/colorCardViewBgGrey" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlEditLead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/tm_hr_search_activity_text_filter_by_lead" />
+
+            <TextView
+                android:id="@+id/tvSelectedLead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_toLeftOf="@+id/ivLeadArrow"
+                android:layout_toStartOf="@+id/ivLeadArrow"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/ivLeadArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/ivLeadArrow"
+                android:layout_toStartOf="@+id/ivLeadArrow"
+                android:background="@color/colorCardViewBgGrey" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlEditFirstDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/fragment_employee_details_card_view_text_first_working_day" />
+
+            <TextView
+                android:id="@+id/tvSelectedFirstDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_toLeftOf="@+id/ivSelectedFirstDayLeadArrow"
+                android:layout_toStartOf="@+id/ivSelectedFirstDayLeadArrow"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/ivSelectedFirstDayLeadArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/ivSelectedFirstDayLeadArrow"
+                android:layout_toStartOf="@+id/ivSelectedFirstDayLeadArrow"
+                android:background="@color/colorCardViewBgGrey" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlEditFirstDayInIt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/fragment_employee_details_card_view_text_first_working_day_in_it" />
+
+            <TextView
+                android:id="@+id/tvSelectedFirstDayInIt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_toLeftOf="@+id/ivFirstDayInItArrow"
+                android:layout_toStartOf="@+id/ivFirstDayInItArrow"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/ivFirstDayInItArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/ivFirstDayInItArrow"
+                android:layout_toStartOf="@+id/ivFirstDayInItArrow"
+                android:background="@color/colorCardViewBgGrey" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlEditTrialEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/fragment_employee_details_card_view_text_trial_period_ends" />
+
+            <TextView
+                android:id="@+id/tvSelectedTrialEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
+                android:layout_toLeftOf="@+id/ivTrialEndArrow"
+                android:layout_toStartOf="@+id/ivTrialEndArrow"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/ivTrialEndArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/ivTrialEndArrow"
+                android:layout_toStartOf="@+id/ivTrialEndArrow"
+                android:background="@color/colorCardViewBgGrey" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

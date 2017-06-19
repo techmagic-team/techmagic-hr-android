@@ -38,13 +38,14 @@
     <dimen name="fragment_employee_details_text_layout_height">20dp</dimen>
     <dimen name="fragment_employee_details_line_spacing_extra">4dp</dimen>
     <dimen name="fragment_employee_details_text_layout_margin_horizontal">16dp</dimen>
-    <dimen name="fragment_employee_details_text_layout_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_text_layout_margin_vertical">12dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_horizontal">12dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_bottom">12dp</dimen>
 
     <dimen name="fragment_employee_details_image_view_padding">8dp</dimen>
     <dimen name="fragment_employee_details_image_view_margin_bottom">16dp</dimen>
     <dimen name="fragment_employee_details_text_view_margin_vertical">16dp</dimen>
+    <dimen name="fragment_employee_details_layout_vertical">4dp</dimen>
     <dimen name="fragment_employee_details_alert_dialog_full_image_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
@@ -64,5 +65,8 @@
     <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
     <dimen name="calendar_fragment_cell_stroke_size">1px</dimen>
     <dimen name="activity_login_rl_filter_company_padding">12dp</dimen>
+
+    <!-- EditProfileActivity -->
+    <dimen name="tm_hr_edit_profile_activity_edit_text_height">150dp</dimen>
 
 </resources>

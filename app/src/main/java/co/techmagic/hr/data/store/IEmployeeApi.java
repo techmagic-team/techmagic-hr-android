@@ -27,7 +27,7 @@ public interface IEmployeeApi {
     Observable<List<Filter>> getFilterDepartments();
 
     @GET("v1/endpoints/leads-with-employees")
-    Observable<List<FilterLead>> getFilterLeads();
+    Observable<List<FilterLead>> getFilterLeadsWithEmployees();
 
     @GET("v1/user-group/project")
     Observable<List<Filter>> getFilterProjects();
@@ -42,6 +42,15 @@ public interface IEmployeeApi {
 
     @GET("/v1/time-off/illness/user/{userId}")
     Observable<List<RequestedTimeOff>> getUserIllnesses(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/rooms")
+    Observable<List<Filter>> getFilterRooms();
+
+    @GET("/v1/leads")
+    Observable<List<FilterLead>> getLeads();
+
+    @GET("/v1/reasons")
+    Observable<List<Filter>> getFilterReasons();
 
     /* Used for calendar */
 

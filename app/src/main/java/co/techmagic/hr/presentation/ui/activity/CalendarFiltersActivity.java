@@ -6,12 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,15 +18,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Filter;
-import co.techmagic.hr.data.entity.IFilterModel;
-import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
-import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
+import co.techmagic.hr.presentation.ui.fragment.NumberDatePickerFragment;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImpl, CalendarFiltersPresenter> implements DatePickerFragment.OnDatePickerFragmentListener,
+public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImpl, CalendarFiltersPresenter> implements NumberDatePickerFragment.OnDatePickerFragmentListener,
         FilterAdapter.OnFilterSelectionListener {
 
     public static final int CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE = 1002;
@@ -44,7 +39,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public static final String SEL_DEP_ID_EXTRA = "sel_dep_id_extra";
     public static final String SEL_PROJECT_ID_EXTRA = "sel_project_id_extra";
 
-    public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
+    public static final String NUMBER_DATE_PICKER_FRAGMENT_TAG = "number_date_picker_fragment_tag";
     public static final String SELECTED_DIALOG_KEY = "selected_dialog_key";
     public static final String CALENDAR_FROM_KEY = "calendar_from_key";
     public static final String CALENDAR_TO_KEY = "calendar_to_key";
@@ -60,9 +55,9 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     @BindView(R.id.tvCalendarSelProject)
     TextView tvSelProject;
 
+    private FilterDialogManager dialogManager;
     private FilterTypes filterTypes = FilterTypes.NONE;
     private ActionBar actionBar;
-    private AlertDialog dialog;
 
     private boolean isMyTeamChecked;
     private long fromInMillis = 0;
@@ -84,14 +79,19 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent();
-                setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
-                finish();
+                onBackPressed();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        dialogManager.dismissDialogIfOpened();
+        onBackClickWithSetResult();
     }
 
 
@@ -127,8 +127,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             @Override
             public void showFilterByDepartmentDialog(@NonNull List<Filter> departments) {
                 filterTypes = FilterTypes.DEPARTMENT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(departments);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(departments, filterTypes);
             }
 
             @Override
@@ -144,8 +144,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
             @Override
             public void showFilterByProjectDialog(@NonNull List<Filter> projects) {
                 filterTypes = FilterTypes.PROJECT;
-                dismissDialogIfOpened();
-                showSelectFilterAlertDialog(projects);
+                dialogManager.dismissDialogIfOpened();
+                dialogManager.showSelectFilterAlertDialog(projects, filterTypes);
             }
 
             @Override
@@ -201,14 +201,14 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
     @Override
     public void addDatePickerFragment(@Nullable Calendar from, @Nullable Calendar to, boolean isDateFromPicker) {
-        DatePickerFragment fragment = DatePickerFragment.newInstance();
+        NumberDatePickerFragment fragment = NumberDatePickerFragment.newInstance();
         Bundle b = new Bundle();
 
         b.putBoolean(SELECTED_DIALOG_KEY, isDateFromPicker);
         b.putSerializable(CALENDAR_FROM_KEY, from);
         b.putSerializable(CALENDAR_TO_KEY, to);
         fragment.setArguments(b);
-        fragment.show(getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
+        fragment.show(getSupportFragmentManager(), NUMBER_DATE_PICKER_FRAGMENT_TAG);
     }
 
 
@@ -245,6 +245,13 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     @OnClick(R.id.btnCalApply)
     public void onApplyClick() {
         applyFilters();
+    }
+
+
+    private void onBackClickWithSetResult() {
+        Intent i = new Intent();
+        setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
+        finish();
     }
 
 
@@ -288,7 +295,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
 
     private void handleSelection(String filterId, String name) {
-        dismissDialogIfOpened();
+        dialogManager.dismissDialogIfOpened();
 
         switch (filterTypes) {
             case DEPARTMENT:
@@ -304,57 +311,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
-    private <T extends IFilterModel> void showSelectFilterAlertDialog(@Nullable List<T> filters) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(filters, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private <T extends IFilterModel> void setupDialogViews(@Nullable List<T> filters, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        setupDialogTitle(tvTitle);
-
-        setupSelectFilterRecyclerView(view, filters);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        switch (filterTypes) {
-            case DEPARTMENT:
-                tvTitle.setText(getString(R.string.tm_hr_search_activity_text_filter_by_department));
-                break;
-
-            case PROJECT:
-                tvTitle.setText(getString(R.string.tm_hr_calendar_filters_activity_filter_by_project));
-                break;
-        }
-    }
-
-
-    private <T extends IFilterModel> void setupSelectFilterRecyclerView(View view, @Nullable List<T> results) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, false);
-        rvFilters.setAdapter(adapter);
-        adapter.refresh(results);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-
     private void initUi() {
+        dialogManager = new FilterDialogManager(this, this);
         setupActionBar();
         getData();
         swTeam.setChecked(isMyTeamChecked);
@@ -366,7 +324,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     private void setupActionBar() {
         actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("");
+            actionBar.setTitle(getString(R.string.tm_hr_calendar_filters_activity_title));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

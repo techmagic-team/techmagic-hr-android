@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -20,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
@@ -31,7 +33,7 @@ import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.activity.RequestTimeOffActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
-import co.techmagic.hr.presentation.ui.view.OnCalendarViewReadyListener;
+import co.techmagic.hr.presentation.ui.view.calendar.OnCalendarViewReadyListener;
 import co.techmagic.hr.presentation.ui.view.calendar.TimeTable;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
@@ -46,6 +48,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     private ActionBarChangeListener actionBarChangeListener;
     private FragmentCallback fragmentCallback;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
     private boolean isMyTeamChecked;
     private long fromInMillis = 0;
@@ -68,6 +72,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         setHasOptionsMenu(true);
         actionBarChangeListener = (ActionBarChangeListener) context;
         fragmentCallback = (FragmentCallback) context;
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
 
@@ -169,8 +174,8 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             }
 
             @Override
-            public void addDetailsFragment(@NonNull Docs docs) {
-                fragmentCallback.addDetailsFragment(docs, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
+            public void addDetailsFragment(@NonNull UserProfile userProfile) {
+                fragmentCallback.addDetailsFragment(userProfile, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
             }
         };
     }
@@ -240,6 +245,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     private void startCalendarFiltersScreen() {
+        Bundle analyticsBundle = new Bundle();
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar filters click");
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
         Intent intent = new Intent(getActivity(), CalendarFiltersActivity.class);
         intent.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         intent.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);

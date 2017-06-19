@@ -73,9 +73,9 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
 
     @Override
-    public Observable<List<FilterLead>> getFilterLeads() {
+    public Observable<List<FilterLead>> getFilterLeadsWithEmployees() {
         if (networkManager.isNetworkAvailable()) {
-            return client.getEmployeeClient().getFilterLeads();
+            return client.getEmployeeClient().getFilterLeadsWithEmployees();
         }
 
         return Observable.error(new NetworkConnectionException());
@@ -166,6 +166,36 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     public Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getCalendar(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<Filter>> getRooms() {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getFilterRooms();
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<FilterLead>> getFilterLeads() {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getLeads();
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+
+    @Override
+    public Observable<List<Filter>> getReasons() {
+        if (networkManager.isNetworkAvailable()) {
+            return client.getEmployeeClient().getFilterReasons();
         }
 
         return Observable.error(new NetworkConnectionException());

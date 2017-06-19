@@ -3,12 +3,7 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +17,8 @@ import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -47,9 +44,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     @BindView(R.id.tvSelectCompany)
     TextView tvSelectCompany;
 
-    private AlertDialog dialog;
-
-    private LoginPresenter loginPresenter;
+    private FilterDialogManager dialogManager;
     private boolean isLoginSelected = true;
 
 
@@ -57,6 +52,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        dialogManager = new FilterDialogManager(this, this);
 
         // TODO: 6/6/17
         tilEmail.getEditText().setText("12345@comp.com");
@@ -108,7 +104,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
             @Override
             public void showCompanySelectionDialogView(@NonNull List<Company> companies) {
-                showSelectFilterAlertDialog(companies);
+                dialogManager.showSelectFilterAlertDialog(companies, FilterTypes.COMPANY);
             }
 
             @Override
@@ -119,7 +115,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
             @Override
             public void updateSelectedCompanyView(String name) {
                 tvSelectCompany.setText(name);
-                dismissDialogIfOpened();
+                dialogManager.dismissDialogIfOpened();
             }
         };
     }
@@ -127,8 +123,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
     @Override
     protected LoginPresenter initPresenter() {
-        loginPresenter = new LoginPresenter();
-        return loginPresenter;
+        return new LoginPresenter();
     }
 
 
@@ -239,48 +234,5 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
-    }
-
-
-    private void showSelectFilterAlertDialog(@Nullable List<Company> companies) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(companies, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private void setupDialogViews(@Nullable List<Company> companies, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_company_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-
-        setupSelectFilterRecyclerView(view, companies);
-        setupDialogTitle(tvTitle);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        tvTitle.setText(R.string.select_company_text);
-    }
-
-
-    private void setupSelectFilterRecyclerView(View view, @Nullable List<Company> companies) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, true);
-        rvFilters.setAdapter(adapter);
-
-        adapter.refresh(companies);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
     }
 }

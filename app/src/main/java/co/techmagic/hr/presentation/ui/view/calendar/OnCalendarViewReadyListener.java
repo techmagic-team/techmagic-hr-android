@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.view;
+package co.techmagic.hr.presentation.ui.view.calendar;
 
 
 public interface OnCalendarViewReadyListener {

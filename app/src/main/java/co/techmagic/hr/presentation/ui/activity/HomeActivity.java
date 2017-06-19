@@ -14,13 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
@@ -35,12 +37,20 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String DOCS_OBJECT_PARAM = "docs_object_param";
+    public static final String USER_ID_PARAM = "user_id_param";
+    public static final String FULL_NAME_PARAM = "full_name_param";
+    public static final String PHOTO_URL_PARAM = "photo_url_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
+
+    private static final String FIREBASE_ANALYTICS_EMPLOYEE_PROFILE_CLICK = "Employee Profile click";
+    private static final String FIREBASE_ANALYTICS_MY_PROFILE_CLICK = "MyProfile click";
+    private static final String FIREBASE_ANALYTICS_CALENDAR_CLICK = "Calendar click";
+    private static final String FIREBASE_ANALYTICS_HOME_CLICK = "Home click";
+    private static final String FIREBASE_ANALYTICS_SEARCH_CLICK = "Search click";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -53,6 +63,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     RecyclerView rvEmployees;
     @BindView(R.id.tvNoResults)
     TextView tvNoResults;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
     private ActionBar actionBar;
     private LinearLayoutManager linearLayoutManager;
@@ -69,6 +81,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         initUi();
         loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
@@ -116,7 +129,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeesList(List<Docs> docs) {
+            public void showEmployeesList(List<UserProfile> docs) {
                 tvNoResults.setVisibility(View.GONE);
                 adapter.refresh(docs);
                 rvEmployees.setVisibility(View.VISIBLE);
@@ -128,13 +141,26 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeeDetails(@NonNull Docs data) {
+            public void showEmployeeDetails(@NonNull UserProfile data) {
                 allowChangeTab = true;
+
+                Bundle analyticsBundle = new Bundle();
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_EMPLOYEE_PROFILE_CLICK);
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                 addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
-            public void showMyProfile(@NonNull Docs data) {
+            public void showMyProfile(@NonNull UserProfile data) {
+                Bundle analyticsBundle = new Bundle();
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_ID, data.getId());
+                analyticsBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "" + data.getFirstName());
+                analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_MY_PROFILE_CLICK);
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
@@ -176,6 +202,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
             case R.id.search:
                 startSearchScreen();
+                return true;
+
+            case R.id.menu_item_edit_profile:
+                startEditProfileScreen();
                 return true;
 
             case R.id.menu_item_logout:
@@ -223,16 +253,22 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void onEmployeeItemClicked(@NonNull Docs docs) {
-        presenter.handleEmployeeItemClick(docs);
+    public void onEmployeeItemClicked(@NonNull UserProfile userProfile) {
+        presenter.handleEmployeeItemClick(userProfile);
     }
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs docs, @NonNull ProfileTypes profileType, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
+
+        bundle.putString(USER_ID_PARAM, user.getId());
+        bundle.putString(PHOTO_URL_PARAM, user.getPhotoOrigin() == null ? user.getPhoto() : user.getPhotoOrigin());
+
+        if (user.getFirstName() != null && user.getLastName() != null) {
+            bundle.putString(FULL_NAME_PARAM, user.getFirstName() + " " + user.getLastName());
+        }
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
@@ -243,6 +279,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public void addCalendarFragment() {
         CalendarFragment fragment = CalendarFragment.newInstance();
+
+        Bundle analyticsBundle = new Bundle();
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_CALENDAR_CLICK );
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
     }
 
@@ -272,7 +313,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         selProjectId = SharedPreferencesUtil.getSelectedProjectId();
-        presenter.setupFiltersView(selDepId, selLeadId, selProjectId,  searchQuery);
     }
 
 
@@ -281,6 +321,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
+                        Bundle analyticsBundle = new Bundle();
+                        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_HOME_CLICK);
+                        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
                         clearFragmentsBackStack(this);
                     }
                     break;
@@ -300,8 +344,18 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     private void startSearchScreen() {
         Intent i = new Intent(this, SearchActivity.class);
+
+        Bundle analyticsBundle = new Bundle();
+        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, FIREBASE_ANALYTICS_SEARCH_CLICK);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
+
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
+
+    private void startEditProfileScreen() {
+        startActivity(new Intent(this, EditProfileActivity.class));
     }
 
 
