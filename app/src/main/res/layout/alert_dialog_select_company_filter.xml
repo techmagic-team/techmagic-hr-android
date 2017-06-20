@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:theme="@style/Theme.AppCompat.Light"
+    android:theme="@style/AlertDialogStyle"
     android:orientation="vertical">
 
     <FrameLayout
