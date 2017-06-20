@@ -10,6 +10,13 @@ public class Reason {
     @SerializedName("name")
     private String name;
 
+    public Reason() {}
+
+    public Reason(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

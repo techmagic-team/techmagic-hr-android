@@ -26,6 +26,21 @@ public class Company implements IFilterModel {
         return name;
     }
 
+    @Override
+    public String getLastWorkingDay() {
+        return null;
+    }
+
+    @Override
+    public String getFirstName() {
+        return null;
+    }
+
+    @Override
+    public String getLastName() {
+        return null;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

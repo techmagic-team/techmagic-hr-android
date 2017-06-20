@@ -141,7 +141,8 @@
     <string name="tm_hr_edit_profile_activity_text_emergency_contact">Emergency contact</string>
     <string name="tm_hr_edit_profile_activity_text_city_of_relocation">City of relocation</string>
     <string name="tm_hr_edit_profile_activity_text_short_presentation">Short presentation</string>
-    <string name="tm_hr_edit_profile_activity_text_lead">Lead *</string>
+    <string name="tm_hr_edit_profile_activity_text_department">Department: </string>
+    <string name="tm_hr_edit_profile_activity_text_lead">Lead *:</string>
     <string name="tm_hr_edit_profile_activity_text_first_working_day">First working day * :</string>
     <string name="tm_hr_edit_profile_activity_text_pdp_link">PDP link</string>
     <string name="tm_hr_edit_profile_activity_text_one_to_one_link">One to one link</string>

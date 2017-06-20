@@ -22,7 +22,7 @@ public interface EditProfileView {
 
     void showDatePickerDialog();
 
-    void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields editProfileField);
+    void showSelectedFilter(@NonNull IFilterModel filter, EditProfileFields editProfileField);
 
     void showSelectedLead(@NonNull Lead lead, EditProfileFields editProfileField);
 

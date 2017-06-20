@@ -10,6 +10,13 @@ public class Room {
     @SerializedName("name")
     private String name;
 
+    public Room() {}
+
+    public Room(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

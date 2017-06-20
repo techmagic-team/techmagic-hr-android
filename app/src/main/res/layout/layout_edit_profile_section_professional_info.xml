@@ -36,7 +36,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
-                android:text="@string/tm_hr_search_activity_text_filter_by_department" />
+                android:text="@string/tm_hr_edit_profile_activity_text_department" />
 
             <TextView
                 android:id="@+id/tvSelectedDep"

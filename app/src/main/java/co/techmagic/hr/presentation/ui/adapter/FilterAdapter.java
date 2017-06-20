@@ -78,12 +78,12 @@ public class FilterAdapter<T extends IFilterModel> extends RecyclerView.Adapter<
                 return;
             }
             final IFilterModel filter = (IFilterModel) v.getTag();
-            filterSelectionListener.onFilterSelected(filter.getId(), filter.getName());
+            filterSelectionListener.onFilterSelected(filter);
         }
     }
 
     public interface OnFilterSelectionListener {
 
-        void onFilterSelected(@NonNull String id, @NonNull String name);
+        void onFilterSelected(@NonNull IFilterModel filter);
     }
 }

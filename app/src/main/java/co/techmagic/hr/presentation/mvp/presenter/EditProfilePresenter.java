@@ -387,16 +387,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleRoomChange(String id, String name) {
-        if (id == null || name == null) {
+    public void handleRoomChange(Room newRoom) {
+        if (newRoom == null) {
             return;
         }
 
         Room room = new Room();
 
         if (data.getRoom() == null) {
-            room.setId(id);
-            room.setName(name);
+            room.setId(newRoom.getId());
+            room.setName(newRoom.getName());
             data.setRoom(room);
             hasChanges = true;
             return;
@@ -404,14 +404,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String roomId = data.getRoom().getId();
 
-        if (id.equals(roomId)) {
+        if (newRoom.getId().equals(roomId)) {
             room.setId(roomId);
         } else {
-            room.setId(id);
+            room.setId(newRoom.getId());
             hasChanges = true;
         }
 
-        room.setName(name);
+        room.setName(newRoom.getName());
         data.setRoom(room);
     }
 
@@ -451,16 +451,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleDepartmentChange(String newDepId, String name) {
-        if (newDepId == null || name == null) {
+    public void handleDepartmentChange(Department newDep) {
+        if (newDep == null) {
             return;
         }
 
         Department dep = new Department();
 
         if (data.getDepartment() == null) {
-            dep.setId(newDepId);
-            dep.setName(name);
+            dep.setId(newDep.getId());
+            dep.setName(newDep.getName());
             data.setDepartment(dep);
             hasChanges = true;
             return;
@@ -468,14 +468,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String depId = data.getDepartment().getId();
 
-        if (newDepId.equals(depId)) {
+        if (newDep.getId().equals(depId)) {
             dep.setId(depId);
         } else {
-            dep.setId(newDepId);
+            dep.setId(newDep.getId());
             hasChanges = true;
         }
 
-        dep.setName(name);
+        dep.setName(newDep.getName());
         data.setDepartment(dep);
     }
 
@@ -596,12 +596,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleReasonChange(String newReasonId, String name) {
+    public void handleReasonChange(Reason newReason) {
+        if (newReason == null) {
+            return;
+        }
+
         Reason reason = new Reason();
 
         if (data.getReason() == null) {
-            reason.setId(newReasonId);
-            reason.setName(name);
+            reason.setId(newReason.getId());
+            reason.setName(newReason.getName());
             data.setReason(reason);
             hasChanges = true;
             return;
@@ -609,14 +613,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String reasonId = data.getReason().getId();
 
-        if (newReasonId.equals(reasonId)) {
+        if (newReason.getId().equals(reasonId)) {
             reason.setId(reasonId);
         } else {
-            reason.setId(newReasonId);
+            reason.setId(newReason.getId());
             hasChanges = true;
         }
 
-        reason.setName(name);
+        reason.setName(newReason.getName());
         data.setReason(reason);
     }
 
@@ -858,7 +862,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Department dep = data.getDepartment();
                 if (dep != null) {
                     if (dep.getId().equals(f.getId())) {
-                        view.showSelectedFilter(dep.getId(), dep.getName(), EditProfileFields.CHANGE_DEPARTMENT);
+                        view.showSelectedFilter(f, EditProfileFields.CHANGE_DEPARTMENT);
                         break;
                     }
                 }
@@ -882,7 +886,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Room room = data.getRoom();
                 if (room != null) {
                     if (room.getId().equals(f.getId())) {
-                        view.showSelectedFilter(room.getId(), room.getName(), EditProfileFields.CHANGE_ROOM);
+                        view.showSelectedFilter(f, EditProfileFields.CHANGE_ROOM);
                         break;
                     }
                 }
@@ -894,7 +898,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 for (Filter f : profileFilters.getReasons()) {
                     final String reasonId = data.getReason().getId();
                     if (reasonId.equals(f.getId())) {
-                        view.showSelectedFilter(reasonId, f.getName(), EditProfileFields.CHANGE_REASON);
+                        view.showSelectedFilter(f, EditProfileFields.CHANGE_REASON);
                         break;
                     }
                 }

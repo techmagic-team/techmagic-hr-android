@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Filter;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
 import co.techmagic.hr.presentation.ui.FilterDialogManager;
@@ -196,8 +197,8 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
 
     @Override
-    public void onFilterSelected(@NonNull String id, @NonNull String name) {
-        handleSelection(id, name);
+    public void onFilterSelected(@NonNull IFilterModel model) {
+        handleSelection(model.getId(), model.getName());
     }
 
 

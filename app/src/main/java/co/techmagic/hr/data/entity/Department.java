@@ -10,6 +10,13 @@ public class Department {
     @SerializedName("name")
     private String name;
 
+    public Department() {}
+
+    public Department(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

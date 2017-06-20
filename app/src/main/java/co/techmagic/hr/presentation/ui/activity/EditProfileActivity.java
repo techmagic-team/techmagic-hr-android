@@ -30,12 +30,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.Reason;
+import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
-import co.techmagic.hr.presentation.ui.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
@@ -140,9 +143,10 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private FilterDialogManager dialogManager;
 
     private EditProfileFields editProfileField = EditProfileFields.NONE;
+    private Department department;
     private Lead selectedLead;
-    private String selectedFilterId;
-    private String selectedName;
+    private Room room;
+    private Reason reason;
 
 
     @Override
@@ -240,16 +244,16 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
-            public void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields field) {
+            public void showSelectedFilter(@NonNull IFilterModel filter, EditProfileFields field) {
                 editProfileField = field;
-                onFilterSelected(id, name);
+                onFilterSelected(filter);
             }
 
             @Override
             public void showSelectedLead(@NonNull Lead lead, EditProfileFields field) {
                 editProfileField = field;
                 selectedLead = lead;
-                onFilterSelected(lead.getId(), lead.getName());
+                onFilterSelected(lead);
             }
 
             @Override
@@ -568,9 +572,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
-    public void onFilterSelected(@NonNull String id, @NonNull String name) {
+    public void onFilterSelected(@NonNull IFilterModel model) {
         dialogManager.dismissDialogIfOpened();
-        displaySelectedFilter(id, name);
+        displaySelectedFilter(model);
     }
 
 
@@ -719,24 +723,26 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private void displaySelectedFilter(String id, String filterName) {
-        selectedFilterId = id;
-        selectedName = filterName;
+    private void displaySelectedFilter(IFilterModel model) {
         switch (editProfileField) {
             case CHANGE_DEPARTMENT:
-                tvSelectedDep.setText(filterName);
+                department = new Department(model.getId(), model.getName());
+                tvSelectedDep.setText(model.getName());
                 break;
 
             case CHANGE_LEAD:
-                tvSelectedLead.setText(filterName);
+                selectedLead = new Lead(model.getId(), model.getLastWorkingDay(), model.getFirstName(), model.getLastName());
+                tvSelectedLead.setText(model.getName());
                 break;
 
             case CHANGE_ROOM:
-                tvSelectedRoom.setText(filterName);
+                room = new Room(model.getId(), model.getName());
+                tvSelectedRoom.setText(model.getName());
                 break;
 
             case CHANGE_REASON:
-                tvSelectedReason.setText(filterName);
+                reason = new Reason(model.getId(), model.getName());
+                tvSelectedReason.setText(model.getName());
                 break;
         }
     }
@@ -878,7 +884,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     private View.OnTouchListener getOnTouchListener() {
         return (v, event) -> {
             v.getParent().getParent().requestDisallowInterceptTouchEvent(true);
-            switch (event.getAction() & MotionEvent.ACTION_MASK){
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_UP:
                     v.getParent().getParent().requestDisallowInterceptTouchEvent(false);
                     break;
@@ -946,7 +952,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_ROOM:
-                presenter.handleRoomChange(selectedFilterId, selectedName);
+                presenter.handleRoomChange(room);
+                room = null;
                 break;
 
             case CHANGE_CITY_OF_RELOCATION:
@@ -958,7 +965,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_DEPARTMENT:
-                presenter.handleDepartmentChange(selectedFilterId, selectedName);
+                presenter.handleDepartmentChange(department);
+                department = null;
                 break;
 
             case CHANGE_LEAD:
@@ -974,7 +982,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_REASON:
-                presenter.handleReasonChange(selectedFilterId, selectedName);
+                presenter.handleReasonChange(reason);
+                reason = null;
                 break;
 
             case CHANGE_COMMENTS:

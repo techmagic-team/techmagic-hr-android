@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Company;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;
@@ -153,8 +154,8 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
 
     @Override
-    public void onFilterSelected(@NonNull String id, @NonNull String name) {
-        presenter.onCompanySelected(id, name);
+    public void onFilterSelected(@NonNull IFilterModel filter) {
+        presenter.onCompanySelected(filter.getId(), filter.getName());
     }
 
 
