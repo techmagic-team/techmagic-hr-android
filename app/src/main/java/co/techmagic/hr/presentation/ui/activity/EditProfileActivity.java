@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -798,6 +799,9 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
         });
 
+        etChangePresentation.setOnTouchListener(getOnTouchListener());
+        etComments.setOnTouchListener(getOnTouchListener());
+
         etChangeEmail.addTextChangedListener(getTextChangeListener(etChangeEmail, EditProfileFields.CHANGE_EMAIL));
         etChangePassword.addTextChangedListener(getTextChangeListener(etChangePassword, EditProfileFields.CHANGE_PASSWORD));
         etFirstName.addTextChangedListener(getTextChangeListener(etFirstName, EditProfileFields.CHANGE_FIRST_NAME));
@@ -867,6 +871,20 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> finish())
                 .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+
+    @NonNull
+    private View.OnTouchListener getOnTouchListener() {
+        return (v, event) -> {
+            v.getParent().getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction() & MotionEvent.ACTION_MASK){
+                case MotionEvent.ACTION_UP:
+                    v.getParent().getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+            return false;
+        };
     }
 
 

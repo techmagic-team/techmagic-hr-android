@@ -168,7 +168,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newEmail.equals(email)) {
             view.hideEmailError();
             data.setEmail(email);
-            hasChanges = false;
             return;
         }
 
@@ -218,7 +217,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newFirstName.equals(firstName)) {
             view.hideFirstNameError();
             data.setFirstName(firstName);
-            hasChanges = false;
             return;
         }
 
@@ -244,7 +242,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newLastName.equals(lastName)) {
             view.hideLastNameError();
             data.setLastName(lastName);
-            hasChanges = false;
             return;
         }
 
@@ -274,14 +271,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleGenderChange(boolean isMaleChecked) {
-        final int gender = data.getGender();
-
-        if (isMaleChecked && gender == GENDER_MALE || !isMaleChecked && gender == GENDER_FEMALE) {
-            hasChanges = false;
-        } else {
-            hasChanges = true;
-        }
-
         data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
     }
 
@@ -291,7 +280,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newSkype.equals(skype)) {
             data.setSkype(skype);
-            hasChanges = false;
         } else {
             data.setSkype(newSkype);
             hasChanges = true;
@@ -310,7 +298,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newPhone.equals(phone)) {
             data.setPhone(phone);
-            hasChanges = false;
         } else {
             data.setPhone(newPhone);
             hasChanges = true;
@@ -330,7 +317,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             if (newNumber.equals(emergency.getPhone())) {
                 emergencyContact.setPhone(newNumber);
                 data.setEmergencyContact(emergencyContact);
-                hasChanges = false;
                 return;
             }
         }
@@ -355,7 +341,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newNumber.equals(phone)) {
             emergencyContact.setPhone(phone);
             data.setEmergencyContact(emergencyContact);
-            hasChanges = false;
         } else {
             emergencyContact.setPhone(newNumber);
             data.setEmergencyContact(emergencyContact);
@@ -370,7 +355,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             if (newName.equals(emergency.getName())) {
                 emergencyContact.setName(newName);
                 data.setEmergencyContact(emergencyContact);
-                hasChanges = false;
                 return;
             }
         }
@@ -395,7 +379,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newName.equals(name)) {
             emergencyContact.setName(newName);
             data.setEmergencyContact(emergencyContact);
-            hasChanges = false;
         } else {
             emergencyContact.setName(newName);
             data.setEmergencyContact(emergencyContact);
@@ -423,7 +406,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (id.equals(roomId)) {
             room.setId(roomId);
-            hasChanges = false;
         } else {
             room.setId(id);
             hasChanges = true;
@@ -439,7 +421,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newCity.equals(city)) {
             data.setRelocationCity(city);
-            hasChanges = false;
             return;
         }
 
@@ -457,7 +438,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (fmtDesc.equals(desc)) {
             data.setDescription(fmtDesc);
-            hasChanges = false;
             return;
         }
 
@@ -490,7 +470,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newDepId.equals(depId)) {
             dep.setId(depId);
-            hasChanges = false;
         } else {
             dep.setId(newDepId);
             hasChanges = true;
@@ -518,7 +497,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newLead.getId().equals(leadId)) {
             lead.setId(leadId);
-            hasChanges = false;
         } else {
             lead.setId(newLead.getId());
             hasChanges = true;
@@ -566,7 +544,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
             if (newLink.equals(link)) {
                 data.setPdpLink(link);
-                hasChanges = false;
             } else {
                 data.setPdpLink(newLink);
                 hasChanges = true;
@@ -592,7 +569,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
             if (newLink.equals(link)) {
                 data.setOneToOneLink(link);
-                hasChanges = false;
             } else {
                 data.setOneToOneLink(newLink);
                 hasChanges = true;
@@ -635,7 +611,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newReasonId.equals(reasonId)) {
             reason.setId(reasonId);
-            hasChanges = false;
         } else {
             reason.setId(newReasonId);
             hasChanges = true;
@@ -652,7 +627,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (fmtCmnt.equals(comment)) {
             data.setReasonComments(fmtCmnt);
-            hasChanges = false;
             return;
         }
 

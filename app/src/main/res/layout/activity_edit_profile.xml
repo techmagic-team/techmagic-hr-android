@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="co.techmagic.hr.presentation.ui.activity.EditProfileActivity">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -72,6 +72,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>
