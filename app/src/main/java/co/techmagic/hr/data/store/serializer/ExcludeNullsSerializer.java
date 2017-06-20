@@ -1,7 +1,5 @@
 package co.techmagic.hr.data.store.serializer;
 
-
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -23,12 +21,10 @@ public class ExcludeNullsSerializer implements JsonSerializer<EditProfileRequest
             return jsonObject;
         }
 
-        Gson gson = new Gson();
-
         jsonObject.addProperty("_id", src.getId());
 
         if (src.getDepartment() != null) {
-            jsonObject.addProperty("_department", gson.toJson(src.getDepartment()));
+            jsonObject.addProperty("_department", src.getDepartment().toString());
         }
 
         if (src.getRoom() != null) {
@@ -74,7 +70,6 @@ public class ExcludeNullsSerializer implements JsonSerializer<EditProfileRequest
         jsonObject.addProperty("reason_comments", src.getReasonComments());
         jsonObject.addProperty("password", src.getPassword());
 
-        jsonObject.toString().replaceAll("\"", "");
         return jsonObject;
     }
 }

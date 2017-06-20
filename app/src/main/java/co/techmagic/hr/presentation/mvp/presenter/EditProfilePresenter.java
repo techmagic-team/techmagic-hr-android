@@ -615,6 +615,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
             data.setLastWorkingDay(date);
             view.showLastWorkingDay(date);
+            view.allowClickOnReasonView();
         }
     }
 
@@ -857,6 +858,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
+            view.allowClickOnReasonView();
         }
 
         if (data.getReason() != null) {

@@ -127,6 +127,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     EditText etChangeOneToOneLink;
     @BindView(R.id.cvOutOfTheCompany)
     View cvOutOfTheCompany;
+    @BindView(R.id.rlEditSelectReason)
+    RelativeLayout rlEditSelectReason;
     @BindView(R.id.tvLastWorkingDay)
     TextView tvLastWorkingDay;
     @BindView(R.id.tvReason)
@@ -541,6 +543,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void allowClickOnReasonView() {
+                rlEditSelectReason.setOnClickListener(getOnClickListener());
+            }
+
+            @Override
             public void showReason(@NonNull String text) {
                 tvSelectedReason.setText(text);
             }
@@ -624,13 +631,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     public void onLastDayClick() {
         editProfileField = EditProfileFields.CHANGE_LAST_WORKING_DAY;
         presenter.showDatePickerDialog();
-    }
-
-
-    @OnClick(R.id.rlEditSelectReason)
-    public void onReasonClick() {
-        editProfileField = EditProfileFields.CHANGE_REASON;
-        presenter.onReasonClick();
     }
 
 
@@ -830,8 +830,17 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     private View.OnClickListener getOnClickListener() {
         return v -> {
-            editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
-            presenter.showDatePickerDialog();
+            switch (v.getId()) {
+                case R.id.rlEditDateOfBirth:
+                    editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
+                    presenter.showDatePickerDialog();
+                    break;
+
+                case R.id.rlEditSelectReason:
+                    editProfileField = EditProfileFields.CHANGE_REASON;
+                    presenter.onReasonClick();
+                    break;
+            }
         };
     }
 

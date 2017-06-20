@@ -154,6 +154,12 @@ public interface EditProfileView {
 
     void showLastWorkingDay(@NonNull String date);
 
+    /**
+     * Allow change reason only if Last Working Day Selected
+     */
+
+    void allowClickOnReasonView();
+
     void showReason(@NonNull String text);
 
     void showComments(@NonNull String text);
