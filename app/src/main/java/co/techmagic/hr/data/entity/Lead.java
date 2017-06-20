@@ -1,12 +1,9 @@
 package co.techmagic.hr.data.entity;
 
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Lead implements Parcelable {
+public class Lead {
 
     @SerializedName("_id")
     private String id;
@@ -19,8 +16,6 @@ public class Lead implements Parcelable {
 
     @SerializedName("lastName")
     private String lastName;
-
-    public Lead() {}
 
     public String getId() {
         return id;
@@ -56,47 +51,5 @@ public class Lead implements Parcelable {
 
     public String getName() {
         return getFirstName() + " " + getLastName();
-    }
-
-    public Lead(Parcel in) {
-        id = in.readString();
-        lastWorkingDay = in.readString();
-        firstName = in.readString();
-        lastName = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(lastWorkingDay);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-    }
-
-    public static final Parcelable.Creator<Lead> CREATOR = new Parcelable.Creator<Lead>() {
-        @Override
-        public Lead createFromParcel(Parcel in) {
-            return new Lead(in);
-        }
-
-        @Override
-        public Lead[] newArray(int size) {
-            return new Lead[size];
-        }
-    };
-
-    @Override
-    public String toString() {
-        return "{" +
-                "id=\"" + id + '\"' +
-                ", lastWorkingDay=\"" + lastWorkingDay + '\"' +
-                ", firstName=\"" + firstName + '\"' +
-                ", lastName=\"" + lastName + '\"' +
-                '}';
     }
 }

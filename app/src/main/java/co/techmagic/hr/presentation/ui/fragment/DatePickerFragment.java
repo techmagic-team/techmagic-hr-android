@@ -65,9 +65,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         Date date = c.getTime();
 
         final String fmtDate = DateUtil.getFormattedFullDate(date);
+        final String utcDate = DateUtil.getDateInUTC(date);
 
         if (fmtDate != null) {
-            datePickerSelectionListener.onDateSelected(fmtDate);
+            datePickerSelectionListener.onDateSelected(fmtDate, utcDate);
         }
     }
 
@@ -80,6 +81,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
 
     public interface onDatePickerSelectionListener {
-        void onDateSelected(@NonNull String formattedDate);
+        void onDateSelected(@NonNull String formattedDate, @NonNull String dateInUTC);
     }
 }

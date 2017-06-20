@@ -24,23 +24,45 @@ public class ExcludeNullsSerializer implements JsonSerializer<EditProfileRequest
         jsonObject.addProperty("_id", src.getId());
 
         if (src.getDepartment() != null) {
-            jsonObject.addProperty("_department", src.getDepartment().toString());
+            JsonObject department = new JsonObject();
+            department.addProperty("_id", src.getDepartment().getId());
+            department.addProperty("name", src.getDepartment().getName());
+
+            jsonObject.add("_department", department);
         }
 
         if (src.getRoom() != null) {
-            jsonObject.addProperty("_room", src.getRoom().toString());
+            JsonObject room = new JsonObject();
+            room.addProperty("_id", src.getRoom().getId());
+            room.addProperty("name", src.getRoom().getName());
+
+            jsonObject.add("_room", room);
         }
 
         if (src.getLead() != null) {
-            jsonObject.addProperty("_lead", src.getLead().toString());
+            JsonObject lead = new JsonObject();
+            lead.addProperty("_id", src.getLead().getId());
+            lead.addProperty("lastWorkingDay", src.getLead().getLastWorkingDay());
+            lead.addProperty("firstName", src.getLead().getFirstName());
+            lead.addProperty("lastName", src.getLead().getLastName());
+
+            jsonObject.add("_lead", lead);
         }
 
         if (src.getReason() != null) {
-            jsonObject.addProperty("_reason", src.getReason().toString());
+            JsonObject reason = new JsonObject();
+            reason.addProperty("_id", src.getReason().getId());
+            reason.addProperty("name", src.getReason().getName());
+
+            jsonObject.add("_reason", reason);
         }
 
         if (src.getEmergencyContact() != null) {
-            jsonObject.addProperty("emergencyContact", src.getEmergencyContact().toString());
+            JsonObject contact = new JsonObject();
+            contact.addProperty("name", src.getEmergencyContact().getName());
+            contact.addProperty("phone", src.getEmergencyContact().getPhone());
+
+            jsonObject.add("emergencyContact", contact);
         }
 
         if (src.getLastWorkingDay() != null && src.getLastWorkingDay() != 0) {
@@ -68,7 +90,10 @@ public class ExcludeNullsSerializer implements JsonSerializer<EditProfileRequest
         jsonObject.addProperty("_pdp", src.getPdpLink());
         jsonObject.addProperty("_oneToOne", src.getOneToOneLink());
         jsonObject.addProperty("reason_comments", src.getReasonComments());
-        jsonObject.addProperty("password", src.getPassword());
+
+        if (src.getPassword() != null) {
+            jsonObject.addProperty("password", src.getPassword());
+        }
 
         return jsonObject;
     }

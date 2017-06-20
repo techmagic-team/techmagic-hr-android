@@ -203,4 +203,25 @@ public class DateUtil {
 
         return millis;
     }
+
+
+    public static String getDateInUTC(@Nullable Date inputDate) {
+        String utcDate = null;
+
+        if (inputDate == null) {
+            return utcDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            utcDate = inputFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return utcDate;
+    }
 }

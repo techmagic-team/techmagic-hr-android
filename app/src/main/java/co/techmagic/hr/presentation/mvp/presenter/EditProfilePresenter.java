@@ -261,10 +261,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleDateOfBirthChange(String date) {
+    public void handleDateOfBirthChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setBirthday(date);
+            data.setBirthday(dateInUTC);
             view.showBirthDate(date);
         }
     }
@@ -509,28 +509,28 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleFirstDayChange(String date) {
+    public void handleFirstDayChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setFirstWorkingDay(date);
+            data.setFirstWorkingDay(dateInUTC);
             view.showFirstWorkingDay(date);
         }
     }
 
 
-    public void handleFirstDayInItChange(String date) {
+    public void handleFirstDayInItChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setGeneralFirstWorkingDay(date);
+            data.setGeneralFirstWorkingDay(dateInUTC);
             view.showFirstWorkingDayInIt(date);
         }
     }
 
 
-    public void handleTrialPeriodChange(String date) {
+    public void handleTrialPeriodChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setTrialPeriodEnds(date);
+            data.setTrialPeriodEnds(dateInUTC);
             view.showTrialPeriodEnds(date);
         }
     }
@@ -586,10 +586,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleLastDayChange(String date) {
+    public void handleLastDayChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setLastWorkingDay(date);
+            data.setLastWorkingDay(dateInUTC);
             view.showLastWorkingDay(date);
             view.allowClickOnReasonView();
         }

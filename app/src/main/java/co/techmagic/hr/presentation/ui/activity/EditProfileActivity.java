@@ -575,8 +575,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
-    public void onDateSelected(@NonNull String formattedDate) {
-        handleSelectedDate(formattedDate);
+    public void onDateSelected(@NonNull String formattedDate, @NonNull String dateInUTC) {
+        handleSelectedDate(formattedDate, dateInUTC);
     }
 
 
@@ -742,26 +742,26 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private void handleSelectedDate(String formattedDate) {
+    private void handleSelectedDate(String formattedDate, String dateInUTC) {
         switch (editProfileField) {
             case CHANGE_DATE_OF_BIRTH:
-                presenter.handleDateOfBirthChange(formattedDate);
+                presenter.handleDateOfBirthChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_FIRST_DAY:
-                presenter.handleFirstDayChange(formattedDate);
+                presenter.handleFirstDayChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_FIRST_DAY_IN_IT:
-                presenter.handleFirstDayInItChange(formattedDate);
+                presenter.handleFirstDayInItChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_TRIAL_PERIOD:
-                presenter.handleTrialPeriodChange(formattedDate);
+                presenter.handleTrialPeriodChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_LAST_WORKING_DAY:
-                presenter.handleLastDayChange(formattedDate);
+                presenter.handleLastDayChange(formattedDate, dateInUTC);
                 break;
         }
     }
