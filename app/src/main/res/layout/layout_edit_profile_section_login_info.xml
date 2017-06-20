@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="true"
-            android:hint="@string/tm_hr_login_activity_hint_email"
+            android:hint="@string/tm_hr_edit_profile_activity_hint_email"
             android:textColorHint="@color/colorAccent">
 
             <EditText

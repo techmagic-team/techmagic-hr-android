@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,8 +53,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        dialogManager = new FilterDialogManager(this, this);
-        presenter.onCreate();
+        initUi();
     }
 
 
@@ -214,6 +214,19 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
         tilForgotPassEmail.getEditText().setText("");
         tilForgotPassEmail.clearFocus();
         successView.setVisibility(View.VISIBLE);
+    }
+
+
+    private void initUi() {
+        dialogManager = new FilterDialogManager(this, this);
+        presenter.onCreate();
+        tilPassword.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handleOnLoginClick();
+                return true;
+            }
+            return false;
+        });
     }
 
 
