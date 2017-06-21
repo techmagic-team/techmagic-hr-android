@@ -9,6 +9,7 @@
     <dimen name="activity_login_tm_logo_width">300dp</dimen>
     <dimen name="activity_login_tm_logo_height">120dp</dimen>
     <dimen name="activity_login_tm_logo_margin_bottom">24dp</dimen>
+    <dimen name="activity_login_tm_root_view_margin_bottom">56dp</dimen>
 
     <!-- HomeActivity -->
     <!--EmployeeAdapter-->

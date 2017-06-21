@@ -272,6 +272,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     public void handleGenderChange(boolean isMaleChecked) {
         data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
+        hasChanges = true;
     }
 
 
@@ -421,7 +422,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newCity.equals(city)) {
             data.setRelocationCity(city);
-            return;
+        } else {
+            data.setRelocationCity(newCity);
+            hasChanges = true;
         }
 
         // In case if user left field empty
