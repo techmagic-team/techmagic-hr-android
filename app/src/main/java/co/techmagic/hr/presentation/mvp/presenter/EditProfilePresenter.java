@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -41,6 +42,10 @@ import co.techmagic.hr.presentation.util.TextUtil;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -97,20 +102,52 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     public void preparePhotoAndSend(Uri uri, Context context) {
         File file = new File(uri.getPath());
-        byte[] compressedImage = ImagePickerUtil.compressImage(uri, context);
 
         if (file.length() > IMAGE_SIZE_5MB) {
             view.showImageSizeIsTooBigMessage();
             return;
         }
 
-        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+        Observable.OnSubscribe<MultipartBody.Part> onSubscribe = subscriber -> {
+            Bitmap bitmap = ImagePickerUtil.getDecodedBitmapFromFile(file);
 
-        if (multipartBody == null) {
-            return;
-        }
+            if (bitmap == null) {
+                return;
+            }
 
-        performUploadPhotoRequestAndUpdateUser(multipartBody);
+            byte[] compressedImage = ImagePickerUtil.compressImage(bitmap);
+
+            MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+
+            if (multipartBody == null) {
+                return;
+            }
+
+            subscriber.onNext(multipartBody);
+            subscriber.onCompleted();
+        };
+
+        Subscriber<MultipartBody.Part> subscriber = new Subscriber<MultipartBody.Part>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(MultipartBody.Part body) {
+                performUploadPhotoRequestAndUpdateUser(body);
+            }
+        };
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 
 

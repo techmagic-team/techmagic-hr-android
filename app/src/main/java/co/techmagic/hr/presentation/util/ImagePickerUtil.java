@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -15,7 +16,8 @@ import android.webkit.MimeTypeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,9 @@ public class ImagePickerUtil {
 
     private static final String CHOOSER_TITLE = "Select image to upload";
     private static final String CAMERA_IMG_NAME = "cameraImage.jpeg";
+    private static final int IMAGE_QUALITY = 80;
+    private static final int IMAGE_HEIGHT = 1280;
+    private static final int IMAGE_WIDTH = 720;
 
     public static Intent getPickImageChooserIntent(Context context) {
 
@@ -133,27 +138,34 @@ public class ImagePickerUtil {
     }
 
 
-    public static byte[] compressImage(Uri uri, Context context) {
-        Bitmap bitmap = getBitmapFromUri(context, uri);
-
-        if (bitmap != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            return stream.toByteArray();
-        }
-
-        return new byte[0];
+    public static byte[] compressImage(Bitmap bitmap) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, bos);
+        return bos.toByteArray();
     }
 
 
-    private static Bitmap getBitmapFromUri(Context context, Uri uri) {
-        Bitmap bitmap = null;
+    public static Bitmap getDecodedBitmapFromFile(File file) {
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-        } catch (IOException e) {
+            // Decode image size
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (options.outWidth / scale / 2 >= IMAGE_WIDTH && options.outHeight / scale / 2 >= IMAGE_HEIGHT) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options slaceOptions = new BitmapFactory.Options();
+            slaceOptions.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(file), null, slaceOptions);
+
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        return bitmap;
+        return null;
     }
 }
