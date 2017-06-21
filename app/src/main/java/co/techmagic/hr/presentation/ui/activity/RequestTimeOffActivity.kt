@@ -3,6 +3,8 @@ package co.techmagic.hr.presentation.ui.activity
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -11,10 +13,9 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
-import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
+import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
-import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
 import co.techmagic.hr.presentation.pojo.PeriodPair
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
 import org.jetbrains.anko.find
@@ -41,6 +42,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var rgPeriods: RadioGroup
     private lateinit var rbFirstPeriod: RadioButton
     private lateinit var rbSecondPeriod: RadioButton
+    private lateinit var rvRequestedTimeOffs: RecyclerView
 
     private val dateFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
@@ -75,6 +77,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         rgPeriods = find(R.id.rgPeriods)
         rbFirstPeriod = find(R.id.rbFirstPeriod)
         rbSecondPeriod = find(R.id.rbSecondPeriod)
+        rvRequestedTimeOffs = find(R.id.rvRequestedTimeOffs)
+
+        rvRequestedTimeOffs.layoutManager = LinearLayoutManager(this)
 
         rgPeriods.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
@@ -90,6 +95,14 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>) {
+                this@RequestTimeOffActivity.showRequestedTimeOffs(timeOffs)
+            }
+
+            override fun showErrorLoadingRequestedTimeOffs() {
+                toast(R.string.tm_hr_failed_show_requested_time_off)
+            }
+
             override fun showInvalidInputData() {
                 toast(R.string.tm_hr_invalid_input_data)
             }
@@ -228,4 +241,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             return 0
         }
     }
+
+    private fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>) {
+
+    }
+
 }

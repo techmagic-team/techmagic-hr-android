@@ -24,7 +24,7 @@ import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
-import co.techmagic.hr.data.request.RemainedTimeOffRequest;
+import co.techmagic.hr.data.request.TimeOffRequestByUser;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.data.store.client.ApiClient;
@@ -151,6 +151,39 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
         return Observable.error(new NetworkConnectionException());
     }
 
+    @Override
+    public Observable<List<RequestedTimeOff>> getUsedVacationsByUser(TimeOffRequestByUser request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getUsedVacationsByUser(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getUsedDayOffsByUser(TimeOffRequestByUser request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getUsedDayOffsByUser(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<List<RequestedTimeOff>> getUsedIllnessesByUser(TimeOffRequestByUser request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getUsedIllnessesByUser(request.getUserId(), request.getDateFrom().getGte(), request.getDateTo().getLte());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
 
     @Override
     public Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest) {
@@ -232,7 +265,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalVacation(RemainedTimeOffRequest request) {
+    public Observable<Integer> getTotalVacation(TimeOffRequestByUser request) {
         if (networkManager.isNetworkAvailable()) {
             return client
                     .getEmployeeClient()
@@ -254,7 +287,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalDayOff(RemainedTimeOffRequest request) {
+    public Observable<Integer> getTotalDayOff(TimeOffRequestByUser request) {
         if (networkManager.isNetworkAvailable()) {
             return client
                     .getEmployeeClient()
@@ -276,7 +309,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     }
 
     @Override
-    public Observable<Integer> getTotalIllness(RemainedTimeOffRequest request) {
+    public Observable<Integer> getTotalIllness(TimeOffRequestByUser request) {
         if (networkManager.isNetworkAvailable()) {
             return client
                     .getEmployeeClient()

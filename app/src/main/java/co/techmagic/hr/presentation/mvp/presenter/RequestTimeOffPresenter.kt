@@ -3,11 +3,10 @@ package co.techmagic.hr.presentation.mvp.presenter
 import android.util.Log
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
+import co.techmagic.hr.domain.interactor.employee.GetTimeOffsByUser
 import co.techmagic.hr.domain.interactor.employee.GetUserPeriods
 import co.techmagic.hr.domain.interactor.employee.RequestTimeOff
-import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
-import co.techmagic.hr.domain.pojo.RequestTimeOffDto
-import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
+import co.techmagic.hr.domain.pojo.*
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
@@ -19,8 +18,10 @@ import java.util.*
  * Created by Roman Ursu on 6/6/17
  */
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
-    var getUserPeriods: GetUserPeriods = GetUserPeriods(EmployeeRepositoryImpl())
-    var requestTimeOff: RequestTimeOff = RequestTimeOff(EmployeeRepositoryImpl())
+    private val employeeRepository: EmployeeRepositoryImpl = EmployeeRepositoryImpl()
+    private var getUserPeriods: GetUserPeriods = GetUserPeriods(employeeRepository)
+    private var requestTimeOff: RequestTimeOff = RequestTimeOff(employeeRepository)
+    private var getTimeOffsByUser: GetTimeOffsByUser = GetTimeOffsByUser(employeeRepository)
 
     var availableTimeOffsData: AvailableTimeOffsData? = null
         private set
@@ -38,6 +39,8 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     private val userId: String = SharedPreferencesUtil.readUser().id
 
+    private var usedTimeOffs: UsedTimeOffsByUserDto? = null
+
     companion object {
         private val TAG: String = RequestTimeOffPresenter.toString()
 
@@ -52,7 +55,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 if (timeOffsData != null) {
                     val periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
                     view?.showUserPeriods(periodPairsList)
+                    selectedPeriod = periodPairsList[0]
                 }
+
+                loadUserTimeOffs()
             }
 
             override fun onError(e: Throwable?) {
@@ -61,6 +67,28 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 view?.hideProgress()
             }
         })
+    }
+
+    private fun loadUserTimeOffs() {
+        if (availableTimeOffsData != null && availableTimeOffsData!!.timeOffsMap.keys.size > 0) {
+            val timeOffRequestByUser: TimeOffRequestByUserAllPeriods = TimeOffRequestByUserAllPeriods(userId, availableTimeOffsData!!.timeOffsMap.keys)
+
+            getTimeOffsByUser.execute(timeOffRequestByUser, object : DefaultSubscriber<UsedTimeOffsByUserDto>() {
+                override fun onNext(usedTimeOffsByUserDto: UsedTimeOffsByUserDto?) {
+                    if (usedTimeOffsByUserDto != null) {
+                        usedTimeOffs = usedTimeOffsByUserDto
+                        view?.hideProgress()
+
+                        showRequestedTimeOffs()
+                    }
+                }
+
+                override fun onError(e: Throwable?) {
+                    view?.showErrorLoadingRequestedTimeOffs()
+                    view?.hideProgress()
+                }
+            })
+        }
     }
 
     override fun onViewDetached() {
@@ -86,6 +114,8 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onTimeOffTypeSelected(timeOffType: TimeOffType) {
         this.selectedTimeOffType = timeOffType
         view?.selectTimeOff(timeOffType)
+
+        showRequestedTimeOffs()
     }
 
     fun onFromDateSet(year: Int, month: Int, dayOfMonth: Int) {
@@ -126,11 +156,13 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun onFirstPeriodSelected() {
         selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(0)
+        showRequestedTimeOffs()
         return showTimeOffsData()
     }
 
     fun onSecondPeriodSelected() {
         selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(1)
+        showRequestedTimeOffs()
         return showTimeOffsData()
     }
 
@@ -159,6 +191,12 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
 
         return false
+    }
+
+    private fun showRequestedTimeOffs() {
+        if (usedTimeOffs != null && selectedPeriod != null && selectedTimeOffType != null) {
+            view?.showRequestedTimeOffs(usedTimeOffs!!.timeOffMaps[selectedPeriod]!![selectedTimeOffType!!]!!)
+        }
     }
 
     private fun showTimeOffsData() {

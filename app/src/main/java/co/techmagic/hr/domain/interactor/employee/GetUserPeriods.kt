@@ -3,7 +3,7 @@ package co.techmagic.hr.domain.interactor.employee
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.data.entity.DateFrom
 import co.techmagic.hr.data.entity.DateTo
-import co.techmagic.hr.data.request.RemainedTimeOffRequest
+import co.techmagic.hr.data.request.TimeOffRequestByUser
 import co.techmagic.hr.domain.interactor.DataUseCase
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.domain.repository.IEmployeeRepository
@@ -25,8 +25,8 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
                     val timeOffsObservableList: MutableList<Observable<AvailableTimeOffsData>> = mutableListOf()
 
                     for ((dateFrom, dateTo) in periodsList) {
-                        val remainedTimeOffRequest: RemainedTimeOffRequest = RemainedTimeOffRequest(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
-                        val observable = getLoadTimeOffsObservable(remainedTimeOffRequest)
+                        val timeOffRequestByUser: TimeOffRequestByUser = TimeOffRequestByUser(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
+                        val observable = getLoadTimeOffsObservable(timeOffRequestByUser)
                                 .map { remainedTimeOffsAmountDto ->
                                     val periodPair: PeriodPair = PeriodPair(dateFrom, dateTo)
                                     availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
@@ -41,13 +41,13 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
                 }
     }
 
-    fun getLoadTimeOffsObservable(remainedTimeOffRequest: RemainedTimeOffRequest): Observable<RemainedTimeOffsAmountDto> {
+    fun getLoadTimeOffsObservable(timeOffRequestByUser: TimeOffRequestByUser): Observable<RemainedTimeOffsAmountDto> {
 
         val remainedTimeOffsAmountDto = RemainedTimeOffsAmountDto()
 
-        val totalIllnessObservable: Observable<Int> = repository.getTotalIllness(remainedTimeOffRequest)
-        val totalVacationObservable: Observable<Int> = repository.getTotalVacation(remainedTimeOffRequest)
-        val totalDayOffsObservable: Observable<Int> = repository.getTotalDayOff(remainedTimeOffRequest)
+        val totalIllnessObservable: Observable<Int> = repository.getTotalIllness(timeOffRequestByUser)
+        val totalVacationObservable: Observable<Int> = repository.getTotalVacation(timeOffRequestByUser)
+        val totalDayOffsObservable: Observable<Int> = repository.getTotalDayOff(timeOffRequestByUser)
 
         return Observable.zip(
                 totalIllnessObservable,

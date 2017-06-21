@@ -69,6 +69,15 @@ public interface IEmployeeApi {
     @GET("/v1/endpoints/calendar")
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
+    @GET("/v1/time-off/vacation/user/{user_id}?isPaid=true")
+    Observable<List<RequestedTimeOff>> getUsedVacationsByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/vacation/user/{user_id}?isPaid=false")
+    Observable<List<RequestedTimeOff>> getUsedDayOffsByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/time-off/illness/user/{user_id}")
+    Observable<List<RequestedTimeOff>> getUsedIllnessesByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
     /* Used for request time off */
 
     @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=true")

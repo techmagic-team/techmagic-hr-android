@@ -10,7 +10,7 @@ import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
 import co.techmagic.hr.data.request.GetIllnessRequest;
-import co.techmagic.hr.data.request.RemainedTimeOffRequest;
+import co.techmagic.hr.data.request.TimeOffRequestByUser;
 import co.techmagic.hr.data.request.TimeOffAllRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
 import co.techmagic.hr.domain.pojo.DatePeriodDto;
@@ -39,6 +39,12 @@ public interface IEmployeeRepository {
 
     Observable<List<RequestedTimeOff>> getAllIllnesses(TimeOffAllRequest request);
 
+    Observable<List<RequestedTimeOff>> getUsedVacationsByUser(TimeOffRequestByUser request);
+
+    Observable<List<RequestedTimeOff>> getUsedDayOffsByUser(TimeOffRequestByUser request);
+
+    Observable<List<RequestedTimeOff>> getUsedIllnessesByUser(TimeOffRequestByUser request);
+
     Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
@@ -53,11 +59,11 @@ public interface IEmployeeRepository {
 
     Observable<RequestedTimeOffDto> requestIllness(TimeOffRequest request);
 
-    Observable<Integer> getTotalVacation(RemainedTimeOffRequest request);
+    Observable<Integer> getTotalVacation(TimeOffRequestByUser request);
 
-    Observable<Integer> getTotalDayOff(RemainedTimeOffRequest request);
+    Observable<Integer> getTotalDayOff(TimeOffRequestByUser request);
 
-    Observable<Integer> getTotalIllness(RemainedTimeOffRequest request);
+    Observable<Integer> getTotalIllness(TimeOffRequestByUser request);
 
     Observable<List<DatePeriodDto>> getUserPeriods(String userId);
 }

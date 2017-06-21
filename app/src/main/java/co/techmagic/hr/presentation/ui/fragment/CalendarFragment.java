@@ -89,7 +89,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        actionBarChangeListener.showBackButton();
+//        actionBarChangeListener.showBackButton();
         actionBarChangeListener.setActionBarTitle(getString(R.string.tm_hr_calendar_fragment_title));
         inflater.inflate(R.menu.menu_calendar, menu);
         super.onCreateOptionsMenu(menu, inflater);

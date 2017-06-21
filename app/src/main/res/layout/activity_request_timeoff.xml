@@ -194,4 +194,10 @@
         android:text="@string/tm_hr_request_time_off"
         android:theme="@style/AppTheme.Primary.Button" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRequestedTimeOffs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
 </LinearLayout>
