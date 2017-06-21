@@ -196,7 +196,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         if (dialogManager.isDialogActive()) {
             dialogManager.dismissDialogIfOpened();
         } else {
-            super.onBackPressed();
+            presenter.onBackClick();
         }
     }
 
