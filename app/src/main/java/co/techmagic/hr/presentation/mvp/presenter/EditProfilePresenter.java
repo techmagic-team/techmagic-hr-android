@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -42,10 +41,6 @@ import co.techmagic.hr.presentation.util.TextUtil;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -100,15 +95,15 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void preparePhotoAndSend(Uri uri, Context context) {
-        File file = new File(uri.getPath());
-
-        if (file.length() > IMAGE_SIZE_5MB) {
-            view.showImageSizeIsTooBigMessage();
-            return;
-        }
-
+    /*public void preparePhotoAndSend(Uri uri, Context context) {
         Observable.OnSubscribe<MultipartBody.Part> onSubscribe = subscriber -> {
+            File file = new File(uri.getPath());
+
+            if (file.length() > IMAGE_SIZE_5MB) {
+                view.showImageSizeIsTooBigMessage();
+                return;
+            }
+
             Bitmap bitmap = ImagePickerUtil.getDecodedBitmapFromFile(file);
 
             if (bitmap == null) {
@@ -148,6 +143,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
+    }*/
+
+
+    public void preparePhotoAndSend(Uri uri, Context context) {
+        File file = new File(uri.getPath());
+        byte[] compressedImage = ImagePickerUtil.compressImage(uri, context);
+
+        if (file.length() > IMAGE_SIZE_5MB) {
+            view.showImageSizeIsTooBigMessage();
+            return;
+        }
+
+        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+
+        if (multipartBody == null) {
+            return;
+        }
+
+        performUploadPhotoRequestAndUpdateUser(multipartBody);
     }
 
 
