@@ -453,12 +453,6 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
-    @OnClick(R.id.llEmergencyContact)
-    public void onEmergencyContactClick() {
-        presenter.onEmergencyContactClick(getContext());
-    }
-
-
     private void init() {
         getData();
         fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);

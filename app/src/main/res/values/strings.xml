@@ -16,7 +16,7 @@
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
-    <string name="message_do_you_want_to_call_emergency_contact">Do You want to call the emergency contact?</string>
+    <string name="message_do_you_want_to_call_emergency_contact">Do you want to call the emergency contact?</string>
     <string name="message_image_downloaded">Image was saved into gallery</string>
     <string name="message_permission_denied">Permission denied</string>
     <!--HomeActivity-->
@@ -122,6 +122,7 @@
     <!-- EditProfileActivity -->
     <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>
     <string name="tm_hr_edit_profile_activity_alert_dialog_message">You have unsaved changes. Do you want to return back?</string>
+    <string name="tm_hr_edit_profile_activity_please_select_last_working_day_first_message">"Please select 'Last working day' first"</string>
     <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
     <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
     <string name="tm_hr_edit_profile_activity_hint_email">Email *</string>

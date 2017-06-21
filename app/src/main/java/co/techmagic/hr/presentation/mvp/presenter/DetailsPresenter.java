@@ -168,15 +168,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         }
 
         handleLastWorkingDaySection(data);
-
-        final EmergencyContact emergencyContact = data.getEmergencyContact();
-        if (emergencyContact != null && emergencyContact.getPhone() != null) {
-            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
-        }
-
-        if (emergencyContact != null && emergencyContact.getName() != null) {
-            view.showEmergencyContact(emergencyContact.getName());
-        }
+        handleEmergencyContactSection(data);
     }
 
 
@@ -194,6 +186,22 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         if (data.getReasonComments() != null) {
             view.showComment(data.getReasonComments());
+        }
+    }
+
+
+    private void handleEmergencyContactSection(@NonNull UserProfile data) {
+        final EmergencyContact emergencyContact = data.getEmergencyContact();
+        if (emergencyContact == null) {
+            return;
+        }
+
+        if (emergencyContact.getPhone() != null && !emergencyContact.getPhone().trim().isEmpty()) {
+            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
+        }
+
+        if (emergencyContact.getName() != null && !emergencyContact.getName().trim().isEmpty()) {
+            view.showEmergencyContact(emergencyContact.getName());
         }
     }
 
@@ -237,11 +245,6 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     public void onEmergencyPhoneNumberClick(@NonNull Context context) {
         onPhoneClick(context, data.getEmergencyContact().getPhone());
-    }
-
-
-    public void onEmergencyContactClick(@NonNull Context context) {
-        onPhoneClick(context, data.getEmergencyContact().getName());
     }
 
 

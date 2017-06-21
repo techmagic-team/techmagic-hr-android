@@ -131,8 +131,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     EditText etChangeOneToOneLink;
     @BindView(R.id.cvOutOfTheCompany)
     View cvOutOfTheCompany;
-    @BindView(R.id.rlEditSelectReason)
-    RelativeLayout rlEditSelectReason;
     @BindView(R.id.tvLastWorkingDay)
     TextView tvLastWorkingDay;
     @BindView(R.id.tvReason)
@@ -548,13 +546,13 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
-            public void allowClickOnReasonView() {
-                rlEditSelectReason.setOnClickListener(getOnClickListener());
+            public void showReason(@NonNull String text) {
+                tvSelectedReason.setText(text);
             }
 
             @Override
-            public void showReason(@NonNull String text) {
-                tvSelectedReason.setText(text);
+            public void showSelectLastWorkingDayFirstMessage() {
+                view.showMessage(getString(R.string.tm_hr_edit_profile_activity_please_select_last_working_day_first_message));
             }
 
             @Override
@@ -629,6 +627,13 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     public void onTrialEndClick() {
         editProfileField = EditProfileFields.CHANGE_TRIAL_PERIOD;
         presenter.showDatePickerDialog();
+    }
+
+
+    @OnClick(R.id.rlEditSelectReason)
+    public void onReasonClick() {
+        editProfileField = EditProfileFields.CHANGE_REASON;
+        presenter.onReasonClick();
     }
 
 
@@ -844,11 +849,6 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 case R.id.rlEditDateOfBirth:
                     editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
                     presenter.showDatePickerDialog();
-                    break;
-
-                case R.id.rlEditSelectReason:
-                    editProfileField = EditProfileFields.CHANGE_REASON;
-                    presenter.onReasonClick();
                     break;
             }
         };

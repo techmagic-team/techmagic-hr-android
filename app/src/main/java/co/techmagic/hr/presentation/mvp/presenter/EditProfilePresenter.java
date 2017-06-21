@@ -147,7 +147,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     public void onReasonClick() {
         // If Last Working Day Selected not selected
         if (data.getLastWorkingDay() == null) {
-
+            view.showSelectLastWorkingDayFirstMessage();
         } else {
             final List<Filter> reasons = profileFilters.getReasons();
             if (reasons.isEmpty()) {
@@ -591,7 +591,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             hasChanges = true;
             data.setLastWorkingDay(dateInUTC);
             view.showLastWorkingDay(date);
-            view.allowClickOnReasonView();
         }
     }
 
@@ -836,7 +835,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
         if (lastDayDate != null) {
             view.showLastWorkingDay(lastDayDate);
-            view.allowClickOnReasonView();
         }
 
         if (data.getReason() != null) {
