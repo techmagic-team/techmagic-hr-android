@@ -69,5 +69,6 @@
 
     <!-- EditProfileActivity -->
     <dimen name="tm_hr_edit_profile_activity_edit_text_height">150dp</dimen>
+    <dimen name="tm_hr_edit_profile_activity_edit_selected_filter_big_margin_left">90dp</dimen>
 
 </resources>

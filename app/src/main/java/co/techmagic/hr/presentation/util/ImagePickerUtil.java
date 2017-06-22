@@ -32,7 +32,7 @@ public class ImagePickerUtil {
 
     private static final String CHOOSER_TITLE = "Select image to upload";
     private static final String CAMERA_IMG_NAME = "cameraImage.jpeg";
-    private static final int IMAGE_QUALITY = 80;
+    private static final int IMAGE_QUALITY = 100;
     private static final int IMAGE_HEIGHT = 1280;
     private static final int IMAGE_WIDTH = 720;
 
