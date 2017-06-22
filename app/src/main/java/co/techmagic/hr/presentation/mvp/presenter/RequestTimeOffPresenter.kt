@@ -157,13 +157,13 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onFirstPeriodSelected() {
         selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(0)
         showRequestedTimeOffs()
-        return showTimeOffsData()
+        return showTimeOffsAvailableDays()
     }
 
     fun onSecondPeriodSelected() {
         selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(1)
         showRequestedTimeOffs()
-        return showTimeOffsData()
+        return showTimeOffsAvailableDays()
     }
 
     private fun inputDataValid(): Boolean {
@@ -199,7 +199,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
     }
 
-    private fun showTimeOffsData() {
+    private fun showTimeOffsAvailableDays() {
         if (availableTimeOffsData != null) {
             val remainedTimeOffs: RemainedTimeOffsAmountDto? = availableTimeOffsData?.timeOffsMap!![selectedPeriod]
 

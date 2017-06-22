@@ -5,12 +5,10 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import co.techmagic.hr.R
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
@@ -144,11 +142,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     TimeOffType.ILLNESS -> run { tvTimeOffTypeSelected.setText(R.string.tm_hr_illness_time_off_name) }
                     else -> run { toast("wrong type") }
                 }
-
-                when (rgPeriods.checkedRadioButtonId) {
-                    R.id.rbFirstPeriod -> run { presenter.onFirstPeriodSelected() }
-                    R.id.rbSecondPeriod -> run { presenter.onSecondPeriodSelected() }
-                }
             }
 
             override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean) {
@@ -243,7 +236,57 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     }
 
     private fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>) {
-
+        if (rvRequestedTimeOffs.adapter != null) {
+            val adapter: RequestedTimeOffListAdapter = rvRequestedTimeOffs.adapter as RequestedTimeOffListAdapter
+            adapter.resetData(timeOffs)
+        } else {
+            rvRequestedTimeOffs.adapter = RequestedTimeOffListAdapter(timeOffs) { it -> toast("Clicked") }
+        }
     }
 
+    inner class RequestedTimeOffListAdapter(timeOffs: MutableList<RequestedTimeOffDto>, val itemClick: (RequestedTimeOffDto) -> Unit) : RecyclerView.Adapter<RequestedTimeOffListAdapter.ViewHolder>() {
+
+        val items: MutableList<RequestedTimeOffDto> = mutableListOf()
+
+        init {
+            items.addAll(timeOffs)
+        }
+
+        fun resetData(newItems: List<RequestedTimeOffDto>) {
+            items.clear()
+            items.addAll(newItems)
+            notifyDataSetChanged()
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            val requestedTimeOff: RequestedTimeOffDto = items[position]
+            val dateFrom: String = dateFormat.format(requestedTimeOff.dateFrom)
+            val dateTo: String = dateFormat.format(requestedTimeOff.dateTo)
+
+            holder!!.tvTimeOff.text = dateFrom + " " + dateTo
+            holder.btDelete.visibility = View.GONE
+
+            if (requestedTimeOff.isAccepted) {
+                holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
+            } else {
+                holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)
+            }
+
+//            holder!!.itemView.setOnClickListener { itemClick(items[position]) }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+            val view: View = LayoutInflater.from(parent!!.context).inflate(R.layout.item_requested_time_off, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun getItemCount() = items.size
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val tvTimeOff: TextView = view.find(R.id.tvPeriod)
+            val btDelete: Button = view.find(R.id.btDelete)
+            val ivApproved: ImageView = view.find(R.id.ivApproved)
+
+        }
+    }
 }
