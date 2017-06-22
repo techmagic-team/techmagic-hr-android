@@ -8,7 +8,10 @@
         android:id="@+id/rgPeriods"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:checkedButton="@+id/rbFirstPeriod"
         android:orientation="vertical">
 
@@ -17,12 +20,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="7dp"
+            android:background="@drawable/radio_button_background"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/rbSecondPeriod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/radio_button_background"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
     </RadioGroup>
 
@@ -173,12 +186,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_keyboard_arrow_right" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/ivToArrow"
-                    android:background="@color/colorCardViewBgGrey" />
 
             </RelativeLayout>
 
