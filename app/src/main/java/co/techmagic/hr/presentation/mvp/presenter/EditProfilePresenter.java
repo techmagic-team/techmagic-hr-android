@@ -35,7 +35,7 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
-import co.techmagic.hr.presentation.ui.EditProfileFields;
+import co.techmagic.hr.presentation.ui.EditableFields;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.FileChooserUtil;
 import co.techmagic.hr.presentation.util.ImagePickerUtil;
@@ -213,18 +213,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             return;
         }
 
+        // In case if user left field empty
+        if (newEmail.isEmpty()) {
+            view.showEmptyEmailError();
+            hasChanges = true;
+            return;
+        }
+
         if (TextUtil.isValidEmail(newEmail)) {
             view.hideEmailError();
             data.setEmail(newEmail);
             hasChanges = true;
         } else {
             view.onEmailError();
-        }
-
-        // In case if user left field empty
-        if (newEmail.isEmpty()) {
-            view.showEmptyEmailError();
-            hasChanges = true;
         }
     }
 
@@ -262,18 +263,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             return;
         }
 
+        // In case if user left field empty
+        if (newFirstName.isEmpty()) {
+            view.showEmptyFirstNameError();
+            hasChanges = true;
+            return;
+        }
+
+        if (newFirstName.length() > TextUtil.NAME_MAXIMUM_LENGTH) {
+            view.showLongFirstNameMessage();
+            hasChanges = true;
+            return;
+        }
+
         if (TextUtil.isValidName(newFirstName)) {
             view.hideFirstNameError();
             data.setFirstName(newFirstName);
             hasChanges = true;
         } else {
             view.onFirstNameError();
-        }
-
-        // In case if user left field empty
-        if (newFirstName.isEmpty()) {
-            view.showEmptyFirstNameError();
-            hasChanges = true;
         }
     }
 
@@ -905,7 +913,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Department dep = data.getDepartment();
                 if (dep != null) {
                     if (dep.getId().equals(f.getId())) {
-                        view.showSelectedFilter(f, EditProfileFields.CHANGE_DEPARTMENT);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_DEPARTMENT);
                         break;
                     }
                 }
@@ -917,7 +925,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Lead lead = data.getLead();
                 if (lead != null) {
                     if (lead.getId().equals(f.getId())) {
-                        view.showSelectedLead(lead, EditProfileFields.CHANGE_LEAD);
+                        view.showSelectedLead(lead, EditableFields.CHANGE_LEAD);
                         break;
                     }
                 }
@@ -929,7 +937,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Room room = data.getRoom();
                 if (room != null) {
                     if (room.getId().equals(f.getId())) {
-                        view.showSelectedFilter(f, EditProfileFields.CHANGE_ROOM);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_ROOM);
                         break;
                     }
                 }
@@ -941,7 +949,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 for (Filter f : profileFilters.getReasons()) {
                     final String reasonId = data.getReason().getId();
                     if (reasonId.equals(f.getId())) {
-                        view.showSelectedFilter(f, EditProfileFields.CHANGE_REASON);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_REASON);
                         break;
                     }
                 }

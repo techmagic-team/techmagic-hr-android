@@ -24,7 +24,7 @@
             android:textColorHint="@color/colorAccent">
 
             <EditText
-                android:id="@+id/etEmail"
+                android:id="@+id/etLoginEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -43,7 +43,7 @@
             app:passwordToggleEnabled="true">
 
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/etLoginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"

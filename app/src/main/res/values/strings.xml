@@ -9,8 +9,10 @@
     <string name="message_invalid_password">Invalid Password</string>
     <string name="message_invalid_first_name">Invalid first name</string>
     <string name="message_invalid_last_name">Invalid last name</string>
+    <string name="message_long_name">Please use no more than 30 characters</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_you_can_not_leave_this_empty">You can’t leave this empty</string>
+    <string name="message_name_contains_not_allowed_characters">Last name can contain only Latin letters, dashes, and space</string>
     <string name="message_wrong_url">Wrong url</string>
     <string name="message_invalid_file_extension">Invalid extension. Please try again.</string>
     <!--EmployeeDetailsFragment-->

@@ -9,11 +9,25 @@ import co.techmagic.hr.data.entity.User;
 
 public interface LoginView extends View {
 
-    void onEmailError(int resId);
+    void showEmptyEmailError();
 
-    void onPasswordError(int resId);
+    void onEmailError();
 
-    void onForgotPassEmailError(int resId);
+    void hideEmailError();
+
+    void showShortPasswordMessage();
+
+    void setPasswordToggleEnabled(boolean b);
+
+    void onPasswordError();
+
+    void hidePasswordError();
+
+    void onForgotPassEmailError();
+
+    void showEmptyForgotPassEmailError();
+
+    void hideForgotPassEmailError();
 
     void onLoginSuccess(@NonNull User user);
 
