@@ -1,8 +1,10 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -35,12 +37,17 @@ import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.util.DateUtil;
+import co.techmagic.hr.presentation.util.FileChooserUtil;
 import co.techmagic.hr.presentation.util.ImagePickerUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import co.techmagic.hr.presentation.util.TextUtil;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -72,6 +79,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         getAllFilters = new GetAllFilters(employeeRepository);
         saveEditedUserProfile = new SaveEditedUserProfile(userRepository);
         emergencyContact = new EmergencyContact();
+        data = new UserProfile();
     }
 
 
@@ -95,24 +103,26 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    /*public void preparePhotoAndSend(Uri uri, Context context) {
+    public void preparePhotoAndSend(Uri uri, Context context) {
+        String imagePath = FileChooserUtil.getPath(context, uri);
+
+        if (imagePath == null) {
+            return;
+        }
+
+        File file = new File(imagePath);
+
+        if (!file.exists()) {
+            return;
+        }
+
+        if (file.length() > IMAGE_SIZE_5MB) {
+            view.showImageSizeIsTooBigMessage();
+            return;
+        }
+
         Observable.OnSubscribe<MultipartBody.Part> onSubscribe = subscriber -> {
-            File file = new File(uri.getPath());
-
-            if (file.length() > IMAGE_SIZE_5MB) {
-                view.showImageSizeIsTooBigMessage();
-                return;
-            }
-
-            Bitmap bitmap = ImagePickerUtil.getDecodedBitmapFromFile(file);
-
-            if (bitmap == null) {
-                return;
-            }
-
-            byte[] compressedImage = ImagePickerUtil.compressImage(bitmap);
-
-            MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+            MultipartBody.Part multipartBody = getPart(uri, context, file);
 
             if (multipartBody == null) {
                 return;
@@ -143,25 +153,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
-    }*/
-
-
-    public void preparePhotoAndSend(Uri uri, Context context) {
-        File file = new File(uri.getPath());
-        byte[] compressedImage = ImagePickerUtil.compressImage(uri, context);
-
-        if (file.length() > IMAGE_SIZE_5MB) {
-            view.showImageSizeIsTooBigMessage();
-            return;
-        }
-
-        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
-
-        if (multipartBody == null) {
-            return;
-        }
-
-        performUploadPhotoRequestAndUpdateUser(multipartBody);
     }
 
 
@@ -959,6 +950,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
+    @Nullable
+    private MultipartBody.Part getPart(Uri uri, Context context, File file) {
+        Bitmap bitmap = ImagePickerUtil.getDecodedBitmapFromFile(file);
+
+        if (bitmap == null) {
+            return null;
+        }
+
+        byte[] compressedImage = ImagePickerUtil.compressImage(bitmap);
+        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+
+        if (multipartBody == null) {
+            return null;
+        }
+        return multipartBody;
+    }
+
+
+    @Nullable
     private MultipartBody.Part prepareFilePart(String partName, String fileName, byte[] compressedImage, Context context, Uri uri) {
         String mimeType = ImagePickerUtil.getMimeType(context, uri);
 

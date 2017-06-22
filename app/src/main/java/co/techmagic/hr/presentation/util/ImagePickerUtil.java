@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,19 +138,6 @@ public class ImagePickerUtil {
     }
 
 
-    public static byte[] compressImage(Uri uri, Context context) {
-        Bitmap bitmap = getBitmapFromUri(context, uri);
-
-        if (bitmap != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            return stream.toByteArray();
-        }
-
-        return new byte[0];
-    }
-
-
     public static byte[] compressImage(Bitmap bitmap) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, bos);
@@ -181,17 +167,5 @@ public class ImagePickerUtil {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    private static Bitmap getBitmapFromUri(Context context, Uri uri) {
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 }
