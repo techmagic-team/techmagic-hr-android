@@ -2,7 +2,6 @@ package co.techmagic.hr.presentation.ui.adapter.calendar;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.presentation.util.DateUtil;
 
 public class WeekDayHeaderItemAdapter extends AbstractItem<WeekDayHeaderItemAdapter, WeekDayHeaderItemAdapter.ViewHolder> implements IWeekDayItem {
 
@@ -50,7 +50,7 @@ public class WeekDayHeaderItemAdapter extends AbstractItem<WeekDayHeaderItemAdap
 
     @Override
     public String getMonthString() {
-        return String.valueOf(DateFormat.format("MMM", time));
+        return DateUtil.getMonthShortName(time);
     }
 
 

@@ -47,6 +47,7 @@
         <include layout="@layout/login_view" />
 
         <include layout="@layout/forgot_pass_view" />
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

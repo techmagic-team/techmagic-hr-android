@@ -25,4 +25,19 @@ public class FilterLead implements IFilterModel {
     public String getName() {
         return firstName + " " + lastName;
     }
+
+    @Override
+    public String getLastWorkingDay() {
+        return null;
+    }
+
+    @Override
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
 }

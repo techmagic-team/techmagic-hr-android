@@ -57,7 +57,9 @@
                 android:inputType="textCapWords|textMultiLine"
                 android:maxLength="500"
                 android:maxLines="10"
+                android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
+                android:overScrollMode="always"
                 android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>

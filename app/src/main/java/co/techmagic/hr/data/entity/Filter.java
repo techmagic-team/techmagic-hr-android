@@ -19,4 +19,19 @@ public class Filter implements IFilterModel {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String getLastWorkingDay() {
+        return null;
+    }
+
+    @Override
+    public String getFirstName() {
+        return null;
+    }
+
+    @Override
+    public String getLastName() {
+        return null;
+    }
 }

@@ -159,7 +159,6 @@ public class CalendarPresenter extends BasePresenter<CalendarView> {
     public void onClearFiltersClick() {
         setDefaultValues();
         view.hideClearFilters();
-        performGetEmployeesByDepartmentRequest();
     }
 
 

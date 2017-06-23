@@ -1,11 +1,8 @@
 package co.techmagic.hr.data.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Department implements Parcelable {
+public class Department {
 
     @SerializedName("_id")
     private String id;
@@ -15,10 +12,9 @@ public class Department implements Parcelable {
 
     public Department() {}
 
-
-    public Department(Parcel in) {
-        id = in.readString();
-        name = in.readString();
+    public Department(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public String getId() {
@@ -36,27 +32,4 @@ public class Department implements Parcelable {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-    }
-
-    public static final Parcelable.Creator<Department> CREATOR = new Parcelable.Creator<Department>() {
-        @Override
-        public Department createFromParcel(Parcel in) {
-            return new Department(in);
-        }
-
-        @Override
-        public Department[] newArray(int size) {
-            return new Department[size];
-        }
-    };
 }

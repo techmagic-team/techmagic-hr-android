@@ -1,11 +1,12 @@
 package co.techmagic.hr.presentation.ui;
 
 
-public enum EditProfileFields {
+public enum EditableFields {
 
     NONE,
     CHANGE_EMAIL,
     CHANGE_PASSWORD,
+    CHANGE_FORGOT_PASS_EMAIL,
     CHANGE_FIRST_NAME,
     CHANGE_LAST_NAME,
     CHANGE_DATE_OF_BIRTH,

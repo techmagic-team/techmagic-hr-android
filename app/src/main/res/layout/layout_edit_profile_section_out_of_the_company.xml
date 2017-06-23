@@ -44,11 +44,11 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
                 android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
-                android:textColor="@color/colorBlack"
                 android:layout_toLeftOf="@+id/ivLastWorkingDay"
                 android:layout_toStartOf="@+id/ivLastWorkingDay"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivLastWorkingDay"
@@ -80,7 +80,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginEnd="4dp"
                 android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:layout_marginStart="4dp"
                 android:text="@string/tm_hr_edit_profile_activity_text_select_the_reason" />
 
@@ -89,13 +91,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/search_activity_card_view_selected_filter_margin_left"
-                android:layout_marginStart="@dimen/search_activity_card_view_selected_filter_margin_left"
-                android:textColor="@color/colorBlack"
+                android:layout_marginLeft="@dimen/tm_hr_edit_profile_activity_edit_selected_filter_big_margin_left"
+                android:layout_marginStart="@dimen/tm_hr_edit_profile_activity_edit_selected_filter_big_margin_left"
                 android:layout_toLeftOf="@+id/ivReason"
                 android:layout_toStartOf="@+id/ivReason"
                 android:gravity="end"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textColor="@color/colorBlack" />
 
             <ImageView
                 android:id="@+id/ivReason"
@@ -134,6 +136,8 @@
                 android:imeOptions="actionDone"
                 android:inputType="textCapWords|textMultiLine"
                 android:maxLength="500"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
                 android:textColor="@color/colorBlack" />
 

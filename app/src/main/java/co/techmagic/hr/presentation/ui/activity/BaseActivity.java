@@ -114,8 +114,8 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.message_alert_dialog_title_log_out))
                 .setMessage(getString(R.string.message_alert_dialog_message_are_you_sure_you_want_to_log_out))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> view.logOut())
-                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> view.logOut())
+                .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 }

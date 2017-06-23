@@ -13,12 +13,12 @@ import co.techmagic.hr.presentation.util.DateUtil;
 
 public class EditProfileRequest {
 
-    private Department _department;
-    private Room _room;
-    private Lead _lead;
-    private Reason _reason;
-    private String _id;
-    private String _company;
+    private Department department;
+    private Room room;
+    private Lead lead;
+    private Reason reason;
+    private String id;
+    private String company;
     private String birthday;
     private String description;
     private String email;
@@ -38,25 +38,17 @@ public class EditProfileRequest {
     private String skype;
     private boolean isActive;
     private String trialPeriodEnds = null;
-    private String _pdp;
-    private String _oneToOne;
-    private String reason_comments;
+    private String pdpLink;
+    private String oneToOneLink;
+    private String reasonComments;
 
     public EditProfileRequest(@NonNull UserProfile user) {
-        Department dep = user.getDepartment();
-        _department = dep == null ? null : dep;
-
-        Room r = user.getRoom();
-        _room = r == null ? null : r;
-
-        Lead l = user.getLead();
-        _lead = l == null ? null : l;
-
-        Reason rsn = user.getReason();
-        _reason = rsn == null ? null : rsn;
-
-        _id = user.getId();
-        _company = user.getCompany();
+        department = user.getDepartment();
+        room = user.getRoom();
+        lead = user.getLead();
+        reason = user.getReason();
+        id = user.getId();
+        company = user.getCompany();
         birthday = user.getBirthday();
         description = user.getDescription();
         email = user.getEmail();
@@ -64,25 +56,6 @@ public class EditProfileRequest {
         emergencyContact = user.getEmergencyContact();
         firstName = user.getFirstName();
         lastName = user.getLastName();
-
-        if (user.getFirstWorkingDay() == null) {
-            firstWorkingDay = null;
-        } else {
-            firstWorkingDay = DateUtil.getFormattedDateInMillis(user.getFirstWorkingDay());
-        }
-
-        if (user.getGeneralFirstWorkingDay() == null) {
-            generalFirstWorkingDay = null;
-        } else {
-            generalFirstWorkingDay = DateUtil.getFormattedDateInMillis(user.getGeneralFirstWorkingDay());
-        }
-
-        if (user.getLastWorkingDay() == null) {
-            lastWorkingDay = null;
-        } else {
-            lastWorkingDay = DateUtil.getFormattedDateInMillis(user.getLastWorkingDay());
-        }
-
         gender = user.getGender();
         phone = user.getPhone();
         photo = user.getPhoto();
@@ -92,13 +65,124 @@ public class EditProfileRequest {
         skype = user.getSkype();
         isActive = user.isActive();
         trialPeriodEnds = user.getTrialPeriodEnds();
-        _pdp = user.getPdpLink();
-        _oneToOne = user.getOneToOneLink();
-        reason_comments = user.getReasonComments();
+        pdpLink = user.getPdpLink();
+        oneToOneLink = user.getOneToOneLink();
+        reasonComments = user.getReasonComments();
         password = user.getPassword();
+        firstWorkingDay = DateUtil.getFormattedDateInMillis(user.getFirstWorkingDay());
+        generalFirstWorkingDay = DateUtil.getFormattedDateInMillis(user.getGeneralFirstWorkingDay());
+        lastWorkingDay = DateUtil.getFormattedDateInMillis(user.getLastWorkingDay());
     }
 
     public String getId() {
-        return _id;
+        return id;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public Lead getLead() {
+        return lead;
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public EmergencyContact getEmergencyContact() {
+        return emergencyContact;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Long getFirstWorkingDay() {
+        return firstWorkingDay;
+    }
+
+    public Long getGeneralFirstWorkingDay() {
+        return generalFirstWorkingDay;
+    }
+
+    public Long getLastWorkingDay() {
+        return lastWorkingDay;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public String getPhotoOrigin() {
+        return photoOrigin;
+    }
+
+    public String getRelocationCity() {
+        return relocationCity;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public String getSkype() {
+        return skype;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public String getTrialPeriodEnds() {
+        return trialPeriodEnds;
+    }
+
+    public String getPdpLink() {
+        return pdpLink;
+    }
+
+    public String getOneToOneLink() {
+        return oneToOneLink;
+    }
+
+    public String getReasonComments() {
+        return reasonComments;
     }
 }

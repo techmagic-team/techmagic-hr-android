@@ -8,7 +8,7 @@ import java.util.List;
 
 import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.Lead;
-import co.techmagic.hr.presentation.ui.EditProfileFields;
+import co.techmagic.hr.presentation.ui.EditableFields;
 
 public interface EditProfileView {
 
@@ -22,9 +22,9 @@ public interface EditProfileView {
 
     void showDatePickerDialog();
 
-    void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields editProfileField);
+    void showSelectedFilter(@NonNull IFilterModel filter, EditableFields editProfileField);
 
-    void showSelectedLead(@NonNull Lead lead, EditProfileFields editProfileField);
+    void showSelectedLead(@NonNull Lead lead, EditableFields editProfileField);
 
     <T extends IFilterModel> void showFiltersInDialog(@Nullable List<T> filters);
 
@@ -54,7 +54,9 @@ public interface EditProfileView {
 
     void hidePasswordError();
 
-    void showEmptyPasswordError();
+    void setPasswordToggleEnabled(boolean enabled);
+
+    void showShortPasswordMessage();
 
     /* Personal section */
 
@@ -68,6 +70,8 @@ public interface EditProfileView {
 
     void showEmptyFirstNameError();
 
+    void showLongFirstNameMessage();
+
     void hideFirstNameError();
 
     void enableLastName();
@@ -77,6 +81,8 @@ public interface EditProfileView {
     void onLastNameError();
 
     void showEmptyLastNameError();
+
+    void showLongLastNameMessage();
 
     void hideLastNameError();
 
@@ -153,6 +159,8 @@ public interface EditProfileView {
     void showLastWorkingDay(@NonNull String date);
 
     void showReason(@NonNull String text);
+
+    void showSelectLastWorkingDayFirstMessage();
 
     void showComments(@NonNull String text);
 }

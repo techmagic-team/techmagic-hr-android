@@ -15,6 +15,7 @@ public class DateUtil {
     private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
     private static SimpleDateFormat outputMonthAndYearFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
+    private static SimpleDateFormat outputShortMonthFormat = new SimpleDateFormat("MMM", Locale.US);
 
 
     public static String getFormattedFullDate(@Nullable String inputData) {
@@ -185,8 +186,8 @@ public class DateUtil {
     }
 
 
-    public static long getFormattedDateInMillis(@Nullable String inputData) {
-        long millis = 0;
+    public static Long getFormattedDateInMillis(@Nullable String inputData) {
+        Long millis = null;
 
         if (inputData == null) {
             return millis;
@@ -202,5 +203,35 @@ public class DateUtil {
         }
 
         return millis;
+    }
+
+
+    public static String getDateInUTC(@Nullable Date inputDate) {
+        String utcDate = null;
+
+        if (inputDate == null) {
+            return utcDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            utcDate = inputFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return utcDate;
+    }
+
+
+    public static String getMonthShortName(@Nullable Calendar time) {
+        if (time == null) {
+            return "";
+        }
+
+        return outputShortMonthFormat.format(time.getTime());
     }
 }

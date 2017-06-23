@@ -105,8 +105,8 @@ public class NumberDatePickerFragment extends DialogFragment implements DatePick
 
         builder.setTitle(isDateFromPicker ? R.string.tm_hr_calendar_fragment_message_alert_dialog_title_from : R.string.tm_hr_calendar_fragment_message_alert_dialog_title_to);
         builder.setView(rootView)
-                .setPositiveButton(android.R.string.ok, (dialog, id) -> onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0))
-                .setNegativeButton(android.R.string.cancel, (dialog, id) -> dialog.dismiss());
+                .setPositiveButton(R.string.message_text_yes, (dialog, id) -> onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0))
+                .setNegativeButton(R.string.message_text_no, (dialog, id) -> dialog.dismiss());
     }
 
 

@@ -3,13 +3,12 @@ package co.techmagic.hr.presentation.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,9 +18,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Company;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;
+import co.techmagic.hr.presentation.ui.EditableFields;
+import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -38,6 +41,12 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     TextInputLayout tilEmail;
     @BindView(R.id.tilPassword)
     TextInputLayout tilPassword;
+    @BindView(R.id.etLoginEmail)
+    EditText etLoginEmail;
+    @BindView(R.id.etLoginPassword)
+    EditText etLoginPassword;
+    @BindView(R.id.etLoginForgotPassEmail)
+    EditText etLoginForgotPassEmail;
     @BindView(R.id.tilForgotPassEmail)
     TextInputLayout tilForgotPassEmail;
     @BindView(R.id.tvForgotPassword)
@@ -47,9 +56,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     @BindView(R.id.tvSelectCompany)
     TextView tvSelectCompany;
 
-    private AlertDialog dialog;
-
-    private LoginPresenter loginPresenter;
+    private FilterDialogManager dialogManager;
     private boolean isLoginSelected = true;
 
 
@@ -57,8 +64,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-
-        presenter.onCreate();
+        initUi();
     }
 
 
@@ -78,18 +84,55 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected LoginViewImpl initView() {
         return new LoginViewImpl(this, findViewById(android.R.id.content)) {
             @Override
-            public void onEmailError(int resId) {
-                tilEmail.setError(getString(resId));
+            public void showEmptyEmailError() {
+                tilEmail.setError(getString(R.string.message_you_can_not_leave_this_empty));
             }
 
             @Override
-            public void onPasswordError(int resId) {
-                tilPassword.setError(getString(resId));
+            public void onEmailError() {
+                tilEmail.setError(getString(R.string.message_invalid_email));
             }
 
             @Override
-            public void onForgotPassEmailError(int resId) {
-                tilForgotPassEmail.setError(getString(resId));
+            public void hideEmailError() {
+                tilEmail.setErrorEnabled(false);
+            }
+
+            @Override
+            public void showShortPasswordMessage() {
+                setPasswordToggleEnabled(true);
+                tilPassword.setError(getString(R.string.message_short_password));
+            }
+
+            @Override
+            public void setPasswordToggleEnabled(boolean enabled) {
+                tilPassword.setPasswordVisibilityToggleEnabled(enabled);
+            }
+
+            @Override
+            public void onPasswordError() {
+                tilPassword.setError(getString(R.string.message_invalid_password));
+            }
+
+            @Override
+            public void hidePasswordError() {
+                setPasswordToggleEnabled(true);
+                tilPassword.setErrorEnabled(false);
+            }
+
+            @Override
+            public void onForgotPassEmailError() {
+                tilForgotPassEmail.setError(getString(R.string.message_invalid_email));
+            }
+
+            @Override
+            public void showEmptyForgotPassEmailError() {
+                tilForgotPassEmail.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
+            public void hideForgotPassEmailError() {
+                tilForgotPassEmail.setErrorEnabled(false);
             }
 
             @Override
@@ -104,7 +147,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
             @Override
             public void showCompanySelectionDialogView(@NonNull List<Company> companies) {
-                showSelectFilterAlertDialog(companies);
+                dialogManager.showSelectFilterAlertDialog(companies, FilterTypes.COMPANY);
             }
 
             @Override
@@ -115,7 +158,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
             @Override
             public void updateSelectedCompanyView(String name) {
                 tvSelectCompany.setText(name);
-                dismissDialogIfOpened();
+                dialogManager.dismissDialogIfOpened();
             }
         };
     }
@@ -123,8 +166,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
     @Override
     protected LoginPresenter initPresenter() {
-        loginPresenter = new LoginPresenter();
-        return loginPresenter;
+        return new LoginPresenter();
     }
 
 
@@ -159,8 +201,8 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
 
     @Override
-    public void onFilterSelected(@NonNull String id, @NonNull String name) {
-        presenter.onCompanySelected(id, name);
+    public void onFilterSelected(@NonNull IFilterModel filter) {
+        presenter.onCompanySelected(filter.getId(), filter.getName());
     }
 
 
@@ -175,11 +217,13 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
 
     private void handleOnLoginClick() {
-        hideErrorStates();
-        KeyboardUtil.hideKeyboard(this, getCurrentFocus());
-        final String email = tilEmail.getEditText().getText().toString().trim();
-        final String password = tilPassword.getEditText().getText().toString().trim();
-        presenter.onLoginClick(email, password);
+        if (!fieldContainsError()) {
+            hideErrorStates();
+            KeyboardUtil.hideKeyboard(this, getCurrentFocus());
+            final String email = etLoginEmail.getText().toString().trim();
+            final String password = etLoginPassword.getText().toString().trim();
+            presenter.onLoginClick(email, password);
+        }
     }
 
 
@@ -193,10 +237,12 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
 
     private void handleOnSendClick() {
-        KeyboardUtil.hideKeyboard(this, getCurrentFocus());
-        tilEmail.setErrorEnabled(false);
-        final String email = tilForgotPassEmail.getEditText().getText().toString().trim();
-        presenter.onSendClick(email);
+        if (!fieldContainsError()) {
+            KeyboardUtil.hideKeyboard(this, getCurrentFocus());
+            tilEmail.setErrorEnabled(false);
+            final String email = etLoginForgotPassEmail.getText().toString().trim();
+            presenter.onSendClick(email);
+        }
     }
 
 
@@ -213,13 +259,76 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     private void hideErrorStates() {
         tilEmail.setErrorEnabled(false);
         tilPassword.setErrorEnabled(false);
+        tilForgotPassEmail.setErrorEnabled(false);
     }
 
 
     private void showCheckEmailView() {
-        tilForgotPassEmail.getEditText().setText("");
+        etLoginForgotPassEmail.setText("");
         tilForgotPassEmail.clearFocus();
         successView.setVisibility(View.VISIBLE);
+    }
+
+
+    private boolean fieldContainsError() {
+        return tilEmail.isErrorEnabled() || tilPassword.isErrorEnabled() || tilForgotPassEmail.isErrorEnabled();
+    }
+
+
+    private void initUi() {
+        dialogManager = new FilterDialogManager(this, this);
+        presenter.onCreate();
+        etLoginPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handleOnLoginClick();
+                return true;
+            }
+            return false;
+        });
+
+        etLoginEmail.addTextChangedListener(getTextChangeListener(etLoginEmail, EditableFields.CHANGE_EMAIL));
+        etLoginPassword.addTextChangedListener(getTextChangeListener(etLoginPassword, EditableFields.CHANGE_PASSWORD));
+        etLoginForgotPassEmail.addTextChangedListener(getTextChangeListener(etLoginForgotPassEmail, EditableFields.CHANGE_FORGOT_PASS_EMAIL));
+    }
+
+
+    private TextWatcher getTextChangeListener(final TextView textView, final EditableFields field) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textView.removeTextChangedListener(this);
+                // Do not cut spaces for Password field
+                handleSelectedField(field == EditableFields.CHANGE_PASSWORD ? s.toString() : s.toString().trim(), field);
+                textView.addTextChangedListener(this);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+
+    private void handleSelectedField(String selectedContent, EditableFields field) {
+        switch (field) {
+            case CHANGE_EMAIL:
+                presenter.handleEmailChange(selectedContent);
+                break;
+
+            case CHANGE_PASSWORD:
+                presenter.handlePasswordChange(selectedContent);
+                break;
+
+            case CHANGE_FORGOT_PASS_EMAIL:
+                presenter.handleForgotPassEmailChange(selectedContent);
+                break;
+        }
     }
 
 
@@ -235,48 +344,5 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
-    }
-
-
-    private void showSelectFilterAlertDialog(@Nullable List<Company> companies) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        setupDialogViews(companies, builder);
-        dialog = builder.show();
-        dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-
-    private void setupDialogViews(@Nullable List<Company> companies, AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(this).inflate(R.layout.alert_dialog_select_company_filter, null);
-        builder.setView(view);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-
-        setupSelectFilterRecyclerView(view, companies);
-        setupDialogTitle(tvTitle);
-    }
-
-
-    private void setupDialogTitle(@NonNull TextView tvTitle) {
-        tvTitle.setText(R.string.select_company_text);
-    }
-
-
-    private void setupSelectFilterRecyclerView(View view, @Nullable List<Company> companies) {
-        RecyclerView rvFilters = (RecyclerView) view.findViewById(R.id.rvFilters);
-        rvFilters.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        FilterAdapter adapter = new FilterAdapter(this, true);
-        rvFilters.setAdapter(adapter);
-
-        adapter.refresh(companies);
-    }
-
-
-    private void dismissDialogIfOpened() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
     }
 }

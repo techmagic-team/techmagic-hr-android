@@ -9,14 +9,18 @@
     <string name="message_invalid_password">Invalid Password</string>
     <string name="message_invalid_first_name">Invalid first name</string>
     <string name="message_invalid_last_name">Invalid last name</string>
+    <string name="message_long_name">Please use no more than 30 characters</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
     <string name="message_you_can_not_leave_this_empty">You can’t leave this empty</string>
+    <string name="message_name_contains_not_allowed_characters">Last name can contain only Latin letters, dashes, and space</string>
     <string name="message_wrong_url">Wrong url</string>
     <string name="message_invalid_file_extension">Invalid extension. Please try again.</string>
+    <string name="message_text_yes">YES</string>
+    <string name="message_text_no">NO</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
-    <string name="message_do_you_want_to_call_emergency_contact">Do You want to call the emergency contact?</string>
+    <string name="message_do_you_want_to_call_emergency_contact">Do you want to call the emergency contact?</string>
     <string name="message_image_downloaded">Image was saved into gallery</string>
     <string name="message_permission_denied">Permission denied</string>
     <!--HomeActivity-->
@@ -29,6 +33,7 @@
     <string name="message_error">Error while saving changes</string>
     <!-- EditProfileActivity -->
     <string name="message_image_too_big">Filesize exceeds 5mb. Resize the picture or choose a different one</string>
+    <string name="message_short_password">Password must contain at least 6 characters</string>
 
 
     <!-- LoginActivity -->
@@ -140,10 +145,12 @@
     <!-- EditProfileActivity -->
     <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>
     <string name="tm_hr_edit_profile_activity_alert_dialog_message">You have unsaved changes. Do you want to return back?</string>
+    <string name="tm_hr_edit_profile_activity_please_select_last_working_day_first_message">"Please select 'Last working day' first"</string>
     <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
     <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
-    <string name="tm_hr_edit_profile_activity_hint_first_name">First name</string>
-    <string name="tm_hr_edit_profile_activity_hint_last_name">Last name</string>
+    <string name="tm_hr_edit_profile_activity_hint_email">Email *</string>
+    <string name="tm_hr_edit_profile_activity_hint_first_name">First name * </string>
+    <string name="tm_hr_edit_profile_activity_hint_last_name">Last name * </string>
     <string name="tm_hr_edit_profile_activity_section_login_info">LOGIN INFO</string>
     <string name="tm_hr_edit_profile_activity_section_personal_info">PERSONAL INFO</string>
     <string name="tm_hr_edit_profile_activity_section_contacts">CONTACTS</string>
@@ -158,6 +165,9 @@
     <string name="tm_hr_edit_profile_activity_text_emergency_contact">Emergency contact</string>
     <string name="tm_hr_edit_profile_activity_text_city_of_relocation">City of relocation</string>
     <string name="tm_hr_edit_profile_activity_text_short_presentation">Short presentation</string>
+    <string name="tm_hr_edit_profile_activity_text_department">Department: </string>
+    <string name="tm_hr_edit_profile_activity_text_lead">Lead *:</string>
+    <string name="tm_hr_edit_profile_activity_text_first_working_day">First working day * :</string>
     <string name="tm_hr_edit_profile_activity_text_pdp_link">PDP link</string>
     <string name="tm_hr_edit_profile_activity_text_one_to_one_link">One to one link</string>
     <string name="tm_hr_edit_profile_activity_text_can_sign_in">Can sign in</string>

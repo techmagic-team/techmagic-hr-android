@@ -50,6 +50,22 @@
     </style>
 
 
+    <style name="DatePickerDialog" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:text">YES</item>
+    </style>
+
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:text">NO</item>
+    </style>
+
+
     <style name="EmployeeDetailsLayout">
         <item name="android:selectableItemBackground">?android:attr/selectableItemBackground</item>
         <item name="android:layout_marginTop">

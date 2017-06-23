@@ -3,11 +3,13 @@ package co.techmagic.hr.presentation.ui;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,7 +41,6 @@ public class FilterDialogManager {
         setupDialogViews(filters, builder);
         dialog = builder.show();
         dialog.findViewById(R.id.btnAlertDialogCancel).setOnClickListener(v -> dialog.dismiss());
-        dialog.setCancelable(false);
         dialog.show();
     }
 
@@ -48,6 +49,9 @@ public class FilterDialogManager {
         View view = LayoutInflater.from(context).inflate(R.layout.alert_dialog_select_filter, null);
         builder.setView(view);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        Button btnCancel = (Button) view.findViewById(R.id.btnAlertDialogCancel);
+        tvTitle.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+        btnCancel.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
         setupDialogTitle(tvTitle);
 
         setupSelectFilterRecyclerView(view, filters);

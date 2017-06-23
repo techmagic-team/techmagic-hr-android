@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,12 +30,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.entity.Lead;
+import co.techmagic.hr.data.entity.Reason;
+import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
+import co.techmagic.hr.presentation.ui.EditableFields;
 import co.techmagic.hr.presentation.ui.FilterDialogManager;
-import co.techmagic.hr.presentation.ui.EditProfileFields;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
@@ -136,10 +140,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     private FilterDialogManager dialogManager;
 
-    private EditProfileFields editProfileField = EditProfileFields.NONE;
+    private EditableFields editProfileField = EditableFields.NONE;
+    private Department department;
     private Lead selectedLead;
-    private String selectedFilterId;
-    private String selectedName;
+    private Room room;
+    private Reason reason;
 
 
     @Override
@@ -187,6 +192,16 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
+    public void onBackPressed() {
+        if (dialogManager.isDialogActive()) {
+            dialogManager.dismissDialogIfOpened();
+        } else {
+            presenter.onBackClick();
+        }
+    }
+
+
+    @Override
     protected void initLayout() {
         setContentView(R.layout.activity_edit_profile);
     }
@@ -218,7 +233,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void showDatePickerDialog() {
                 DatePickerFragment datePicker;
-                if (editProfileField == EditProfileFields.CHANGE_TRIAL_PERIOD || editProfileField == EditProfileFields.CHANGE_LAST_WORKING_DAY) {
+                if (editProfileField == EditableFields.CHANGE_TRIAL_PERIOD || editProfileField == EditableFields.CHANGE_LAST_WORKING_DAY) {
                     datePicker = DatePickerFragment.newInstance(true);
                 } else {
                     datePicker = DatePickerFragment.newInstance(false);
@@ -227,16 +242,16 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
-            public void showSelectedFilter(@NonNull String id, @NonNull String name, EditProfileFields field) {
+            public void showSelectedFilter(@NonNull IFilterModel filter, EditableFields field) {
                 editProfileField = field;
-                onFilterSelected(id, name);
+                onFilterSelected(filter);
             }
 
             @Override
-            public void showSelectedLead(@NonNull Lead lead, EditProfileFields field) {
+            public void showSelectedLead(@NonNull Lead lead, EditableFields field) {
                 editProfileField = field;
                 selectedLead = lead;
-                onFilterSelected(lead.getId(), lead.getName());
+                onFilterSelected(lead);
             }
 
             @Override
@@ -272,6 +287,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void showPassword(@NonNull String password) {
+                tilPassword.setPasswordVisibilityToggleEnabled(true);
                 etChangePassword.setText(password);
             }
 
@@ -298,17 +314,25 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onPasswordError() {
+                setPasswordToggleEnabled(true);
                 tilPassword.setError(getString(R.string.message_invalid_password));
             }
 
             @Override
             public void hidePasswordError() {
+                setPasswordToggleEnabled(true);
                 tilPassword.setErrorEnabled(false);
             }
 
             @Override
-            public void showEmptyPasswordError() {
-                tilPassword.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            public void setPasswordToggleEnabled(boolean enabled) {
+                tilPassword.setPasswordVisibilityToggleEnabled(enabled);
+            }
+
+            @Override
+            public void showShortPasswordMessage() {
+                setPasswordToggleEnabled(true);
+                tilPassword.setError(getString(R.string.message_short_password));
             }
 
             @Override
@@ -328,12 +352,17 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onFirstNameError() {
-                tilFirstName.setError(getString(R.string.message_invalid_first_name));
+                tilFirstName.setError(getString(R.string.message_name_contains_not_allowed_characters));
             }
 
             @Override
             public void showEmptyFirstNameError() {
                 tilFirstName.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
+            public void showLongFirstNameMessage() {
+                tilFirstName.setError(getString(R.string.message_long_name));
             }
 
             @Override
@@ -353,12 +382,17 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
             @Override
             public void onLastNameError() {
-                tilLastName.setError(getString(R.string.message_invalid_last_name));
+                tilLastName.setError(getString(R.string.message_name_contains_not_allowed_characters));
             }
 
             @Override
             public void showEmptyLastNameError() {
                 tilLastName.setError(getString(R.string.message_you_can_not_leave_this_empty));
+            }
+
+            @Override
+            public void showLongLastNameMessage() {
+                tilLastName.setError(getString(R.string.message_long_name));
             }
 
             @Override
@@ -527,6 +561,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
 
             @Override
+            public void showSelectLastWorkingDayFirstMessage() {
+                view.showMessage(getString(R.string.tm_hr_edit_profile_activity_please_select_last_working_day_first_message));
+            }
+
+            @Override
             public void showComments(@NonNull String text) {
                 etComments.setText(text);
             }
@@ -541,15 +580,15 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
 
     @Override
-    public void onFilterSelected(@NonNull String id, @NonNull String name) {
+    public void onFilterSelected(@NonNull IFilterModel model) {
         dialogManager.dismissDialogIfOpened();
-        displaySelectedFilter(id, name);
+        displaySelectedFilter(model);
     }
 
 
     @Override
-    public void onDateSelected(@NonNull String formattedDate) {
-        handleSelectedDate(formattedDate);
+    public void onDateSelected(@NonNull String formattedDate, @NonNull String dateInUTC) {
+        handleSelectedDate(formattedDate, dateInUTC);
     }
 
 
@@ -561,57 +600,57 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
 
     @OnClick(R.id.rlEditRoom)
     public void onRoomClick() {
-        editProfileField = EditProfileFields.CHANGE_ROOM;
+        editProfileField = EditableFields.CHANGE_ROOM;
         presenter.onRoomClick();
     }
 
 
     @OnClick(R.id.rlEditDepartment)
     public void onDepartmentClick() {
-        editProfileField = EditProfileFields.CHANGE_DEPARTMENT;
+        editProfileField = EditableFields.CHANGE_DEPARTMENT;
         presenter.onDepartmentClick();
     }
 
 
     @OnClick(R.id.rlEditLead)
     public void onLeadClick() {
-        editProfileField = EditProfileFields.CHANGE_LEAD;
+        editProfileField = EditableFields.CHANGE_LEAD;
         presenter.onLeadClick();
     }
 
 
     @OnClick(R.id.rlEditFirstDay)
     public void onFirstDayClick() {
-        editProfileField = EditProfileFields.CHANGE_FIRST_DAY;
+        editProfileField = EditableFields.CHANGE_FIRST_DAY;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditFirstDayInIt)
     public void onFirstDayInItClick() {
-        editProfileField = EditProfileFields.CHANGE_FIRST_DAY_IN_IT;
+        editProfileField = EditableFields.CHANGE_FIRST_DAY_IN_IT;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditTrialEnd)
     public void onTrialEndClick() {
-        editProfileField = EditProfileFields.CHANGE_TRIAL_PERIOD;
-        presenter.showDatePickerDialog();
-    }
-
-
-    @OnClick(R.id.rlEditLastWorkingDay)
-    public void onLastDayClick() {
-        editProfileField = EditProfileFields.CHANGE_LAST_WORKING_DAY;
+        editProfileField = EditableFields.CHANGE_TRIAL_PERIOD;
         presenter.showDatePickerDialog();
     }
 
 
     @OnClick(R.id.rlEditSelectReason)
     public void onReasonClick() {
-        editProfileField = EditProfileFields.CHANGE_REASON;
+        editProfileField = EditableFields.CHANGE_REASON;
         presenter.onReasonClick();
+    }
+
+
+    @OnClick(R.id.rlEditLastWorkingDay)
+    public void onLastDayClick() {
+        editProfileField = EditableFields.CHANGE_LAST_WORKING_DAY;
+        presenter.showDatePickerDialog();
     }
 
 
@@ -699,49 +738,51 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private void displaySelectedFilter(String id, String filterName) {
-        selectedFilterId = id;
-        selectedName = filterName;
+    private void displaySelectedFilter(IFilterModel model) {
         switch (editProfileField) {
             case CHANGE_DEPARTMENT:
-                tvSelectedDep.setText(filterName);
+                department = new Department(model.getId(), model.getName());
+                tvSelectedDep.setText(model.getName());
                 break;
 
             case CHANGE_LEAD:
-                tvSelectedLead.setText(filterName);
+                selectedLead = new Lead(model.getId(), model.getLastWorkingDay(), model.getFirstName(), model.getLastName());
+                tvSelectedLead.setText(model.getName());
                 break;
 
             case CHANGE_ROOM:
-                tvSelectedRoom.setText(filterName);
+                room = new Room(model.getId(), model.getName());
+                tvSelectedRoom.setText(model.getName());
                 break;
 
             case CHANGE_REASON:
-                tvSelectedReason.setText(filterName);
+                reason = new Reason(model.getId(), model.getName());
+                tvSelectedReason.setText(model.getName());
                 break;
         }
     }
 
 
-    private void handleSelectedDate(String formattedDate) {
+    private void handleSelectedDate(String formattedDate, String dateInUTC) {
         switch (editProfileField) {
             case CHANGE_DATE_OF_BIRTH:
-                presenter.handleDateOfBirthChange(formattedDate);
+                presenter.handleDateOfBirthChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_FIRST_DAY:
-                presenter.handleFirstDayChange(formattedDate);
+                presenter.handleFirstDayChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_FIRST_DAY_IN_IT:
-                presenter.handleFirstDayInItChange(formattedDate);
+                presenter.handleFirstDayInItChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_TRIAL_PERIOD:
-                presenter.handleTrialPeriodChange(formattedDate);
+                presenter.handleTrialPeriodChange(formattedDate, dateInUTC);
                 break;
 
             case CHANGE_LAST_WORKING_DAY:
-                presenter.handleLastDayChange(formattedDate);
+                presenter.handleLastDayChange(formattedDate, dateInUTC);
                 break;
         }
     }
@@ -779,40 +820,47 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             }
         });
 
-        etChangeEmail.addTextChangedListener(getTextChangeListener(etChangeEmail, EditProfileFields.CHANGE_EMAIL));
-        etChangePassword.addTextChangedListener(getTextChangeListener(etChangePassword, EditProfileFields.CHANGE_PASSWORD));
-        etFirstName.addTextChangedListener(getTextChangeListener(etFirstName, EditProfileFields.CHANGE_FIRST_NAME));
-        etLastName.addTextChangedListener(getTextChangeListener(etLastName, EditProfileFields.CHANGE_LAST_NAME));
-        tvSelectedDateOfBirth.addTextChangedListener(getTextChangeListener(tvSelectedDateOfBirth, EditProfileFields.CHANGE_DATE_OF_BIRTH));
+        etChangePresentation.setOnTouchListener(getOnTouchListener());
+        etComments.setOnTouchListener(getOnTouchListener());
 
-        etChangeSkype.addTextChangedListener(getTextChangeListener(etChangeSkype, EditProfileFields.CHANGE_SKYPE));
-        etChangePhone.addTextChangedListener(getTextChangeListener(etChangePhone, EditProfileFields.CHANGE_PHONE));
-        etChangeEmergencyNumber.addTextChangedListener(getTextChangeListener(etChangeEmergencyNumber, EditProfileFields.CHANGE_EMERGENCY_NUMBER));
-        etChangeEmergencyContact.addTextChangedListener(getTextChangeListener(etChangeEmergencyContact, EditProfileFields.CHANGE_EMERGENCY_CONTACT));
-        tvSelectedRoom.addTextChangedListener(getTextChangeListener(tvSelectedRoom, EditProfileFields.CHANGE_ROOM));
+        etChangeEmail.addTextChangedListener(getTextChangeListener(etChangeEmail, EditableFields.CHANGE_EMAIL));
+        etChangePassword.addTextChangedListener(getTextChangeListener(etChangePassword, EditableFields.CHANGE_PASSWORD));
+        etFirstName.addTextChangedListener(getTextChangeListener(etFirstName, EditableFields.CHANGE_FIRST_NAME));
+        etLastName.addTextChangedListener(getTextChangeListener(etLastName, EditableFields.CHANGE_LAST_NAME));
+        tvSelectedDateOfBirth.addTextChangedListener(getTextChangeListener(tvSelectedDateOfBirth, EditableFields.CHANGE_DATE_OF_BIRTH));
 
-        etChangeCity.addTextChangedListener(getTextChangeListener(etChangeCity, EditProfileFields.CHANGE_CITY_OF_RELOCATION));
-        etChangePresentation.addTextChangedListener(getTextChangeListener(etChangePresentation, EditProfileFields.CHANGE_PRESENTATION));
+        etChangeSkype.addTextChangedListener(getTextChangeListener(etChangeSkype, EditableFields.CHANGE_SKYPE));
+        etChangePhone.addTextChangedListener(getTextChangeListener(etChangePhone, EditableFields.CHANGE_PHONE));
+        etChangeEmergencyNumber.addTextChangedListener(getTextChangeListener(etChangeEmergencyNumber, EditableFields.CHANGE_EMERGENCY_NUMBER));
+        etChangeEmergencyContact.addTextChangedListener(getTextChangeListener(etChangeEmergencyContact, EditableFields.CHANGE_EMERGENCY_CONTACT));
+        tvSelectedRoom.addTextChangedListener(getTextChangeListener(tvSelectedRoom, EditableFields.CHANGE_ROOM));
 
-        tvSelectedDep.addTextChangedListener(getTextChangeListener(tvSelectedDep, EditProfileFields.CHANGE_DEPARTMENT));
-        tvSelectedLead.addTextChangedListener(getTextChangeListener(tvSelectedLead, EditProfileFields.CHANGE_LEAD));
-        tvSelectedFirstDay.addTextChangedListener(getTextChangeListener(tvSelectedFirstDay, EditProfileFields.CHANGE_FIRST_DAY));
-        tvSelectedFirstDayInIt.addTextChangedListener(getTextChangeListener(tvSelectedFirstDayInIt, EditProfileFields.CHANGE_FIRST_DAY_IN_IT));
-        tvSelectedTrialEnd.addTextChangedListener(getTextChangeListener(tvSelectedTrialEnd, EditProfileFields.CHANGE_TRIAL_PERIOD));
+        etChangeCity.addTextChangedListener(getTextChangeListener(etChangeCity, EditableFields.CHANGE_CITY_OF_RELOCATION));
+        etChangePresentation.addTextChangedListener(getTextChangeListener(etChangePresentation, EditableFields.CHANGE_PRESENTATION));
 
-        etChangePdpLink.addTextChangedListener(getTextChangeListener(etChangePdpLink, EditProfileFields.CHANGE_PDP_LINK));
-        etChangeOneToOneLink.addTextChangedListener(getTextChangeListener(etChangeOneToOneLink, EditProfileFields.CHANGE_ONE_TO_ONE_LINK));
+        tvSelectedDep.addTextChangedListener(getTextChangeListener(tvSelectedDep, EditableFields.CHANGE_DEPARTMENT));
+        tvSelectedLead.addTextChangedListener(getTextChangeListener(tvSelectedLead, EditableFields.CHANGE_LEAD));
+        tvSelectedFirstDay.addTextChangedListener(getTextChangeListener(tvSelectedFirstDay, EditableFields.CHANGE_FIRST_DAY));
+        tvSelectedFirstDayInIt.addTextChangedListener(getTextChangeListener(tvSelectedFirstDayInIt, EditableFields.CHANGE_FIRST_DAY_IN_IT));
+        tvSelectedTrialEnd.addTextChangedListener(getTextChangeListener(tvSelectedTrialEnd, EditableFields.CHANGE_TRIAL_PERIOD));
 
-        tvLastWorkingDay.addTextChangedListener(getTextChangeListener(tvLastWorkingDay, EditProfileFields.CHANGE_LAST_WORKING_DAY));
-        tvSelectedReason.addTextChangedListener(getTextChangeListener(tvSelectedReason, EditProfileFields.CHANGE_REASON));
-        etComments.addTextChangedListener(getTextChangeListener(etComments, EditProfileFields.CHANGE_COMMENTS));
+        etChangePdpLink.addTextChangedListener(getTextChangeListener(etChangePdpLink, EditableFields.CHANGE_PDP_LINK));
+        etChangeOneToOneLink.addTextChangedListener(getTextChangeListener(etChangeOneToOneLink, EditableFields.CHANGE_ONE_TO_ONE_LINK));
+
+        tvLastWorkingDay.addTextChangedListener(getTextChangeListener(tvLastWorkingDay, EditableFields.CHANGE_LAST_WORKING_DAY));
+        tvSelectedReason.addTextChangedListener(getTextChangeListener(tvSelectedReason, EditableFields.CHANGE_REASON));
+        etComments.addTextChangedListener(getTextChangeListener(etComments, EditableFields.CHANGE_COMMENTS));
     }
 
 
     private View.OnClickListener getOnClickListener() {
         return v -> {
-            editProfileField = EditProfileFields.CHANGE_DATE_OF_BIRTH;
-            presenter.showDatePickerDialog();
+            switch (v.getId()) {
+                case R.id.rlEditDateOfBirth:
+                    editProfileField = EditableFields.CHANGE_DATE_OF_BIRTH;
+                    presenter.showDatePickerDialog();
+                    break;
+            }
         };
     }
 
@@ -836,13 +884,27 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_save_changes))
                 .setMessage(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_message))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> finish())
-                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> finish())
+                .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
 
-    private TextWatcher getTextChangeListener(final TextView textView, final EditProfileFields field) {
+    @NonNull
+    private View.OnTouchListener getOnTouchListener() {
+        return (v, event) -> {
+            v.getParent().getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                    v.getParent().getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+            return false;
+        };
+    }
+
+
+    private TextWatcher getTextChangeListener(final TextView textView, final EditableFields field) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -852,7 +914,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 textView.removeTextChangedListener(this);
-                handleSelectedField(s.toString().trim(), field);
+                // Do not cut spaces for Password field
+                handleSelectedField(field == EditableFields.CHANGE_PASSWORD ? s.toString() : s.toString().trim(), field);
                 textView.addTextChangedListener(this);
             }
 
@@ -864,7 +927,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
     }
 
 
-    private void handleSelectedField(String selectedContent, EditProfileFields field) {
+    private void handleSelectedField(String selectedContent, EditableFields field) {
         switch (field) {
             case CHANGE_EMAIL:
                 presenter.handleEmailChange(selectedContent);
@@ -899,7 +962,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_ROOM:
-                presenter.handleRoomChange(selectedFilterId, selectedName);
+                presenter.handleRoomChange(room);
+                room = null;
                 break;
 
             case CHANGE_CITY_OF_RELOCATION:
@@ -911,7 +975,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_DEPARTMENT:
-                presenter.handleDepartmentChange(selectedFilterId, selectedName);
+                presenter.handleDepartmentChange(department);
+                department = null;
                 break;
 
             case CHANGE_LEAD:
@@ -927,7 +992,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
                 break;
 
             case CHANGE_REASON:
-                presenter.handleReasonChange(selectedFilterId, selectedName);
+                presenter.handleReasonChange(reason);
+                reason = null;
                 break;
 
             case CHANGE_COMMENTS:

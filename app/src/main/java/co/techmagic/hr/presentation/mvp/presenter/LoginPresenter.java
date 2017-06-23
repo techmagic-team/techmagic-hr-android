@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Company;
 import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
@@ -60,15 +59,21 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     public void onSendClick(String email) {
-        if (TextUtil.isValidEmail(email)) {
-            if (id == null) {
-                view.onCompanyError();
-                return;
-            }
+        if (id == null) {
+            view.onCompanyError();
+            return;
+        }
 
+        // In case if user left field empty
+        if (email.isEmpty()) {
+            view.showEmptyForgotPassEmailError();
+            return;
+        }
+
+        if (TextUtil.isValidEmail(email)) {
             performForgotPasswordRequest(email);
         } else {
-            view.onForgotPassEmailError(R.string.message_invalid_email);
+            view.onForgotPassEmailError();
         }
     }
 
@@ -80,6 +85,64 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         } else {
             view.showCompanySelectionDialogView(companyList);
         }
+    }
+
+
+    public void handleEmailChange(String email) {
+        // In case if user left field empty
+        if (email.isEmpty()) {
+            view.showEmptyEmailError();
+            return;
+        }
+
+        if (TextUtil.isValidEmail(email)) {
+            view.hideEmailError();
+        } else {
+            view.onEmailError();
+        }
+    }
+
+
+    public void handlePasswordChange(String password) {
+        if (password.isEmpty()) {
+            view.setPasswordToggleEnabled(false);
+            view.hidePasswordError();
+            return;
+        }
+
+        if (password.length() < TextUtil.PASSWORD_MINIMUM_LENGTH) {
+            view.showShortPasswordMessage();
+            return;
+        }
+
+        if (TextUtil.isValidPassword(password)) {
+            view.hidePasswordError();
+        } else {
+            view.onPasswordError();
+        }
+    }
+
+
+    public void handleForgotPassEmailChange(String email) {
+        // In case if user left field empty
+        if (email.isEmpty()) {
+            view.showEmptyForgotPassEmailError();
+            return;
+        }
+
+        if (TextUtil.isValidEmail(email)) {
+            view.hideForgotPassEmailError();
+        } else {
+            view.onForgotPassEmailError();
+        }
+    }
+
+
+    public void onCompanySelected(String id, String name) {
+        this.id = id;
+        this.name = name;
+
+        view.updateSelectedCompanyView(name);
     }
 
 
@@ -95,7 +158,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             isValid = true;
         } else {
             isValid = false;
-            view.onEmailError(R.string.message_invalid_email);
+            view.onEmailError();
         }
 
         if (isValid) {
@@ -103,19 +166,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 isValid = true;
             } else {
                 isValid = false;
-                view.onPasswordError(R.string.message_invalid_password);
+                view.onPasswordError();
             }
         }
 
         return isValid;
-    }
-
-
-    public void onCompanySelected(String id, String name) {
-        this.id = id;
-        this.name = name;
-
-        view.updateSelectedCompanyView(name);
     }
 
 

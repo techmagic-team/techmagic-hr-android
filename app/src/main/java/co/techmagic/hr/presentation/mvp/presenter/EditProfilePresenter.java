@@ -1,12 +1,13 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -34,14 +35,19 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
-import co.techmagic.hr.presentation.ui.EditProfileFields;
+import co.techmagic.hr.presentation.ui.EditableFields;
 import co.techmagic.hr.presentation.util.DateUtil;
+import co.techmagic.hr.presentation.util.FileChooserUtil;
 import co.techmagic.hr.presentation.util.ImagePickerUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import co.techmagic.hr.presentation.util.TextUtil;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
@@ -73,6 +79,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         getAllFilters = new GetAllFilters(employeeRepository);
         saveEditedUserProfile = new SaveEditedUserProfile(userRepository);
         emergencyContact = new EmergencyContact();
+        data = new UserProfile();
     }
 
 
@@ -97,21 +104,55 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void preparePhotoAndSend(Uri uri, Context context) {
-        File file = new File(uri.getPath());
-        byte[] compressedImage = ImagePickerUtil.compressImage(uri, context);
+        String imagePath = FileChooserUtil.getPath(context, uri);
+
+        if (imagePath == null) {
+            return;
+        }
+
+        File file = new File(imagePath);
+
+        if (!file.exists()) {
+            return;
+        }
 
         if (file.length() > IMAGE_SIZE_5MB) {
             view.showImageSizeIsTooBigMessage();
             return;
         }
 
-        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+        Observable.OnSubscribe<MultipartBody.Part> onSubscribe = subscriber -> {
+            MultipartBody.Part multipartBody = getPart(uri, context, file);
 
-        if (multipartBody == null) {
-            return;
-        }
+            if (multipartBody == null) {
+                return;
+            }
 
-        performUploadPhotoRequestAndUpdateUser(multipartBody);
+            subscriber.onNext(multipartBody);
+            subscriber.onCompleted();
+        };
+
+        Subscriber<MultipartBody.Part> subscriber = new Subscriber<MultipartBody.Part>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(MultipartBody.Part body) {
+                performUploadPhotoRequestAndUpdateUser(body);
+            }
+        };
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 
 
@@ -146,11 +187,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void onReasonClick() {
-        final List<Filter> reasons = profileFilters.getReasons();
-        if (reasons.isEmpty()) {
-            view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        // If Last Working Day Selected not selected
+        if (data.getLastWorkingDay() == null) {
+            view.showSelectLastWorkingDayFirstMessage();
         } else {
-            view.showFiltersInDialog(reasons);
+            final List<Filter> reasons = profileFilters.getReasons();
+            if (reasons.isEmpty()) {
+                view.showMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+            } else {
+                view.showFiltersInDialog(reasons);
+            }
         }
     }
 
@@ -164,7 +210,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newEmail.equals(email)) {
             view.hideEmailError();
             data.setEmail(email);
-            hasChanges = false;
+            return;
+        }
+
+        // In case if user left field empty
+        if (newEmail.isEmpty()) {
+            view.showEmptyEmailError();
+            hasChanges = true;
             return;
         }
 
@@ -175,22 +227,20 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         } else {
             view.onEmailError();
         }
-
-        // In case if user left field empty
-        if (newEmail.isEmpty()) {
-            view.showEmptyEmailError();
-            hasChanges = true;
-        }
     }
 
 
     public void handlePasswordChange(String newPassword) {
-        String pass = data.getPassword();
-
-        if (newPassword.equals(pass)) {
+        if (newPassword.isEmpty()) {
+            view.setPasswordToggleEnabled(false);
             view.hidePasswordError();
-            data.setPassword(pass);
-            hasChanges = false;
+            hasChanges = true;
+            return;
+        }
+
+        if (newPassword.length() < TextUtil.PASSWORD_MINIMUM_LENGTH) {
+            view.showShortPasswordMessage();
+            hasChanges = true;
             return;
         }
 
@@ -201,12 +251,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         } else {
             view.onPasswordError();
         }
-
-        // In case if user left field empty
-        if (newPassword.isEmpty()) {
-            view.showEmptyPasswordError();
-            hasChanges = true;
-        }
     }
 
 
@@ -216,7 +260,19 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newFirstName.equals(firstName)) {
             view.hideFirstNameError();
             data.setFirstName(firstName);
-            hasChanges = false;
+            return;
+        }
+
+        // In case if user left field empty
+        if (newFirstName.isEmpty()) {
+            view.showEmptyFirstNameError();
+            hasChanges = true;
+            return;
+        }
+
+        if (newFirstName.length() > TextUtil.NAME_MAXIMUM_LENGTH) {
+            view.showLongFirstNameMessage();
+            hasChanges = true;
             return;
         }
 
@@ -227,12 +283,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         } else {
             view.onFirstNameError();
         }
-
-        // In case if user left field empty
-        if (newFirstName.isEmpty()) {
-            view.showEmptyFirstNameError();
-            hasChanges = true;
-        }
     }
 
 
@@ -242,7 +292,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newLastName.equals(lastName)) {
             view.hideLastNameError();
             data.setLastName(lastName);
-            hasChanges = false;
             return;
         }
 
@@ -262,25 +311,18 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleDateOfBirthChange(String date) {
+    public void handleDateOfBirthChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setBirthday(date);
+            data.setBirthday(dateInUTC);
             view.showBirthDate(date);
         }
     }
 
 
     public void handleGenderChange(boolean isMaleChecked) {
-        final int gender = data.getGender();
-
-        if (isMaleChecked && gender == GENDER_MALE || !isMaleChecked && gender == GENDER_FEMALE) {
-            hasChanges = false;
-        } else {
-            hasChanges = true;
-        }
-
         data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
+        hasChanges = true;
     }
 
 
@@ -289,7 +331,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newSkype.equals(skype)) {
             data.setSkype(skype);
-            hasChanges = false;
         } else {
             data.setSkype(newSkype);
             hasChanges = true;
@@ -308,7 +349,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newPhone.equals(phone)) {
             data.setPhone(phone);
-            hasChanges = false;
         } else {
             data.setPhone(newPhone);
             hasChanges = true;
@@ -328,7 +368,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             if (newNumber.equals(emergency.getPhone())) {
                 emergencyContact.setPhone(newNumber);
                 data.setEmergencyContact(emergencyContact);
-                hasChanges = false;
                 return;
             }
         }
@@ -353,7 +392,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newNumber.equals(phone)) {
             emergencyContact.setPhone(phone);
             data.setEmergencyContact(emergencyContact);
-            hasChanges = false;
         } else {
             emergencyContact.setPhone(newNumber);
             data.setEmergencyContact(emergencyContact);
@@ -368,7 +406,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             if (newName.equals(emergency.getName())) {
                 emergencyContact.setName(newName);
                 data.setEmergencyContact(emergencyContact);
-                hasChanges = false;
                 return;
             }
         }
@@ -393,7 +430,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (newName.equals(name)) {
             emergencyContact.setName(newName);
             data.setEmergencyContact(emergencyContact);
-            hasChanges = false;
         } else {
             emergencyContact.setName(newName);
             data.setEmergencyContact(emergencyContact);
@@ -402,16 +438,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleRoomChange(String id, String name) {
-        if (id == null || name == null) {
+    public void handleRoomChange(Room newRoom) {
+        if (newRoom == null) {
             return;
         }
 
         Room room = new Room();
 
         if (data.getRoom() == null) {
-            room.setId(id);
-            room.setName(name);
+            room.setId(newRoom.getId());
+            room.setName(newRoom.getName());
             data.setRoom(room);
             hasChanges = true;
             return;
@@ -419,15 +455,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String roomId = data.getRoom().getId();
 
-        if (id.equals(roomId)) {
+        if (newRoom.getId().equals(roomId)) {
             room.setId(roomId);
-            hasChanges = false;
         } else {
-            room.setId(id);
+            room.setId(newRoom.getId());
             hasChanges = true;
         }
 
-        room.setName(name);
+        room.setName(newRoom.getName());
         data.setRoom(room);
     }
 
@@ -437,8 +472,9 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newCity.equals(city)) {
             data.setRelocationCity(city);
-            hasChanges = false;
-            return;
+        } else {
+            data.setRelocationCity(newCity);
+            hasChanges = true;
         }
 
         // In case if user left field empty
@@ -455,7 +491,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (fmtDesc.equals(desc)) {
             data.setDescription(fmtDesc);
-            hasChanges = false;
             return;
         }
 
@@ -469,16 +504,16 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleDepartmentChange(String newDepId, String name) {
-        if (newDepId == null || name == null) {
+    public void handleDepartmentChange(Department newDep) {
+        if (newDep == null) {
             return;
         }
 
         Department dep = new Department();
 
         if (data.getDepartment() == null) {
-            dep.setId(newDepId);
-            dep.setName(name);
+            dep.setId(newDep.getId());
+            dep.setName(newDep.getName());
             data.setDepartment(dep);
             hasChanges = true;
             return;
@@ -486,15 +521,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String depId = data.getDepartment().getId();
 
-        if (newDepId.equals(depId)) {
+        if (newDep.getId().equals(depId)) {
             dep.setId(depId);
-            hasChanges = false;
         } else {
-            dep.setId(newDepId);
+            dep.setId(newDep.getId());
             hasChanges = true;
         }
 
-        dep.setName(name);
+        dep.setName(newDep.getName());
         data.setDepartment(dep);
     }
 
@@ -516,7 +550,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (newLead.getId().equals(leadId)) {
             lead.setId(leadId);
-            hasChanges = false;
         } else {
             lead.setId(newLead.getId());
             hasChanges = true;
@@ -529,28 +562,28 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleFirstDayChange(String date) {
+    public void handleFirstDayChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setFirstWorkingDay(date);
+            data.setFirstWorkingDay(dateInUTC);
             view.showFirstWorkingDay(date);
         }
     }
 
 
-    public void handleFirstDayInItChange(String date) {
+    public void handleFirstDayInItChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setGeneralFirstWorkingDay(date);
+            data.setGeneralFirstWorkingDay(dateInUTC);
             view.showFirstWorkingDayInIt(date);
         }
     }
 
 
-    public void handleTrialPeriodChange(String date) {
+    public void handleTrialPeriodChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setTrialPeriodEnds(date);
+            data.setTrialPeriodEnds(dateInUTC);
             view.showTrialPeriodEnds(date);
         }
     }
@@ -564,7 +597,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
             if (newLink.equals(link)) {
                 data.setPdpLink(link);
-                hasChanges = false;
             } else {
                 data.setPdpLink(newLink);
                 hasChanges = true;
@@ -590,7 +622,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
             if (newLink.equals(link)) {
                 data.setOneToOneLink(link);
-                hasChanges = false;
             } else {
                 data.setOneToOneLink(newLink);
                 hasChanges = true;
@@ -608,21 +639,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
-    public void handleLastDayChange(String date) {
+    public void handleLastDayChange(String date, String dateInUTC) {
         if (date != null) {
             hasChanges = true;
-            data.setLastWorkingDay(date);
+            data.setLastWorkingDay(dateInUTC);
             view.showLastWorkingDay(date);
         }
     }
 
 
-    public void handleReasonChange(String newReasonId, String name) {
+    public void handleReasonChange(Reason newReason) {
+        if (newReason == null) {
+            return;
+        }
+
         Reason reason = new Reason();
 
         if (data.getReason() == null) {
-            reason.setId(newReasonId);
-            reason.setName(name);
+            reason.setId(newReason.getId());
+            reason.setName(newReason.getName());
             data.setReason(reason);
             hasChanges = true;
             return;
@@ -630,15 +665,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         final String reasonId = data.getReason().getId();
 
-        if (newReasonId.equals(reasonId)) {
+        if (newReason.getId().equals(reasonId)) {
             reason.setId(reasonId);
-            hasChanges = false;
         } else {
-            reason.setId(newReasonId);
+            reason.setId(newReason.getId());
             hasChanges = true;
         }
 
-        reason.setName(name);
+        reason.setName(newReason.getName());
         data.setReason(reason);
     }
 
@@ -649,7 +683,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (fmtCmnt.equals(comment)) {
             data.setReasonComments(fmtCmnt);
-            hasChanges = false;
             return;
         }
 
@@ -880,7 +913,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Department dep = data.getDepartment();
                 if (dep != null) {
                     if (dep.getId().equals(f.getId())) {
-                        view.showSelectedFilter(dep.getId(), dep.getName(), EditProfileFields.CHANGE_DEPARTMENT);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_DEPARTMENT);
                         break;
                     }
                 }
@@ -892,7 +925,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Lead lead = data.getLead();
                 if (lead != null) {
                     if (lead.getId().equals(f.getId())) {
-                        view.showSelectedLead(lead, EditProfileFields.CHANGE_LEAD);
+                        view.showSelectedLead(lead, EditableFields.CHANGE_LEAD);
                         break;
                     }
                 }
@@ -904,7 +937,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 Room room = data.getRoom();
                 if (room != null) {
                     if (room.getId().equals(f.getId())) {
-                        view.showSelectedFilter(room.getId(), room.getName(), EditProfileFields.CHANGE_ROOM);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_ROOM);
                         break;
                     }
                 }
@@ -916,7 +949,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 for (Filter f : profileFilters.getReasons()) {
                     final String reasonId = data.getReason().getId();
                     if (reasonId.equals(f.getId())) {
-                        view.showSelectedFilter(reasonId, f.getName(), EditProfileFields.CHANGE_REASON);
+                        view.showSelectedFilter(f, EditableFields.CHANGE_REASON);
                         break;
                     }
                 }
@@ -925,6 +958,25 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     }
 
 
+    @Nullable
+    private MultipartBody.Part getPart(Uri uri, Context context, File file) {
+        Bitmap bitmap = ImagePickerUtil.getDecodedBitmapFromFile(file);
+
+        if (bitmap == null) {
+            return null;
+        }
+
+        byte[] compressedImage = ImagePickerUtil.compressImage(bitmap);
+        MultipartBody.Part multipartBody = prepareFilePart("photo", file.getName(), compressedImage, context, uri);
+
+        if (multipartBody == null) {
+            return null;
+        }
+        return multipartBody;
+    }
+
+
+    @Nullable
     private MultipartBody.Part prepareFilePart(String partName, String fileName, byte[] compressedImage, Context context, Uri uri) {
         String mimeType = ImagePickerUtil.getMimeType(context, uri);
 
@@ -1009,10 +1061,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         view.showProgress();
 
         final EditProfileRequest request = new EditProfileRequest(data);
-        String objectBodyAsString = new Gson().toJson(request);
-
-        System.out.println(objectBodyAsString);
-
         saveEditedUserProfile.execute(request, new DefaultSubscriber<UserProfile>(view) {
             @Override
             public void onNext(UserProfile profile) {

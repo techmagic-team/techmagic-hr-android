@@ -453,12 +453,6 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
-    @OnClick(R.id.llEmergencyContact)
-    public void onEmergencyContactClick() {
-        presenter.onEmergencyContactClick(getContext());
-    }
-
-
     private void init() {
         getData();
         fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
@@ -524,8 +518,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     protected void showDialog() {
         new AlertDialog.Builder(getContext())
                 .setMessage(getString(R.string.message_do_you_want_to_call_emergency_contact))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
-                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
+                .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }
