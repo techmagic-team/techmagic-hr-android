@@ -296,9 +296,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
 
             if (requestedTimeOff.isAccepted) {
-                holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
-            } else {
                 holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)
+            } else {
+                holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
             }
         }
 
