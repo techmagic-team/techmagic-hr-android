@@ -15,6 +15,7 @@ public class DateUtil {
     private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
     private static SimpleDateFormat outputMonthAndYearFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
+    private static SimpleDateFormat outputShortMonthFormat = new SimpleDateFormat("MMM", Locale.US);
 
 
     public static String getFormattedFullDate(@Nullable String inputData) {
@@ -223,5 +224,14 @@ public class DateUtil {
         }
 
         return utcDate;
+    }
+
+
+    public static String getMonthShortName(@Nullable Calendar time) {
+        if (time == null) {
+            return "";
+        }
+
+        return outputShortMonthFormat.format(time.getTime());
     }
 }

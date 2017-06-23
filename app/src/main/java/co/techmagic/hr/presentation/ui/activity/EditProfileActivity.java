@@ -884,8 +884,8 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_save_changes))
                 .setMessage(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_message))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> finish())
-                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> finish())
+                .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 

@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.ui.fragment;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -10,12 +11,14 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import co.techmagic.hr.presentation.util.DateUtil;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String ALLOW_SELECT_FUTURE_DATE = "allow_select_future_date";
+    private static final long TIMESTAMP_IN_MILLISECONDS = 0;
     private onDatePickerSelectionListener datePickerSelectionListener;
 
 
@@ -50,7 +53,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
+        setupLocaleConfiguration();
+
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        dialog.getDatePicker().setMinDate(TIMESTAMP_IN_MILLISECONDS);
         dialog.getDatePicker().setMaxDate(allowFutureDate ? DateUtil.getDateAfterYearInMillis() : c.getTimeInMillis());
         dialog.setCancelable(false);
 
@@ -77,6 +83,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDetach() {
         super.onDetach();
         datePickerSelectionListener = null;
+    }
+
+
+    private void setupLocaleConfiguration() {
+        Locale locale = new Locale("US");
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getContext().getApplicationContext().getResources().updateConfiguration(config, null);
     }
 
 
