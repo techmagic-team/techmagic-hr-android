@@ -22,10 +22,6 @@ import kotlin.collections.HashMap
 
 class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<TimeOffRequestByUserAllPeriods, UsedTimeOffsByUserDto, IEmployeeRepository>(iEmployeeRepository) {
 
-    class
-
-    private
-
     class PeriodAndTimeOff(val periodPair: PeriodPair, val timeOffType: TimeOffType) {
         var timeOffList: MutableList<RequestedTimeOffDto> = mutableListOf()
     }
@@ -39,7 +35,7 @@ class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<
                     .getUsedIllnessesByUser(timeOffRequestByUser)
                     .map({ timeOffs: List<RequestedTimeOff> ->
                         val periodAndTimeOff: PeriodAndTimeOff = PeriodAndTimeOff(period, TimeOffType.ILLNESS)
-                        periodAndTimeOff.timeOffList.addAll(mapCollection(timeOffs))
+                        periodAndTimeOff.timeOffList.addAll(mapCollection(TimeOffType.ILLNESS, timeOffs))
                         periodAndTimeOff
                     })
 
@@ -47,7 +43,7 @@ class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<
                     .getUsedVacationsByUser(timeOffRequestByUser)
                     .map({ timeOffs: List<RequestedTimeOff> ->
                         val periodAndTimeOff: PeriodAndTimeOff = PeriodAndTimeOff(period, TimeOffType.VACATION)
-                        periodAndTimeOff.timeOffList.addAll(mapCollection(timeOffs))
+                        periodAndTimeOff.timeOffList.addAll(mapCollection(TimeOffType.VACATION, timeOffs))
                         periodAndTimeOff
                     })
 
@@ -55,7 +51,7 @@ class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<
                     .getUsedDayOffsByUser(timeOffRequestByUser)
                     .map({ timeOffs: List<RequestedTimeOff> ->
                         val periodAndTimeOff: PeriodAndTimeOff = PeriodAndTimeOff(period, TimeOffType.DAYOFF)
-                        periodAndTimeOff.timeOffList.addAll(mapCollection(timeOffs))
+                        periodAndTimeOff.timeOffList.addAll(mapCollection(TimeOffType.DAYOFF, timeOffs))
                         periodAndTimeOff
                     })
 
@@ -94,14 +90,14 @@ class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<
         return timeOffs
     }
 
-    private fun mapCollection(requestedTimeOffs: List<RequestedTimeOff>?): List<RequestedTimeOffDto> {
+    private fun mapCollection(timeOffType: TimeOffType, requestedTimeOffs: List<RequestedTimeOff>?): List<RequestedTimeOffDto> {
         val timeOffDtos = ArrayList<RequestedTimeOffDto>()
-        requestedTimeOffs?.mapNotNullTo(timeOffDtos) { map(it) }
+        requestedTimeOffs?.mapNotNullTo(timeOffDtos) { map(timeOffType, it) }
 
         return timeOffDtos
     }
 
-    private fun map(requestedTimeOff: RequestedTimeOff?): RequestedTimeOffDto? {
+    private fun map(timeOffType: TimeOffType, requestedTimeOff: RequestedTimeOff?): RequestedTimeOffDto? {
         if (requestedTimeOff != null) {
             val requestedTimeOffDto = RequestedTimeOffDto()
             requestedTimeOffDto.isAccepted = requestedTimeOff.accepted
@@ -110,6 +106,8 @@ class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<
             requestedTimeOffDto.dateTo = DateUtil.parseStringDate(requestedTimeOff.dateTo)
             requestedTimeOffDto.isPaid = requestedTimeOff.isPaid
             requestedTimeOffDto.userId = requestedTimeOff.userId
+            requestedTimeOffDto.id = requestedTimeOff.id
+            requestedTimeOffDto.timeOffType = timeOffType
 
             return requestedTimeOffDto
         }

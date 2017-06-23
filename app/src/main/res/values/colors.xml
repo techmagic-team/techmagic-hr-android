@@ -17,5 +17,6 @@
     <color name="colorDayOff">#ca8cd4</color>
     <color name="colorIllness">#64adf5</color>
     <color name="colorAccepted">#ffbf4a</color>
+    <color name="colorButtonDelete">#cb4646</color>
 
 </resources>

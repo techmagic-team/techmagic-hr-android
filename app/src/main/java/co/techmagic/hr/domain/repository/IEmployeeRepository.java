@@ -66,4 +66,8 @@ public interface IEmployeeRepository {
     Observable<Integer> getTotalIllness(TimeOffRequestByUser request);
 
     Observable<List<DatePeriodDto>> getUserPeriods(String userId);
+
+    Observable<Void> deleteVacation(String timeOffId);
+
+    Observable<Void> deleteIllness(String timeOffId);
 }

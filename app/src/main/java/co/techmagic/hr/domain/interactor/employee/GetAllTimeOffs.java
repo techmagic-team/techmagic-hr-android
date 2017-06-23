@@ -36,8 +36,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
-                        List<RequestedTimeOffDto> allIllnesses = mapCollection(requestedTimeOffs, false);
+                        List<RequestedTimeOffDto> requested = mapCollection(TimeOffType.ILLNESS, requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allIllnesses = mapCollection(TimeOffType.ILLNESS, requestedTimeOffs, false);
 
                         if (!requested.isEmpty()) {
                             allTimeOffsDto.getRequestedMap().put(TimeOffType.ILLNESS, requested);
@@ -55,8 +55,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
-                        List<RequestedTimeOffDto> allVacations = mapCollection(requestedTimeOffs, false);
+                        List<RequestedTimeOffDto> requested = mapCollection(TimeOffType.VACATION, requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allVacations = mapCollection(TimeOffType.VACATION, requestedTimeOffs, false);
 
                         if (!requested.isEmpty()) {
                             allTimeOffsDto.getRequestedMap().put(TimeOffType.VACATION, requested);
@@ -74,8 +74,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 .flatMap(new Func1<List<RequestedTimeOff>, Observable<AllTimeOffsDto>>() {
                     @Override
                     public Observable<AllTimeOffsDto> call(List<RequestedTimeOff> requestedTimeOffs) {
-                        List<RequestedTimeOffDto> requested = mapCollection(requestedTimeOffs, true);
-                        List<RequestedTimeOffDto> allDayoffs = mapCollection(requestedTimeOffs, false);
+                        List<RequestedTimeOffDto> requested = mapCollection(TimeOffType.DAYOFF, requestedTimeOffs, true);
+                        List<RequestedTimeOffDto> allDayoffs = mapCollection(TimeOffType.DAYOFF, requestedTimeOffs, false);
 
                         if (!requested.isEmpty()) {
                             allTimeOffsDto.getRequestedMap().put(TimeOffType.DAYOFF, requested);
@@ -165,12 +165,12 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
     }
 
 
-    private List<RequestedTimeOffDto> mapCollection(List<RequestedTimeOff> requestedTimeOffs, boolean requestedOnly) {
+    private List<RequestedTimeOffDto> mapCollection(TimeOffType timeOffType, List<RequestedTimeOff> requestedTimeOffs, boolean requestedOnly) {
         List<RequestedTimeOffDto> timeOffDtos = new ArrayList<>();
 
         if (requestedTimeOffs != null) {
             for (RequestedTimeOff requestedTimeOff : requestedTimeOffs) {
-                RequestedTimeOffDto requestedTimeOffDto = map(requestedTimeOff);
+                RequestedTimeOffDto requestedTimeOffDto = map(timeOffType, requestedTimeOff);
 
                 if (requestedTimeOffDto == null) {
                     return timeOffDtos;
@@ -189,7 +189,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
     }
 
 
-    private RequestedTimeOffDto map(RequestedTimeOff requestedTimeOff) {
+    private RequestedTimeOffDto map(TimeOffType timeOffType, RequestedTimeOff requestedTimeOff) {
         if (requestedTimeOff != null) {
             RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
             requestedTimeOffDto.setAccepted(requestedTimeOff.getAccepted());
@@ -198,6 +198,8 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
             requestedTimeOffDto.setDateTo(DateUtil.parseStringDate(requestedTimeOff.getDateTo()));
             requestedTimeOffDto.setPaid(requestedTimeOff.isPaid());
             requestedTimeOffDto.setUserId(requestedTimeOff.getUserId());
+            requestedTimeOffDto.setTimeOffType(timeOffType);
+            requestedTimeOffDto.setId(requestedTimeOff.getId());
 
             return requestedTimeOffDto;
         }

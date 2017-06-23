@@ -11,6 +11,7 @@ import co.techmagic.hr.data.entity.RequestTimeOff;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.entity.TimeOffAmount;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -97,4 +98,10 @@ public interface IEmployeeApi {
 
     @POST("/v1/time-off/illness")
     Observable<RequestedTimeOff> requestIllness(@Body RequestTimeOff requestTimeOff);
+
+    @DELETE("/v1/time-off/vacation/{timeOff_id}")
+    Observable<Void> deleteTimeOff(@Path("timeOff_id") String timeOffId);
+
+    @DELETE("/v1/time-off/illness/{timeOff_id}")
+    Observable<Void> deleteIllness(@Path("timeOff_id") String timeOffId);
 }

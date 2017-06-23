@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import co.techmagic.hr.common.TimeOffType;
 import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
@@ -242,7 +243,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
             return client
                     .getEmployeeClient()
                     .requestVacation(requestTimeOff)
-                    .map(getMapper());
+                    .map(getMapper(TimeOffType.VACATION));
 
         }
 
@@ -257,7 +258,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
             return client
                     .getEmployeeClient()
                     .requestIllness(requestTimeOff)
-                    .map(getMapper());
+                    .map(getMapper(TimeOffType.ILLNESS));
 
         }
 
@@ -361,7 +362,29 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
         return Observable.error(new NetworkConnectionException());
     }
 
-    private Func1<RequestedTimeOff, RequestedTimeOffDto> getMapper() {
+    @Override
+    public Observable<Void> deleteVacation(String timeOffId) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .deleteTimeOff(timeOffId);
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<Void> deleteIllness(String timeOffId) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .deleteIllness(timeOffId);
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    private Func1<RequestedTimeOff, RequestedTimeOffDto> getMapper(TimeOffType timeOffType) {
         return new Func1<RequestedTimeOff, RequestedTimeOffDto>() {
             @Override
             public RequestedTimeOffDto call(RequestedTimeOff requestedTimeOff) {
@@ -377,11 +400,14 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
                 RequestedTimeOffDto requestedTimeOffDto = new RequestedTimeOffDto();
                 requestedTimeOffDto.setAccepted(requestedTimeOff.getAccepted());
+                requestedTimeOffDto.setId(requestedTimeOff.getId());
                 requestedTimeOffDto.setCompanyId(requestedTimeOff.getCompanyId());
                 requestedTimeOffDto.setDateFrom(dateFrom);
                 requestedTimeOffDto.setDateTo(dateTo);
                 requestedTimeOffDto.setPaid(requestedTimeOff.isPaid());
                 requestedTimeOffDto.setUserId(requestedTimeOff.getUserId());
+                requestedTimeOffDto.setTimeOffType(timeOffType);
+
                 return requestedTimeOffDto;
             }
         };

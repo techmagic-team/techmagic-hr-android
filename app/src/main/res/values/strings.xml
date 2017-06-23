@@ -135,6 +135,7 @@
     <string name="tm_hr_calendar_filters_activity_filter_by_project">Project</string>
     <string name="tm_hr_calendar_filters_activity_text_empty_project_filters">There are no project yet</string>
     <string name="tm_hr_failed_show_requested_time_off">Failed to show requested time offs</string>
+    <string name="tm_hr_failed_delete_time_off">Failed to delete time off</string>
 
     <!-- EditProfileActivity -->
     <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>

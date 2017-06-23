@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -48,6 +49,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         super.onCreate(savedInstanceState)
 
         actionBar = supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeButtonEnabled(true)
         actionBar?.setTitle(R.string.tm_hr_request_time_off_title)
     }
@@ -93,6 +95,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showErrorDeletingRequestedTimeOff() {
+                toast(R.string.tm_hr_failed_delete_time_off)
+            }
+
             override fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>) {
                 this@RequestTimeOffActivity.showRequestedTimeOffs(timeOffs)
             }
@@ -166,6 +172,11 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 calendarTo.timeInMillis = presenter.selectedPeriod.endDate.time
 
                 val bundle: Bundle = Bundle()
+
+                if (from.before(calendarFrom)) {
+                    from.time = calendarFrom.time
+                }
+
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, from)
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.START_DATE, calendarFrom)
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.END_DATE, calendarTo)
@@ -187,6 +198,17 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     fun initTimeOffDate() {
         setDate(tvSelectedFrom, presenter.requestTimeOffDateFrom.time)
         setDate(tvSelectedTo, presenter.requestTimeOffDateTo.time)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setDate(dateView: TextView, date: Date) {
@@ -240,11 +262,11 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             val adapter: RequestedTimeOffListAdapter = rvRequestedTimeOffs.adapter as RequestedTimeOffListAdapter
             adapter.resetData(timeOffs)
         } else {
-            rvRequestedTimeOffs.adapter = RequestedTimeOffListAdapter(timeOffs) { it -> toast("Clicked") }
+            rvRequestedTimeOffs.adapter = RequestedTimeOffListAdapter(timeOffs)
         }
     }
 
-    inner class RequestedTimeOffListAdapter(timeOffs: MutableList<RequestedTimeOffDto>, val itemClick: (RequestedTimeOffDto) -> Unit) : RecyclerView.Adapter<RequestedTimeOffListAdapter.ViewHolder>() {
+    inner class RequestedTimeOffListAdapter(timeOffs: MutableList<RequestedTimeOffDto>) : RecyclerView.Adapter<RequestedTimeOffListAdapter.ViewHolder>() {
 
         val items: MutableList<RequestedTimeOffDto> = mutableListOf()
 
@@ -264,15 +286,20 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             val dateTo: String = dateFormat.format(requestedTimeOff.dateTo)
 
             holder!!.tvTimeOff.text = dateFrom + " " + dateTo
-            holder.btDelete.visibility = View.GONE
+
+            if (presenter.canBeDeleted(requestedTimeOff)) {
+                holder.btDelete.visibility = View.VISIBLE
+                holder.btDelete.setOnClickListener { presenter.removeRequestedTimeOff(requestedTimeOff) }
+
+            } else {
+                holder.btDelete.visibility = View.INVISIBLE
+            }
 
             if (requestedTimeOff.isAccepted) {
                 holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
             } else {
                 holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)
             }
-
-//            holder!!.itemView.setOnClickListener { itemClick(items[position]) }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -286,7 +313,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             val tvTimeOff: TextView = view.find(R.id.tvPeriod)
             val btDelete: Button = view.find(R.id.btDelete)
             val ivApproved: ImageView = view.find(R.id.ivApproved)
-
         }
     }
 }
