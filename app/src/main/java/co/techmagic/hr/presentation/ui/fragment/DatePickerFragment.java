@@ -81,8 +81,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     @Override
     public void onDetach() {
-        super.onDetach();
         datePickerSelectionListener = null;
+        super.onDetach();
     }
 
 

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,8 +46,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private ActionBarChangeListener actionBarChangeListener;
     private FragmentCallback fragmentCallback;
 
-    private FirebaseAnalytics firebaseAnalytics;
-
     private boolean isMyTeamChecked;
     private long fromInMillis = 0;
     private long toInMillis = 0;
@@ -71,7 +67,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         setHasOptionsMenu(true);
         actionBarChangeListener = (ActionBarChangeListener) context;
         fragmentCallback = (FragmentCallback) context;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
 
@@ -240,10 +235,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     private void startCalendarFiltersScreen() {
-        Bundle analyticsBundle = new Bundle();
-        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar filters click");
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
-
         Intent i = new Intent(getActivity(), CalendarFiltersActivity.class);
         i.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         i.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
