@@ -2,12 +2,17 @@ package co.techmagic.hr.presentation.mvp.presenter
 
 import android.util.Log
 import co.techmagic.hr.common.TimeOffType
+import co.techmagic.hr.data.entity.UserProfile
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
+import co.techmagic.hr.data.repository.UserRepositoryImpl
+import co.techmagic.hr.data.request.GetMyProfileRequest
 import co.techmagic.hr.domain.interactor.employee.DeleteTimeOff
 import co.techmagic.hr.domain.interactor.employee.GetTimeOffsByUser
 import co.techmagic.hr.domain.interactor.employee.GetUserPeriods
 import co.techmagic.hr.domain.interactor.employee.RequestTimeOff
+import co.techmagic.hr.domain.interactor.user.GetUserProfile
 import co.techmagic.hr.domain.pojo.*
+import co.techmagic.hr.domain.repository.IUserRepository
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
@@ -19,11 +24,14 @@ import java.util.*
  * Created by Roman Ursu on 6/6/17
  */
 class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
+    private val userRepository: IUserRepository = UserRepositoryImpl()
     private val employeeRepository: EmployeeRepositoryImpl = EmployeeRepositoryImpl()
+
     private val deleteRequestedTimeOff: DeleteTimeOff = DeleteTimeOff(employeeRepository)
     private var getUserPeriods: GetUserPeriods = GetUserPeriods(employeeRepository)
     private var requestTimeOff: RequestTimeOff = RequestTimeOff(employeeRepository)
     private var getTimeOffsByUser: GetTimeOffsByUser = GetTimeOffsByUser(employeeRepository)
+    private val getUserProfile: GetUserProfile = GetUserProfile(userRepository)
 
     var availableTimeOffsData: AvailableTimeOffsData? = null
         private set
@@ -39,6 +47,8 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     private var selectedTimeOffType: TimeOffType? = null
 
+    private var userProfile: UserProfile? = null
+
     private val userId: String = SharedPreferencesUtil.readUser().id
 
     private var usedTimeOffs: UsedTimeOffsByUserDto? = null
@@ -49,6 +59,25 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun loadData() {
+        view?.showProgress()
+        val getProfileRequest = GetMyProfileRequest(userId)
+        getUserProfile.execute(getProfileRequest, object : DefaultSubscriber<UserProfile>() {
+            override fun onNext(userProfile: UserProfile?) {
+                view?.hideProgress()
+                this@RequestTimeOffPresenter.userProfile = userProfile
+
+                loadAvailableDays()
+            }
+
+            override fun onError(e: Throwable?) {
+                super.onError(e)
+                view?.hideProgress()
+                view?.showUserProfileError()
+            }
+        })
+    }
+
+    fun loadAvailableDays() {
         view?.showProgress()
         getUserPeriods.execute(userId, object : DefaultSubscriber<AvailableTimeOffsData>() {
             override fun onNext(timeOffsData: AvailableTimeOffsData?) {
@@ -100,6 +129,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         requestTimeOff.unsubscribe()
         getTimeOffsByUser.unsubscribe()
         deleteRequestedTimeOff.unsubscribe()
+        getUserProfile.unsubscribe()
     }
 
     fun onFromDateClicked() {

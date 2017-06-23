@@ -129,6 +129,7 @@
     <string name="tm_hr_invalid_input_data">Invalid input data</string>
     <string name="tm_hr_failed_request_time_off">Failed to request time off</string>
     <string name="tm_hr_successfully_requested_time_off">Successfully requested time off</string>
+    <string name="tm_hr_error_loading_user_profile">Error loading user profile</string>
 
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_title">Calendar filters</string>

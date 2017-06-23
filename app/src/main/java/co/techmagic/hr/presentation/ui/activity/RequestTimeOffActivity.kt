@@ -95,6 +95,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showUserProfileError() {
+                toast(R.string.tm_hr_error_loading_user_profile)
+            }
+
             override fun showErrorDeletingRequestedTimeOff() {
                 toast(R.string.tm_hr_failed_delete_time_off)
             }
@@ -120,6 +124,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
 
             override fun showUserPeriods(userPeriods: List<PeriodPair>) {
+                rgPeriods.visibility = View.VISIBLE
                 with(userPeriods) {
                     rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
                     rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)

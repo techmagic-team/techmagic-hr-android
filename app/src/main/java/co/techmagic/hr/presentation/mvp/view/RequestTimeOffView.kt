@@ -22,4 +22,5 @@ interface RequestTimeOffView : View {
     fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>)
     fun showErrorLoadingRequestedTimeOffs()
     fun showErrorDeletingRequestedTimeOff()
+    fun showUserProfileError()
 }
