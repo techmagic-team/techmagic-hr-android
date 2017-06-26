@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.common.Role;
 import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
@@ -42,10 +43,6 @@ import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class DetailsPresenter extends BasePresenter<DetailsView> {
-
-    static final int ROLE_USER = 0;
-    static final int ROLE_HR = 1;
-    static final int ROLE_ADMIN = 2;
 
     private UserProfile data;
     private IUserRepository userRepository;
@@ -140,7 +137,8 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
         /* Show next info only for User, HR or Admin */
         final int userRole = SharedPreferencesUtil.readUser().getRole();
-        if (profileType == ProfileTypes.MY_PROFILE || userRole == ROLE_HR || userRole == ROLE_ADMIN) {
+        Role role = Role.getRoleByCode(userRole);
+        if (profileType == ProfileTypes.MY_PROFILE || role == Role.ROLE_HR || role == Role.ROLE_ADMIN) {
             showFullDetailsIfAvailable(data);
         } else {
             final String birthdayDate = getCorrectDateFormat(data, false);

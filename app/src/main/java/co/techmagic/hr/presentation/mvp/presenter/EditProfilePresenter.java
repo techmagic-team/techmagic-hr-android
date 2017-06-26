@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.List;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.common.Role;
 import co.techmagic.hr.data.entity.Department;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Filter;
@@ -735,7 +736,8 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         /* Show next info only for HR or Admin */
         final int userRole = data.getRole();
-        if (userRole == DetailsPresenter.ROLE_HR || userRole == DetailsPresenter.ROLE_ADMIN) {
+        Role role = Role.getRoleByCode(userRole);
+        if (role == Role.ROLE_HR || role == Role.ROLE_ADMIN) {
             showFullDetailsIfAvailable();
         }
     }

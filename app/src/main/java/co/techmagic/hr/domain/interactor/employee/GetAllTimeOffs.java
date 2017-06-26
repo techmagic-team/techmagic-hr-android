@@ -177,7 +177,7 @@ public class GetAllTimeOffs extends DataUseCase<TimeOffAllRequest, AllTimeOffsDt
                 }
 
                 // Means time off is waiting for response or already accepted
-                if (requestedOnly && requestedTimeOffDto.getAccepted() == null || requestedTimeOffDto.isAccepted()) {
+                if (requestedOnly && requestedTimeOffDto.getAccepted() == null || (requestedTimeOffDto.isAccepted() != null && requestedTimeOffDto.isAccepted())) {
                     timeOffDtos.add(requestedTimeOffDto);
                 } else if (!requestedOnly) {
                     timeOffDtos.add(requestedTimeOffDto);

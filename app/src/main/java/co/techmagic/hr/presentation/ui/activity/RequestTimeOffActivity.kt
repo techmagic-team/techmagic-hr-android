@@ -300,10 +300,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 holder.btDelete.visibility = View.INVISIBLE
             }
 
-            if (requestedTimeOff.isAccepted) {
-                holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)
-            } else {
-                holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
+            when(requestedTimeOff.isAccepted) {
+                null -> holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
+                false -> holder.ivApproved.setImageResource(R.drawable.ic_cancel_red_24dp)
+                true -> holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)
             }
         }
 

@@ -64,7 +64,7 @@ public class RequestedTimeOffDto {
     }
 
     public Boolean isAccepted() {
-        return isAccepted != null && isAccepted;
+        return isAccepted;
     }
 
     public void setAccepted(Boolean accepted) {

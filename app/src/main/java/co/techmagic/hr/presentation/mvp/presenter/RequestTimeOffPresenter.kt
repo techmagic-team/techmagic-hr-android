@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.mvp.presenter
 
 import android.util.Log
+import co.techmagic.hr.common.Role
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.data.entity.UserProfile
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl
@@ -33,6 +34,12 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     private var getTimeOffsByUser: GetTimeOffsByUser = GetTimeOffsByUser(employeeRepository)
     private val getUserProfile: GetUserProfile = GetUserProfile(userRepository)
 
+    private var selectedTimeOffType: TimeOffType? = null
+    private var userProfile: UserProfile? = null
+    private val userId: String = SharedPreferencesUtil.readUser().id
+    private val userRole: Role = Role.getRoleByCode(SharedPreferencesUtil.readUser().role)
+    private var usedTimeOffs: UsedTimeOffsByUserDto? = null
+
     var availableTimeOffsData: AvailableTimeOffsData? = null
         private set
 
@@ -44,14 +51,6 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     lateinit var selectedPeriod: PeriodPair
         private set
-
-    private var selectedTimeOffType: TimeOffType? = null
-
-    private var userProfile: UserProfile? = null
-
-    private val userId: String = SharedPreferencesUtil.readUser().id
-
-    private var usedTimeOffs: UsedTimeOffsByUserDto? = null
 
     companion object {
         private val TAG: String = RequestTimeOffPresenter.toString()
