@@ -2,15 +2,13 @@ package co.techmagic.hr.presentation.mvp.view
 
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
-import co.techmagic.hr.domain.pojo.UsedTimeOffsByUserDto
 import co.techmagic.hr.presentation.pojo.PeriodPair
-import java.util.*
 
 /**
  * Created by Roman Ursu on 6/6/17
  */
 interface RequestTimeOffView : View {
-    fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean)
+    fun showDatePicker(from: Long, to: Long, isDateFromPicker: Boolean, allowPastDateSelection: Boolean)
     fun showTimeOffsDialog()
     fun selectTimeOff(timeOffType: TimeOffType)
     fun showTimeOffsData(daysAmount: Int?)

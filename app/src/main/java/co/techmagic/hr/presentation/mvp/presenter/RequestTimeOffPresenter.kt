@@ -34,11 +34,13 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     private var getTimeOffsByUser: GetTimeOffsByUser = GetTimeOffsByUser(employeeRepository)
     private val getUserProfile: GetUserProfile = GetUserProfile(userRepository)
 
-    private var selectedTimeOffType: TimeOffType? = null
     private var userProfile: UserProfile? = null
     private val userId: String = SharedPreferencesUtil.readUser().id
     private val userRole: Role = Role.getRoleByCode(SharedPreferencesUtil.readUser().role)
     private var usedTimeOffs: UsedTimeOffsByUserDto? = null
+
+    var selectedTimeOffType: TimeOffType? = null
+        private set
 
     var availableTimeOffsData: AvailableTimeOffsData? = null
         private set
@@ -133,12 +135,12 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun onFromDateClicked() {
         view?.hideProgress()
-        view?.showDatePicker(requestTimeOffDateFrom, requestTimeOffDateTo, isDateFromPicker = true)
+        view?.showDatePicker(selectedPeriod.startDate.time, selectedPeriod.endDate.time, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onToDateClicked() {
         view?.hideProgress()
-        view?.showDatePicker(requestTimeOffDateFrom, requestTimeOffDateTo, isDateFromPicker = false)
+        view?.showDatePicker(selectedPeriod.startDate.time, selectedPeriod.endDate.time, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onTimeOffTypeClicked() {
@@ -167,12 +169,12 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun onRequestButtonClicked() {
         if (isInputDataValid()) {
-            val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!)
+            val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!, userRole == Role.ROLE_ADMIN)
 
             view?.showProgress()
 
             requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
-                override fun onNext(t: RequestedTimeOffDto?) {
+                override fun onNext(requestedTimeOffDto: RequestedTimeOffDto?) {
                     view?.hideProgress()
                     view?.showRequestTimeOffSuccess()
                     loadRequestedTimeOffs()
@@ -213,7 +215,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun removeRequestedTimeOff(requestedTimeOffDto: RequestedTimeOffDto) {
         view?.showProgress()
         deleteRequestedTimeOff.execute(requestedTimeOffDto, object : DefaultSubscriber<Void>() {
-            override fun onNext(t: Void?) {
+            override fun onNext(requestedTimeOffDto: Void?) {
                 view?.hideProgress()
                 loadRequestedTimeOffs()
             }

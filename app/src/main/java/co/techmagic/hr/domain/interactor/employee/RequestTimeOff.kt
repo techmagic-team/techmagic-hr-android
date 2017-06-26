@@ -15,7 +15,7 @@ class RequestTimeOff(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Req
 
     override fun buildObservable(requestTimeOff: RequestTimeOffDto): Observable<RequestedTimeOffDto> {
         val isPaid: Boolean = getPaidInfo(requestTimeOff.timeOffType)
-        val timeOffRequest: TimeOffRequest = TimeOffRequest(requestTimeOff.userId, isPaid, requestTimeOff.dateFrom, requestTimeOff.dateTo)
+        val timeOffRequest: TimeOffRequest = TimeOffRequest(requestTimeOff.userId, isPaid, requestTimeOff.dateFrom, requestTimeOff.dateTo, requestTimeOff.isAccepted)
 
         return when (requestTimeOff.timeOffType) {
             TimeOffType.ILLNESS -> repository.requestIllness(timeOffRequest)

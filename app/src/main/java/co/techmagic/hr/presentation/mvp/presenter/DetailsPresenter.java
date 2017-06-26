@@ -354,7 +354,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
         long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
-        final TimeOffRequest request = new TimeOffRequest(userId, true, firstDay, dateAfterYear);
+        final TimeOffRequest request = new TimeOffRequest(userId, true, firstDay, dateAfterYear, null);
         getUserVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
@@ -395,7 +395,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
         long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
-        final TimeOffRequest request = new TimeOffRequest(userId, false, firstDay, dateAfterYear);
+        final TimeOffRequest request = new TimeOffRequest(userId, false, firstDay, dateAfterYear, null);
         getUserDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {

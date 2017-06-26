@@ -9,4 +9,5 @@ data class RequestTimeOff(
         @SerializedName("dateFrom") val dateFrom: Long,
         @SerializedName("dateTo") val dateTo: Long,
         @SerializedName("_user") val userId: String,
-        @SerializedName("isPaid") val isPaid: Boolean)
+        @SerializedName("isPaid") val isPaid: Boolean,
+        @SerializedName("isAccepted") val isAccepted: Boolean?)
