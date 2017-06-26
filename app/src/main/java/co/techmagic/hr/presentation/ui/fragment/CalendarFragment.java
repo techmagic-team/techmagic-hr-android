@@ -86,6 +86,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+        actionBarChangeListener.showBackButton();
         actionBarChangeListener.setActionBarTitle(getString(R.string.tm_hr_calendar_fragment_title));
         inflater.inflate(R.menu.menu_calendar, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -241,10 +242,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     private void startCalendarFiltersScreen() {
-        Bundle analyticsBundle = new Bundle();
-        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar filters click");
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
-
         Intent intent = new Intent(getActivity(), CalendarFiltersActivity.class);
         intent.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         intent.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
@@ -258,13 +255,5 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private void startRequestTimeOffScreen() {
         Intent intent = new Intent(getActivity(), RequestTimeOffActivity.class);
         startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE);
-        Intent i = new Intent(getActivity(), CalendarFiltersActivity.class);
-        i.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
-        i.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
-        i.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
-        i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
-        i.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
-        startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
-        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
 }
