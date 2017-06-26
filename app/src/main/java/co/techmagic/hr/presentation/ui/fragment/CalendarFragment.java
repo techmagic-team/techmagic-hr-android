@@ -241,10 +241,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     private void startCalendarFiltersScreen() {
-        Bundle analyticsBundle = new Bundle();
-        analyticsBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Calendar filters click");
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, analyticsBundle);
-
         Intent intent = new Intent(getActivity(), CalendarFiltersActivity.class);
         intent.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         intent.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
