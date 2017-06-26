@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -39,6 +37,8 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener, OnCalendarViewReadyListener {
 
+    private static final String MIXPANEL_CALENDAR_FILTERS_TAG = "Calendar Filters";
+
     @BindView(R.id.flCalFilters)
     View calFilters;
     @BindView(R.id.tvCalendarNoResults)
@@ -48,8 +48,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
     private ActionBarChangeListener actionBarChangeListener;
     private FragmentCallback fragmentCallback;
-
-    private FirebaseAnalytics firebaseAnalytics;
 
     private boolean isMyTeamChecked;
     private long fromInMillis = 0;
@@ -72,7 +70,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         setHasOptionsMenu(true);
         actionBarChangeListener = (ActionBarChangeListener) context;
         fragmentCallback = (FragmentCallback) context;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
 
@@ -261,5 +258,13 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private void startRequestTimeOffScreen() {
         Intent intent = new Intent(getActivity(), RequestTimeOffActivity.class);
         startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE);
+        Intent i = new Intent(getActivity(), CalendarFiltersActivity.class);
+        i.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
+        i.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
+        i.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
+        i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
+        i.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
+        startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
 }

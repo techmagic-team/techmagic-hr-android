@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui;
+package co.techmagic.hr.presentation.ui.manager;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,6 +16,7 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.IFilterModel;
+import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 
 

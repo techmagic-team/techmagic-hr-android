@@ -38,7 +38,7 @@ import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditableFields;
-import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.manager.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;

@@ -91,6 +91,7 @@ public class SplashActivity extends BaseActivity<SplashView, SplashPresenter> {
             i = new Intent(SplashActivity.this, LoginActivity.class);
         } else {
             i = new Intent(SplashActivity.this, HomeActivity.class);
+            mixpanelManager.sendLoggedInUserToMixpanel();
         }
 
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

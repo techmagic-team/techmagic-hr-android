@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
                 android:imeOptions="actionNext"
-                android:inputType="text|number"
+                android:inputType="textPassword"
                 android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
                 android:imeOptions="actionDone"
-                android:inputType="phone"
+                android:inputType="textPassword"
                 android:textColor="@color/colorBlack" />
 
         </android.support.design.widget.TextInputLayout>
