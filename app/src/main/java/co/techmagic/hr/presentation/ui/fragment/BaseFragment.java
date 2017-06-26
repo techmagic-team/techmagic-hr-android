@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
+import co.techmagic.hr.presentation.ui.manager.MixpanelManager;
 
 public abstract class BaseFragment<VIEW extends View, PRESENTER extends BasePresenter> extends Fragment {
 
@@ -22,6 +23,8 @@ public abstract class BaseFragment<VIEW extends View, PRESENTER extends BasePres
 
     protected static final int RC_WRITE_EXTERNAL_STORAGE_PERMISSION = 1002;
 
+    protected MixpanelManager mixpanelManager;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public abstract class BaseFragment<VIEW extends View, PRESENTER extends BasePres
         view = initView();
         presenter = initPresenter();
         presenter.attachView(view);
+        mixpanelManager = new MixpanelManager(getContext());
     }
 
 
@@ -50,6 +54,13 @@ public abstract class BaseFragment<VIEW extends View, PRESENTER extends BasePres
     public void onStop() {
         super.onStop();
         presenter.detachView();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        mixpanelManager.flush();
+        super.onDestroy();
     }
 
 

@@ -20,8 +20,14 @@ public class User {
     @SerializedName("_id")
     private String id;
 
+    @SerializedName("_company")
+    private Filter company;
+
     @SerializedName("email")
     private String email;
+
+    @SerializedName("phone")
+    private String phone;
 
     @SerializedName("firstName")
     private String firstName;
@@ -76,6 +82,14 @@ public class User {
         this.id = id;
     }
 
+    public Filter getCompany() {
+        return company;
+    }
+
+    public void setCompany(Filter company) {
+        this.company = company;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -84,12 +98,20 @@ public class User {
         this.email = email;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getUsername() {
+        return firstName + " " + lastName;
     }
 
     public String getFirstWorkingDay() {

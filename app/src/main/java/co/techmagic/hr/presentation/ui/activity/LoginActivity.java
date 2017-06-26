@@ -23,7 +23,7 @@ import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.presentation.mvp.presenter.LoginPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.LoginViewImpl;
 import co.techmagic.hr.presentation.ui.EditableFields;
-import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.manager.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.util.KeyboardUtil;
@@ -138,6 +138,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
             @Override
             public void onLoginSuccess(@NonNull User user) {
                 saveUserAndStartNextScreen(user);
+                mixpanelManager.sendLoggedInUserToMixpanel();
             }
 
             @Override
@@ -335,11 +336,12 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     private void saveUserAndStartNextScreen(@NonNull User user) {
         SharedPreferencesUtil.saveAccessToken(user.getAccessToken());
         SharedPreferencesUtil.saveUser(user);
-        startHomeScreenWithFrags();
+        startHomeScreenWithFlags();
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
     }
 
 
-    private void startHomeScreenWithFrags() {
+    private void startHomeScreenWithFlags() {
         Intent i = new Intent(this, HomeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);

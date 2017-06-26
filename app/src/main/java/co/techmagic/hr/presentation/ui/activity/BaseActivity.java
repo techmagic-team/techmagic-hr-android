@@ -16,6 +16,7 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
 import co.techmagic.hr.presentation.ui.fragment.BaseFragment;
+import co.techmagic.hr.presentation.ui.manager.MixpanelManager;
 
 public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePresenter> extends AppCompatActivity {
 
@@ -29,6 +30,9 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     protected abstract PRESENTER initPresenter();
 
     protected static final int RC_READ_EXTERNAL_STORAGE_PERMISSION = 1004;
+    protected static final String MIXPANEL_HOME_TAG = "Home";
+
+    protected MixpanelManager mixpanelManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,12 +41,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
         view = initView();
         presenter = initPresenter();
         presenter.attachView(view);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        mixpanelManager = new MixpanelManager(this);
     }
 
 
@@ -64,6 +63,14 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     protected void onStop() {
         super.onStop();
         presenter.detachView();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        // send messages to Mixpanel
+        mixpanelManager.flush();
+        super.onDestroy();
     }
 
 
