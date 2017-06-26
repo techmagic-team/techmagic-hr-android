@@ -238,7 +238,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<RequestedTimeOffDto> requestVacation(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid());
+            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid(), request.isAccepted());
 
             return client
                     .getEmployeeClient()
@@ -253,7 +253,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     @Override
     public Observable<RequestedTimeOffDto> requestIllness(TimeOffRequest request) {
         if (networkManager.isNetworkAvailable()) {
-            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid());
+            RequestTimeOff requestTimeOff = new RequestTimeOff(request.getDateFrom().getGte(), request.getDateTo().getLte(), request.getUserId(), request.isPaid(), request.isAccepted());
 
             return client
                     .getEmployeeClient()

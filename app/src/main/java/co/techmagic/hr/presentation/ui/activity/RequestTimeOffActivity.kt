@@ -17,6 +17,7 @@ import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.pojo.PeriodPair
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
 import java.text.DateFormat
@@ -155,7 +156,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 }
             }
 
-            override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean) {
+            override fun showDatePicker(from: Long, to: Long, isDateFromPicker: Boolean, allowPastDateSelection: Boolean) {
                 val fragment: RequestTimeOffDatePickerFragment = RequestTimeOffDatePickerFragment()
 
                 fragment.listener = object : RequestTimeOffDatePickerFragment.DateSetListener {
@@ -173,16 +174,17 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 val calendarFrom: Calendar = Calendar.getInstance()
                 val calendarTo: Calendar = Calendar.getInstance()
 
-                calendarFrom.timeInMillis = presenter.selectedPeriod.startDate.time
-                calendarTo.timeInMillis = presenter.selectedPeriod.endDate.time
+                calendarFrom.timeInMillis = from
+                calendarTo.timeInMillis = to
 
-                val bundle: Bundle = Bundle()
+                val initDate: Calendar = Calendar.getInstance()
 
-                if (from.before(calendarFrom)) {
-                    from.time = calendarFrom.time
+                if (initDate.before(calendarFrom)) {
+                    initDate.timeInMillis = from
                 }
 
-                bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, from)
+                val bundle: Bundle = Bundle()
+                bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, initDate)
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.START_DATE, calendarFrom)
                 bundle.putSerializable(RequestTimeOffDatePickerFragment.END_DATE, calendarTo)
 
@@ -222,14 +224,19 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     }
 
     private fun setTimeOffType(timeOffTypeString: String) {
-        val timeOffType: TimeOffType = TimeOffType.valueOf(timeOffTypeString)
-        presenter.onTimeOffTypeSelected(timeOffType)
+        val timeOffType: TimeOffType? = TimeOffType.getType(resources, timeOffTypeString)
+        if (timeOffType != null) {
+            presenter.onTimeOffTypeSelected(timeOffType)
+        }
     }
 
     private fun showSelectTimeOffTypeDialog() {
-        val itemsList: List<String> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }.map { timeOffType -> timeOffType.name }
-        val items: Array<String> = itemsList.toTypedArray()
+        val itemsList: List<String> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }.map {
+            timeOffType ->
+            resources.getString(timeOffType.displayNameId)
+        }
 
+        val items: Array<String> = itemsList.toTypedArray()
         val selectedItem: Int = getSelectedTimeOffItemIndex()
 
         AlertDialog.Builder(this)
@@ -247,19 +254,14 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             return 0
         }
 
-        try {
-            val timeOffType: TimeOffType = TimeOffType.valueOf(selectedTimeOffString.toUpperCase())
-            val values: List<TimeOffType> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }
+        val timeOffType: TimeOffType = TimeOffType.getType(resources, selectedTimeOffString) ?: return 0
+        val values: List<TimeOffType> = TimeOffType.values().filter { it != TimeOffType.REQUESTED }
 
-            values.indices
-                    .filter { values[it] == timeOffType }
-                    .forEach { return it }
+        values.indices
+                .filter { values[it] == timeOffType }
+                .forEach { return it }
 
-            return 0
-
-        } catch (e: Exception) {
-            return 0
-        }
+        return 0
     }
 
     private fun showRequestedTimeOffs(timeOffs: MutableList<RequestedTimeOffDto>) {
@@ -290,17 +292,28 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             val dateFrom: String = dateFormat.format(requestedTimeOff.dateFrom)
             val dateTo: String = dateFormat.format(requestedTimeOff.dateTo)
 
-            holder!!.tvTimeOff.text = dateFrom + " " + dateTo
+            val dateRangeString = dateFrom + " " + dateTo
+            holder!!.tvTimeOff.text = dateRangeString
 
             if (presenter.canBeDeleted(requestedTimeOff)) {
                 holder.btDelete.visibility = View.VISIBLE
-                holder.btDelete.setOnClickListener { presenter.removeRequestedTimeOff(requestedTimeOff) }
+                holder.btDelete.setOnClickListener {
+                    val title = resources.getString(R.string.tm_hr_request_time_off_title)
+                    val alertMessagePattern = resources.getString(R.string.tm_hr_time_off_delete_confirm_alert_message)
+                    val timeOffName: String = resources.getString(presenter.selectedTimeOffType?.displayNameId!!)
+                    val message = String.format(alertMessagePattern, timeOffName, dateRangeString)
+
+                    alert(message, title) {
+                        yesButton { presenter.removeRequestedTimeOff(requestedTimeOff) }
+                        noButton { dismiss() }
+                    }.show()
+                }
 
             } else {
                 holder.btDelete.visibility = View.INVISIBLE
             }
 
-            when(requestedTimeOff.isAccepted) {
+            when (requestedTimeOff.isAccepted) {
                 null -> holder.ivApproved.setImageResource(R.drawable.ic_access_time_grey_24dp)
                 false -> holder.ivApproved.setImageResource(R.drawable.ic_cancel_red_24dp)
                 true -> holder.ivApproved.setImageResource(R.drawable.ic_check_circle_green_24dp)

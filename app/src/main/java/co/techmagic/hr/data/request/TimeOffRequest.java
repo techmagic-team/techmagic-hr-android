@@ -5,7 +5,7 @@ import co.techmagic.hr.data.entity.DateTo;
 
 /**
  * Is used for Vacation and Day-off
- * */
+ */
 
 public class TimeOffRequest {
 
@@ -13,13 +13,15 @@ public class TimeOffRequest {
     private boolean isPaid;
     private DateFrom dateFrom;
     private DateTo dateTo;
+    private Boolean isAccepted;
 
 
-    public TimeOffRequest(String userId, boolean isPaid, long dateFrom, long dateTo) {
+    public TimeOffRequest(String userId, boolean isPaid, long dateFrom, long dateTo, Boolean isAccepted) {
         this.userId = userId;
         this.isPaid = isPaid;
         this.dateFrom = new DateFrom(dateFrom);
         this.dateTo = new DateTo(dateTo);
+        this.isAccepted = isAccepted;
     }
 
     public String getUserId() {
@@ -38,5 +40,7 @@ public class TimeOffRequest {
         return dateTo;
     }
 
-
+    public Boolean isAccepted() {
+        return isAccepted;
+    }
 }

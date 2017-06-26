@@ -119,7 +119,8 @@
     <string name="tm_hr_time_off_type">Time Off Type</string>
     <string name="tm_hr_select_time_off_type">Select time off type</string>
     <string name="tm_hr_vacation_time_off_name">Vacation</string>
-    <string name="tm_hr_dayoff_time_off_name">Dayoff</string>
+    <string name="tm_hr_dayoff_time_off_name">Day off</string>
+    <string name="tm_hr_requested">Requested</string>
     <string name="tm_hr_illness_time_off_name">Illness</string>
     <string name="tm_hr_request_time_off_title">Request Time off</string>
     <string name="tm_hr_request_time_off_error_retrieving_time_off_data">Error retrieving time off data</string>
@@ -129,7 +130,8 @@
     <string name="tm_hr_invalid_input_data">Invalid input data</string>
     <string name="tm_hr_failed_request_time_off">Failed to request time off</string>
     <string name="tm_hr_successfully_requested_time_off">Successfully requested time off</string>
-    <string name="tm_hr_error_loading_user_profile">Error loading user profile</string>
+    <string name="tm_hr_time_off_delete_confirm_alert_message">Are you sure you want to delete %s for %s ?</string>
+    <string name="tm_hr_delete_time_off_title">Please confirm your action</string>
 
     <!-- CalendarFiltersActivity -->
     <string name="tm_hr_calendar_filters_activity_title">Calendar filters</string>
@@ -140,6 +142,7 @@
     <string name="please_select_company_error_text">Please select company</string>
     <string name="tm_hr_calendar_filters_activity_filter_by_project">Project</string>
     <string name="tm_hr_calendar_filters_activity_text_empty_project_filters">There are no project yet</string>
+    <string name="tm_hr_error_loading_user_profile">Error loading user profile</string>
     <string name="tm_hr_failed_show_requested_time_off">Failed to show requested time offs</string>
     <string name="tm_hr_failed_delete_time_off">Failed to delete time off</string>
 
