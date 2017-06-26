@@ -21,7 +21,7 @@ import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarFiltersPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarFiltersViewImpl;
-import co.techmagic.hr.presentation.ui.FilterDialogManager;
+import co.techmagic.hr.presentation.ui.manager.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.NumberDatePickerFragment;

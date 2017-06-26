@@ -1,5 +1,7 @@
 package co.techmagic.hr.data.entity;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Filter implements IFilterModel {
@@ -20,16 +22,19 @@ public class Filter implements IFilterModel {
         return name;
     }
 
+    @Nullable
     @Override
     public String getLastWorkingDay() {
         return null;
     }
 
+    @Nullable
     @Override
     public String getFirstName() {
         return null;
     }
 
+    @Nullable
     @Override
     public String getLastName() {
         return null;

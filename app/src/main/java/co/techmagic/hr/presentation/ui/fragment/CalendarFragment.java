@@ -36,6 +36,8 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener, OnCalendarViewReadyListener {
 
+    private static final String MIXPANEL_CALENDAR_FILTERS_TAG = "Calendar Filters";
+
     @BindView(R.id.flCalFilters)
     View calFilters;
     @BindView(R.id.tvCalendarNoResults)
@@ -242,5 +244,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
         i.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
         startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
 }

@@ -44,11 +44,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
 
-    private static final String FIREBASE_ANALYTICS_EMPLOYEE_PROFILE_CLICK = "Employee Profile click";
-    private static final String FIREBASE_ANALYTICS_MY_PROFILE_CLICK = "MyProfile click";
-    private static final String FIREBASE_ANALYTICS_CALENDAR_CLICK = "Calendar click";
-    private static final String FIREBASE_ANALYTICS_HOME_CLICK = "Home click";
-    private static final String FIREBASE_ANALYTICS_SEARCH_CLICK = "Search click";
+    private static final String MIXPANEL_HOME_TAG = "Home";
+    private static final String MIXPANEL_SEARCH_EMPLOYEES_TAG = "Search Employees";
+    private static final String MIXPANEL_USER_DETAILS_TAG = "User Details";
+    private static final String MIXPANEL_MY_PROFILE_TAG = "My Profile";
+    private static final String MIXPANEL_EDIT_PROFILE_TAG = "Edit Profile";
+    private static final String MIXPANEL_CALENDAR_TAG = "Calendar";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -255,6 +256,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
         replaceFragment(fragment, tag);
+
+        if (profileType == ProfileTypes.MY_PROFILE) {
+            mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_MY_PROFILE_TAG);
+        } else if (profileType == ProfileTypes.EMPLOYEE) {
+            mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_USER_DETAILS_TAG);
+        }
     }
 
 
@@ -262,6 +269,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public void addCalendarFragment() {
         CalendarFragment fragment = CalendarFragment.newInstance();
         replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_TAG);
     }
 
 
@@ -299,6 +307,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
                         clearFragmentsBackStack(this);
+                        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
                     }
                     break;
 
@@ -319,11 +328,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
         startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_SEARCH_EMPLOYEES_TAG);
     }
 
 
     private void startEditProfileScreen() {
         startActivity(new Intent(this, EditProfileActivity.class));
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_EDIT_PROFILE_TAG);
     }
 
 
