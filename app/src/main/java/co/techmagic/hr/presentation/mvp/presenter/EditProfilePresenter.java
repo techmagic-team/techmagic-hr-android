@@ -494,7 +494,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         if (newDescription.isEmpty()) {
-            data.setDescription(null);
+            data.setDescription(""); // instead of null
         } else {
             data.setDescription(newDescription);
         }
@@ -685,7 +685,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         if (newComments.isEmpty()) {
-            data.setReasonComments(null);
+            data.setReasonComments(""); // instead of null
         } else {
             data.setReasonComments(newComments);
         }
