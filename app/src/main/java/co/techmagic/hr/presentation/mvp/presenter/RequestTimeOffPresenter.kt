@@ -246,7 +246,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                     && requestTimeOffDateFrom.before(periodEndCalendar)
                     && requestTimeOffDateTo.after(periodStartCalendar)
                     && ((requestTimeOffDateTo == periodEndCalendar) || requestTimeOffDateTo.before(periodEndCalendar))
-                    && requestTimeOffDateTo.after(requestTimeOffDateFrom)) {
+                    && (requestTimeOffDateTo.after(requestTimeOffDateFrom) || requestTimeOffDateTo == requestTimeOffDateFrom)) {
 
                 return true
             }

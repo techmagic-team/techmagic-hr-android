@@ -101,14 +101,15 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         switch (item.getItemId()) {
             case R.id.action_calendar_filters:
                 startCalendarFiltersScreen();
-                break;
+                return true;
 
             case R.id.action_request_time_off:
                 startRequestTimeOffScreen();
-                break;
-        }
+                return true;
 
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -254,13 +255,5 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     private void startRequestTimeOffScreen() {
         Intent intent = new Intent(getActivity(), RequestTimeOffActivity.class);
         startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE);
-        Intent i = new Intent(getActivity(), CalendarFiltersActivity.class);
-        i.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
-        i.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
-        i.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
-        i.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
-        i.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
-        startActivityForResult(i, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
-        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
 }
