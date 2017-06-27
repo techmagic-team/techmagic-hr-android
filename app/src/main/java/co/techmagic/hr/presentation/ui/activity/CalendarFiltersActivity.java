@@ -256,6 +256,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
         Intent i = new Intent();
         setResult(filtersCleared ? RESULT_FILTERS_CLEARED : Activity.RESULT_CANCELED, i);
         finish();
+        overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
     }
 
 
@@ -295,6 +296,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
 
         setResult(Activity.RESULT_OK, i);
         finish();
+        overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
     }
 
 

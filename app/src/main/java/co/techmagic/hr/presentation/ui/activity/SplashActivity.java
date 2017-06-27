@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,8 +95,9 @@ public class SplashActivity extends BaseActivity<SplashView, SplashPresenter> {
             mixpanelManager.sendLoggedInUserToMixpanel();
         }
 
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+        startActivity(i, animation);
         finish();
     }
 }
