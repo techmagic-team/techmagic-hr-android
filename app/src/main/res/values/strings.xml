@@ -53,6 +53,7 @@
     <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
     <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
+    <string name="tm_hr_home_activity_searchview_text_search">Search…</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
     <string name="tm_hr_home_activity_text_filters">Filters</string>
     <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>

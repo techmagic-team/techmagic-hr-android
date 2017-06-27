@@ -174,6 +174,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
             Intent i = new Intent();
             setResult(RESULT_CANCELED, i);
             finish();
+            overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
         }
     }
 
@@ -267,6 +268,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
         setResult(Activity.RESULT_OK, i);
         finish();
+        overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
     }
 
 
@@ -290,6 +292,7 @@ public class SearchActivity extends BaseActivity<SearchViewImpl, SearchPresenter
 
     private void setupSearchView(@NonNull Menu menu) {
         searchView = (SearchView) menu.findItem(R.id.menu_item_search).getActionView();
+        searchView.setQueryHint(getString(R.string.tm_hr_home_activity_searchview_text_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
