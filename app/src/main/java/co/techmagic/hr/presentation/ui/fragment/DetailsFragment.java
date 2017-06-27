@@ -218,10 +218,20 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideEmail() {
+                llEmail.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showSkype(@NonNull String skype) {
                 tvSkype.setPaintFlags(tvSkype.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 llSkype.setVisibility(View.VISIBLE);
                 tvSkype.setText(getString(R.string.fragment_employee_details_card_view_text_skype) + skype);
+            }
+
+            @Override
+            public void hideSkype() {
+                llSkype.setVisibility(View.GONE);
             }
 
             @Override
@@ -232,9 +242,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hidePhone() {
+                llPhone.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showRoom(@NonNull String room) {
                 llRoom.setVisibility(View.VISIBLE);
                 tvRoom.setText(getString(R.string.fragment_employee_details_card_view_text_room) + room);
+            }
+
+            @Override
+            public void hideRoom() {
+                llRoom.setVisibility(View.GONE);
             }
 
             @Override
@@ -244,9 +264,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideDepartment() {
+                llDepartment.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showLead(@NonNull String lead) {
                 llLead.setVisibility(View.VISIBLE);
                 tvLead.setText(getString(R.string.fragment_employee_details_card_view_text_lead) + lead);
+            }
+
+            @Override
+            public void hideLead() {
+                llLead.setVisibility(View.GONE);
             }
 
             @Override
@@ -256,9 +286,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideBirthday() {
+                llBirthday.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showRelocationCity(@NonNull String city) {
                 llRelocationCity.setVisibility(View.VISIBLE);
                 tvRelCity.setText(getString(R.string.fragment_employee_details_card_view_text_date_of_city_of_relocation) + city);
+            }
+
+            @Override
+            public void hideRelocationCity() {
+                llRelocationCity.setVisibility(View.GONE);
             }
 
             @Override
@@ -268,9 +308,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideAbout() {
+                llAbout.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showEmergencyPhoneNumber(@NonNull String phone) {
                 llEmergencyPhoneNumber.setVisibility(View.VISIBLE);
                 tvEmergPhoneNumber.setText(getString(R.string.fragment_employee_details_card_view_text_emergency_phone_number) + phone);
+            }
+
+            @Override
+            public void hideEmergencyPhoneNumber() {
+                llEmergencyPhoneNumber.setVisibility(View.GONE);
             }
 
             @Override
@@ -280,9 +330,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideEmergencyContact() {
+                llEmergencyContact.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showFirstDay(@NonNull String date) {
                 llFirstDay.setVisibility(View.VISIBLE);
                 tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
+            }
+
+            @Override
+            public void hideFirstDay() {
+                llFirstDay.setVisibility(View.GONE);
             }
 
             @Override
@@ -292,9 +352,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideFirstDayInIt() {
+                llFirstDayInIt.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showTrialPeriodEndsDate(@NonNull String date) {
                 llTrialPeriod.setVisibility(View.VISIBLE);
                 tvTrialPeriod.setText(getString(R.string.fragment_employee_details_card_view_text_trial_period_ends) + date);
+            }
+
+            @Override
+            public void hideTrialPeriodEndsDate() {
+                llTrialPeriod.setVisibility(View.GONE);
             }
 
             @Override
@@ -304,9 +374,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideLastWorkingDay() {
+                llLastDay.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showReason(@NonNull String reason) {
                 llReason.setVisibility(View.VISIBLE);
                 tvReason.setText(getString(R.string.fragment_employee_details_card_view_text_reason) + reason);
+            }
+
+            @Override
+            public void hideReason() {
+                llReason.setVisibility(View.GONE);
             }
 
             @Override
@@ -316,9 +396,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideComment() {
+                llComment.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showVacationDays(@NonNull String dates) {
                 llVacation.setVisibility(View.VISIBLE);
                 tvVacation.setText(dates);
+            }
+
+            @Override
+            public void hideVacations() {
+                llVacation.setVisibility(View.GONE);
             }
 
             @Override
@@ -328,9 +418,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideDayOff() {
+                llDayOff.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showIllnessDays(@NonNull String dates) {
                 llIllness.setVisibility(View.VISIBLE);
                 tvIllness.setText(dates);
+            }
+
+            @Override
+            public void hideIllnessDays() {
+                llIllness.setVisibility(View.GONE);
             }
 
             @Override

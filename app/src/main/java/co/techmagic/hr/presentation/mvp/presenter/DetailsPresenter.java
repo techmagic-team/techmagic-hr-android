@@ -97,41 +97,59 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void showData() {
         view.loadEmployeePhoto(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
 
-        if (data.getEmail() != null) {
+        if (data.getEmail() == null) {
+            view.hideEmail();
+        } else {
             view.showEmail(data.getEmail());
         }
 
-        if (data.getSkype() != null) {
+        if (data.getSkype() == null) {
+            view.hideSkype();
+        } else {
             view.showSkype(data.getSkype());
         }
 
-        if (data.getPhone() != null) {
+        if (data.getPhone() == null) {
+            view.hidePhone();
+        } else {
             view.showPhone(data.getPhone());
         }
 
-        if (data.getRoom() != null) {
+        if (data.getRoom() == null) {
+            view.hideRoom();
+        } else {
             view.showRoom(data.getRoom().getName());
         }
 
-        if (data.getDepartment() != null) {
+        if (data.getDepartment() == null) {
+            view.hideDepartment();
+        } else {
             view.showDepartment(data.getDepartment().getName());
         }
 
         final Lead lead = data.getLead();
-        if (lead != null) {
+        if (lead == null) {
+            view.hideLead();
+        } else {
             view.showLead(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        if (data.getRelocationCity() != null) {
+        if (data.getRelocationCity() == null) {
+            view.hideRelocationCity();
+        } else {
             view.showRelocationCity(data.getRelocationCity());
         }
 
-        if (data.getDescription() != null) {
+        if (data.getDescription() == null) {
+            view.hideAbout();
+        } else {
             view.showAbout(data.getDescription());
         }
 
         final String firstDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
-        if (firstDate != null) {
+        if (firstDate == null) {
+            view.hideFirstDay();
+        } else {
             view.showFirstDay(firstDate);
         }
 
@@ -142,7 +160,9 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             showFullDetailsIfAvailable(data);
         } else {
             final String birthdayDate = getCorrectDateFormat(data, false);
-            if (birthdayDate != null) {
+            if (birthdayDate == null) {
+                view.hideBirthday();
+            } else {
                 view.showBirthday(birthdayDate);
             }
         }
@@ -153,15 +173,21 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         final String birthdayDate = getCorrectDateFormat(data, true);
         if (birthdayDate != null) {
             view.showBirthday(birthdayDate);
+        } else {
+            view.hideBirthday();
         }
 
         final String firstDayInItDate = DateUtil.getFormattedFullDate(data.getGeneralFirstWorkingDay());
-        if (firstDayInItDate != null) {
+        if (firstDayInItDate == null) {
+            view.hideFirstDayInIt();
+        } else {
             view.showFirstDayInIt(firstDayInItDate);
         }
 
         final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());
-        if (trialPeriodDate != null) {
+        if (trialPeriodDate == null) {
+            view.hideTrialPeriodEndsDate();
+        } else {
             view.showTrialPeriodEndsDate(trialPeriodDate);
         }
 
@@ -173,16 +199,21 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void handleLastWorkingDaySection(@NonNull UserProfile data) {
         final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
         if (lastDayDate == null) {
+            view.hideLastWorkingDay();
             return;
         }
 
         view.showLastWorkingDay(lastDayDate);
 
-        if (data.getReason() != null) {
+        if (data.getReason() == null) {
+            view.hideReason();
+        } else {
             view.showReason(data.getReason().getName());
         }
 
-        if (data.getReasonComments() != null) {
+        if (data.getReasonComments() == null) {
+            view.hideComment();
+        } else {
             view.showComment(data.getReasonComments());
         }
     }
@@ -191,15 +222,21 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void handleEmergencyContactSection(@NonNull UserProfile data) {
         final EmergencyContact emergencyContact = data.getEmergencyContact();
         if (emergencyContact == null) {
+            view.hideEmergencyPhoneNumber();
+            view.hideEmergencyContact();
             return;
         }
 
         if (emergencyContact.getPhone() != null && !emergencyContact.getPhone().trim().isEmpty()) {
             view.showEmergencyPhoneNumber(emergencyContact.getPhone());
+        } else {
+            view.hideEmergencyPhoneNumber();
         }
 
         if (emergencyContact.getName() != null && !emergencyContact.getName().trim().isEmpty()) {
             view.showEmergencyContact(emergencyContact.getName());
+        } else {
+            view.hideEmergencyContact();
         }
     }
 
@@ -383,7 +420,9 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             }
         }
 
-        if (!TextUtils.isEmpty(formattedText)) {
+        if (TextUtils.isEmpty(formattedText)) {
+            view.hideVacations();
+        } else {
             view.showVacationDays(formattedText);
         }
     }
@@ -424,7 +463,9 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             }
         }
 
-        if (!TextUtils.isEmpty(formattedText)) {
+        if (TextUtils.isEmpty(formattedText)) {
+            view.hideDayOff();
+        } else {
             view.showDayOff(formattedText);
         }
     }
@@ -469,6 +510,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         /* Should allow user to change the tab */
 
         if (TextUtils.isEmpty(formattedText)) {
+            view.hideIllnessDays();
             view.allowChangeBottomTab();
         } else {
             view.showIllnessDays(formattedText);
