@@ -10,6 +10,7 @@ import co.techmagic.hr.domain.repository.IEmployeeRepository
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
 import co.techmagic.hr.presentation.pojo.PeriodPair
 import rx.Observable
+import java.util.*
 
 /**
  * Created by Roman Ursu on 6/12/17
@@ -28,7 +29,10 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
                         val timeOffRequestByUser: TimeOffRequestByUser = TimeOffRequestByUser(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
                         val observable = getLoadTimeOffsObservable(timeOffRequestByUser)
                                 .map { remainedTimeOffsAmountDto ->
-                                    val periodPair: PeriodPair = PeriodPair(dateFrom, dateTo)
+                                    val periodPair: PeriodPair = PeriodPair(dateFrom, prepareDateTo(dateTo))
+
+
+
                                     availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
                                     availableTimeOffsData
                                 }
@@ -39,6 +43,16 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
 
                     Observable.zip(timeOffsObservableList, { availableTimeOffsData })
                 }
+    }
+
+    private fun prepareDateTo(dateTo: Date): Date {
+        val dateToCalendar: Calendar = Calendar.getInstance()
+        dateToCalendar.time = dateTo
+        dateToCalendar.add(Calendar.DAY_OF_MONTH, -1)
+        dateToCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        dateToCalendar.set(Calendar.MINUTE, 59)
+        dateToCalendar.set(Calendar.SECOND, 59)
+        return dateToCalendar.time
     }
 
     fun getLoadTimeOffsObservable(timeOffRequestByUser: TimeOffRequestByUser): Observable<RemainedTimeOffsAmountDto> {

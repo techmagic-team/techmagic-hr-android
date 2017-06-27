@@ -86,7 +86,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
                 view?.hideProgress()
                 if (timeOffsData != null) {
-                    val periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
+                    var periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
+
+                    periodPairsList = periodPairsList.sortedWith(compareBy(PeriodPair::startDate))
+
                     view?.showUserPeriods(periodPairsList)
                     selectedPeriod = periodPairsList[0]
                 }
@@ -204,12 +207,16 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun canBeDeleted(requestedTimeOffDto: RequestedTimeOffDto): Boolean {
-        val today: Calendar = Calendar.getInstance()
-        val timeOffStart: Calendar = Calendar.getInstance()
-        timeOffStart.timeInMillis = requestedTimeOffDto.dateFrom.time
-        timeOffStart.time
+        if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
+            return true
+        } else {
+            val today: Calendar = Calendar.getInstance()
+            val timeOffStart: Calendar = Calendar.getInstance()
+            timeOffStart.timeInMillis = requestedTimeOffDto.dateFrom.time
+            timeOffStart.time
 
-        return timeOffStart.after(today)
+            return timeOffStart.after(today)
+        }
     }
 
     fun removeRequestedTimeOff(requestedTimeOffDto: RequestedTimeOffDto) {
@@ -228,13 +235,15 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     private fun isInputDataValid(): Boolean {
-        val periodStartCalendar: Calendar = Calendar.getInstance()
-        periodStartCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        periodStartCalendar.set(Calendar.MINUTE, 0)
-        periodStartCalendar.set(Calendar.SECOND, 0)
+        val today: Calendar = Calendar.getInstance()
+        val periodStart: Calendar = Calendar.getInstance()
+        periodStart.timeInMillis = selectedPeriod.startDate.time
+        periodStart.set(Calendar.HOUR_OF_DAY, 0)
+        periodStart.set(Calendar.MINUTE, 0)
+        periodStart.set(Calendar.SECOND, 0)
 
-        val periodEndCalendar: Calendar = Calendar.getInstance()
-        periodEndCalendar.timeInMillis = selectedPeriod.endDate.time
+        val periodEnd: Calendar = Calendar.getInstance()
+        periodEnd.timeInMillis = selectedPeriod.endDate.time
 
         if (availableTimeOffsData != null && selectedTimeOffType != null) {
             val availableDays: Int? = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[selectedTimeOffType]
@@ -242,13 +251,17 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 return false
             }
 
-            if (((requestTimeOffDateFrom == periodStartCalendar) || requestTimeOffDateFrom.after(periodStartCalendar))
-                    && requestTimeOffDateFrom.before(periodEndCalendar)
-                    && requestTimeOffDateTo.after(periodStartCalendar)
-                    && ((requestTimeOffDateTo == periodEndCalendar) || requestTimeOffDateTo.before(periodEndCalendar))
+            if (((requestTimeOffDateFrom == periodStart) || requestTimeOffDateFrom.after(periodStart))
+                    && requestTimeOffDateFrom.before(periodEnd)
+                    && requestTimeOffDateTo.after(periodStart)
+                    && ((requestTimeOffDateTo == periodEnd) || requestTimeOffDateTo.before(periodEnd))
                     && (requestTimeOffDateTo.after(requestTimeOffDateFrom) || requestTimeOffDateTo == requestTimeOffDateFrom)) {
 
-                return true
+                if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
+                    return true
+                } else {
+                    return !(requestTimeOffDateFrom.before(today) || requestTimeOffDateTo == today)
+                }
             }
         }
 

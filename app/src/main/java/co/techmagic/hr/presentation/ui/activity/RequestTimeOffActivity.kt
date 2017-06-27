@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -44,7 +45,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var rbSecondPeriod: RadioButton
     private lateinit var rvRequestedTimeOffs: RecyclerView
 
-    private val dateFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    private val dateFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,10 +164,9 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     override fun onDateSet(year: Int, month: Int, dayOfMonth: Int) {
                         if (isDateFromPicker) {
                             presenter.onFromDateSet(year, month, dayOfMonth)
-                        } else {
-                            presenter.onToDateSet(year, month, dayOfMonth)
                         }
 
+                        presenter.onToDateSet(year, month, dayOfMonth)
                         initTimeOffDate()
                     }
                 }
@@ -292,7 +292,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             val dateFrom: String = dateFormat.format(requestedTimeOff.dateFrom)
             val dateTo: String = dateFormat.format(requestedTimeOff.dateTo)
 
-            val dateRangeString = dateFrom + " " + dateTo
+            val dateRangeString = dateFrom + " - " + dateTo
             holder!!.tvTimeOff.text = dateRangeString
 
             if (presenter.canBeDeleted(requestedTimeOff)) {
@@ -304,8 +304,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     val message = String.format(alertMessagePattern, timeOffName, dateRangeString)
 
                     alert(message, title) {
-                        yesButton { presenter.removeRequestedTimeOff(requestedTimeOff) }
-                        noButton { dismiss() }
+                        positiveButton(R.string.message_text_yes, { presenter.removeRequestedTimeOff(requestedTimeOff) })
+                        negativeButton(R.string.message_text_no, { dismiss() })
                     }.show()
                 }
 

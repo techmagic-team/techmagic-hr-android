@@ -30,21 +30,25 @@ class RequestTimeOffDatePickerFragment : DialogFragment(), DatePickerDialog.OnDa
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val startDateCalendar: Calendar = arguments.get(START_DATE) as Calendar
         val endDateCalendar: Calendar = arguments.get(END_DATE) as Calendar
-        val selectedCalendar: Calendar = Calendar.getInstance()
+        val selectedDate: Calendar = Calendar.getInstance()
 
-        selectedCalendar.set(Calendar.MONTH, month)
-        selectedCalendar.set(Calendar.YEAR, year)
-        selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        selectedDate.set(Calendar.MONTH, month)
+        selectedDate.set(Calendar.YEAR, year)
+        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-        if (selectedCalendar.before(endDateCalendar) && selectedCalendar.after(startDateCalendar)) {
-            listener?.onDateSet(year, month, dayOfMonth)
-            dismiss()
-        } else {
-            toast(R.string.tm_hr_wrong_date)
-        }
+        listener?.onDateSet(year, month, dayOfMonth)
+        dismiss()
+//        if (selectedDate.before(endDateCalendar) && selectedDate.after(startDateCalendar)) {
+//            listener?.onDateSet(year, month, dayOfMonth)
+//            dismiss()
+//        } else {
+//            toast(R.string.tm_hr_wrong_date)
+//        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        Locale.setDefault(Locale.US)
+
         val calendar: Calendar = arguments.get(DATE) as Calendar
         val yy = calendar.get(Calendar.YEAR)
         val mm = calendar.get(Calendar.MONTH)
