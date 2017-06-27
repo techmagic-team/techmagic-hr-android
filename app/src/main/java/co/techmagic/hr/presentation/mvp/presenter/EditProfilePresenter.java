@@ -372,76 +372,56 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
     public void handleEmergencyContactNumberChange(String newNumber) {
         EmergencyContact emergency = data.getEmergencyContact();
-        if (emergency != null) {
-            if (newNumber.equals(emergency.getPhone())) {
+
+        if (emergency == null) {
+            if (newNumber == null || newNumber.isEmpty()) {
+                // Should put empty string here
+                emergencyContact.setPhone("");
+                data.setEmergencyContact(emergencyContact);
+            } else {
                 emergencyContact.setPhone(newNumber);
                 data.setEmergencyContact(emergencyContact);
-                return;
+                hasChanges = true;
             }
-        }
-
-        if (newNumber == null || newNumber.isEmpty()) {
-            // Should put empty string here
-            emergencyContact.setPhone("");
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
-            return;
-        }
-
-        if (data.getEmergencyContact() == null) {
-            emergencyContact.setPhone(newNumber);
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
-            return;
-        }
-
-        final String phone = data.getEmergencyContact().getPhone();
-
-        if (newNumber.equals(phone)) {
-            emergencyContact.setPhone(phone);
-            data.setEmergencyContact(emergencyContact);
         } else {
-            emergencyContact.setPhone(newNumber);
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
+            final String phone = emergency.getPhone();
+
+            if (phone == null || newNumber.equals(phone)) {
+                emergencyContact.setPhone(newNumber);
+                data.setEmergencyContact(emergencyContact);
+            } else {
+                emergencyContact.setPhone(newNumber);
+                data.setEmergencyContact(emergencyContact);
+                hasChanges = true;
+            }
         }
     }
 
 
     public void handleEmergencyContactChange(String newName) {
         EmergencyContact emergency = data.getEmergencyContact();
-        if (emergency != null) {
-            if (newName.equals(emergency.getName())) {
+
+        if (emergency == null) {
+            if (newName == null || newName.isEmpty()) {
+                // Should put empty string here
+                emergencyContact.setName("");
+                data.setEmergencyContact(emergencyContact);
+            } else {
                 emergencyContact.setName(newName);
                 data.setEmergencyContact(emergencyContact);
-                return;
+                hasChanges = true;
             }
-        }
-
-        if (newName == null || newName.isEmpty()) {
-            // Should put empty string here
-            emergencyContact.setName("");
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
-            return;
-        }
-
-        if (data.getEmergencyContact() == null) {
-            emergencyContact.setName(newName);
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
-            return;
-        }
-
-        final String name = data.getEmergencyContact().getName();
-
-        if (newName.equals(name)) {
-            emergencyContact.setName(newName);
-            data.setEmergencyContact(emergencyContact);
         } else {
-            emergencyContact.setName(newName);
-            data.setEmergencyContact(emergencyContact);
-            hasChanges = true;
+            final String name = emergency.getName();
+
+            if (name == null || newName.equals(name)) {
+                emergencyContact.setName(newName);
+                data.setEmergencyContact(emergencyContact);
+            } else {
+                emergencyContact.setName(newName);
+                data.setEmergencyContact(emergencyContact);
+                hasChanges = true;
+            }
         }
     }
 
@@ -785,10 +765,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         if (data.getPhone() != null) {
             view.showPhoneNumber(data.getPhone());
-        }
-
-        if (data.getEmergencyContact() != null) {
-            view.showEmergencyContact(data.getEmergencyContact().getPhone());
         }
 
         final EmergencyContact emergencyContact = data.getEmergencyContact();
