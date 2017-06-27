@@ -322,8 +322,15 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleGenderChange(boolean isMaleChecked) {
-        data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
-        hasChanges = true;
+        if (!isGenderTheSame(isMaleChecked)) {
+            data.setGender(isMaleChecked ? GENDER_MALE : GENDER_FEMALE);
+            hasChanges = true;
+        }
+    }
+
+
+    private boolean isGenderTheSame(boolean isMaleChecked) {
+        return data.getGender() == GENDER_MALE && isMaleChecked || data.getGender() == GENDER_FEMALE && !isMaleChecked;
     }
 
 
