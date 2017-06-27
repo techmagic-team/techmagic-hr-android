@@ -27,7 +27,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 2
-        versionName "1.3.4"
+        versionName "1.3.5"
 
         ndk {
             moduleName "keys"
