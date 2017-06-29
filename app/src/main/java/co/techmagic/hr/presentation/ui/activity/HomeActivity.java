@@ -71,6 +71,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private String selProjectId;
     private String searchQuery = null;
     private boolean allowChangeTab = true;
+    private boolean isOnActivityResultCalled = false;
 
 
     @Override
@@ -78,7 +79,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
 
 
@@ -86,6 +86,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     protected void onResume() {
         super.onResume();
         presenter.setupFiltersView(selDepId, selLeadId, selProjectId, searchQuery);
+
+        if (!isOnActivityResultCalled) {
+            isOnActivityResultCalled = false;
+            loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
+        }
     }
 
 
@@ -212,6 +217,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 selProjectId = data.getStringExtra(SearchActivity.PROJECT_ID_EXTRA);
             }
 
+            isOnActivityResultCalled = true;
             loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, 0, 0, true);
         }
     }
