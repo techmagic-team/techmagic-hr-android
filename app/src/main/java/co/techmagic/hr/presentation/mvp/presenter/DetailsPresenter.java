@@ -97,6 +97,10 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     private void showData() {
         view.loadEmployeePhoto(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
 
+        if (data.getFirstName() != null && data.getLastName() != null) {
+            view.updateActionbarTitle(data.getFirstName() + " " + data.getLastName());
+        }
+
         if (data.getEmail() == null) {
             view.hideEmail();
         } else {

@@ -106,9 +106,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 startCalendarFiltersScreen();
                 return true;
 
-            case R.id.action_request_time_off:
+                // TODO
+            /*case R.id.action_request_time_off:
                 startRequestTimeOffScreen();
-                return true;
+                return true;*/
 
             default:
                 return super.onOptionsItemSelected(item);
