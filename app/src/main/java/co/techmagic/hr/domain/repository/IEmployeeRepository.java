@@ -6,6 +6,7 @@ import co.techmagic.hr.data.entity.CalendarInfo;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.HolidayDate;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.request.EmployeeFiltersRequest;
 import co.techmagic.hr.data.request.EmployeesByDepartmentRequest;
@@ -48,6 +49,8 @@ public interface IEmployeeRepository {
     Observable<Employee> getAllEmployeesByDepartment(EmployeesByDepartmentRequest employeesByDepartmentRequest);
 
     Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request);
+
+    Observable<List<HolidayDate>> getHolidays(TimeOffAllRequest request);
 
     Observable<List<Filter>> getRooms();
 

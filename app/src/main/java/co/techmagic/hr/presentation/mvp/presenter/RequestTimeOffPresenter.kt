@@ -59,6 +59,15 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     }
 
+    override fun onViewDetached() {
+        super.onViewDetached()
+        getUserPeriods.unsubscribe()
+        requestTimeOff.unsubscribe()
+        getTimeOffsByUser.unsubscribe()
+        deleteRequestedTimeOff.unsubscribe()
+        getUserProfile.unsubscribe()
+    }
+
     fun loadData() {
         view?.showProgress()
         val getProfileRequest = GetMyProfileRequest(userId)
@@ -105,45 +114,26 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         })
     }
 
-    private fun loadRequestedTimeOffs() {
-        if (availableTimeOffsData != null && availableTimeOffsData!!.timeOffsMap.keys.size > 0) {
-            val timeOffRequestByUser: TimeOffRequestByUserAllPeriods = TimeOffRequestByUserAllPeriods(userId, availableTimeOffsData!!.timeOffsMap.keys)
-
-            getTimeOffsByUser.execute(timeOffRequestByUser, object : DefaultSubscriber<UsedTimeOffsByUserDto>() {
-                override fun onNext(usedTimeOffsByUserDto: UsedTimeOffsByUserDto?) {
-                    view?.hideProgress()
-                    if (usedTimeOffsByUserDto != null) {
-                        usedTimeOffs = usedTimeOffsByUserDto
-
-                        showRequestedTimeOffs()
-                    }
-                }
-
-                override fun onError(e: Throwable?) {
-                    view?.hideProgress()
-                    view?.showErrorLoadingRequestedTimeOffs()
-                }
-            })
-        }
-    }
-
-    override fun onViewDetached() {
-        super.onViewDetached()
-        getUserPeriods.unsubscribe()
-        requestTimeOff.unsubscribe()
-        getTimeOffsByUser.unsubscribe()
-        deleteRequestedTimeOff.unsubscribe()
-        getUserProfile.unsubscribe()
-    }
-
     fun onFromDateClicked() {
+        val calendarFrom: Calendar = Calendar.getInstance()
+        calendarFrom.timeInMillis = selectedPeriod.startDate.time
+
+        val calendarTo: Calendar = Calendar.getInstance()
+        calendarTo.timeInMillis = selectedPeriod.endDate.time
+
         view?.hideProgress()
-        view?.showDatePicker(selectedPeriod.startDate.time, selectedPeriod.endDate.time, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        view?.showDatePicker(calendarFrom, calendarTo, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onToDateClicked() {
+        val calendarFrom: Calendar = Calendar.getInstance()
+        calendarFrom.timeInMillis = selectedPeriod.startDate.time
+
+        val calendarTo: Calendar = Calendar.getInstance()
+        calendarTo.timeInMillis = selectedPeriod.endDate.time
+
         view?.hideProgress()
-        view?.showDatePicker(selectedPeriod.startDate.time, selectedPeriod.endDate.time, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        view?.showDatePicker(calendarFrom, calendarTo, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onTimeOffTypeClicked() {
@@ -234,6 +224,44 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         })
     }
 
+    fun getMinDatePickerDate(): Calendar {
+        val calendar: Calendar = Calendar.getInstance()
+        if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
+            calendar.time = selectedPeriod.startDate
+        }
+
+        return calendar
+    }
+
+    fun getMaxDatePickerDate(): Calendar {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = selectedPeriod.endDate
+
+        return calendar
+    }
+
+    private fun loadRequestedTimeOffs() {
+        if (availableTimeOffsData != null && availableTimeOffsData!!.timeOffsMap.keys.size > 0) {
+            val timeOffRequestByUser: TimeOffRequestByUserAllPeriods = TimeOffRequestByUserAllPeriods(userId, availableTimeOffsData!!.timeOffsMap.keys)
+
+            getTimeOffsByUser.execute(timeOffRequestByUser, object : DefaultSubscriber<UsedTimeOffsByUserDto>() {
+                override fun onNext(usedTimeOffsByUserDto: UsedTimeOffsByUserDto?) {
+                    view?.hideProgress()
+                    if (usedTimeOffsByUserDto != null) {
+                        usedTimeOffs = usedTimeOffsByUserDto
+
+                        showRequestedTimeOffs()
+                    }
+                }
+
+                override fun onError(e: Throwable?) {
+                    view?.hideProgress()
+                    view?.showErrorLoadingRequestedTimeOffs()
+                }
+            })
+        }
+    }
+
     private fun isInputDataValid(): Boolean {
         val today: Calendar = Calendar.getInstance()
         val periodStart: Calendar = Calendar.getInstance()
@@ -283,6 +311,15 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
             }
 
             view?.showTimeOffsData(remainedTimeOffs!!.map[selectedTimeOffType])
+        }
+    }
+
+    fun getHolidays(): List<Calendar>? {
+        if (availableTimeOffsData != null) {
+            return availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
+
+        } else {
+            return listOf()
         }
     }
 }

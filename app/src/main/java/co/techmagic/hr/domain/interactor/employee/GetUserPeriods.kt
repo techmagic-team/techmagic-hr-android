@@ -3,12 +3,15 @@ package co.techmagic.hr.domain.interactor.employee
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.data.entity.DateFrom
 import co.techmagic.hr.data.entity.DateTo
+import co.techmagic.hr.data.entity.HolidayDate
+import co.techmagic.hr.data.request.TimeOffAllRequest
 import co.techmagic.hr.data.request.TimeOffRequestByUser
 import co.techmagic.hr.domain.interactor.DataUseCase
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.domain.repository.IEmployeeRepository
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
 import co.techmagic.hr.presentation.pojo.PeriodPair
+import co.techmagic.hr.presentation.util.DateUtil
 import rx.Observable
 import java.util.*
 
@@ -18,7 +21,6 @@ import java.util.*
 class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<String, AvailableTimeOffsData, IEmployeeRepository>(iEmployeeRepository) {
 
     override fun buildObservable(userId: String): Observable<AvailableTimeOffsData> {
-
         val availableTimeOffsData: AvailableTimeOffsData = AvailableTimeOffsData()
 
         return repository.getUserPeriods(userId)
@@ -31,12 +33,9 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
                                 .map { remainedTimeOffsAmountDto ->
                                     val periodPair: PeriodPair = PeriodPair(dateFrom, prepareDateTo(dateTo))
 
-
-
                                     availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
                                     availableTimeOffsData
                                 }
-
 
                         timeOffsObservableList.add(observable)
                     }
@@ -63,6 +62,11 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
         val totalVacationObservable: Observable<Int> = repository.getTotalVacation(timeOffRequestByUser)
         val totalDayOffsObservable: Observable<Int> = repository.getTotalDayOff(timeOffRequestByUser)
 
+        val timeOffAllRequest: TimeOffAllRequest = TimeOffAllRequest(timeOffRequestByUser.dateFrom.gte, timeOffRequestByUser.dateTo.lte)
+
+        val holidaysObservable: Observable<List<Calendar>> = repository.getHolidays(timeOffAllRequest)
+                .map({ calendarInfoList: List<HolidayDate> -> map(calendarInfoList) })
+
         return Observable.zip(
                 totalIllnessObservable,
                 totalVacationObservable,
@@ -70,6 +74,27 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
         { totalIllness, totalVacation, totalDayOffs ->
             processResult(remainedTimeOffsAmountDto, totalIllness, totalVacation, totalDayOffs)
         }
+                .flatMap({ remainedTimeOffsAmountDtoReady: RemainedTimeOffsAmountDto ->
+                    holidaysObservable
+                            .map({ holidaysList: List<Calendar> ->
+                                remainedTimeOffsAmountDtoReady.holidays.addAll(holidaysList)
+                                remainedTimeOffsAmountDtoReady
+                            })
+                })
+    }
+
+    private fun map(calendarInfoList: List<HolidayDate>): List<Calendar> {
+        val holidays: MutableList<Calendar> = mutableListOf()
+
+        calendarInfoList.forEach {
+            val date: Date = DateUtil.parseStringDate(it.date)
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.timeInMillis = date.time
+
+            holidays.add(calendar)
+        }
+
+        return holidays
     }
 
     private fun processResult(remainedTimeOffsAmountDto: RemainedTimeOffsAmountDto, totalIllness: Int?, totalVacation: Int?, totalDayOffs: Int?): RemainedTimeOffsAmountDto {

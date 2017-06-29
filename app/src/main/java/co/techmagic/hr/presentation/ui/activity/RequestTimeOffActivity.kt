@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -18,6 +17,7 @@ import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.pojo.PeriodPair
 import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
@@ -31,6 +31,7 @@ import java.util.*
  */
 class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>() {
 
+    private val DATE_PICKER_FRAGMENT: String = "DatePickerFragment"
     private var actionBar: ActionBar? = null
     private lateinit var vgTimeOffType: ViewGroup
     private lateinit var vgFilterFrom: ViewGroup
@@ -157,7 +158,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 }
             }
 
-            override fun showDatePicker(from: Long, to: Long, isDateFromPicker: Boolean, allowPastDateSelection: Boolean) {
+            override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean, allowPastDateSelection: Boolean) {
                 val fragment: RequestTimeOffDatePickerFragment = RequestTimeOffDatePickerFragment()
 
                 fragment.listener = object : RequestTimeOffDatePickerFragment.DateSetListener {
@@ -171,25 +172,32 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     }
                 }
 
-                val calendarFrom: Calendar = Calendar.getInstance()
-                val calendarTo: Calendar = Calendar.getInstance()
+                var initDate: Calendar = Calendar.getInstance()
 
-                calendarFrom.timeInMillis = from
-                calendarTo.timeInMillis = to
-
-                val initDate: Calendar = Calendar.getInstance()
-
-                if (initDate.before(calendarFrom)) {
-                    initDate.timeInMillis = from
+                if (initDate.before(from)) {
+                    initDate = from
                 }
 
-                val bundle: Bundle = Bundle()
-                bundle.putSerializable(RequestTimeOffDatePickerFragment.DATE, initDate)
-                bundle.putSerializable(RequestTimeOffDatePickerFragment.START_DATE, calendarFrom)
-                bundle.putSerializable(RequestTimeOffDatePickerFragment.END_DATE, calendarTo)
+                val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    if (isDateFromPicker) {
+                        presenter.onFromDateSet(year, monthOfYear, dayOfMonth)
+                    }
 
-                fragment.arguments = bundle
-                fragment.show(fragmentManager, RequestTimeOffDatePickerFragment.toString())
+                    presenter.onToDateSet(year, monthOfYear, dayOfMonth)
+                    initTimeOffDate()
+                }
+
+                val datePickerDialog = DatePickerDialog.newInstance(
+                        dateSetListener,
+                        initDate.get(Calendar.YEAR),
+                        initDate.get(Calendar.MONTH),
+                        initDate.get(Calendar.DAY_OF_MONTH)
+                )
+
+                datePickerDialog.minDate = presenter.getMinDatePickerDate()
+                datePickerDialog.maxDate = presenter.getMaxDatePickerDate()
+                datePickerDialog.disabledDays = presenter.getHolidays()!!.toTypedArray()
+                datePickerDialog.show(fragmentManager, DATE_PICKER_FRAGMENT)
             }
 
             override fun showTimeOffsDialog() {

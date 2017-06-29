@@ -8,4 +8,5 @@ import java.util.*
  */
 class AvailableTimeOffsData {
     val timeOffsMap: MutableMap<PeriodPair, RemainedTimeOffsAmountDto> = Collections.synchronizedMap(HashMap())
+
 }

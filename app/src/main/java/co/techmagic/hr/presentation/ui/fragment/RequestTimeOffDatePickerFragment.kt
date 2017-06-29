@@ -54,6 +54,10 @@ class RequestTimeOffDatePickerFragment : DialogFragment(), DatePickerDialog.OnDa
         val mm = calendar.get(Calendar.MONTH)
         val dd = calendar.get(Calendar.DAY_OF_MONTH)
 
-        return DatePickerDialog(activity, this, yy, mm, dd)
+
+        val datePickerDialog: DatePickerDialog = DatePickerDialog(activity, this, yy, mm, dd)
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+
+        return datePickerDialog
     }
 }
