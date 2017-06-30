@@ -83,7 +83,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
 
         if (!fragmentPopped && fm.findFragmentByTag(tag) == null) {
             getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_not_move)
+                    .setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_not_move, R.anim.anim_not_move, R.anim.anim_slide_out)
                     .replace(R.id.rlFragmentsContainer, fragment, tag)
                     .addToBackStack(tag)
                     .commit();

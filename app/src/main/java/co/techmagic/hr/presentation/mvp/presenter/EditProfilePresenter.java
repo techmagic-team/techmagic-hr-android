@@ -68,6 +68,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
     private EditProfileFiltersDto profileFilters;
     private EmergencyContact emergencyContact;
 
+    private String desc = null;
+    private String skype = null;
+    private String phone = null;
+    private String city = null;
     private boolean hasChanges = false;
 
 
@@ -335,8 +339,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleSkypeChange(String newSkype) {
-        final String skype = data.getSkype();
-
         if (newSkype.equals(skype)) {
             data.setSkype(skype);
         } else {
@@ -346,15 +348,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         // In case if user left field empty
         if (newSkype.isEmpty()) {
-            data.setSkype(null);
+            data.setSkype("");
             hasChanges = true;
         }
     }
 
 
     public void handlePhoneChange(String newPhone) {
-        final String phone = data.getPhone();
-
         if (newPhone.equals(phone)) {
             data.setPhone(phone);
         } else {
@@ -364,7 +364,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         // In case if user left field empty
         if (newPhone.isEmpty()) {
-            data.setPhone(null);
+            data.setPhone("");
             hasChanges = true;
         }
     }
@@ -456,8 +456,6 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     public void handleCityOfRelocationChange(String newCity) {
-        String city = data.getRelocationCity();
-
         if (newCity.equals(city)) {
             data.setRelocationCity(city);
         } else {
@@ -467,15 +465,13 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
         // In case if user left field empty
         if (newCity.isEmpty()) {
-            data.setRelocationCity(null);
+            data.setRelocationCity("");
             hasChanges = true;
         }
     }
 
 
     public void handlePresentationChange(String newDescription) {
-        String desc = data.getDescription();
-
         if (newDescription.equals(desc)) {
             data.setDescription(newDescription);
             return;
@@ -984,6 +980,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
             public void onNext(UserProfile userProfile) {
                 super.onNext(userProfile);
                 data = userProfile;
+                getProfileInitialData();
                 performGetAllFiltersRequest();
             }
 
@@ -992,6 +989,14 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
                 super.onError(e);
             }
         });
+    }
+
+
+    private void getProfileInitialData() {
+        desc = data.getDescription();
+        skype = data.getSkype();
+        phone = data.getPhone();
+        city = data.getRelocationCity();
     }
 
 

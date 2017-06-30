@@ -203,6 +203,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @OnClick(R.id.btnClearCalFilters)
     public void onClearFiltersClick() {
         clearFilters();
+        presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
     }
 
 
