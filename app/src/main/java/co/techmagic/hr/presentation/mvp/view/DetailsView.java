@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 
 public interface DetailsView extends View {
 
+    void updateActionbarTitle(@NonNull String employee);
+
     void loadEmployeePhoto(@Nullable String photoUrl);
 
     void showEmail(@NonNull String email);

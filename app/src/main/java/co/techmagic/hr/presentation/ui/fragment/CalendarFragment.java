@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.ui.fragment;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPresenter> implements GridEmployeeItemAdapter.OnEmployeeItemClickListener, OnCalendarViewReadyListener {
 
     private static final String MIXPANEL_CALENDAR_FILTERS_TAG = "Calendar Filters";
+    private static final String MIXPANEL_REQUEST_TIME_OFF_TAG = "Request Time Off";
 
     @BindView(R.id.flCalFilters)
     View calFilters;
@@ -104,9 +106,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
                 startCalendarFiltersScreen();
                 return true;
 
-            case R.id.action_request_time_off:
+                // TODO
+            /*case R.id.action_request_time_off:
                 startRequestTimeOffScreen();
-                return true;
+                return true;*/
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -200,6 +203,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @OnClick(R.id.btnClearCalFilters)
     public void onClearFiltersClick() {
         clearFilters();
+        presenter.updateCalendar(isMyTeamChecked, selDepId, selProjectId, from, to);
     }
 
 
@@ -243,18 +247,22 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
 
     private void startCalendarFiltersScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(getContext(), R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent intent = new Intent(getActivity(), CalendarFiltersActivity.class);
         intent.putExtra(CalendarFiltersActivity.SEL_MY_TEAM_EXTRA, isMyTeamChecked);
         intent.putExtra(CalendarFiltersActivity.SEL_FROM_DATE_EXTRA, fromInMillis);
         intent.putExtra(CalendarFiltersActivity.SEL_TO_DATE_EXTRA, toInMillis);
         intent.putExtra(CalendarFiltersActivity.SEL_DEP_ID_EXTRA, selDepId);
         intent.putExtra(CalendarFiltersActivity.SEL_PROJECT_ID_EXTRA, selProjectId);
-        startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE, animation);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
 
 
     private void startRequestTimeOffScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(getContext(), R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent intent = new Intent(getActivity(), RequestTimeOffActivity.class);
-        startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE);
+        startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_REQUEST_TIME_OFF_REQUEST_CODE, animation);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_REQUEST_TIME_OFF_TAG);
     }
 }

@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -343,9 +344,10 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
 
 
     private void startHomeScreenWithFlags() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent i = new Intent(this, HomeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+        startActivity(i, animation);
         finish();
     }
 }

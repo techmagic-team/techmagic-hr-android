@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,8 +37,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
     public static final String USER_ID_PARAM = "user_id_param";
-    public static final String FULL_NAME_PARAM = "full_name_param";
-    public static final String PHOTO_URL_PARAM = "photo_url_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
@@ -72,6 +71,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private String selProjectId;
     private String searchQuery = null;
     private boolean allowChangeTab = true;
+    private boolean isOnActivityResultCalled = false;
 
 
     @Override
@@ -79,7 +79,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
 
 
@@ -87,6 +86,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     protected void onResume() {
         super.onResume();
         presenter.setupFiltersView(selDepId, selLeadId, selProjectId, searchQuery);
+
+        if (!isOnActivityResultCalled) {
+            isOnActivityResultCalled = false;
+            loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
+        }
     }
 
 
@@ -213,6 +217,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 selProjectId = data.getStringExtra(SearchActivity.PROJECT_ID_EXTRA);
             }
 
+            isOnActivityResultCalled = true;
             loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, 0, 0, true);
         }
     }
@@ -245,13 +250,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-
         bundle.putString(USER_ID_PARAM, user.getId());
-        bundle.putString(PHOTO_URL_PARAM, user.getPhotoOrigin() == null ? user.getPhoto() : user.getPhotoOrigin());
-
-        if (user.getFirstName() != null && user.getLastName() != null) {
-            bundle.putString(FULL_NAME_PARAM, user.getFirstName() + " " + user.getLastName());
-        }
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
@@ -325,15 +324,17 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void startSearchScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
-        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE, animation);
         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_SEARCH_EMPLOYEES_TAG);
     }
 
 
     private void startEditProfileScreen() {
-        startActivity(new Intent(this, EditProfileActivity.class));
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
+        startActivity(new Intent(this, EditProfileActivity.class), animation);
         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_EDIT_PROFILE_TAG);
     }
 

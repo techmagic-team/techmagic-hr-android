@@ -38,10 +38,10 @@ import co.techmagic.hr.data.entity.Room;
 import co.techmagic.hr.presentation.mvp.presenter.EditProfilePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.EditProfileViewImpl;
 import co.techmagic.hr.presentation.ui.EditableFields;
-import co.techmagic.hr.presentation.ui.manager.FilterDialogManager;
 import co.techmagic.hr.presentation.ui.FilterTypes;
 import co.techmagic.hr.presentation.ui.adapter.FilterAdapter;
 import co.techmagic.hr.presentation.ui.fragment.DatePickerFragment;
+import co.techmagic.hr.presentation.ui.manager.FilterDialogManager;
 import co.techmagic.hr.presentation.util.ImagePickerUtil;
 
 public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditProfilePresenter> implements FilterAdapter.OnFilterSelectionListener, DatePickerFragment.onDatePickerSelectionListener {
@@ -268,6 +268,7 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
             @Override
             public void onBackClick() {
                 finish();
+                overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
             }
 
             @Override
@@ -884,7 +885,11 @@ public class EditProfileActivity extends BaseActivity<EditProfileViewImpl, EditP
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_save_changes))
                 .setMessage(getString(R.string.tm_hr_edit_profile_activity_alert_dialog_message))
-                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> finish())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> {
+                    dialog.dismiss();
+                    finish();
+                    overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out);
+                })
                 .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .show();
     }

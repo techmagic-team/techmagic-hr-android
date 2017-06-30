@@ -124,7 +124,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvEmergContact;
 
     private String userId;
-    private String userName;
+    private String employeeName;
     private String photoUrl;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
@@ -199,6 +199,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     @Override
     protected DetailsViewImpl initView() {
         return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
+            @Override
+            public void updateActionbarTitle(@NonNull String username) {
+                employeeName = username;
+                toolbarChangeListener.setActionBarTitle(username);
+            }
+
             @Override
             public void loadEmployeePhoto(@Nullable String url) {
                 photoUrl = url;
@@ -574,12 +580,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         switch (profileTypes) {
             case EMPLOYEE:
                 toolbarChangeListener.showBackButton();
-                showEmployeeName();
+                toolbarChangeListener.setActionBarTitle(employeeName);
                 break;
 
             case MY_PROFILE:
                 inflater.inflate(R.menu.menu_details, menu);
-                showEmployeeName();
+                toolbarChangeListener.setActionBarTitle(employeeName);
                 break;
         }
     }
@@ -603,15 +609,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         Bundle b = getArguments();
         if (b != null) {
             userId = b.getString(HomeActivity.USER_ID_PARAM);
-            userName = b.getString(HomeActivity.FULL_NAME_PARAM, "");
-            photoUrl = b.getString(HomeActivity.PHOTO_URL_PARAM);
             profileTypes = (ProfileTypes) b.getSerializable(HomeActivity.PROFILE_TYPE_PARAM);
         }
-    }
-
-
-    private void showEmployeeName() {
-        toolbarChangeListener.setActionBarTitle(userName);
     }
 
 

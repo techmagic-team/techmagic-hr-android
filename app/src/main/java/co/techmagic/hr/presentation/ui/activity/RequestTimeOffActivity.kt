@@ -30,6 +30,7 @@ import java.util.*
  */
 class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>() {
 
+    private var MIXPANEL_REQUEST_TIME_OFF_TAG = ""
     private val DATE_PICKER_FRAGMENT: String = "DatePickerFragment"
     private var actionBar: ActionBar? = null
     private lateinit var vgTimeOffType: ViewGroup
@@ -196,6 +197,11 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initPresenter(): RequestTimeOffPresenter {
         return RequestTimeOffPresenter()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.anim_not_move, R.anim.anim_slide_out)
     }
 
     fun initTimeOffDate() {

@@ -1,8 +1,10 @@
 package co.techmagic.hr.presentation.mvp.view.impl;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -130,9 +132,10 @@ public abstract class ViewImpl implements View {
 
 
     private void startLoginScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(getContext(), R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent i = new Intent(getContext(), LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(i);
+        getContext().startActivity(i, animation);
         if (activity != null) {
             activity.finish();
         }
