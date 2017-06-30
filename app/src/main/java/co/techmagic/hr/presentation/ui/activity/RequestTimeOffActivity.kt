@@ -16,12 +16,11 @@ import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
 import co.techmagic.hr.presentation.pojo.WorkingPeriod
+import co.techmagic.hr.presentation.util.DateUtil
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -30,7 +29,6 @@ import java.util.*
  */
 class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeOffPresenter>() {
 
-    private var MIXPANEL_REQUEST_TIME_OFF_TAG = ""
     private val DATE_PICKER_FRAGMENT: String = "DatePickerFragment"
     private var actionBar: ActionBar? = null
     private lateinit var vgTimeOffType: ViewGroup
@@ -45,8 +43,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var rbFirstPeriod: RadioButton
     private lateinit var rbSecondPeriod: RadioButton
     private lateinit var rvRequestedTimeOffs: RecyclerView
-
-    private val dateFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
+    private lateinit var availableDaysLabel: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +80,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         rbFirstPeriod = find(R.id.rbFirstPeriod)
         rbSecondPeriod = find(R.id.rbSecondPeriod)
         rvRequestedTimeOffs = find(R.id.rvRequestedTimeOffs)
+        availableDaysLabel = resources.getString(R.string.tm_hr_available_days_label)
 
         rvRequestedTimeOffs.layoutManager = LinearLayoutManager(this)
 
@@ -131,8 +129,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             override fun showUserPeriods(userPeriods: Pair<WorkingPeriod, WorkingPeriod>) {
                 rgPeriods.visibility = View.VISIBLE
                 with(userPeriods) {
-                    rbFirstPeriod.text = dateFormat.format(first.startDate) + " - " + dateFormat.format(first.endDate)
-                    rbSecondPeriod.text = dateFormat.format(second.startDate) + " - " + dateFormat.format(second.endDate)
+                    rbFirstPeriod.text = DateUtil.getFormattedFullDate(first.startDate) + " - " + DateUtil.getFormattedFullDate(first.endDate)
+                    rbSecondPeriod.text = DateUtil.getFormattedFullDate(second.startDate) + " - " + DateUtil.getFormattedFullDate(second.endDate)
 
                     presenter.onFirstPeriodSelected()
                 }
@@ -143,7 +141,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                     tvAvailableDays.visibility = View.GONE
                 } else {
                     tvAvailableDays.visibility = View.VISIBLE
-                    tvAvailableDays.text = "Available days $daysAmount"
+                    tvAvailableDays.text = String.format(availableDaysLabel, daysAmount)
                 }
             }
 
@@ -221,7 +219,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     }
 
     private fun setDate(dateView: TextView, date: Date) {
-        val dateString: String = dateFormat.format(date)
+        val dateString: String = DateUtil.getFormattedFullDate(date)
         dateView.text = dateString
     }
 
@@ -291,8 +289,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             val requestedTimeOff: RequestedTimeOffDto = items[position]
-            val dateFrom: String = dateFormat.format(requestedTimeOff.dateFrom)
-            val dateTo: String = dateFormat.format(requestedTimeOff.dateTo)
+            val dateFrom: String = DateUtil.getFormattedFullDate(requestedTimeOff.dateFrom)
+            val dateTo: String = DateUtil.getFormattedFullDate(requestedTimeOff.dateTo)
 
             val dateRangeString = dateFrom + " - " + dateTo
             holder!!.tvTimeOff.text = dateRangeString

@@ -318,7 +318,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
                     return true
                 } else {
-                    return !(requestTimeOffDateFrom.before(today) || requestTimeOffDateTo == today)
+                    return (requestTimeOffDateFrom.after(today))
                 }
             }
         }
