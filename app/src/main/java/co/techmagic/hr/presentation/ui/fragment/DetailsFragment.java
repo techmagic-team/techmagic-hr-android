@@ -24,9 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
 import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
+import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
@@ -64,6 +64,10 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     View llTrialPeriod;
     @BindView(R.id.llLastDay)
     View llLastDay;
+    @BindView(R.id.llReason)
+    View llReason;
+    @BindView(R.id.llComment)
+    View llComment;
     @BindView(R.id.llEmergencyPhoneNumber)
     View llEmergencyPhoneNumber;
     @BindView(R.id.llEmergencyContact)
@@ -102,6 +106,10 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvTrialPeriod;
     @BindView(R.id.tvLastDay)
     TextView tvLastDay;
+    @BindView(R.id.tvReason)
+    TextView tvReason;
+    @BindView(R.id.tvComment)
+    TextView tvComment;
     @BindView(R.id.tvVacation)
     TextView tvVacation;
     @BindView(R.id.tvDayOff)
@@ -115,7 +123,9 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     @BindView(R.id.tvEmergContact)
     TextView tvEmergContact;
 
-    private Docs data;
+    private String userId;
+    private String employeeName;
+    private String photoUrl;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
     private ChangeBottomTabListener changeBottomTabListener;
@@ -142,6 +152,13 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         ButterKnife.bind(this, view);
         init();
         return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.performRequests(userId, profileTypes);
     }
 
 
@@ -183,7 +200,14 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     protected DetailsViewImpl initView() {
         return new DetailsViewImpl(this, getActivity().findViewById(android.R.id.content)) {
             @Override
-            public void loadEmployeePhoto(@Nullable String photoUrl) {
+            public void updateActionbarTitle(@NonNull String username) {
+                employeeName = username;
+                toolbarChangeListener.setActionBarTitle(username);
+            }
+
+            @Override
+            public void loadEmployeePhoto(@Nullable String url) {
+                photoUrl = url;
                 presenter.loadPhoto(photoUrl, ivPhoto);
                 if (photoUrl == null) {
                     setupNoPhotoLayout();
@@ -200,10 +224,20 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideEmail() {
+                llEmail.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showSkype(@NonNull String skype) {
                 tvSkype.setPaintFlags(tvSkype.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 llSkype.setVisibility(View.VISIBLE);
                 tvSkype.setText(getString(R.string.fragment_employee_details_card_view_text_skype) + skype);
+            }
+
+            @Override
+            public void hideSkype() {
+                llSkype.setVisibility(View.GONE);
             }
 
             @Override
@@ -214,9 +248,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hidePhone() {
+                llPhone.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showRoom(@NonNull String room) {
                 llRoom.setVisibility(View.VISIBLE);
                 tvRoom.setText(getString(R.string.fragment_employee_details_card_view_text_room) + room);
+            }
+
+            @Override
+            public void hideRoom() {
+                llRoom.setVisibility(View.GONE);
             }
 
             @Override
@@ -226,9 +270,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideDepartment() {
+                llDepartment.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showLead(@NonNull String lead) {
                 llLead.setVisibility(View.VISIBLE);
                 tvLead.setText(getString(R.string.fragment_employee_details_card_view_text_lead) + lead);
+            }
+
+            @Override
+            public void hideLead() {
+                llLead.setVisibility(View.GONE);
             }
 
             @Override
@@ -238,9 +292,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideBirthday() {
+                llBirthday.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showRelocationCity(@NonNull String city) {
                 llRelocationCity.setVisibility(View.VISIBLE);
                 tvRelCity.setText(getString(R.string.fragment_employee_details_card_view_text_date_of_city_of_relocation) + city);
+            }
+
+            @Override
+            public void hideRelocationCity() {
+                llRelocationCity.setVisibility(View.GONE);
             }
 
             @Override
@@ -250,9 +314,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideAbout() {
+                llAbout.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showEmergencyPhoneNumber(@NonNull String phone) {
                 llEmergencyPhoneNumber.setVisibility(View.VISIBLE);
                 tvEmergPhoneNumber.setText(getString(R.string.fragment_employee_details_card_view_text_emergency_phone_number) + phone);
+            }
+
+            @Override
+            public void hideEmergencyPhoneNumber() {
+                llEmergencyPhoneNumber.setVisibility(View.GONE);
             }
 
             @Override
@@ -262,9 +336,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideEmergencyContact() {
+                llEmergencyContact.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showFirstDay(@NonNull String date) {
                 llFirstDay.setVisibility(View.VISIBLE);
                 tvFirstDay.setText(getString(R.string.fragment_employee_details_card_view_text_first_working_day) + date);
+            }
+
+            @Override
+            public void hideFirstDay() {
+                llFirstDay.setVisibility(View.GONE);
             }
 
             @Override
@@ -274,9 +358,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideFirstDayInIt() {
+                llFirstDayInIt.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showTrialPeriodEndsDate(@NonNull String date) {
                 llTrialPeriod.setVisibility(View.VISIBLE);
                 tvTrialPeriod.setText(getString(R.string.fragment_employee_details_card_view_text_trial_period_ends) + date);
+            }
+
+            @Override
+            public void hideTrialPeriodEndsDate() {
+                llTrialPeriod.setVisibility(View.GONE);
             }
 
             @Override
@@ -286,9 +380,41 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideLastWorkingDay() {
+                llLastDay.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void showReason(@NonNull String reason) {
+                llReason.setVisibility(View.VISIBLE);
+                tvReason.setText(getString(R.string.fragment_employee_details_card_view_text_reason) + reason);
+            }
+
+            @Override
+            public void hideReason() {
+                llReason.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void showComment(@NonNull String comment) {
+                llComment.setVisibility(View.VISIBLE);
+                tvComment.setText(getString(R.string.fragment_employee_details_card_view_text_comment) + comment);
+            }
+
+            @Override
+            public void hideComment() {
+                llComment.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showVacationDays(@NonNull String dates) {
                 llVacation.setVisibility(View.VISIBLE);
                 tvVacation.setText(dates);
+            }
+
+            @Override
+            public void hideVacations() {
+                llVacation.setVisibility(View.GONE);
             }
 
             @Override
@@ -298,9 +424,19 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
             }
 
             @Override
+            public void hideDayOff() {
+                llDayOff.setVisibility(View.GONE);
+            }
+
+            @Override
             public void showIllnessDays(@NonNull String dates) {
                 llIllness.setVisibility(View.VISIBLE);
                 tvIllness.setText(dates);
+            }
+
+            @Override
+            public void hideIllnessDays() {
+                llIllness.setVisibility(View.GONE);
             }
 
             @Override
@@ -423,28 +559,15 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     }
 
 
-    @OnClick(R.id.llEmergencyContact)
-    public void onEmergencyContactClick() {
-        presenter.onEmergencyContactClick(getContext());
-    }
-
-
     private void init() {
-        fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
         getData();
-        initUi();
-    }
-
-
-    private void initUi() {
-        presenter.setupUiWithData(data, profileTypes);
-        presenter.performGetTimeOffRequestsIfNeeded();
+        fullSizeImageDialog = new FullSizeImageDialog(getContext(), R.style.DialogThemeNoBarDimmed, this);
     }
 
 
     private void handleOnPhotoClick() {
         fullSizeImageDialog.show();
-        fullSizeImageDialog.loadImage(data.getPhoto());
+        fullSizeImageDialog.loadImage(photoUrl);
     }
 
 
@@ -457,12 +580,12 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
         switch (profileTypes) {
             case EMPLOYEE:
                 toolbarChangeListener.showBackButton();
-                showEmployeeName();
+                toolbarChangeListener.setActionBarTitle(employeeName);
                 break;
 
             case MY_PROFILE:
                 inflater.inflate(R.menu.menu_details, menu);
-                showEmployeeName();
+                toolbarChangeListener.setActionBarTitle(employeeName);
                 break;
         }
     }
@@ -485,15 +608,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private void getData() {
         Bundle b = getArguments();
         if (b != null) {
-            data = b.getParcelable(HomeActivity.DOCS_OBJECT_PARAM);
+            userId = b.getString(HomeActivity.USER_ID_PARAM);
             profileTypes = (ProfileTypes) b.getSerializable(HomeActivity.PROFILE_TYPE_PARAM);
-        }
-    }
-
-
-    private void showEmployeeName() {
-        if (data.getFirstName() != null && data.getLastName() != null) {
-            toolbarChangeListener.setActionBarText(data.getFirstName() + " " + data.getLastName());
         }
     }
 
@@ -501,8 +617,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     protected void showDialog() {
         new AlertDialog.Builder(getContext())
                 .setMessage(getString(R.string.message_do_you_want_to_call_emergency_contact))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
-                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.message_text_yes, (dialog, which) -> presenter.onEmergencyPhoneNumberClick(getContext()))
+                .setNegativeButton(R.string.message_text_no, (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }

@@ -12,9 +12,16 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
 
     private View view;
 
+    /* Used to handle progress manually */
+
+    public DefaultSubscriber() {
+
+    }
+
     public DefaultSubscriber(View view) {
         this.view = view;
     }
+
 
     @Override
     public void onCompleted() {
@@ -36,7 +43,7 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
     }
 
     @Override
-    public void onNext(T t) {
+    public void onNext(T requestedTimeOffDto) {
 
     }
 
@@ -47,7 +54,7 @@ public class DefaultSubscriber<T> extends Subscriber<T> {
                 break;
 
             case HttpURLConnection.HTTP_FORBIDDEN:
-                view.showSnackBarWrongCompanyOrEmailError();
+                view.logOut();
                 break;
         }
     }

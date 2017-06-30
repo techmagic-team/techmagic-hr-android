@@ -10,9 +10,9 @@ public interface View {
 
     void showSnackBarMessage(String message);
 
-    void showSnackBarWrongLoginCredentialsError();
+    void showSnackBarMessage(int messageResId);
 
-    void showSnackBarWrongCompanyOrEmailError();
+    void showSnackBarWrongLoginCredentialsError();
 
     void showProgress();
 
@@ -25,4 +25,6 @@ public interface View {
     void showProgress(int messageResId, int titleResId);
 
     void hideProgress();
+
+    void logOut();
 }

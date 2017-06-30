@@ -5,4 +5,10 @@ public interface IFilterModel {
     String getId();
 
     String getName();
+
+    String getLastWorkingDay();
+
+    String getFirstName();
+
+    String getLastName();
 }

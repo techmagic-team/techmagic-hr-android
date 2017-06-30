@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    tools:showIn="@layout/fragment_calendar">
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_circle_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_weekday" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_holiday_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_holiday" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_vacation_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_vacation" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_day_off_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_day_off" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_illness_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_illness" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ColorsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            style="@style/ColorsLayoutCircleView"
+            android:background="@drawable/weekday_requested_bg" />
+
+        <TextView
+            style="@style/ColorsLayoutTextStyle"
+            android:text="@string/tm_hr_calendar_fragment_weekday_layout_requested" />
+
+    </LinearLayout>
+
+</LinearLayout>

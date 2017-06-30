@@ -9,10 +9,10 @@ public class GetIllnessRequest {
     @SerializedName("_user")
     private String userId;
 
-    @SerializedName("dateFrom")
+    @SerializedName("requestTimeOffDateFrom")
     private DateFrom dateFrom;
 
-    @SerializedName("dateTo")
+    @SerializedName("requestTimeOffDateTo")
     private DateTo dateTo;
 
     public GetIllnessRequest(String userId, long dateFrom, long dateTo) {

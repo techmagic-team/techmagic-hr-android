@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.IFilterModel;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
 import co.techmagic.hr.domain.interactor.employee.GetDepartmentFilters;
 import co.techmagic.hr.domain.interactor.employee.GetLeadFilters;
+import co.techmagic.hr.domain.interactor.employee.GetProjectFilters;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.SearchView;
@@ -22,9 +24,11 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     private IEmployeeRepository employeeRepository;
     private GetDepartmentFilters getDepartmentFilters;
     private GetLeadFilters getLeadFilters;
+    private GetProjectFilters getProjectFilters;
 
-    private List<FilterDepartment> departments = new ArrayList<>();
-    private List<FilterLead> leads = new ArrayList<>();
+    private List<Filter> departments;
+    private List<FilterLead> leads;
+    private List<Filter> projects;
 
 
     public SearchPresenter() {
@@ -32,6 +36,10 @@ public class SearchPresenter extends BasePresenter<SearchView> {
         employeeRepository = new EmployeeRepositoryImpl();
         getDepartmentFilters = new GetDepartmentFilters(employeeRepository);
         getLeadFilters = new GetLeadFilters(employeeRepository);
+        getProjectFilters = new GetProjectFilters(employeeRepository);
+        departments = new ArrayList<>();
+        leads = new ArrayList<>();
+        projects = new ArrayList<>();
     }
 
 
@@ -61,19 +69,29 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     }
 
 
+    public void onFilterByProjectClick() {
+        if (projects == null || projects.isEmpty()) {
+            performGetProjectFiltersRequest();
+        } else {
+            view.showFilterByProjectDialog(projects);
+        }
+    }
+
+
     public void performGetFiltersRequests() {
         performGetDepartmentFiltersRequest();
         performGetLeadFiltersRequest();
+        performGetProjectFiltersRequest();
     }
 
 
     private void performGetDepartmentFiltersRequest() {
         view.showProgress();
-        getDepartmentFilters.execute(new DefaultSubscriber<List<FilterDepartment>>(view) {
+        getDepartmentFilters.execute(new DefaultSubscriber<List<Filter>>(view) {
             @Override
-            public void onNext(List<FilterDepartment> filterDepartments) {
-                super.onNext(filterDepartments);
-                handleSuccessDepartmentFiltersResponse(filterDepartments);
+            public void onNext(List<Filter> filters) {
+                super.onNext(filters);
+                handleSuccessDepartmentFiltersResponse(filters);
             }
 
             @Override
@@ -85,24 +103,18 @@ public class SearchPresenter extends BasePresenter<SearchView> {
     }
 
 
-    private void handleSuccessDepartmentFiltersResponse(@NonNull List<FilterDepartment> filterDepartments) {
+    private void handleSuccessDepartmentFiltersResponse(@NonNull List<Filter> filters) {
         view.hideProgress();
-        if (filterDepartments.isEmpty()) {
+        if (filters.isEmpty()) {
             view.showEmptyDepartmentFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_department_filters);
         }
 
-        /* Sorting by alphabetical order */
-        Collections.sort(filterDepartments, (f1, f2) -> {
-            final String name1 = f1.getName();
-            final String name2 = f2.getName();
-            return (name1).compareToIgnoreCase(name2);
-        });
-
-        departments.addAll(filterDepartments);
+        sortByAlphabeticalOrder(filters);
+        departments.addAll(filters);
 
         final String depId = SharedPreferencesUtil.getSelectedDepartmentId();
         if (depId != null) {
-            for (FilterDepartment d : departments) {
+            for (Filter d : departments) {
                 if (depId.equals(d.getId())) {
                     view.showSelectedDepartmentFilter(d.getId(), d.getName());
                 }
@@ -135,13 +147,7 @@ public class SearchPresenter extends BasePresenter<SearchView> {
             view.showEmptyLeadFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
         }
 
-        /* Sorting by alphabetical order */
-        Collections.sort(filterLeads, (l1, l2) -> {
-            final String name1 = l1.getName();
-            final String name2 = l2.getName();
-            return (name1).compareToIgnoreCase(name2);
-        });
-
+        sortByAlphabeticalOrder(filterLeads);
         leads.addAll(filterLeads);
 
         final String leadId = SharedPreferencesUtil.getSelectedLeadId();
@@ -152,6 +158,53 @@ public class SearchPresenter extends BasePresenter<SearchView> {
                 }
             }
         }
+    }
+
+
+    private void performGetProjectFiltersRequest() {
+        view.showProgress();
+        getProjectFilters.execute(new DefaultSubscriber<List<Filter>>(view) {
+            @Override
+            public void onNext(List<Filter> filters) {
+                super.onNext(filters);
+                handleSuccessProjectFiltersResponse(filters);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleSuccessProjectFiltersResponse(@NonNull List<Filter> filters) {
+        view.hideProgress();
+        if (filters.isEmpty()) {
+            view.showEmptyProjectFiltersErrorMessage(R.string.tm_hr_search_activity_text_empty_lead_filters);
+        }
+
+        sortByAlphabeticalOrder(filters);
+        projects.addAll(filters);
+
+        final String projectId = SharedPreferencesUtil.getSelectedProjectId();
+        if (projectId != null) {
+            for (Filter filter : projects) {
+                if (projectId.equals(filter.getId())) {
+                    view.showSelectedProjectFilter(filter.getId(), filter.getName());
+                }
+            }
+        }
         view.requestSearchViewFocus();
+    }
+
+
+    private <T extends IFilterModel> void sortByAlphabeticalOrder(@NonNull List<T> filters) {
+        Collections.sort(filters, (f1, f2) -> {
+            final String name1 = f1.getName();
+            final String name2 = f2.getName();
+            return (name1).compareToIgnoreCase(name2);
+        });
     }
 }

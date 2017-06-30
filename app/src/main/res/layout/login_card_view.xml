@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:theme="@style/Theme.AppCompat.Light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorCardViewBgGrey"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rlFilterCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingLeft="@dimen/activity_login_rl_filter_company_padding"
+            android:paddingTop="@dimen/activity_login_rl_filter_company_padding"
+            android:paddingRight="@dimen/activity_login_rl_filter_company_padding">
+
+            <TextView
+                android:id="@+id/tvSelectCompany"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/ivCompanyArrow"
+                android:layout_toStartOf="@+id/ivCompanyArrow"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="@string/tm_hr_login_activity_text_select_company"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <ImageView
+                android:id="@+id/ivCompanyArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_downward" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/login_view" />
+
+        <include layout="@layout/forgot_pass_view" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

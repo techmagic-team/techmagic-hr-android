@@ -3,7 +3,26 @@
     <dimen name="activity_login_horizontal_margin">16dp</dimen>
     <dimen name="activity_login_vertical_margin">16dp</dimen>
 
+    <!-- LoginActivity -->
+    <dimen name="activity_login_tm_root_view_margin_bottom">68dp</dimen>
+    <dimen name="tm_hr_edit_profile_activity_edit_selected_filter_big_margin_left">96dp</dimen>
+
     <!-- SearchActivity -->
     <dimen name="search_activity_alert_dialog_filter_rv_height">260dp</dimen>
+
+    <!-- CalendarActivity -->
+    <dimen name="activity_calendar_scroll_view_margin_vertical">4dp</dimen>
+    <dimen name="activity_calendar_grid_cell_size">39dp</dimen>
+    <dimen name="activity_calendar_user_image_size">36dp</dimen>
+    <dimen name="activity_calendar_user_margin_vertical">1dp</dimen>
+    <dimen name="activity_calendar_user_margin_horizontal">8dp</dimen>
+    <dimen name="activity_layout_colors_layout_margin">4dp</dimen>
+    <dimen name="activity_layout_colors_layout_margin_vertical">8dp</dimen>
+    <dimen name="activity_layout_colors_circle_view_size">10dp</dimen>
+    <dimen name="activity_layout_colors_circle_margin_right">4dp</dimen>
+    <dimen name="activity_layout_colors_text_size">11sp</dimen>
+    <dimen name="activity_layout_grid_item_size">48dp</dimen>
+    <dimen name="activity_layout_grid_item_padding">2dp</dimen>
+    <dimen name="activity_layout_grid_item_photo_height">32dp</dimen>
 
 </resources>

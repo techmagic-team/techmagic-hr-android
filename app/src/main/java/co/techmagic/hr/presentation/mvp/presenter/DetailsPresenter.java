@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.presenter;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,51 +20,67 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.common.Role;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.EmergencyContact;
 import co.techmagic.hr.data.entity.Lead;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.repository.EmployeeRepositoryImpl;
+import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.data.request.GetIllnessRequest;
+import co.techmagic.hr.data.request.GetMyProfileRequest;
 import co.techmagic.hr.data.request.TimeOffRequest;
-import co.techmagic.hr.domain.interactor.employee.GetIllness;
-import co.techmagic.hr.domain.interactor.employee.GetTimeOff;
+import co.techmagic.hr.domain.interactor.employee.GetUserDayOffs;
+import co.techmagic.hr.domain.interactor.employee.GetUserIllness;
+import co.techmagic.hr.domain.interactor.employee.GetUserVacations;
+import co.techmagic.hr.domain.interactor.user.GetUserProfile;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.DefaultSubscriber;
 import co.techmagic.hr.presentation.mvp.view.DetailsView;
-import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
+import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.util.DateUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
 public class DetailsPresenter extends BasePresenter<DetailsView> {
 
-    private static final int ROLE_USER = 0;
-    private static final int ROLE_HR = 1;
-    private static final int ROLE_ADMIN = 2;
-
-    private Docs data;
+    private UserProfile data;
+    private IUserRepository userRepository;
     private IEmployeeRepository employeeRepository;
-    private GetTimeOff getTimeOff;
-    private GetIllness getIllness;
+    private GetUserProfile getUserProfile;
+    private GetUserVacations getUserVacations;
+    private GetUserDayOffs getUserDayOffs;
+    private GetUserIllness getUserIllness;
+
+    private ProfileTypes profileType = ProfileTypes.NONE;
 
 
     public DetailsPresenter() {
         super();
+        userRepository = new UserRepositoryImpl();
         employeeRepository = new EmployeeRepositoryImpl();
-        getTimeOff = new GetTimeOff(employeeRepository);
-        getIllness = new GetIllness(employeeRepository);
+        getUserProfile = new GetUserProfile(userRepository);
+        getUserVacations = new GetUserVacations(employeeRepository);
+        getUserDayOffs = new GetUserDayOffs(employeeRepository);
+        getUserIllness = new GetUserIllness(employeeRepository);
     }
 
 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
-        getTimeOff.unsubscribe();
-        getIllness.unsubscribe();
+        getUserVacations.unsubscribe();
+        getUserIllness.unsubscribe();
     }
 
 
-    public void performGetTimeOffRequestsIfNeeded() {
+    public void performRequests(@NonNull String userId, ProfileTypes profileType) {
+        this.profileType = profileType;
+        performGetUserProfileAndTimeOffRequests(userId);
+    }
+
+
+    private void performGetTimeOffRequestsIfNeeded() {
         String firstDate = data.getFirstWorkingDay();
         if (firstDate == null) {
             view.allowChangeBottomTab();
@@ -71,100 +88,159 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         }
         view.disallowChangeBottomTab();
         String userId = data.getId();
-        performGetTimeOffRequest(userId, true, firstDate);
-        performGetTimeOffRequest(userId, false, firstDate);
+        performGetUserVacationsRequest(userId, firstDate);
+        performGetUserDayOffsRequest(userId, firstDate);
         performGetIllnessesRequest(userId, firstDate);
     }
 
 
-    public void setupUiWithData(Docs data, ProfileTypes profileType) {
-        this.data = data;
-        showData(data, profileType);
-    }
-
-
-    private void showData(@NonNull Docs data, ProfileTypes profileType) {
+    private void showData() {
         view.loadEmployeePhoto(data.getPhotoOrigin() == null ? data.getPhoto() : data.getPhotoOrigin());
 
-        if (data.getEmail() != null) {
+        if (data.getFirstName() != null && data.getLastName() != null) {
+            view.updateActionbarTitle(data.getFirstName() + " " + data.getLastName());
+        }
+
+        if (data.getEmail() == null) {
+            view.hideEmail();
+        } else {
             view.showEmail(data.getEmail());
         }
 
-        if (data.getSkype() != null) {
+        if (data.getSkype() == null) {
+            view.hideSkype();
+        } else {
             view.showSkype(data.getSkype());
         }
 
-        if (data.getPhone() != null) {
+        if (data.getPhone() == null) {
+            view.hidePhone();
+        } else {
             view.showPhone(data.getPhone());
         }
 
-        if (data.getRoom() != null) {
+        if (data.getRoom() == null) {
+            view.hideRoom();
+        } else {
             view.showRoom(data.getRoom().getName());
         }
 
-        if (data.getDepartment() != null) {
+        if (data.getDepartment() == null) {
+            view.hideDepartment();
+        } else {
             view.showDepartment(data.getDepartment().getName());
         }
 
         final Lead lead = data.getLead();
-        if (lead != null) {
+        if (lead == null) {
+            view.hideLead();
+        } else {
             view.showLead(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        if (data.getRelocationCity() != null) {
+        if (data.getRelocationCity() == null) {
+            view.hideRelocationCity();
+        } else {
             view.showRelocationCity(data.getRelocationCity());
         }
 
-        if (data.getDescription() != null) {
+        if (data.getDescription() == null) {
+            view.hideAbout();
+        } else {
             view.showAbout(data.getDescription());
         }
 
         final String firstDate = DateUtil.getFormattedFullDate(data.getFirstWorkingDay());
-        if (firstDate != null) {
+        if (firstDate == null) {
+            view.hideFirstDay();
+        } else {
             view.showFirstDay(firstDate);
         }
 
         /* Show next info only for User, HR or Admin */
         final int userRole = SharedPreferencesUtil.readUser().getRole();
-        if (profileType == ProfileTypes.MY_PROFILE || userRole == ROLE_HR || userRole == ROLE_ADMIN) {
+        Role role = Role.getRoleByCode(userRole);
+        if (profileType == ProfileTypes.MY_PROFILE || role == Role.ROLE_HR || role == Role.ROLE_ADMIN) {
             showFullDetailsIfAvailable(data);
         } else {
             final String birthdayDate = getCorrectDateFormat(data, false);
-            if (birthdayDate != null) {
+            if (birthdayDate == null) {
+                view.hideBirthday();
+            } else {
                 view.showBirthday(birthdayDate);
             }
         }
     }
 
 
-    private void showFullDetailsIfAvailable(@NonNull Docs data) {
+    private void showFullDetailsIfAvailable(@NonNull UserProfile data) {
         final String birthdayDate = getCorrectDateFormat(data, true);
         if (birthdayDate != null) {
             view.showBirthday(birthdayDate);
+        } else {
+            view.hideBirthday();
         }
 
         final String firstDayInItDate = DateUtil.getFormattedFullDate(data.getGeneralFirstWorkingDay());
-        if (firstDayInItDate != null) {
+        if (firstDayInItDate == null) {
+            view.hideFirstDayInIt();
+        } else {
             view.showFirstDayInIt(firstDayInItDate);
         }
 
         final String trialPeriodDate = DateUtil.getFormattedFullDate(data.getTrialPeriodEnds());
-        if (trialPeriodDate != null) {
+        if (trialPeriodDate == null) {
+            view.hideTrialPeriodEndsDate();
+        } else {
             view.showTrialPeriodEndsDate(trialPeriodDate);
         }
 
+        handleLastWorkingDaySection(data);
+        handleEmergencyContactSection(data);
+    }
+
+
+    private void handleLastWorkingDaySection(@NonNull UserProfile data) {
         final String lastDayDate = DateUtil.getFormattedFullDate(data.getLastWorkingDay());
-        if (lastDayDate != null) {
-            view.showLastWorkingDay(lastDayDate);
+        if (lastDayDate == null) {
+            view.hideLastWorkingDay();
+            return;
         }
 
+        view.showLastWorkingDay(lastDayDate);
+
+        if (data.getReason() == null) {
+            view.hideReason();
+        } else {
+            view.showReason(data.getReason().getName());
+        }
+
+        if (data.getReasonComments() == null) {
+            view.hideComment();
+        } else {
+            view.showComment(data.getReasonComments());
+        }
+    }
+
+
+    private void handleEmergencyContactSection(@NonNull UserProfile data) {
         final EmergencyContact emergencyContact = data.getEmergencyContact();
-        if (emergencyContact != null && emergencyContact.getPhone() != null) {
-            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
+        if (emergencyContact == null) {
+            view.hideEmergencyPhoneNumber();
+            view.hideEmergencyContact();
+            return;
         }
 
-        if (emergencyContact != null && emergencyContact.getName() != null) {
+        if (emergencyContact.getPhone() != null && !emergencyContact.getPhone().trim().isEmpty()) {
+            view.showEmergencyPhoneNumber(emergencyContact.getPhone());
+        } else {
+            view.hideEmergencyPhoneNumber();
+        }
+
+        if (emergencyContact.getName() != null && !emergencyContact.getName().trim().isEmpty()) {
             view.showEmergencyContact(emergencyContact.getName());
+        } else {
+            view.hideEmergencyContact();
         }
     }
 
@@ -186,7 +262,12 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
             i.setComponent(new ComponentName("com.skype.raider", "com.skype.raider.Main"));
             i.setData(Uri.parse("skype:" + skypeId + "?chat"));
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
+
+            try {
+                context.startActivity(i);
+            } catch (ActivityNotFoundException ex) {
+                view.showMessage(R.string.message_no_installed_application);
+            }
         }
     }
 
@@ -203,11 +284,6 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
     public void onEmergencyPhoneNumberClick(@NonNull Context context) {
         onPhoneClick(context, data.getEmergencyContact().getPhone());
-    }
-
-
-    public void onEmergencyContactClick(@NonNull Context context) {
-        onPhoneClick(context, data.getEmergencyContact().getName());
     }
 
 
@@ -277,6 +353,28 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
+    private void performGetUserProfileAndTimeOffRequests(@NonNull String userId) {
+        view.showProgress();
+        final GetMyProfileRequest request = new GetMyProfileRequest(userId);
+        getUserProfile.execute(request, new DefaultSubscriber<UserProfile>() {
+            @Override
+            public void onNext(UserProfile userProfile) {
+                super.onNext(userProfile);
+                data = userProfile;
+                view.hideProgress();
+                showData();
+                performGetTimeOffRequestsIfNeeded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
     private void performDownloadImageRequest(Context context) {
         view.showProgress();
         Glide.with(context)
@@ -291,24 +389,19 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    /**
-     * @param isPaid == true (Vacation Request)
-     *               else (Day-off Request)
-     */
-
-    private void performGetTimeOffRequest(@NonNull String userId, boolean isPaid, @NonNull String firstDate) {
+    private void performGetUserVacationsRequest(@NonNull String userId, @NonNull String firstDate) {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
-        final TimeOffRequest request = new TimeOffRequest(userId, firstDay, dateAfterYear, isPaid);
-        getTimeOff.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        final TimeOffRequest request = new TimeOffRequest(userId, true, firstDay, dateAfterYear, null);
+        getUserVacations.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
                 view.hideProgress();
-                handleRetrievedTimeOffs(response, isPaid);
+                handleRetrievedVacations(response);
             }
 
             @Override
@@ -320,23 +413,64 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
     }
 
 
-    private void handleRetrievedTimeOffs(List<RequestedTimeOff> requestedTimeOffs, boolean isPaid) {
+    private void handleRetrievedVacations(List<RequestedTimeOff> vacations) {
         String formattedText = "";
 
-        if (requestedTimeOffs != null && !requestedTimeOffs.isEmpty()) {
-            for (RequestedTimeOff item : requestedTimeOffs) {
+        if (vacations != null && !vacations.isEmpty()) {
+            for (RequestedTimeOff item : vacations) {
                 if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
                     formattedText = buildFormattedString(formattedText, item);
                 }
             }
         }
 
-        if (!TextUtils.isEmpty(formattedText)) {
-            if (isPaid) {
-                view.showVacationDays(formattedText);
-            } else {
-                view.showDayOff(formattedText);
+        if (TextUtils.isEmpty(formattedText)) {
+            view.hideVacations();
+        } else {
+            view.showVacationDays(formattedText);
+        }
+    }
+
+
+    private void performGetUserDayOffsRequest(@NonNull String userId, @NonNull String firstDate) {
+        view.showProgress();
+
+        long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
+
+        final TimeOffRequest request = new TimeOffRequest(userId, false, firstDay, dateAfterYear, null);
+        getUserDayOffs.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+            @Override
+            public void onNext(List<RequestedTimeOff> response) {
+                super.onNext(response);
+                view.hideProgress();
+                handleRetrievedDayOffs(response);
             }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                view.hideProgress();
+            }
+        });
+    }
+
+
+    private void handleRetrievedDayOffs(List<RequestedTimeOff> dayOffs) {
+        String formattedText = "";
+
+        if (dayOffs != null && !dayOffs.isEmpty()) {
+            for (RequestedTimeOff item : dayOffs) {
+                if (item.isAccepted() && item.getDateFrom() != null && item.getDateTo() != null) {
+                    formattedText = buildFormattedString(formattedText, item);
+                }
+            }
+        }
+
+        if (TextUtils.isEmpty(formattedText)) {
+            view.hideDayOff();
+        } else {
+            view.showDayOff(formattedText);
         }
     }
 
@@ -345,10 +479,10 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         view.showProgress();
 
         long firstDay = DateUtil.getFirstWorkingDayInMillis(firstDate);
-        long dateAfterYear = DateUtil.getDateAfterYearInMillis(firstDay);
+        long dateAfterYear = DateUtil.getDateAfterYearInMillis();
 
         final GetIllnessRequest request = new GetIllnessRequest(userId, firstDay, dateAfterYear);
-        getIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
+        getUserIllness.execute(request, new DefaultSubscriber<List<RequestedTimeOff>>(view) {
             @Override
             public void onNext(List<RequestedTimeOff> response) {
                 super.onNext(response);
@@ -380,6 +514,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
         /* Should allow user to change the tab */
 
         if (TextUtils.isEmpty(formattedText)) {
+            view.hideIllnessDays();
             view.allowChangeBottomTab();
         } else {
             view.showIllnessDays(formattedText);
@@ -400,7 +535,7 @@ public class DetailsPresenter extends BasePresenter<DetailsView> {
 
 
     @Nullable
-    private String getCorrectDateFormat(Docs data, boolean fullDate) {
+    private String getCorrectDateFormat(UserProfile data, boolean fullDate) {
         return fullDate ? DateUtil.getFormattedFullDate(data.getBirthday()) : DateUtil.getFormattedMonthAndDay(data.getBirthday());
     }
 }

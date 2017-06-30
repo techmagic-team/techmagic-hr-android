@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/colorWhite"
     tools:context="co.techmagic.hr.presentation.ui.activity.HomeActivity">
 
     <RelativeLayout
-        android:id="@+id/llFragmentsContainer"
+        android:id="@+id/rlFragmentsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/coordinatorLayout"
         android:orientation="vertical">
 
         <FrameLayout
@@ -35,46 +34,29 @@
             android:id="@+id/rvEmployees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/flFilters"
-            android:layout_gravity="bottom" />
+            android:layout_below="@+id/flFilters" />
+
+        <TextView
+            android:id="@+id/tvNoResults"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/message_no_results"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tvNoResults"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/message_no_results"
-        android:visibility="gone" />
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_gravity="bottom"
+        android:splitMotionEvents="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationBehavior"
+        app:menu="@menu/menu_bottom_navigation" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
-            app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationBehavior">
-
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/bottomNavigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:splitMotionEvents="true"
-                app:itemBackground="@color/colorPrimary"
-                app:itemIconTint="@android:color/white"
-                app:itemTextColor="@android:color/white"
-                app:menu="@menu/menu_bottom_navigation" />
-
-        </FrameLayout>
-
-
-    </android.support.design.widget.CoordinatorLayout>
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import co.techmagic.hr.data.entity.FilterDepartment;
+import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
 
 public interface SearchView extends View {
 
-    void showFilterByDepartmentDialog(@NonNull List<FilterDepartment> departments);
+    void showFilterByDepartmentDialog(@NonNull List<Filter> departments);
 
     void showSelectedDepartmentFilter(@NonNull String id, @NonNull String filterName);
 
@@ -20,6 +20,12 @@ public interface SearchView extends View {
     void showSelectedLeadFilter(@NonNull String id, @NonNull String filterName);
 
     void showEmptyLeadFiltersErrorMessage(int resId);
+
+    void showFilterByProjectDialog(@NonNull List<Filter> projects);
+
+    void showSelectedProjectFilter(@NonNull String id, @NonNull String filterName);
+
+    void showEmptyProjectFiltersErrorMessage(int resId);
 
     /**
      * Method should be called only in last response from the server

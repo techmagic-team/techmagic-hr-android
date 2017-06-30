@@ -16,7 +16,7 @@ import java.util.List;
 
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.Department;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.Lead;
 
 public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -24,7 +24,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int EMPLOYEE_ITEM = 1;
     private static final int LOADING_ITEM = 2;
 
-    private List<Docs> allDocs = new ArrayList<>();
+    private List<UserProfile> allDocs = new ArrayList<>();
     private OnEmployeeItemClickListener clickListener;
     private boolean isLoadingItemAdded = false;
 
@@ -57,8 +57,8 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case EMPLOYEE_ITEM:
-                final Docs docs = allDocs.get(position);
-                setupEmployeeItem((EmployeeViewHolder) holder, docs);
+                final UserProfile userProfile = allDocs.get(position);
+                setupEmployeeItem((EmployeeViewHolder) holder, userProfile);
                 break;
 
             case LOADING_ITEM:
@@ -80,22 +80,22 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    private void setupEmployeeItem(EmployeeViewHolder holder, final Docs docs) {
+    private void setupEmployeeItem(EmployeeViewHolder holder, final UserProfile userProfile) {
         Glide.with(holder.ivAvatar.getContext())
-                .load(docs.getPhoto())
+                .load(userProfile.getPhotoOrigin() == null ? userProfile.getPhoto() : userProfile.getPhotoOrigin())
                 .placeholder(R.drawable.ic_user_placeholder)
                 .dontAnimate()
                 .into(holder.ivAvatar);
 
-        setupEmployeeInfo(holder, docs);
+        setupEmployeeInfo(holder, userProfile);
     }
 
 
-    private void setupEmployeeInfo(EmployeeViewHolder holder, Docs docs) {
-        final Lead lead = docs.getLead();
-        final Department department = docs.getDepartment();
+    private void setupEmployeeInfo(EmployeeViewHolder holder, UserProfile userProfile) {
+        final Lead lead = userProfile.getLead();
+        final Department department = userProfile.getDepartment();
 
-        holder.tvName.setText(docs.getFirstName() + " " + docs.getLastName());
+        holder.tvName.setText(userProfile.getFirstName() + " " + userProfile.getLastName());
 
         if (department == null) {
             holder.llPosition.setVisibility(View.GONE);
@@ -111,11 +111,11 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.tvLead.setText(lead.getFirstName() + " " + lead.getLastName());
         }
 
-        holder.item.setTag(docs);
+        holder.item.setTag(userProfile);
     }
 
 
-    private void add(Docs item) {
+    private void add(UserProfile item) {
         allDocs.add(item);
         notifyItemInserted(getItemCount() - 1);
     }
@@ -124,7 +124,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void addLoadingProgress() {
         if (!isLoadingItemAdded) {
             isLoadingItemAdded = true;
-            add(new Docs());
+            add(new UserProfile());
         }
     }
 
@@ -136,7 +136,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int itemCount = getItemCount();
             if (itemCount > 0) {
                 int position = itemCount - 1;
-                Docs item = getItem(position);
+                UserProfile item = getItem(position);
 
                 if (item != null) {
                     allDocs.remove(position);
@@ -147,7 +147,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    private Docs getItem(int position) {
+    private UserProfile getItem(int position) {
         if (position >= 0)
             return allDocs.get(position);
         else
@@ -155,7 +155,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    public void refresh(List<Docs> docs) {
+    public void refresh(List<UserProfile> docs) {
         allDocs.addAll(docs);
         notifyDataSetChanged();
     }
@@ -198,7 +198,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return;
             }
 
-            clickListener.onEmployeeItemClicked((Docs) v.getTag());
+            clickListener.onEmployeeItemClicked((UserProfile) v.getTag());
         }
     }
 
@@ -213,6 +213,6 @@ public class EmployeeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface OnEmployeeItemClickListener {
 
-        void onEmployeeItemClicked(@NonNull Docs docs);
+        void onEmployeeItemClicked(@NonNull UserProfile userProfile);
     }
 }

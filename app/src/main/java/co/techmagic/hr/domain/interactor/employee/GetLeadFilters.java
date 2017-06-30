@@ -17,6 +17,6 @@ public class GetLeadFilters extends EmptyUseCase<List<FilterLead>, IEmployeeRepo
 
     @Override
     protected Observable<List<FilterLead>> buildObservable() {
-        return repository.getFilterLeads();
+        return repository.getFilterLeadsWithEmployees();
     }
 }

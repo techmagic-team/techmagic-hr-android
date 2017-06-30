@@ -1,11 +1,8 @@
 package co.techmagic.hr.data.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Room implements Parcelable {
+public class Room {
 
     @SerializedName("_id")
     private String id;
@@ -13,39 +10,26 @@ public class Room implements Parcelable {
     @SerializedName("name")
     private String name;
 
-    public Room(Parcel in) {
-        id = in.readString();
-        name = in.readString();
+    public Room() {}
+
+    public Room(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-    }
-
-    public static final Parcelable.Creator<Room> CREATOR = new Parcelable.Creator<Room>() {
-        @Override
-        public Room createFromParcel(Parcel in) {
-            return new Room(in);
-        }
-
-        @Override
-        public Room[] newArray(int size) {
-            return new Room[size];
-        }
-    };
 }

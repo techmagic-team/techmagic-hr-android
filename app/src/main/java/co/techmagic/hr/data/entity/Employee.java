@@ -11,12 +11,12 @@ import java.util.List;
 public class Employee implements Parcelable {
 
     @SerializedName("docs")
-    private List<Docs> docs;
+    private List<UserProfile> docs;
 
     @SerializedName("count")
     private int count;
 
-    public List<Docs> getDocs() {
+    public List<UserProfile> getDocs() {
         return docs;
     }
 
@@ -27,7 +27,7 @@ public class Employee implements Parcelable {
     public Employee(Parcel in) {
         if (in.readByte() == 0x01) {
             docs = new ArrayList<>();
-            in.readList(docs, Docs.class.getClassLoader());
+            in.readList(docs, UserProfile.class.getClassLoader());
         } else {
             docs = null;
         }

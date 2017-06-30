@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 
 public interface HomeView extends View {
 
@@ -18,13 +18,13 @@ public interface HomeView extends View {
 
     void clearAdapter();
 
-    void showEmployeesList(List<Docs> docs);
+    void showEmployeesList(List<UserProfile> docs);
 
     void showNoResultsView(int resId);
 
-    void showEmployeeDetails(@NonNull Docs data);
+    void showEmployeeDetails(@NonNull UserProfile data);
 
-    void showMyProfile(@NonNull Docs data);
+    void showMyProfile(@NonNull UserProfile data);
 
     void allowChangeTabClick();
 

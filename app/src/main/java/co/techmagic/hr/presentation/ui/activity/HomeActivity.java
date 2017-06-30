@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,24 +21,34 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
-import co.techmagic.hr.data.entity.Docs;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
+import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
+import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
-import co.techmagic.hr.presentation.ui.fragment.ProfileTypes;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
-public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback, EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
+public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
+        EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String DOCS_OBJECT_PARAM = "docs_object_param";
+    public static final String USER_ID_PARAM = "user_id_param";
     public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
-    private static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
-    private static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
+    public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
+    public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
+    private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
+
+    private static final String MIXPANEL_HOME_TAG = "Home";
+    private static final String MIXPANEL_SEARCH_EMPLOYEES_TAG = "Search Employees";
+    private static final String MIXPANEL_USER_DETAILS_TAG = "User Details";
+    private static final String MIXPANEL_MY_PROFILE_TAG = "My Profile";
+    private static final String MIXPANEL_EDIT_PROFILE_TAG = "Edit Profile";
+    private static final String MIXPANEL_CALENDAR_TAG = "Calendar";
 
     public static final int SEARCH_ACTIVITY_REQUEST_CODE = 1001;
     public static final int ITEMS_COUNT = 10;
@@ -54,12 +65,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private ActionBar actionBar;
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
-    private ProfileTypes profileType = ProfileTypes.NONE;
 
     private String selDepId;
     private String selLeadId;
+    private String selProjectId;
     private String searchQuery = null;
     private boolean allowChangeTab = true;
+    private boolean isOnActivityResultCalled = false;
 
 
     @Override
@@ -67,14 +79,18 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         initUi();
-        loadMoreEmployees(null, selDepId, selLeadId, 0, 0, false);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
+        presenter.setupFiltersView(selDepId, selLeadId, selProjectId, searchQuery);
+
+        if (!isOnActivityResultCalled) {
+            isOnActivityResultCalled = false;
+            loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
+        }
     }
 
 
@@ -113,7 +129,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeesList(List<Docs> docs) {
+            public void showEmployeesList(List<UserProfile> docs) {
                 tvNoResults.setVisibility(View.GONE);
                 adapter.refresh(docs);
                 rvEmployees.setVisibility(View.VISIBLE);
@@ -125,16 +141,14 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             @Override
-            public void showEmployeeDetails(@NonNull Docs data) {
-                profileType = ProfileTypes.EMPLOYEE;
+            public void showEmployeeDetails(@NonNull UserProfile data) {
                 allowChangeTab = true;
-                addDetailsFragment(data, FRAGMENT_DETAILS_TAG);
+                addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
-            public void showMyProfile(@NonNull Docs data) {
-                profileType = ProfileTypes.MY_PROFILE;
-                addDetailsFragment(data, FRAGMENT_MY_PROFILE_TAG);
+            public void showMyProfile(@NonNull UserProfile data) {
+                addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
             @Override
@@ -177,6 +191,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 startSearchScreen();
                 return true;
 
+            case R.id.menu_item_edit_profile:
+                startEditProfileScreen();
+                return true;
+
             case R.id.menu_item_logout:
                 showLogOutDialog();
                 return true;
@@ -196,9 +214,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 searchQuery = data.getStringExtra(SearchActivity.SEARCH_QUERY_EXTRA);
                 selDepId = data.getStringExtra(SearchActivity.DEP_ID_EXTRA);
                 selLeadId = data.getStringExtra(SearchActivity.LEAD_ID_EXTRA);
+                selProjectId = data.getStringExtra(SearchActivity.PROJECT_ID_EXTRA);
             }
 
-            loadMoreEmployees(searchQuery, selDepId, selLeadId, 0, 0, true);
+            isOnActivityResultCalled = true;
+            loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, 0, 0, true);
         }
     }
 
@@ -215,26 +235,40 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void setActionBarText(@NonNull String title) {
+    public void setActionBarTitle(@NonNull String title) {
         actionBar.setTitle(title);
     }
 
 
     @Override
-    public void onEmployeeItemClicked(@NonNull Docs docs) {
-        presenter.handleEmployeeItemClick(docs);
+    public void onEmployeeItemClicked(@NonNull UserProfile userProfile) {
+        presenter.handleEmployeeItemClick(userProfile);
     }
 
 
     @Override
-    public void addDetailsFragment(@NonNull Docs docs, @Nullable String tag) {
+    public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putParcelable(DOCS_OBJECT_PARAM, docs);
+        bundle.putString(USER_ID_PARAM, user.getId());
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
         replaceFragment(fragment, tag);
+
+        if (profileType == ProfileTypes.MY_PROFILE) {
+            mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_MY_PROFILE_TAG);
+        } else if (profileType == ProfileTypes.EMPLOYEE) {
+            mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_USER_DETAILS_TAG);
+        }
+    }
+
+
+    @Override
+    public void addCalendarFragment() {
+        CalendarFragment fragment = CalendarFragment.newInstance();
+        replaceFragment(fragment, FRAGMENT_CALENDAR_TAG);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_TAG);
     }
 
 
@@ -262,7 +296,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         setupRecyclerView();
         selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
-        presenter.setupFiltersView(selDepId, selLeadId, searchQuery);
+        selProjectId = SharedPreferencesUtil.getSelectedProjectId();
     }
 
 
@@ -271,9 +305,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             switch (item.getItemId()) {
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
-                        profileType = ProfileTypes.NONE;
                         clearFragmentsBackStack(this);
+                        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
                     }
+                    break;
+
+                case R.id.action_calendar:
+                    addCalendarFragment();
                     break;
 
                 case R.id.action_my_profile:
@@ -286,9 +324,18 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void startSearchScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent i = new Intent(this, SearchActivity.class);
         i.putExtra(SEARCH_QUERY_EXTRAS, searchQuery);
-        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE, animation);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_SEARCH_EMPLOYEES_TAG);
+    }
+
+
+    private void startEditProfileScreen() {
+        Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
+        startActivity(new Intent(this, EditProfileActivity.class), animation);
+        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_EDIT_PROFILE_TAG);
     }
 
 
@@ -315,9 +362,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         searchQuery = null;
         selDepId = null;
         selLeadId = null;
+        selProjectId = null;
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
-        loadMoreEmployees(null, selDepId, selLeadId, 0, 0, false);
+        SharedPreferencesUtil.saveSelectedProjectId(null);
+        loadMoreEmployees(null, selDepId, selLeadId, selProjectId,  0, 0, false);
     }
 
 
@@ -325,11 +374,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
      * @param visibleItemsCount Used to show whether all items are already loaded.
      */
 
-    private void loadMoreEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, int offset, int visibleItemsCount, boolean isAfterFilters) {
+    private void loadMoreEmployees(@Nullable String searchQuery, @Nullable String selDepId, @Nullable String selLeadId, @Nullable String selProjectId, int offset, int visibleItemsCount, boolean isAfterFilters) {
         if (isAfterFilters) {
-            presenter.loadEmployeesAfterFilters(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
+            presenter.loadEmployeesAfterFilters(searchQuery, selDepId, selLeadId, selProjectId, offset, visibleItemsCount);
         } else {
-            presenter.loadEmployees(searchQuery, selDepId, selLeadId, offset, visibleItemsCount);
+            presenter.loadEmployees(searchQuery, selDepId, selLeadId, selProjectId, offset, visibleItemsCount);
         }
     }
 
@@ -344,7 +393,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= ITEMS_COUNT) {
-                    loadMoreEmployees(searchQuery, selDepId, selLeadId, totalItemCount, totalItemCount, false);
+                    loadMoreEmployees(searchQuery, selDepId, selLeadId, selProjectId, totalItemCount, totalItemCount, false);
                 }
             }
         };

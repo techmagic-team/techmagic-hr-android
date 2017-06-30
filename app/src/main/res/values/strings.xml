@@ -1,5 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">TechMagic HR</string>
+    <string name="mixpanel_hr_app_project_token">127239b5e54a51aacf7fac2aaff646e4</string>
 
     <!-- Messages -->
     <!--LoginActivity-->
@@ -7,25 +8,41 @@
     <string name="message_connection_error">Please check your internet connection</string>
     <string name="message_invalid_email">Invalid Email</string>
     <string name="message_invalid_password">Invalid Password</string>
+    <string name="message_invalid_first_name">Invalid first name</string>
+    <string name="message_invalid_last_name">Invalid last name</string>
+    <string name="message_long_name">Please use no more than 30 characters</string>
     <string name="message_wrong_password_or_email">Wrong password or email</string>
-    <string name="message_wrong_company_or_email">Wrong company or email</string>
+    <string name="message_you_can_not_leave_this_empty">You can’t leave this empty</string>
+    <string name="message_name_contains_not_allowed_characters">Last name can contain only Latin letters, dashes, and space</string>
+    <string name="message_wrong_url">Wrong url</string>
+    <string name="message_invalid_file_extension">Invalid extension. Please try again.</string>
+    <string name="message_text_yes">YES</string>
+    <string name="message_text_no">NO</string>
+    <string name="message_text_cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="message_text_ok">OK</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
-    <string name="message_do_you_want_to_call_emergency_contact">Do You want to call the emergency contact?</string>
+    <string name="message_do_you_want_to_call_emergency_contact">Do you want to call the emergency contact?</string>
     <string name="message_image_downloaded">Image was saved into gallery</string>
     <string name="message_permission_denied">Permission denied</string>
-
     <!--HomeActivity-->
     <string name="message_alert_dialog_title_log_out">Logout</string>
     <string name="message_alert_dialog_message_are_you_sure_you_want_to_log_out">Are you sure you want to Logout?</string>
     <string name="message_no_results">No results</string>
     <string name="message_no_results_for_selected_filters">No results for selected filters</string>
     <string name="message_copied_to_clipboard">Copied to clipboard!</string>
+    <string name="message_successfully_saved">Successfully saved</string>
+    <string name="message_error">Error while saving changes</string>
+    <!-- EditProfileActivity -->
+    <string name="message_image_too_big">Filesize exceeds 5mb. Resize the picture or choose a different one</string>
+    <string name="message_short_password">Password must contain at least 6 characters</string>
+
 
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
+    <string name="tm_hr_login_activity_text_select_company">Select company</string>
     <string name="tm_hr_login_activity_text_forgot_password">Forgot Password</string>
     <string name="tm_hr_login_activity_hint_email">Email</string>
     <string name="tm_hr_login_activity_hint_password">Password</string>
@@ -35,11 +52,14 @@
 
     <!-- HomeActivity -->
     <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_2">My Profile</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_3">Item 3</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
+    <string name="tm_hr_home_activity_searchview_text_search">Search…</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
+    <string name="tm_hr_home_activity_text_filters">Filters</string>
     <string name="tm_hr_home_activity_text_clear_filters">Clear filters</string>
+    <string name="tm_hr_home_activity_text_edit_profile">Edit profile</string>
 
     <!-- SearchActivity -->
     <string name="tm_hr_search_activity_text_filters">Filters</string>
@@ -47,8 +67,17 @@
     <string name="tm_hr_search_activity_text_cancel">Cancel</string>
     <string name="tm_hr_search_activity_text_apply">Apply Filters</string>
     <string name="tm_hr_search_activity_text_filter_by">FILTER BY</string>
+    <string name="tm_hr_search_activity_text_filter_company">Select company</string>
     <string name="tm_hr_search_activity_text_filter_by_department">Department</string>
     <string name="tm_hr_search_activity_text_filter_by_lead">Lead</string>
+    <string name="tm_hr_search_activity_text_filter_by_project">Project</string>
+    <string name="tm_hr_search_activity_text_filter_by_room">Room</string>
+    <string name="tm_hr_search_activity_text_filter_by_reason">Reason</string>
+    <string name="tm_hr_search_activity_text_filter_date_of_birth">Date of birth</string>
+    <string name="tm_hr_search_activity_text_filter_first_working_day">First working day</string>
+    <string name="tm_hr_search_activity_text_filter_first_day_in_it">First day in IT</string>
+    <string name="tm_hr_search_activity_text_filter_trial_period">Trial period ends</string>
+    <string name="tm_hr_search_activity_text_filter_last_working">Last working day</string>
     <string name="tm_hr_search_activity_text_empty_department_filters">There are no filters yet</string>
     <string name="tm_hr_search_activity_text_empty_lead_filters">There are no filters yet</string>
 
@@ -67,10 +96,93 @@
     <string name="fragment_employee_details_card_view_text_first_working_day_in_it">"First working day in IT: "</string>
     <string name="fragment_employee_details_card_view_text_trial_period_ends">"Trial period ends: "</string>
     <string name="fragment_employee_details_card_view_text_last_working_day">"Last working day: "</string>
+    <string name="fragment_employee_details_card_view_text_reason">"Reason: "</string>
+    <string name="fragment_employee_details_card_view_text_comment">"Comment: "</string>
     <string name="fragment_employee_details_card_view_text_about_me">"About me: "</string>
     <string name="fragment_employee_details_card_view_text_vacation">"Vacation: "</string>
     <string name="fragment_employee_details_card_view_text_day_off">"Day off: "</string>
     <string name="fragment_employee_details_card_view_text_illness">"Illness: "</string>
     <string name="fragment_employee_details_card_view_text_tap_to_see_the_full_image">Tap to see the full image</string>
+
+    <!-- CalendarFragment -->
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_from">From</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_title_to">To</string>
+    <string name="tm_hr_calendar_fragment_message_alert_dialog_invalid_date">Invalid date range</string>
+    <string name="tm_hr_calendar_fragment_to_text">to</string>
+    <string name="tm_hr_calendar_fragment_title">Calendar</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_weekday">Weekend</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_holiday">Holiday</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_vacation">Vacation</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_day_off">Day Off</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_illness">Illness</string>
+    <string name="tm_hr_calendar_fragment_weekday_layout_requested">Requested</string>
+    <string name="tm_hr_calendar_fragment_request_time_off">Request</string>
+
+    <!-- Request Time Off -->
+    <string name="tm_hr_request_time_off">Request</string>
+    <string name="tm_hr_time_off_type">Time Off Type</string>
+    <string name="tm_hr_select_time_off_type">Select time off type</string>
+    <string name="tm_hr_vacation_time_off_name">Vacation</string>
+    <string name="tm_hr_dayoff_time_off_name">Day off</string>
+    <string name="tm_hr_requested">Requested</string>
+    <string name="tm_hr_illness_time_off_name">Illness</string>
+    <string name="tm_hr_request_time_off_title">Request Time off</string>
+    <string name="tm_hr_request_time_off_error_retrieving_time_off_data">Error retrieving time off data</string>
+    <string name="tm_hr_time_available_vacations">Available vacations</string>
+    <string name="tm_hr_select_period">Select Period</string>
+    <string name="tm_hr_wrong_date">Wrong date range</string>
+    <string name="tm_hr_invalid_input_data">Invalid input data</string>
+    <string name="tm_hr_failed_request_time_off">Failed to request time off</string>
+    <string name="tm_hr_successfully_requested_time_off">Successfully requested time off</string>
+    <string name="tm_hr_time_off_delete_confirm_alert_message">Are you sure you want to delete %s for %s ?</string>
+    <string name="tm_hr_delete_time_off_title">Please confirm your action</string>
+
+    <!-- CalendarFiltersActivity -->
+    <string name="tm_hr_calendar_filters_activity_title">Calendar filters</string>
+    <string name="tm_hr_calendar_filters_activity_text_my_team">My Team</string>
+    <string name="tm_hr_calendar_filters_activity_text_from">From</string>
+    <string name="tm_hr_calendar_filters_activity_text_to">To</string>
+    <string name="select_company_text">Select company</string>
+    <string name="please_select_company_error_text">Please select company</string>
+    <string name="tm_hr_calendar_filters_activity_filter_by_project">Project</string>
+    <string name="tm_hr_calendar_filters_activity_text_empty_project_filters">There are no project yet</string>
+    <string name="tm_hr_error_loading_user_profile">Error loading user profile</string>
+    <string name="tm_hr_failed_show_requested_time_off">Failed to show requested time offs</string>
+    <string name="tm_hr_failed_delete_time_off">Failed to delete time off</string>
+
+    <!-- EditProfileActivity -->
+    <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>
+    <string name="tm_hr_edit_profile_activity_alert_dialog_message">You have unsaved changes. Do you want to return back?</string>
+    <string name="tm_hr_edit_profile_activity_please_select_last_working_day_first_message">"Please select 'Last working day' first"</string>
+    <string name="tm_hr_edit_profile_activity_title">Edit My Profile</string>
+    <string name="tm_hr_edit_profile_activity_text_upload_photo">Upload photo</string>
+    <string name="tm_hr_edit_profile_activity_hint_email">Email *</string>
+    <string name="tm_hr_edit_profile_activity_hint_first_name">First name * </string>
+    <string name="tm_hr_edit_profile_activity_hint_last_name">Last name * </string>
+    <string name="tm_hr_edit_profile_activity_section_login_info">LOGIN INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_personal_info">PERSONAL INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_contacts">CONTACTS</string>
+    <string name="tm_hr_edit_profile_activity_section_additional_info">ADDITIONAL INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_professional_info">PROFESSIONAL INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_pdp_info">PDP INFO</string>
+    <string name="tm_hr_edit_profile_activity_section_out_of_the_company">OUT OF THE COMPANY</string>
+    <string name="tm_hr_edit_profile_activity_text_skype">Skype</string>
+    <string name="tm_hr_edit_profile_activity_text_phone_number">Phone number</string>
+    <string name="tm_hr_edit_profile_activity_text_room">Room</string>
+    <string name="tm_hr_edit_profile_activity_text_emergency_contact_number">Emergency contact number</string>
+    <string name="tm_hr_edit_profile_activity_text_emergency_contact">Emergency contact</string>
+    <string name="tm_hr_edit_profile_activity_text_city_of_relocation">City of relocation</string>
+    <string name="tm_hr_edit_profile_activity_text_short_presentation">Short presentation</string>
+    <string name="tm_hr_edit_profile_activity_text_department">Department: </string>
+    <string name="tm_hr_edit_profile_activity_text_lead">Lead *:</string>
+    <string name="tm_hr_edit_profile_activity_text_first_working_day">First working day * :</string>
+    <string name="tm_hr_edit_profile_activity_text_pdp_link">PDP link</string>
+    <string name="tm_hr_edit_profile_activity_text_one_to_one_link">One to one link</string>
+    <string name="tm_hr_edit_profile_activity_text_can_sign_in">Can sign in</string>
+    <string name="tm_hr_edit_profile_activity_text_select_the_reason">Select the reason</string>
+    <string name="tm_hr_edit_profile_activity_text_comments">Comments</string>
+    <string name="tm_hr_edit_profile_activity_text_male">Male</string>
+    <string name="tm_hr_edit_profile_activity_text_female">Female</string>
+    <string name="tm_hr_edit_profile_activity_text_save">Save</string>
 
 </resources>

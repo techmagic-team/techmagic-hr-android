@@ -77,13 +77,92 @@ public class SharedPreferencesUtil {
     }
 
 
+    public static void saveSelectedProjectId(String projectId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY, projectId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedProjectId() {
+        return prefs.getString(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY, null);
+    }
+
+
     public static void clearPreferences() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
         editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
+        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH);
         editor.remove(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY);
         editor.remove(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY);
+        editor.remove(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY);
         editor.apply();
+    }
+
+
+    public static void saveMyTeamSelection(boolean isMyTeamSelected) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY, isMyTeamSelected);
+        editor.apply();
+    }
+
+
+    public static boolean getMyTeamSelection() {
+        return prefs.getBoolean(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY, true); // selected by default
+    }
+
+
+    public static void saveSelectedFromTime(long timeInMillis) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY, timeInMillis);
+        editor.apply();
+    }
+
+
+    public static long getSelectedFromTime() {
+        return prefs.getLong(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY, 0);
+    }
+
+
+    public static void saveSelectedToTime(long timeInMillis) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY, timeInMillis);
+        editor.apply();
+    }
+
+
+    public static long getSelectedToTime() {
+        return prefs.getLong(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY, 0);
+    }
+
+
+    public static void saveSelectedCalendarDepartmentId(String calDepId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY, calDepId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedCalendarDepartmentId() {
+        return prefs.getString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY, null);
+    }
+
+
+    public static void saveSelectedCalendarProjectId(String projectId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY, projectId);
+        editor.apply();
+    }
+
+
+    public static String getSelectedCalendarProjectId() {
+        return prefs.getString(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY, null);
     }
 
 
@@ -106,5 +185,11 @@ public class SharedPreferencesUtil {
         String LOGGED_ID_USER_KEY = "logged_in_user_key";
         String SELECTED_DEPARTMENT_ID_KEY = "selected_department_id_key";
         String SELECTED_LEAD_ID_KEY = "selected_lead_id_key";
+        String SELECTED_PROJECT_ID_KEY = "selected_project_id_key";
+        String CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY = "calendar_filters_selected_my_team_key";
+        String CALENDAR_FILTERS_SELECTED_FROM_KEY = "calendar_filters_selected_from_key";
+        String CALENDAR_FILTERS_SELECTED_TO_KEY = "calendar_filters_selected_to_key";
+        String CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY = "calendar_filters_selected_department_id_key";
+        String CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY = "calendar_filters_selected_project_id_key";
     }
 }

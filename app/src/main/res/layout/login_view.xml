@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cvLogin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorCardViewBgGrey"
         android:orientation="vertical"
         android:paddingEnd="@dimen/activity_login_card_view_margin_horizontal"
         android:paddingLeft="@dimen/activity_login_card_view_margin_horizontal"
@@ -24,7 +24,7 @@
             android:textColorHint="@color/colorAccent">
 
             <EditText
-                android:id="@+id/etEmail"
+                android:id="@+id/etLoginEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -39,10 +39,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_login_vertical_margin"
             android:hint="@string/tm_hr_login_activity_hint_password"
-            android:textColorHint="@color/colorAccent">
+            android:textColorHint="@color/colorAccent"
+            app:passwordToggleEnabled="true">
 
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/etLoginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
@@ -88,4 +89,4 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</LinearLayout>

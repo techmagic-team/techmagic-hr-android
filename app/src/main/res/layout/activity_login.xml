@@ -1,45 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_login_vertical_margin"
-    android:paddingLeft="@dimen/activity_login_horizontal_margin"
-    android:paddingRight="@dimen/activity_login_horizontal_margin"
-    android:paddingTop="@dimen/activity_login_vertical_margin">
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_login_tm_logo_margin_bottom"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/activity_login_tm_root_view_margin_bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_login_vertical_margin"
+        android:paddingLeft="@dimen/activity_login_horizontal_margin"
+        android:paddingRight="@dimen/activity_login_horizontal_margin"
+        android:paddingTop="@dimen/activity_login_vertical_margin">
 
-        <ImageView
-            android:layout_width="@dimen/activity_login_tm_logo_width"
-            android:layout_height="@dimen/activity_login_tm_logo_height"
-            android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_techmagic_logo_on_white" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/activity_login_horizontal_margin_text_top"
-            android:text="@string/tm_hr_login_activity_text_hr"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/activity_login_tm_logo_margin_bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/activity_login_tm_logo_width"
+                android:layout_height="@dimen/activity_login_tm_logo_height"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_techmagic_logo_on_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/activity_login_horizontal_margin_text_top"
+                android:text="@string/tm_hr_login_activity_text_hr"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <include layout="@layout/login_card_view" />
+
+        <include layout="@layout/forgot_pass_success_view" />
 
     </LinearLayout>
 
-    <include layout="@layout/login_view" />
-
-    <include layout="@layout/forgot_pass_view" />
-
-    <include layout="@layout/forgot_pass_success_view" />
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>
