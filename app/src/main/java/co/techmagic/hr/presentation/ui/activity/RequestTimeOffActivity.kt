@@ -15,8 +15,7 @@ import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
 import co.techmagic.hr.presentation.mvp.view.impl.RequestTimeOffViewImpl
-import co.techmagic.hr.presentation.pojo.PeriodPair
-import co.techmagic.hr.presentation.ui.fragment.RequestTimeOffDatePickerFragment
+import co.techmagic.hr.presentation.pojo.WorkingPeriod
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.find
@@ -50,6 +49,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Locale.setDefault(Locale.US)
 
         actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -126,11 +127,11 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 toast(R.string.tm_hr_successfully_requested_time_off)
             }
 
-            override fun showUserPeriods(userPeriods: List<PeriodPair>) {
+            override fun showUserPeriods(userPeriods: Pair<WorkingPeriod, WorkingPeriod>) {
                 rgPeriods.visibility = View.VISIBLE
                 with(userPeriods) {
-                    rbFirstPeriod.text = dateFormat.format(elementAt(0).startDate) + " - " + dateFormat.format(elementAt(0).endDate)
-                    rbSecondPeriod.text = dateFormat.format(elementAt(1).startDate) + " - " + dateFormat.format(elementAt(1).endDate)
+                    rbFirstPeriod.text = dateFormat.format(first.startDate) + " - " + dateFormat.format(first.endDate)
+                    rbSecondPeriod.text = dateFormat.format(second.startDate) + " - " + dateFormat.format(second.endDate)
 
                     presenter.onFirstPeriodSelected()
                 }
@@ -159,19 +160,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
 
             override fun showDatePicker(from: Calendar, to: Calendar, isDateFromPicker: Boolean, allowPastDateSelection: Boolean) {
-                val fragment: RequestTimeOffDatePickerFragment = RequestTimeOffDatePickerFragment()
-
-                fragment.listener = object : RequestTimeOffDatePickerFragment.DateSetListener {
-                    override fun onDateSet(year: Int, month: Int, dayOfMonth: Int) {
-                        if (isDateFromPicker) {
-                            presenter.onFromDateSet(year, month, dayOfMonth)
-                        }
-
-                        presenter.onToDateSet(year, month, dayOfMonth)
-                        initTimeOffDate()
-                    }
-                }
-
                 var initDate: Calendar = Calendar.getInstance()
 
                 if (initDate.before(from)) {

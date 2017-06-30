@@ -65,10 +65,6 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        // TODO: 6/6/17
-        tilEmail.getEditText().setText("ar@stark.com");
-        tilPassword.getEditText().setText("123456");
-
         initUi();
     }
 

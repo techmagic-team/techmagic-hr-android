@@ -7,10 +7,11 @@ import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.request.TimeOffAllRequest
 import co.techmagic.hr.data.request.TimeOffRequestByUser
 import co.techmagic.hr.domain.interactor.DataUseCase
+import co.techmagic.hr.domain.pojo.DatePeriodDto
 import co.techmagic.hr.domain.pojo.RemainedTimeOffsAmountDto
 import co.techmagic.hr.domain.repository.IEmployeeRepository
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
-import co.techmagic.hr.presentation.pojo.PeriodPair
+import co.techmagic.hr.presentation.pojo.WorkingPeriod
 import co.techmagic.hr.presentation.util.DateUtil
 import rx.Observable
 import java.util.*
@@ -27,11 +28,15 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
                 .flatMap { periodsList ->
                     val timeOffsObservableList: MutableList<Observable<AvailableTimeOffsData>> = mutableListOf()
 
-                    for ((dateFrom, dateTo) in periodsList) {
+                    val sortedPeriodsList: MutableList<DatePeriodDto> = mutableListOf()
+                    sortedPeriodsList.addAll(periodsList)
+                    sortedPeriodsList.sortBy { (dateFrom) -> dateFrom }
+
+                    for ((dateFrom, dateTo) in sortedPeriodsList) {
                         val timeOffRequestByUser: TimeOffRequestByUser = TimeOffRequestByUser(userId, DateFrom(dateFrom.time), DateTo(dateTo.time))
                         val observable = getLoadTimeOffsObservable(timeOffRequestByUser)
                                 .map { remainedTimeOffsAmountDto ->
-                                    val periodPair: PeriodPair = PeriodPair(dateFrom, prepareDateTo(dateTo))
+                                    val periodPair: WorkingPeriod = WorkingPeriod(dateFrom, prepareDateTo(dateTo))
 
                                     availableTimeOffsData.timeOffsMap.put(periodPair, remainedTimeOffsAmountDto)
                                     availableTimeOffsData

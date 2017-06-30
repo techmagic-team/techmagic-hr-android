@@ -10,7 +10,7 @@ import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.domain.pojo.TimeOffRequestByUserAllPeriods
 import co.techmagic.hr.domain.pojo.UsedTimeOffsByUserDto
 import co.techmagic.hr.domain.repository.IEmployeeRepository
-import co.techmagic.hr.presentation.pojo.PeriodPair
+import co.techmagic.hr.presentation.pojo.WorkingPeriod
 import co.techmagic.hr.presentation.util.DateUtil
 import rx.Observable
 import java.util.*
@@ -22,7 +22,7 @@ import kotlin.collections.HashMap
 
 class GetTimeOffsByUser(iEmployeeRepository: IEmployeeRepository) : DataUseCase<TimeOffRequestByUserAllPeriods, UsedTimeOffsByUserDto, IEmployeeRepository>(iEmployeeRepository) {
 
-    class PeriodAndTimeOff(val periodPair: PeriodPair, val timeOffType: TimeOffType) {
+    class PeriodAndTimeOff(val periodPair: WorkingPeriod, val timeOffType: TimeOffType) {
         var timeOffList: MutableList<RequestedTimeOffDto> = mutableListOf()
     }
 

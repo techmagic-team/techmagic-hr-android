@@ -17,7 +17,7 @@ import co.techmagic.hr.domain.repository.IUserRepository
 import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
-import co.techmagic.hr.presentation.pojo.PeriodPair
+import co.techmagic.hr.presentation.pojo.WorkingPeriod
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import java.util.*
 
@@ -51,7 +51,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     var requestTimeOffDateTo: Calendar = Calendar.getInstance()
         private set
 
-    lateinit var selectedPeriod: PeriodPair
+    lateinit var selectedPeriod: WorkingPeriod
         private set
 
     companion object {
@@ -95,12 +95,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
                 view?.hideProgress()
                 if (timeOffsData != null) {
-                    var periodPairsList: List<PeriodPair> = timeOffsData.timeOffsMap.keys.toList()
+                    val periodPair: Pair<WorkingPeriod, WorkingPeriod> = Pair(getPeriod(true), getPeriod(false))
 
-                    periodPairsList = periodPairsList.sortedWith(compareBy(PeriodPair::startDate))
-
-                    view?.showUserPeriods(periodPairsList)
-                    selectedPeriod = periodPairsList[0]
+                    view?.showUserPeriods(periodPair)
+                    selectedPeriod = periodPair.first
                 }
 
                 loadRequestedTimeOffs()
@@ -115,25 +113,17 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFromDateClicked() {
-        val calendarFrom: Calendar = Calendar.getInstance()
-        calendarFrom.timeInMillis = selectedPeriod.startDate.time
-
-        val calendarTo: Calendar = Calendar.getInstance()
-        calendarTo.timeInMillis = selectedPeriod.endDate.time
+        val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
         view?.hideProgress()
-        view?.showDatePicker(calendarFrom, calendarTo, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onToDateClicked() {
-        val calendarFrom: Calendar = Calendar.getInstance()
-        calendarFrom.timeInMillis = selectedPeriod.startDate.time
-
-        val calendarTo: Calendar = Calendar.getInstance()
-        calendarTo.timeInMillis = selectedPeriod.endDate.time
+        val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
         view?.hideProgress()
-        view?.showDatePicker(calendarFrom, calendarTo, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
     }
 
     fun onTimeOffTypeClicked() {
@@ -185,13 +175,13 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFirstPeriodSelected() {
-        selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(0)
+        selectedPeriod = getPeriod(true)
         showRequestedTimeOffs()
         return showTimeOffsAvailableDays()
     }
 
     fun onSecondPeriodSelected() {
-        selectedPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(1)
+        selectedPeriod = getPeriod(false)
         showRequestedTimeOffs()
         return showTimeOffsAvailableDays()
     }
@@ -225,12 +215,19 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun getMinDatePickerDate(): Calendar {
-        val calendar: Calendar = Calendar.getInstance()
-        if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
-            calendar.time = selectedPeriod.startDate
-        }
+        val today: Calendar = Calendar.getInstance()
+        val periodStart: Calendar = Calendar.getInstance()
+        periodStart.time = selectedPeriod.startDate
 
-        return calendar
+        if (periodStart.after(today)) {
+            return periodStart
+        } else {
+            if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
+                return periodStart
+            } else {
+                return today
+            }
+        }
     }
 
     fun getMaxDatePickerDate(): Calendar {
@@ -238,6 +235,39 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         calendar.time = selectedPeriod.endDate
 
         return calendar
+    }
+
+    fun getHolidays(): List<Calendar> {
+        if (availableTimeOffsData != null) {
+            val weekends: MutableList<Calendar> = getWeekends()
+            val holidays: MutableList<Calendar> = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
+            weekends.addAll(holidays)
+            return weekends
+
+        } else {
+            return listOf()
+        }
+    }
+
+    private fun getPeriod(shouldBeEarlier: Boolean): WorkingPeriod {
+        val period1: WorkingPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(0)
+        val period2: WorkingPeriod = availableTimeOffsData!!.timeOffsMap.keys.elementAt(1)
+
+        if (period1.startDate.before(period2.startDate)) {
+            return if (shouldBeEarlier) period1 else period2
+        } else {
+            return if (shouldBeEarlier) period2 else period1
+        }
+    }
+
+    private fun getBoundsForPicker(): Pair<Calendar, Calendar> {
+        val calendarFrom: Calendar = Calendar.getInstance()
+        calendarFrom.timeInMillis = selectedPeriod.startDate.time
+
+        val calendarTo: Calendar = Calendar.getInstance()
+        calendarTo.timeInMillis = selectedPeriod.endDate.time
+
+        return Pair(calendarFrom, calendarTo)
     }
 
     private fun loadRequestedTimeOffs() {
@@ -314,12 +344,23 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
     }
 
-    fun getHolidays(): List<Calendar>? {
-        if (availableTimeOffsData != null) {
-            return availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
+    private fun getWeekends(): MutableList<Calendar> {
+        val weekendsList: MutableList<Calendar> = mutableListOf()
+        val calendarMinDate: Calendar = getMinDatePickerDate()
+        val calendarMaxDate: Calendar = getMaxDatePickerDate()
 
-        } else {
-            return listOf()
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.timeInMillis = calendarMinDate.timeInMillis
+
+        while (calendar.before(calendarMaxDate)) {
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                val currentDay: Calendar = calendar.clone() as Calendar
+                weekendsList.add(currentDay)
+            }
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
+
+        return weekendsList
     }
 }
