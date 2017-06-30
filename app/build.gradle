@@ -121,11 +121,12 @@ dependencies {
     compile "org.jetbrains.anko:anko-common:$anko_version"
 
     compile "com.mixpanel.android:mixpanel-android:5.1.3"
+    compile 'com.wdullaer:materialdatetimepicker:3.2.2'
 }
 
-def props = new Properties()
-props.load(new FileInputStream(rootProject.file("release.properties")))
-android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
-android.signingConfigs.release.storePassword props.keyStorePassword
-android.signingConfigs.release.keyAlias props.keyAlias
-android.signingConfigs.release.keyPassword props.keyAliasPassword
+//def props = new Properties()
+//props.load(new FileInputStream(rootProject.file("release.properties")))
+//android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
+//android.signingConfigs.release.storePassword props.keyStorePassword
+//android.signingConfigs.release.keyAlias props.keyAlias
+//android.signingConfigs.release.keyPassword props.keyAliasPassword

@@ -16,6 +16,7 @@ import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.HolidayDate;
 import co.techmagic.hr.data.entity.RequestTimeOff;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.entity.TimeOffAmount;
@@ -200,6 +201,17 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     public Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getCalendar(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<List<HolidayDate>> getHolidays(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getHolidays(request.getDateFrom(), request.getDateTo());
         }
 
         return Observable.error(new NetworkConnectionException());
