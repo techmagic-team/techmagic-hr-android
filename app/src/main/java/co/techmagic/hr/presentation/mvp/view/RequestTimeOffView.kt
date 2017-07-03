@@ -22,4 +22,6 @@ interface RequestTimeOffView : View {
     fun showErrorLoadingRequestedTimeOffs()
     fun showErrorDeletingRequestedTimeOff()
     fun showUserProfileError()
+    fun showCantRequestDayOffBecauseOfVacations()
+    fun showNotEnoughDaysAvailable()
 }

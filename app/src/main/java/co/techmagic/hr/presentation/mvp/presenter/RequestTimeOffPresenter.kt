@@ -152,26 +152,94 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun onRequestButtonClicked() {
         if (isInputDataValid()) {
-            val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!, userRole == Role.ROLE_ADMIN)
+            if (isValidTimeOffAvailability()) {
+                val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!, userRole == Role.ROLE_ADMIN)
 
-            view?.showProgress()
+                view?.showProgress()
 
-            requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
-                override fun onNext(requestedTimeOffDto: RequestedTimeOffDto?) {
-                    view?.hideProgress()
-                    view?.showRequestTimeOffSuccess()
-                    loadRequestedTimeOffs()
-                }
+                requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
+                    override fun onNext(requestedTimeOffDto: RequestedTimeOffDto?) {
+                        view?.hideProgress()
+                        view?.showRequestTimeOffSuccess()
+                        loadRequestedTimeOffs()
+                    }
 
-                override fun onError(e: Throwable?) {
-                    Log.e(TAG, e?.message, e)
-                    view?.hideProgress()
-                    view?.showRequestTimeOffError()
-                }
-            })
+                    override fun onError(e: Throwable?) {
+                        Log.e(TAG, e?.message, e)
+                        view?.hideProgress()
+                        view?.showRequestTimeOffError()
+                    }
+                })
+            }
+
         } else {
             view!!.showInvalidInputData()
         }
+    }
+
+    private fun isValidTimeOffAvailability(): Boolean {
+        val vacationsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
+        val dayOffsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.DAYOFF]!!
+        val illnessAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.ILLNESS]!!
+
+        val requestedTimeOffDaysAmount: Int = calculateWorkingDaysAmount()
+
+        var isValid: Boolean = true
+
+        when (selectedTimeOffType) {
+            TimeOffType.DAYOFF -> run {
+                if (selectedTimeOffType == TimeOffType.DAYOFF && vacationsAvailable > 0) {
+                    view?.showCantRequestDayOffBecauseOfVacations()
+                    isValid = false
+                } else if (requestedTimeOffDaysAmount > dayOffsAvailable) {
+                    view?.showNotEnoughDaysAvailable()
+                    isValid = false
+                } else {
+                }
+            }
+
+            TimeOffType.VACATION -> run {
+                if (requestedTimeOffDaysAmount > vacationsAvailable) {
+                    view?.showNotEnoughDaysAvailable()
+                    isValid = false
+                }
+            }
+
+            TimeOffType.ILLNESS -> run {
+                if (requestedTimeOffDaysAmount > illnessAvailable) {
+                    view?.showNotEnoughDaysAvailable()
+                    isValid = false
+                }
+            }
+
+            else -> run {
+                Log.e(TAG, "Wrong time off type")
+            }
+        }
+
+        return isValid
+    }
+
+    private fun calculateWorkingDaysAmount(): Int {
+        var daysAmount = 0
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.timeInMillis = requestTimeOffDateFrom.timeInMillis
+
+        while (calendar.before(requestTimeOffDateTo)
+                || (calendar.get(Calendar.YEAR) == requestTimeOffDateTo.get(Calendar.YEAR)
+                && calendar.get(Calendar.MONTH) == requestTimeOffDateTo.get(Calendar.MONTH)
+                && calendar.get(Calendar.DAY_OF_MONTH) == requestTimeOffDateTo.get(Calendar.DAY_OF_MONTH))) {
+
+            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+                    && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+                    && !isHoliday(calendar)) {
+                daysAmount++
+            }
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        return daysAmount
     }
 
     fun onFirstPeriodSelected() {
@@ -260,6 +328,16 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
     }
 
+    private fun isHoliday(day: Calendar): Boolean {
+        val holidays: MutableList<Calendar> = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
+
+        return holidays.any { calendar: Calendar ->
+            (calendar.get(Calendar.YEAR) == day.get(Calendar.YEAR))
+                    && (calendar.get(Calendar.MONTH) == day.get(Calendar.MONTH))
+                    && (calendar.get(Calendar.DAY_OF_MONTH) == day.get(Calendar.DAY_OF_MONTH))
+        }
+    }
+
     private fun getBoundsForPicker(): Pair<Calendar, Calendar> {
         val calendarFrom: Calendar = Calendar.getInstance()
         calendarFrom.timeInMillis = selectedPeriod.startDate.time
@@ -318,7 +396,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
                     return true
                 } else {
-                    return (requestTimeOffDateFrom.after(today))
+                    return requestTimeOffDateFrom.after(today)
                 }
             }
         }

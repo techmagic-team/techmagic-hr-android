@@ -98,6 +98,14 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showNotEnoughDaysAvailable() {
+                toast(R.string.tm_hr_not_enough_days_available)
+            }
+
+            override fun showCantRequestDayOffBecauseOfVacations() {
+                toast(R.string.tm_hr_you_have_not_already_used_all_vacations)
+            }
+
             override fun showUserProfileError() {
                 toast(R.string.tm_hr_error_loading_user_profile)
             }
