@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.view
 
+import co.techmagic.hr.common.Role
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.pojo.WorkingPeriod
@@ -22,6 +23,10 @@ interface RequestTimeOffView : View {
     fun showErrorLoadingRequestedTimeOffs()
     fun showErrorDeletingRequestedTimeOff()
     fun showUserProfileError()
-    fun showCantRequestDayOffBecauseOfVacations()
+    fun showCantRequestDayOffBecauseOfVacations(rolE_USER: Role)
     fun showNotEnoughDaysAvailable()
+    fun enableDatePickers()
+    fun disableDatePickers()
+    fun disableRequestButton()
+    fun enableRequestButton()
 }

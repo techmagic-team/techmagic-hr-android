@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import co.techmagic.hr.R
+import co.techmagic.hr.common.Role
 import co.techmagic.hr.common.TimeOffType
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto
 import co.techmagic.hr.presentation.mvp.presenter.RequestTimeOffPresenter
@@ -98,11 +99,29 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun enableDatePickers() {
+                vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
+                vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
+            }
+
+            override fun disableDatePickers() {
+                vgFilterFrom.setOnClickListener(null)
+                vgFilterTo.setOnClickListener(null)
+            }
+
+            override fun disableRequestButton() {
+                btnRequest.isEnabled = false
+            }
+
+            override fun enableRequestButton() {
+                btnRequest.isEnabled = true
+            }
+
             override fun showNotEnoughDaysAvailable() {
                 toast(R.string.tm_hr_not_enough_days_available)
             }
 
-            override fun showCantRequestDayOffBecauseOfVacations() {
+            override fun showCantRequestDayOffBecauseOfVacations(rolE_USER: Role) {
                 toast(R.string.tm_hr_you_have_not_already_used_all_vacations)
             }
 

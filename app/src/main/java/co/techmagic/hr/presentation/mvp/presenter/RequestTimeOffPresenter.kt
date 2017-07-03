@@ -134,8 +134,23 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onTimeOffTypeSelected(timeOffType: TimeOffType) {
         this.selectedTimeOffType = timeOffType
         view?.selectTimeOff(timeOffType)
+        view?.enableDatePickers()
+        view?.enableRequestButton()
 
         showRequestedTimeOffs()
+
+        if (selectedTimeOffType == TimeOffType.DAYOFF) {
+            val vacationsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
+
+            if (selectedTimeOffType == TimeOffType.DAYOFF && vacationsAvailable > 0) {
+                view?.showCantRequestDayOffBecauseOfVacations(Role.ROLE_USER)
+
+                if (userRole == Role.ROLE_USER) {
+                    view?.disableDatePickers()
+                    view?.disableRequestButton()
+                }
+            }
+        }
     }
 
     fun onFromDateSet(year: Int, month: Int, dayOfMonth: Int) {
@@ -175,71 +190,6 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         } else {
             view!!.showInvalidInputData()
         }
-    }
-
-    private fun isValidTimeOffAvailability(): Boolean {
-        val vacationsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
-        val dayOffsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.DAYOFF]!!
-        val illnessAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.ILLNESS]!!
-
-        val requestedTimeOffDaysAmount: Int = calculateWorkingDaysAmount()
-
-        var isValid: Boolean = true
-
-        when (selectedTimeOffType) {
-            TimeOffType.DAYOFF -> run {
-                if (selectedTimeOffType == TimeOffType.DAYOFF && vacationsAvailable > 0) {
-                    view?.showCantRequestDayOffBecauseOfVacations()
-                    isValid = false
-                } else if (requestedTimeOffDaysAmount > dayOffsAvailable) {
-                    view?.showNotEnoughDaysAvailable()
-                    isValid = false
-                } else {
-                }
-            }
-
-            TimeOffType.VACATION -> run {
-                if (requestedTimeOffDaysAmount > vacationsAvailable) {
-                    view?.showNotEnoughDaysAvailable()
-                    isValid = false
-                }
-            }
-
-            TimeOffType.ILLNESS -> run {
-                if (requestedTimeOffDaysAmount > illnessAvailable) {
-                    view?.showNotEnoughDaysAvailable()
-                    isValid = false
-                }
-            }
-
-            else -> run {
-                Log.e(TAG, "Wrong time off type")
-            }
-        }
-
-        return isValid
-    }
-
-    private fun calculateWorkingDaysAmount(): Int {
-        var daysAmount = 0
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = requestTimeOffDateFrom.timeInMillis
-
-        while (calendar.before(requestTimeOffDateTo)
-                || (calendar.get(Calendar.YEAR) == requestTimeOffDateTo.get(Calendar.YEAR)
-                && calendar.get(Calendar.MONTH) == requestTimeOffDateTo.get(Calendar.MONTH)
-                && calendar.get(Calendar.DAY_OF_MONTH) == requestTimeOffDateTo.get(Calendar.DAY_OF_MONTH))) {
-
-            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-                    && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-                    && !isHoliday(calendar)) {
-                daysAmount++
-            }
-
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
-
-        return daysAmount
     }
 
     fun onFirstPeriodSelected() {
@@ -440,5 +390,45 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
 
         return weekendsList
+    }
+
+    private fun isValidTimeOffAvailability(): Boolean {
+        val requestedTimeOffDaysAmount: Int = calculateWorkingDaysAmount()
+
+        val availableDays: Int = when (selectedTimeOffType) {
+            TimeOffType.DAYOFF -> availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.DAYOFF]!!
+            TimeOffType.VACATION -> availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
+            TimeOffType.ILLNESS -> availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.ILLNESS]!!
+            else -> 0
+        }
+
+        if (requestedTimeOffDaysAmount > availableDays) {
+            view?.showNotEnoughDaysAvailable()
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private fun calculateWorkingDaysAmount(): Int {
+        var daysAmount = 0
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.timeInMillis = requestTimeOffDateFrom.timeInMillis
+
+        while (calendar.before(requestTimeOffDateTo)
+                || (calendar.get(Calendar.YEAR) == requestTimeOffDateTo.get(Calendar.YEAR)
+                && calendar.get(Calendar.MONTH) == requestTimeOffDateTo.get(Calendar.MONTH)
+                && calendar.get(Calendar.DAY_OF_MONTH) == requestTimeOffDateTo.get(Calendar.DAY_OF_MONTH))) {
+
+            if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+                    && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+                    && !isHoliday(calendar)) {
+                daysAmount++
+            }
+
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        return daysAmount
     }
 }
