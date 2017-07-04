@@ -246,7 +246,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     }
 
     private fun setDate(dateView: TextView, date: Date) {
-        val dateString: String = DateUtil.getFormattedFullDate(date)
+        val dateString: String = DateUtil.getFormattedFullDateInUTC(date)
         dateView.text = dateString
     }
 
@@ -316,8 +316,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             val requestedTimeOff: RequestedTimeOffDto = items[position]
-            val dateFrom: String = DateUtil.getFormattedFullDate(requestedTimeOff.dateFrom)
-            val dateTo: String = DateUtil.getFormattedFullDate(requestedTimeOff.dateTo)
+            val dateFrom: String = DateUtil.getFormattedFullDateInUTC(requestedTimeOff.dateFrom)
+            val dateTo: String = DateUtil.getFormattedFullDateInUTC(requestedTimeOff.dateTo)
 
             val dateRangeString = dateFrom + " - " + dateTo
             holder!!.tvTimeOff.text = dateRangeString

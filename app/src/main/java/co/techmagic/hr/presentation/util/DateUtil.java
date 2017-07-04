@@ -13,6 +13,7 @@ public class DateUtil {
 
     private static SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+    private static SimpleDateFormat outputFullDateFormatUTC = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
     private static SimpleDateFormat outputMonthAndYearFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
     private static SimpleDateFormat outputShortMonthFormat = new SimpleDateFormat("MMM", Locale.US);
@@ -52,6 +53,27 @@ public class DateUtil {
         try {
             Date d = inputFormat.parse(date);
             formattedDate = outputFullDateFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+    public static String getFormattedFullDateInUTC(@Nullable Date inputDate) {
+        String formattedDate = null;
+
+        if (inputDate == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            outputFullDateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+            formattedDate = outputFullDateFormatUTC.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
         }

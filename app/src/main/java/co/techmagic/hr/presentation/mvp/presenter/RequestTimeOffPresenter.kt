@@ -155,15 +155,25 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFromDateSet(year: Int, month: Int, dayOfMonth: Int) {
+        requestTimeOffDateFrom.timeZone = TimeZone.getTimeZone("UTC")
         requestTimeOffDateFrom.set(Calendar.YEAR, year)
         requestTimeOffDateFrom.set(Calendar.MONTH, month)
         requestTimeOffDateFrom.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        requestTimeOffDateFrom.set(Calendar.HOUR_OF_DAY, 0)
+        requestTimeOffDateFrom.set(Calendar.MINUTE, 0)
+        requestTimeOffDateFrom.set(Calendar.SECOND, 0)
+        requestTimeOffDateFrom.set(Calendar.MILLISECOND, 0)
     }
 
     fun onToDateSet(year: Int, month: Int, dayOfMonth: Int) {
+        requestTimeOffDateTo.timeZone = TimeZone.getTimeZone("UTC")
         requestTimeOffDateTo.set(Calendar.YEAR, year)
         requestTimeOffDateTo.set(Calendar.MONTH, month)
         requestTimeOffDateTo.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        requestTimeOffDateTo.set(Calendar.HOUR_OF_DAY, 23)
+        requestTimeOffDateTo.set(Calendar.MINUTE, 59)
+        requestTimeOffDateTo.set(Calendar.SECOND, 59)
+        requestTimeOffDateTo.set(Calendar.MILLISECOND, 999)
     }
 
     fun onRequestButtonClicked() {
@@ -326,14 +336,14 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     private fun isInputDataValid(): Boolean {
-        val today: Calendar = Calendar.getInstance()
-        val periodStart: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val periodStart: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         periodStart.timeInMillis = selectedPeriod.startDate.time
         periodStart.set(Calendar.HOUR_OF_DAY, 0)
         periodStart.set(Calendar.MINUTE, 0)
         periodStart.set(Calendar.SECOND, 0)
 
-        val periodEnd: Calendar = Calendar.getInstance()
+        val periodEnd: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         periodEnd.timeInMillis = selectedPeriod.endDate.time
 
         if (availableTimeOffsData != null && selectedTimeOffType != null) {
@@ -346,7 +356,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                     && requestTimeOffDateFrom.before(periodEnd)
                     && requestTimeOffDateTo.after(periodStart)
                     && ((requestTimeOffDateTo == periodEnd) || requestTimeOffDateTo.before(periodEnd))
-                    && (requestTimeOffDateTo.after(requestTimeOffDateFrom) || requestTimeOffDateTo == requestTimeOffDateFrom)) {
+                    && (requestTimeOffDateTo.after(requestTimeOffDateFrom)
+                    || (requestTimeOffDateTo.get(Calendar.YEAR) == requestTimeOffDateFrom.get(Calendar.YEAR)
+                    && (requestTimeOffDateTo.get(Calendar.MONTH) == requestTimeOffDateFrom.get(Calendar.MONTH))
+                    && (requestTimeOffDateTo.get(Calendar.DAY_OF_MONTH) == requestTimeOffDateFrom.get(Calendar.DAY_OF_MONTH))))) {
 
                 if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
                     return true
