@@ -210,7 +210,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
                 datePickerDialog.minDate = presenter.getMinDatePickerDate()
                 datePickerDialog.maxDate = presenter.getMaxDatePickerDate()
-                datePickerDialog.disabledDays = presenter.getHolidays()!!.toTypedArray()
+                datePickerDialog.disabledDays = presenter.getHolidays().toTypedArray()
                 datePickerDialog.show(fragmentManager, DATE_PICKER_FRAGMENT)
             }
 

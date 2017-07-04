@@ -137,6 +137,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         view?.enableDatePickers()
         view?.enableRequestButton()
 
+        showTimeOffsAvailableDays()
         showRequestedTimeOffs()
 
         if (selectedTimeOffType == TimeOffType.DAYOFF) {
@@ -195,7 +196,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onFirstPeriodSelected() {
         selectedPeriod = getPeriod(true)
         showRequestedTimeOffs()
-        return showTimeOffsAvailableDays()
+        showTimeOffsAvailableDays()
     }
 
     fun onSecondPeriodSelected() {
@@ -259,7 +260,11 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         if (availableTimeOffsData != null) {
             val weekends: MutableList<Calendar> = getWeekends()
             val holidays: MutableList<Calendar> = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
+            val requestedTimeOffs = getRequestedTimeOffs()
+
             weekends.addAll(holidays)
+            weekends.addAll(requestedTimeOffs)
+
             return weekends
 
         } else {
@@ -390,6 +395,41 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
 
         return weekendsList
+    }
+
+    private fun getRequestedTimeOffs(): MutableList<Calendar> {
+        val timeOffs: MutableList<Calendar> = mutableListOf()
+        if (usedTimeOffs != null) {
+            val requestedTimeOffMaps: MutableMap<TimeOffType, MutableList<RequestedTimeOffDto>>? = usedTimeOffs!!.timeOffMaps[selectedPeriod]
+            if (requestedTimeOffMaps != null) {
+                for (list in requestedTimeOffMaps.values) {
+                    for (requestedTimeOff in list) {
+                        val startDate: Calendar = Calendar.getInstance()
+                        val endDate: Calendar = Calendar.getInstance()
+
+                        startDate.timeInMillis = requestedTimeOff.dateFrom.time
+                        endDate.timeInMillis = requestedTimeOff.dateTo.time
+
+                        val calendar: Calendar = Calendar.getInstance()
+                        calendar.timeInMillis = startDate.timeInMillis
+
+                        while (calendar.before(endDate)
+                                || (calendar.get(Calendar.YEAR) == endDate.get(Calendar.YEAR)
+                                && calendar.get(Calendar.MONTH) == endDate.get(Calendar.MONTH)
+                                && calendar.get(Calendar.DAY_OF_MONTH) == endDate.get(Calendar.DAY_OF_MONTH))) {
+
+                            val currentDay: Calendar = Calendar.getInstance()
+                            currentDay.timeInMillis = calendar.timeInMillis
+
+                            timeOffs.add(currentDay)
+                            calendar.add(Calendar.DAY_OF_YEAR, 1)
+                        }
+                    }
+                }
+            }
+        }
+
+        return timeOffs
     }
 
     private fun isValidTimeOffAvailability(): Boolean {
