@@ -18,6 +18,7 @@ import co.techmagic.hr.presentation.DefaultSubscriber
 import co.techmagic.hr.presentation.mvp.view.RequestTimeOffView
 import co.techmagic.hr.presentation.pojo.AvailableTimeOffsData
 import co.techmagic.hr.presentation.pojo.WorkingPeriod
+import co.techmagic.hr.presentation.util.DateUtil
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import java.util.*
 
@@ -166,7 +167,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onToDateSet(year: Int, month: Int, dayOfMonth: Int) {
-        requestTimeOffDateTo.timeZone = TimeZone.getTimeZone("UTC")
+        requestTimeOffDateFrom.timeZone = TimeZone.getTimeZone("UTC")
         requestTimeOffDateTo.set(Calendar.YEAR, year)
         requestTimeOffDateTo.set(Calendar.MONTH, month)
         requestTimeOffDateTo.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -179,23 +180,31 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onRequestButtonClicked() {
         if (isInputDataValid()) {
             if (isValidTimeOffAvailability()) {
-                val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!, userRole == Role.ROLE_ADMIN)
+                if (!isOverlapWithRequestedTimeOff()) {
+                    view!!.disableRequestButton()
+                    val requestTimeOffDto: RequestTimeOffDto = RequestTimeOffDto(requestTimeOffDateFrom.timeInMillis, requestTimeOffDateTo.timeInMillis, userId, selectedTimeOffType!!, userRole == Role.ROLE_ADMIN)
 
-                view?.showProgress()
+                    view?.showProgress()
 
-                requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
-                    override fun onNext(requestedTimeOffDto: RequestedTimeOffDto?) {
-                        view?.hideProgress()
-                        view?.showRequestTimeOffSuccess()
-                        loadRequestedTimeOffs()
-                    }
+                    requestTimeOff.execute(requestTimeOffDto, object : DefaultSubscriber<RequestedTimeOffDto>() {
+                        override fun onNext(requestedTimeOffDto: RequestedTimeOffDto?) {
+                            view?.hideProgress()
+                            view!!.enableRequestButton()
+                            view?.showRequestTimeOffSuccess()
+                            loadAvailableDays()
+                        }
 
-                    override fun onError(e: Throwable?) {
-                        Log.e(TAG, e?.message, e)
-                        view?.hideProgress()
-                        view?.showRequestTimeOffError()
-                    }
-                })
+                        override fun onError(e: Throwable?) {
+                            Log.e(TAG, e?.message, e)
+                            view?.hideProgress()
+                            view!!.enableRequestButton()
+                            view?.showRequestTimeOffError()
+                            loadAvailableDays()
+                        }
+                    })
+                } else {
+                    view!!.showOverlapErrorMessage()
+                }
             }
 
         } else {
@@ -233,7 +242,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         deleteRequestedTimeOff.execute(requestedTimeOffDto, object : DefaultSubscriber<Void>() {
             override fun onNext(requestedTimeOffDto: Void?) {
                 view?.hideProgress()
-                loadRequestedTimeOffs()
+                loadAvailableDays()
             }
 
             override fun onError(e: Throwable?) {
@@ -275,11 +284,30 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
             weekends.addAll(holidays)
             weekends.addAll(requestedTimeOffs)
 
+            weekends.forEach { it.timeZone = TimeZone.getDefault() }
+
             return weekends
 
         } else {
             return listOf()
         }
+    }
+
+    private fun isOverlapWithRequestedTimeOff(): Boolean {
+        val allTimeOffs: List<RequestedTimeOffDto> = usedTimeOffs!!.getAllTimeOffs()
+        for (requestedTimeOff in allTimeOffs) {
+            val alreadyRequestedFrom: Calendar = Calendar.getInstance()
+            val alreadyRequestedTo: Calendar = Calendar.getInstance()
+
+            alreadyRequestedFrom.timeInMillis = requestedTimeOff.dateFrom.time
+            alreadyRequestedTo.timeInMillis = requestedTimeOff.dateTo.time
+
+            if (DateUtil.isOverLapping(alreadyRequestedFrom, alreadyRequestedTo, requestTimeOffDateFrom, requestTimeOffDateTo)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun getPeriod(shouldBeEarlier: Boolean): WorkingPeriod {
@@ -336,14 +364,14 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     private fun isInputDataValid(): Boolean {
-        val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        val periodStart: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val today: Calendar = Calendar.getInstance()
+        val periodStart: Calendar = Calendar.getInstance()
         periodStart.timeInMillis = selectedPeriod.startDate.time
         periodStart.set(Calendar.HOUR_OF_DAY, 0)
         periodStart.set(Calendar.MINUTE, 0)
         periodStart.set(Calendar.SECOND, 0)
 
-        val periodEnd: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val periodEnd: Calendar = Calendar.getInstance()
         periodEnd.timeInMillis = selectedPeriod.endDate.time
 
         if (availableTimeOffsData != null && selectedTimeOffType != null) {
@@ -364,7 +392,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                 if (userRole == Role.ROLE_ADMIN || userRole == Role.ROLE_HR) {
                     return true
                 } else {
-                    return requestTimeOffDateFrom.after(today)
+                    return requestTimeOffDateFrom.after(today) || DateUtil.isSameDate(requestTimeOffDateFrom, today)
                 }
             }
         }
@@ -426,10 +454,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
                         val calendar: Calendar = Calendar.getInstance()
                         calendar.timeInMillis = startDate.timeInMillis
 
-                        while (calendar.before(endDate)
-                                || (calendar.get(Calendar.YEAR) == endDate.get(Calendar.YEAR)
-                                && calendar.get(Calendar.MONTH) == endDate.get(Calendar.MONTH)
-                                && calendar.get(Calendar.DAY_OF_MONTH) == endDate.get(Calendar.DAY_OF_MONTH))) {
+                        while (calendar.before(endDate) || DateUtil.isSameDate(calendar, endDate)) {
 
                             val currentDay: Calendar = Calendar.getInstance()
                             currentDay.timeInMillis = calendar.timeInMillis

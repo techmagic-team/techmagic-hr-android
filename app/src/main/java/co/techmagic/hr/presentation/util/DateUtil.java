@@ -256,4 +256,23 @@ public class DateUtil {
 
         return outputShortMonthFormat.format(time.getTime());
     }
+
+
+    public static boolean isOverLapping(@Nullable Calendar start1, @Nullable Calendar end1, @Nullable Calendar start2, @Nullable Calendar end2) {
+        if (start1 == null || end1 == null || start2 == null || end2 == null) {
+            return false;
+        }
+
+        return !(end2.before(start1) || end1.before(start2));
+    }
+
+    public static boolean isSameDate(@Nullable Calendar date1, @Nullable Calendar date2) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH);
+    }
 }

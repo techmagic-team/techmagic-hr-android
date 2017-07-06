@@ -99,6 +99,10 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun showOverlapErrorMessage() {
+                toast(R.string.tm_hr_time_off_overlap)
+            }
+
             override fun enableDatePickers() {
                 vgFilterFrom.setOnClickListener { presenter.onFromDateClicked() }
                 vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
@@ -208,6 +212,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                         initDate.get(Calendar.DAY_OF_MONTH)
                 )
 
+                datePickerDialog.timeZone = TimeZone.getTimeZone("UTC")
                 datePickerDialog.minDate = presenter.getMinDatePickerDate()
                 datePickerDialog.maxDate = presenter.getMaxDatePickerDate()
                 datePickerDialog.disabledDays = presenter.getHolidays().toTypedArray()
@@ -337,7 +342,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 }
 
             } else {
-                holder.btDelete.visibility = View.INVISIBLE
+                holder.btDelete.visibility = View.GONE
             }
 
             when (requestedTimeOff.isAccepted) {

@@ -29,4 +29,5 @@ interface RequestTimeOffView : View {
     fun disableDatePickers()
     fun disableRequestButton()
     fun enableRequestButton()
+    fun showOverlapErrorMessage()
 }

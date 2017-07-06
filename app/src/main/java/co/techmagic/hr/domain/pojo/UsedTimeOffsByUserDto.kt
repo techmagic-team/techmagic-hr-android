@@ -12,4 +12,13 @@ class UsedTimeOffsByUserDto {
     val timeOffMaps: MutableMap<WorkingPeriod, MutableMap<TimeOffType, MutableList<RequestedTimeOffDto>>>
             = Collections.synchronizedMap(HashMap<WorkingPeriod, MutableMap<TimeOffType, MutableList<RequestedTimeOffDto>>>())
 
+    fun getAllTimeOffs(): List<RequestedTimeOffDto> {
+        val allTimeOffsList: MutableList<RequestedTimeOffDto> = mutableListOf()
+        timeOffMaps.values
+                .asSequence()
+                .flatMap { it.values.asSequence() }
+                .forEach { allTimeOffsList.addAll(it) }
+
+        return allTimeOffsList
+    }
 }
