@@ -108,11 +108,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 vgFilterTo.setOnClickListener { presenter.onToDateClicked() }
             }
 
-            override fun disableDatePickers() {
-                vgFilterFrom.setOnClickListener(null)
-                vgFilterTo.setOnClickListener(null)
-            }
-
             override fun disableRequestButton() {
                 btnRequest.isEnabled = false
             }
@@ -125,8 +120,12 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                 toast(R.string.tm_hr_not_enough_days_available)
             }
 
-            override fun showCantRequestDayOffBecauseOfVacations(rolE_USER: Role) {
-                toast(R.string.tm_hr_you_have_not_already_used_all_vacations)
+            override fun showCantRequestDayOffBecauseOfVacations(userRole: Role) {
+                if (userRole == Role.ROLE_USER) {
+                    toast(R.string.tm_hr_available_after_using_vacation)
+                } else {
+                    toast(R.string.tm_hr_you_have_not_already_used_all_vacation)
+                }
             }
 
             override fun showUserProfileError() {
@@ -212,7 +211,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
                         initDate.get(Calendar.DAY_OF_MONTH)
                 )
 
-                datePickerDialog.timeZone = TimeZone.getTimeZone("UTC")
                 datePickerDialog.minDate = presenter.getMinDatePickerDate()
                 datePickerDialog.maxDate = presenter.getMaxDatePickerDate()
                 datePickerDialog.disabledDays = presenter.getHolidays().toTypedArray()

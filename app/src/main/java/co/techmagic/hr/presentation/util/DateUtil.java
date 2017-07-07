@@ -263,6 +263,10 @@ public class DateUtil {
             return false;
         }
 
+        if (isSameDate(start1, start2) || isSameDate(end1, end2)) {
+            return true;
+        }
+
         return !(end2.before(start1) || end1.before(start2));
     }
 

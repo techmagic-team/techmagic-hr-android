@@ -26,7 +26,6 @@ interface RequestTimeOffView : View {
     fun showCantRequestDayOffBecauseOfVacations(rolE_USER: Role)
     fun showNotEnoughDaysAvailable()
     fun enableDatePickers()
-    fun disableDatePickers()
     fun disableRequestButton()
     fun enableRequestButton()
     fun showOverlapErrorMessage()

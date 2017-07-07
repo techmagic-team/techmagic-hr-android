@@ -116,15 +116,27 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     fun onFromDateClicked() {
         val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
-        view?.hideProgress()
-        view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        if (isDayOffAndUnusedVacationCase()) {
+            if (userRole == Role.ROLE_USER) {
+                view?.showCantRequestDayOffBecauseOfVacations(userRole)
+            }
+        } else {
+            view?.hideProgress()
+            view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = true, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        }
     }
 
     fun onToDateClicked() {
         val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
-        view?.hideProgress()
-        view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        if (isDayOffAndUnusedVacationCase()) {
+            if (userRole == Role.ROLE_USER) {
+                view?.showCantRequestDayOffBecauseOfVacations(userRole)
+            }
+        } else {
+            view?.hideProgress()
+            view?.showDatePicker(bounds.first, bounds.second, isDateFromPicker = false, allowPastDateSelection = userRole == Role.ROLE_ADMIN)
+        }
     }
 
     fun onTimeOffTypeClicked() {
@@ -141,16 +153,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         showTimeOffsAvailableDays()
         showRequestedTimeOffs()
 
-        if (selectedTimeOffType == TimeOffType.DAYOFF) {
-            val vacationsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
-
-            if (selectedTimeOffType == TimeOffType.DAYOFF && vacationsAvailable > 0) {
-                view?.showCantRequestDayOffBecauseOfVacations(Role.ROLE_USER)
-
-                if (userRole == Role.ROLE_USER) {
-                    view?.disableDatePickers()
-                    view?.disableRequestButton()
-                }
+        if (isDayOffAndUnusedVacationCase()) {
+            view?.showCantRequestDayOffBecauseOfVacations(userRole)
+            if (userRole == Role.ROLE_USER) {
+                view?.disableRequestButton()
             }
         }
     }
@@ -281,10 +287,10 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
             val holidays: MutableList<Calendar> = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.holidays
             val requestedTimeOffs = getRequestedTimeOffs()
 
+//            requestedTimeOffs.forEach { it.timeZone = TimeZone.getTimeZone("UTC") }
+
             weekends.addAll(holidays)
             weekends.addAll(requestedTimeOffs)
-
-            weekends.forEach { it.timeZone = TimeZone.getDefault() }
 
             return weekends
 
@@ -293,11 +299,26 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         }
     }
 
+    private fun isDayOffAndUnusedVacationCase(): Boolean {
+        if (selectedTimeOffType == TimeOffType.DAYOFF) {
+            val vacationsAvailable: Int = availableTimeOffsData!!.timeOffsMap[selectedPeriod]!!.map[TimeOffType.VACATION]!!
+
+            if (selectedTimeOffType == TimeOffType.DAYOFF && vacationsAvailable > 0) {
+                view?.showCantRequestDayOffBecauseOfVacations(userRole)
+                if (userRole == Role.ROLE_USER) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
     private fun isOverlapWithRequestedTimeOff(): Boolean {
         val allTimeOffs: List<RequestedTimeOffDto> = usedTimeOffs!!.getAllTimeOffs()
         for (requestedTimeOff in allTimeOffs) {
-            val alreadyRequestedFrom: Calendar = Calendar.getInstance()
-            val alreadyRequestedTo: Calendar = Calendar.getInstance()
+            val alreadyRequestedFrom: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            val alreadyRequestedTo: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
             alreadyRequestedFrom.timeInMillis = requestedTimeOff.dateFrom.time
             alreadyRequestedTo.timeInMillis = requestedTimeOff.dateTo.time
@@ -365,7 +386,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     private fun isInputDataValid(): Boolean {
         val today: Calendar = Calendar.getInstance()
-        val periodStart: Calendar = Calendar.getInstance()
+        val periodStart: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         periodStart.timeInMillis = selectedPeriod.startDate.time
         periodStart.set(Calendar.HOUR_OF_DAY, 0)
         periodStart.set(Calendar.MINUTE, 0)
