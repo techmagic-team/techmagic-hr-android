@@ -315,16 +315,18 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     private fun isOverlapWithRequestedTimeOff(): Boolean {
-        val allTimeOffs: List<RequestedTimeOffDto> = usedTimeOffs!!.getAllTimeOffs()
-        for (requestedTimeOff in allTimeOffs) {
-            val alreadyRequestedFrom: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            val alreadyRequestedTo: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        if (usedTimeOffs != null) {
+            val allTimeOffs: List<RequestedTimeOffDto> = usedTimeOffs!!.getAllTimeOffs()
+            for (requestedTimeOff in allTimeOffs) {
+                val alreadyRequestedFrom: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                val alreadyRequestedTo: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
-            alreadyRequestedFrom.timeInMillis = requestedTimeOff.dateFrom.time
-            alreadyRequestedTo.timeInMillis = requestedTimeOff.dateTo.time
+                alreadyRequestedFrom.timeInMillis = requestedTimeOff.dateFrom.time
+                alreadyRequestedTo.timeInMillis = requestedTimeOff.dateTo.time
 
-            if (DateUtil.isOverLapping(alreadyRequestedFrom, alreadyRequestedTo, requestTimeOffDateFrom, requestTimeOffDateTo)) {
-                return true
+                if (DateUtil.isOverLapping(alreadyRequestedFrom, alreadyRequestedTo, requestTimeOffDateFrom, requestTimeOffDateTo)) {
+                    return true
+                }
             }
         }
 
@@ -366,6 +368,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
         if (availableTimeOffsData != null && availableTimeOffsData!!.timeOffsMap.keys.size > 0) {
             val timeOffRequestByUser: TimeOffRequestByUserAllPeriods = TimeOffRequestByUserAllPeriods(userId, availableTimeOffsData!!.timeOffsMap.keys)
 
+            view?.showProgress()
             getTimeOffsByUser.execute(timeOffRequestByUser, object : DefaultSubscriber<UsedTimeOffsByUserDto>() {
                 override fun onNext(usedTimeOffsByUserDto: UsedTimeOffsByUserDto?) {
                     view?.hideProgress()
