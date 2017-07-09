@@ -114,6 +114,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onFromDateClicked() {
+        view?.hidePermanentErrorMessage()
         val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
         if (isDayOffAndUnusedVacationCase()) {
@@ -127,6 +128,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
     }
 
     fun onToDateClicked() {
+        view?.hidePermanentErrorMessage()
         val bounds: Pair<Calendar, Calendar> = getBoundsForPicker()
 
         if (isDayOffAndUnusedVacationCase()) {
@@ -146,6 +148,7 @@ class RequestTimeOffPresenter : BasePresenter<RequestTimeOffView>() {
 
     fun onTimeOffTypeSelected(timeOffType: TimeOffType) {
         this.selectedTimeOffType = timeOffType
+        view?.hidePermanentErrorMessage()
         view?.selectTimeOff(timeOffType)
         view?.enableDatePickers()
         view?.enableRequestButton()

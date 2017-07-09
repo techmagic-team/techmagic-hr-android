@@ -39,6 +39,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
     private lateinit var tvSelectedFrom: TextView
     private lateinit var tvSelectedTo: TextView
     private lateinit var tvAvailableDays: TextView
+    private lateinit var tvErrorMessage: TextView
     private lateinit var btnRequest: Button
     private lateinit var rgPeriods: RadioGroup
     private lateinit var rbFirstPeriod: RadioButton
@@ -81,6 +82,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         rbFirstPeriod = find(R.id.rbFirstPeriod)
         rbSecondPeriod = find(R.id.rbSecondPeriod)
         rvRequestedTimeOffs = find(R.id.rvRequestedTimeOffs)
+        tvErrorMessage = find(R.id.errorMessage)
         availableDaysLabel = resources.getString(R.string.tm_hr_available_days_label)
 
         rvRequestedTimeOffs.layoutManager = LinearLayoutManager(this)
@@ -99,8 +101,14 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
 
     override fun initView(): RequestTimeOffViewImpl {
         return object : RequestTimeOffViewImpl(this, findViewById(android.R.id.content)) {
+            override fun hidePermanentErrorMessage() {
+                tvErrorMessage.text = ""
+                tvErrorMessage.visibility = View.GONE
+            }
+
             override fun showOverlapErrorMessage() {
-                toast(R.string.tm_hr_time_off_overlap)
+                tvErrorMessage.visibility = View.VISIBLE
+                tvErrorMessage.setText(R.string.tm_hr_time_off_overlap)
             }
 
             override fun enableDatePickers() {
@@ -117,14 +125,16 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
 
             override fun showNotEnoughDaysAvailable() {
-                toast(R.string.tm_hr_not_enough_days_available)
+                tvErrorMessage.visibility = View.VISIBLE
+                tvErrorMessage.setText(R.string.tm_hr_not_enough_days_available)
             }
 
             override fun showCantRequestDayOffBecauseOfVacations(userRole: Role) {
+                tvErrorMessage.visibility = View.VISIBLE
                 if (userRole == Role.ROLE_USER) {
-                    toast(R.string.tm_hr_available_after_using_vacation)
+                    tvErrorMessage.setText(R.string.tm_hr_available_after_using_vacation)
                 } else {
-                    toast(R.string.tm_hr_you_have_not_already_used_all_vacation)
+                    tvErrorMessage.setText(R.string.tm_hr_you_have_not_already_used_all_vacation)
                 }
             }
 

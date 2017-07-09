@@ -29,4 +29,5 @@ interface RequestTimeOffView : View {
     fun disableRequestButton()
     fun enableRequestButton()
     fun showOverlapErrorMessage()
+    fun hidePermanentErrorMessage()
 }
