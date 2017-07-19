@@ -50,10 +50,6 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     EditText etLoginForgotPassEmail;
     @BindView(R.id.tilForgotPassEmail)
     TextInputLayout tilForgotPassEmail;
-    @BindView(R.id.tvForgotPassword)
-    TextView tvForgotPassword;
-    @BindView(R.id.tvGoToSignIn)
-    TextView tvGoToSignIn;
     @BindView(R.id.tvSelectCompany)
     TextView tvSelectCompany;
 
@@ -65,7 +61,6 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-
         initUi();
     }
 
