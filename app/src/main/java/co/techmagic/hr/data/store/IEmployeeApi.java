@@ -7,6 +7,7 @@ import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.HolidayDate;
 import co.techmagic.hr.data.entity.RequestTimeOff;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.entity.TimeOffAmount;
@@ -89,6 +90,9 @@ public interface IEmployeeApi {
 
     @GET("/v1/time-off/illness/user/{user_id}/totaldays?isPaid=true")
     Observable<TimeOffAmount> getTotalIllness(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
+
+    @GET("/v1/holidays")
+    Observable<List<HolidayDate>> getHolidays(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     @GET("/v1/time-off/dates/{user_id}")
     Observable<List<DatePeriod>> getUserPeriod(@Path("user_id") String userId);

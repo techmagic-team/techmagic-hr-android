@@ -13,6 +13,7 @@ public class DateUtil {
 
     private static SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     private static SimpleDateFormat outputFullDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+    private static SimpleDateFormat outputFullDateFormatUTC = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private static SimpleDateFormat outputMonthAndDayFormat = new SimpleDateFormat("MMM d", Locale.US);
     private static SimpleDateFormat outputMonthAndYearFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
     private static SimpleDateFormat outputShortMonthFormat = new SimpleDateFormat("MMM", Locale.US);
@@ -52,6 +53,27 @@ public class DateUtil {
         try {
             Date d = inputFormat.parse(date);
             formattedDate = outputFullDateFormat.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
+    public static String getFormattedFullDateInUTC(@Nullable Date inputDate) {
+        String formattedDate = null;
+
+        if (inputDate == null) {
+            return formattedDate;
+        }
+
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = inputFormat.format(inputDate);
+
+        try {
+            Date d = inputFormat.parse(date);
+            outputFullDateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+            formattedDate = outputFullDateFormatUTC.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -233,5 +255,28 @@ public class DateUtil {
         }
 
         return outputShortMonthFormat.format(time.getTime());
+    }
+
+
+    public static boolean isOverLapping(@Nullable Calendar start1, @Nullable Calendar end1, @Nullable Calendar start2, @Nullable Calendar end2) {
+        if (start1 == null || end1 == null || start2 == null || end2 == null) {
+            return false;
+        }
+
+        if (isSameDate(start1, start2) || isSameDate(end1, end2)) {
+            return true;
+        }
+
+        return !(end2.before(start1) || end1.before(start2));
+    }
+
+    public static boolean isSameDate(@Nullable Calendar date1, @Nullable Calendar date2) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH);
     }
 }

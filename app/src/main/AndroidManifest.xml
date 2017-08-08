@@ -55,6 +55,12 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+
 
         <meta-data
             android:name="io.fabric.ApiKey"

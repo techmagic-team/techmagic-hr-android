@@ -18,5 +18,7 @@
     <color name="colorIllness">#64adf5</color>
     <color name="colorAccepted">#ffbf4a</color>
     <color name="colorButtonDelete">#cb4646</color>
+    <color name="error_border">#cb4646</color>
+    <color name="error_background">#55cb4646</color>
 
 </resources>

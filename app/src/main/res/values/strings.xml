@@ -149,6 +149,11 @@
     <string name="tm_hr_error_loading_user_profile">Error loading user profile</string>
     <string name="tm_hr_failed_show_requested_time_off">Failed to show requested time offs</string>
     <string name="tm_hr_failed_delete_time_off">Failed to delete time off</string>
+    <string name="tm_hr_available_days_label">Available days %d</string>
+    <string name="tm_hr_you_have_not_already_used_all_vacation">You have not already used all vacation</string>
+    <string name="tm_hr_available_after_using_vacation">Available after using Vacation</string>
+    <string name="tm_hr_not_enough_days_available">Not enough days available</string>
+    <string name="tm_hr_time_off_overlap">Time off overlaps with already requested</string>
 
     <!-- EditProfileActivity -->
     <string name="tm_hr_edit_profile_activity_alert_dialog_save_changes">Save changes</string>

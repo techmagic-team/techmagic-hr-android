@@ -65,6 +65,7 @@ public class LoginActivity extends BaseActivity<LoginViewImpl, LoginPresenter> i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+
         initUi();
     }
 

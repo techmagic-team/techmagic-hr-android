@@ -5,6 +5,7 @@ import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import co.techmagic.hr.data.entity.DatePeriod;
 import co.techmagic.hr.data.entity.Employee;
 import co.techmagic.hr.data.entity.Filter;
 import co.techmagic.hr.data.entity.FilterLead;
+import co.techmagic.hr.data.entity.HolidayDate;
 import co.techmagic.hr.data.entity.RequestTimeOff;
 import co.techmagic.hr.data.entity.RequestedTimeOff;
 import co.techmagic.hr.data.entity.TimeOffAmount;
@@ -32,7 +34,9 @@ import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.domain.pojo.DatePeriodDto;
 import co.techmagic.hr.domain.pojo.RequestedTimeOffDto;
 import co.techmagic.hr.domain.repository.IEmployeeRepository;
+import io.github.eterverda.sntp.SNTP;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 /**
@@ -44,7 +48,7 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     private static final String TAG = EmployeeRepositoryImpl.class.getSimpleName();
     private ApiClient client;
     private NetworkManager networkManager;
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
 
     public EmployeeRepositoryImpl() {
@@ -200,6 +204,17 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     public Observable<List<CalendarInfo>> getCalendar(TimeOffAllRequest request) {
         if (networkManager.isNetworkAvailable()) {
             return client.getEmployeeClient().getCalendar(request.getDateFrom(), request.getDateTo());
+        }
+
+        return Observable.error(new NetworkConnectionException());
+    }
+
+    @Override
+    public Observable<List<HolidayDate>> getHolidays(TimeOffAllRequest request) {
+        if (networkManager.isNetworkAvailable()) {
+            return client
+                    .getEmployeeClient()
+                    .getHolidays(request.getDateFrom(), request.getDateTo());
         }
 
         return Observable.error(new NetworkConnectionException());
