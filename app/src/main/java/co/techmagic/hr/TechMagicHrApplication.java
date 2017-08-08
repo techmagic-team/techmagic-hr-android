@@ -9,6 +9,9 @@ import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.presentation.util.LocaleUtil;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import io.fabric.sdk.android.Fabric;
+import io.github.eterverda.sntp.SNTP;
+import io.github.eterverda.sntp.android.AndroidSNTPCacheFactory;
+import io.github.eterverda.sntp.android.AndroidSNTPClientFactory;
 
 
 public class TechMagicHrApplication extends Application {
@@ -30,5 +33,8 @@ public class TechMagicHrApplication extends Application {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
+
+        SNTP.setClient(AndroidSNTPClientFactory.create());
+        SNTP.setCache(AndroidSNTPCacheFactory.create(this));
     }
 }

@@ -56,10 +56,6 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setHomeButtonEnabled(true)
         actionBar?.setTitle(R.string.tm_hr_request_time_off_title)
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         presenter.loadData()
 
