@@ -7,20 +7,17 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
-import co.techmagic.hr.data.manager.impl.HrCryptoManager;
 
 public class SharedPreferencesUtil {
 
     private static SharedPreferences prefs;
-    private static HrCryptoManager hrCryptoManager;
 
     private SharedPreferencesUtil() {}
 
 
     public static void init(@NonNull Context appContext) {
-        if (prefs == null && hrCryptoManager == null) {
+        if (prefs == null) {
             prefs = appContext.getSharedPreferences(SharedPreferencesKeys.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-            hrCryptoManager = new HrCryptoManager();
         }
     }
 
@@ -28,14 +25,13 @@ public class SharedPreferencesUtil {
     public static void saveAccessToken(String token) {
         saveAccessTokenLength(token.length());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, hrCryptoManager.encrypt(token));
+        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, token);
         editor.apply();
     }
 
 
     public static String getAccessToken() {
-        String encodedAuthToken = prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
-        return encodedAuthToken == null ? null : hrCryptoManager.decrypt(encodedAuthToken, getAccessTokenLength());
+        return prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
     }
 
 
