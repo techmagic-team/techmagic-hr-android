@@ -357,7 +357,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view: View = LayoutInflater.from(parent!!.context).inflate(R.layout.item_requested_time_off, parent, false)
+            val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_requested_time_off, parent, false)
             return ViewHolder(view)
         }
 
