@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_tracker"
+        android:enabled="true"
+        android:icon="@drawable/ic_time_tracker_white"
+        android:title="@string/tm_hr_home_activity_bottom_navigation_item_0"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_ninjas"
         android:enabled="true"
         android:icon="@drawable/ic_people_white"

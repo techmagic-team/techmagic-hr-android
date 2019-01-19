@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.fragment.TimeTrackerFragment;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -42,6 +44,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
+    private static final String FRAGMENT_TIME_TRACKER_TAG = "fragment_time_tracker_tag";
 
     private static final String MIXPANEL_HOME_TAG = "Home";
     private static final String MIXPANEL_SEARCH_EMPLOYEES_TAG = "Search Employees";
@@ -271,6 +274,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_TAG);
     }
 
+    private void addTimeTrackerFragment() {
+        TimeTrackerFragment fragment = TimeTrackerFragment.Companion.newInstance();
+        replaceFragment(fragment, FRAGMENT_TIME_TRACKER_TAG);
+//        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG);
+    }
+
 
     @OnClick(R.id.btnClearFilters)
     public void onClearFiltersClick() {
@@ -303,6 +312,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private void setupBottomNavigation() {
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
+                case R.id.action_tracker: {
+                    addTimeTrackerFragment();
+                    break;
+                }
+
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
                         clearFragmentsBackStack(this);
@@ -320,9 +334,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
             return true;
         });
+
+        // TODO: 1/19/19 refactor screen structure as ninjas list is not a fragment and always is the first visible view
+        bottomNavigation.setSelectedItemId(R.id.action_tracker);
     }
 
 
+    @SuppressLint("RestrictedApi")
     private void startSearchScreen() {
         Bundle animation = ActivityOptions.makeCustomAnimation(this, R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();
         Intent i = new Intent(this, SearchActivity.class);
