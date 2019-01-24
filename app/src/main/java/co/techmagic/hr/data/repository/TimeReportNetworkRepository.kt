@@ -1,7 +1,6 @@
 package co.techmagic.hr.data.repository
 
-import co.techmagic.hr.data.entity.Projects
-import co.techmagic.hr.data.entity.UserReports
+import co.techmagic.hr.data.entity.time_tracker.*
 import co.techmagic.hr.data.exception.NetworkConnectionException
 import co.techmagic.hr.data.manager.NetworkManager
 import co.techmagic.hr.data.store.TimeTrackerApi
@@ -14,12 +13,32 @@ class TimeReportNetworkRepository(
         private val apiClient: TimeTrackerApi,
         private val networkManager: NetworkManager) : TimeReportRepository {
 
-    override fun getReport(userId: String, date: String): Observable<UserReports> {
-        return setup(apiClient.getReport(userId, date))
+    override fun getDayReports(userId: String, date: String): Observable<UserReportsResponse> {
+        return setup(apiClient.getReports(userId, date))
     }
 
-    override fun getProjects(userId: String, firstDayOfWeek: String): Observable<Projects> {
+    override fun getProjects(userId: String, firstDayOfWeek: String): Observable<List<ProjectResponse>> {
         return setup(apiClient.getProjects(userId, firstDayOfWeek))
+    }
+
+    override fun getProjectTasks(projectId: String): Observable<List<TaskResponse>> {
+        return setup(apiClient.getProjectTasks(projectId))
+    }
+
+    override fun getTaskDetails(weekId: String, reportId: String): Observable<TaskDetailsResponse> {
+        return setup(apiClient.getTaskDetails(weekId, reportId))
+    }
+
+    override fun reportTask(requestBody: ReportTaskRequestBody): Observable<ReportTaskResponse> {
+        return setup(apiClient.reportTask(requestBody))
+    }
+
+    override fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UserReportsResponse> {
+        return setup(apiClient.updateTask(weekId, reportId, body))
+    }
+
+    override fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void> {
+        return setup(apiClient.deleteTask(weekId, reportId, body))
     }
 
     private fun <T> setup(observable: Observable<T>): Observable<T> {
