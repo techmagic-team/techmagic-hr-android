@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.ui.fragment
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>() {
 
     lateinit var rvReports: RecyclerView
+    lateinit var btnAddTimeReport: CardView
 
     private lateinit var reportsAdapter: TimeReportAdapter
 
@@ -47,6 +49,7 @@ class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>(
         super.onViewCreated(view, savedInstanceState)
 
         rvReports = view.findViewById(R.id.rvReports)//todo should I resolve ButterKnife code generation with kotlin issue
+        btnAddTimeReport = view.findViewById(R.id.btnAddTimeReport)
 
         initRecycler()
 

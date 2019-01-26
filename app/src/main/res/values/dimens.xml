@@ -84,4 +84,8 @@
     <dimen name="fragment_time_tracker_time_right_offset">4dp</dimen>
     <dimen name="fragment_time_tracker_item_divider_height">1dp</dimen>
 
+    <dimen name="fragment_time_tracker_add_button_heigth">60dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_margin">16dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_elevation">8dp</dimen>
+
 </resources>
