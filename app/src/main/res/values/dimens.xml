@@ -82,5 +82,6 @@
     <dimen name="fragment_time_tracker_time_left_offset">13dp</dimen>
     <dimen name="fragment_time_tracker_time_text_size">16sp</dimen>
     <dimen name="fragment_time_tracker_time_right_offset">4dp</dimen>
+    <dimen name="fragment_time_tracker_item_divider_height">1dp</dimen>
 
 </resources>

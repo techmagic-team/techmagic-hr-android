@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <size android:height="@dimen/fragment_time_tracker_item_divider_height" />
+    <solid android:color="@color/color_time_report_list_item_divider"/>
+
+</shape>
