@@ -2,6 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorWhite">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvReports"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_time_report"/>
 
 </FrameLayout>

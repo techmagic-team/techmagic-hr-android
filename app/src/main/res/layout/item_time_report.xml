@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:padding="@dimen/fragment_time_tracker_report_item_padding">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvTimeReportClient"
+                style="@style/TimeReportClientTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Android department" />
+
+            <Space
+                android:layout_width="@dimen/fragment_time_tracker_project_right_offset"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvTimeReportProject"
+                style="@style/TimeReportProjectTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Android development" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/fragment_time_tracker_task_top_margin" />
+
+        <TextView
+            android:id="@+id/tvTimeReportTask"
+            style="@style/TimeReportTaskTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Android Development" />
+
+        <TextView
+            android:id="@+id/tvTimeReportNote"
+            style="@style/TimeReportNoteTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Android/iOS/Web app all app icons and favicons." />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="@dimen/fragment_time_tracker_time_left_offset"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvTimeReportTime"
+            style="@style/TimeReportTimeTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0:15" />
+
+        <Space
+            android:layout_width="@dimen/fragment_time_tracker_time_right_offset"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/imgTimeReportTrackTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@drawable/ic_tracking_start" />
+
+    </LinearLayout>
+
+</LinearLayout>

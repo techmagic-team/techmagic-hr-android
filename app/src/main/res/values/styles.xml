@@ -158,6 +158,47 @@
         <item name="android:textSize">@dimen/activity_layout_colors_text_size</item>
     </style>
 
+    <style name="TimeReportClientTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/color_time_report_client_text_color</item>
+        <item name="android:textSize">@dimen/fragment_time_tracker_client_text_size</item>
+    </style>
+
+    <style name="TimeReportProjectTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/color_time_report_project_text_color</item>
+        <item name="android:textSize">@dimen/fragment_time_tracker_project_text_size</item>
+    </style>
+
+    <style name="TimeReportTaskTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/color_time_report_task_text_color</item>
+        <item name="android:textSize">@dimen/fragment_time_tracker_task_text_size</item>
+    </style>
+
+    <style name="TimeReportNoteTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/color_time_report_note_text_color</item>
+        <item name="android:textSize">@dimen/fragment_time_tracker_note_text_size</item>
+    </style>
+
+    <style name="TimeReportTimeTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/color_time_report_task_text_color</item>
+        <item name="android:textSize">@dimen/fragment_time_tracker_time_text_size</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>

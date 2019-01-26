@@ -20,5 +20,9 @@
     <color name="colorButtonDelete">#cb4646</color>
     <color name="error_border">#cb4646</color>
     <color name="error_background">#55cb4646</color>
+    <color name="color_time_report_client_text_color">#007672</color>
+    <color name="color_time_report_project_text_color">#aaaaaa</color>
+    <color name="color_time_report_task_text_color">#373a36</color>
+    <color name="color_time_report_note_text_color">#373a36</color>
 
 </resources>
