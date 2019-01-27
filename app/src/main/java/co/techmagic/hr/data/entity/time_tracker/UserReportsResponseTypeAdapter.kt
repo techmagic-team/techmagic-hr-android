@@ -40,6 +40,10 @@ class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
                             "weeksId" -> weeksId = readList(reader)
                         }
                     }
+                    JsonToken.BOOLEAN -> reader.nextBoolean()
+                    JsonToken.NUMBER -> reader.nextLong()
+                    JsonToken.STRING -> reader.nextString()
+                    JsonToken.NULL -> reader.nextNull()
                 }
             }
 
