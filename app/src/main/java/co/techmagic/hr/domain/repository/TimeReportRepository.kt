@@ -4,6 +4,7 @@ import co.techmagic.hr.data.entity.time_tracker.*
 import rx.Observable
 
 interface TimeReportRepository {
+    fun getMe(): Observable<UserResponse>
     fun getDayReports(userId: String, date: String): Observable<UserReportsResponse>
     fun getProjects(userId: String, firstDayOfWeek: String): Observable<List<ProjectResponse>>
     fun getProjectTasks(projectId: String): Observable<List<TaskResponse>>

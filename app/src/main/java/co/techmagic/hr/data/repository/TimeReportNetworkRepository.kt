@@ -13,6 +13,10 @@ class TimeReportNetworkRepository(
         private val apiClient: TimeTrackerApi,
         private val networkManager: NetworkManager) : TimeReportRepository {
 
+    override fun getMe(): Observable<UserResponse> {
+        return setup(apiClient.getMe())
+    }
+
     override fun getDayReports(userId: String, date: String): Observable<UserReportsResponse> {
         return setup(apiClient.getReports(userId, date))
     }

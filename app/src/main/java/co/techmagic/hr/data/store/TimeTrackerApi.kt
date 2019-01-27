@@ -5,6 +5,9 @@ import retrofit2.http.*
 import rx.Observable
 
 interface TimeTrackerApi {
+    @GET("/v1/users/me")
+    fun getMe(): Observable<UserResponse>
+
     @GET("/v1/time-reporting/report")
     fun getReports(@Query("_user") userId: String,
                    @Query("week") date: String): Observable<UserReportsResponse>
