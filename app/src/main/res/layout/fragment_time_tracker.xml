@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvReports"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_time_report" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/btnAddTimeReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="@dimen/fragment_time_tracker_add_button_margin"
+        android:layout_marginRight="@dimen/fragment_time_tracker_add_button_margin"
+        android:layout_marginBottom="@dimen/fragment_time_tracker_add_button_margin_bottom"
+        android:background="?selectableItemBackground"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="@dimen/fragment_time_tracker_add_button_elevation"
+        tools:ignore="RtlHardcoded">
+
+        <ImageView
+            android:layout_width="@dimen/fragment_time_tracker_add_button_heigth"
+            android:layout_height="@dimen/fragment_time_tracker_add_button_heigth"
+            android:background="@color/color_time_report_add_report_background"
+            android:scaleType="center"
+            android:src="@drawable/ic_add_time_report" />
+    </android.support.v7.widget.CardView>
 </FrameLayout>

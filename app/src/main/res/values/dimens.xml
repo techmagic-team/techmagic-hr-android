@@ -71,4 +71,22 @@
     <dimen name="tm_hr_edit_profile_activity_edit_text_height">150dp</dimen>
     <dimen name="tm_hr_edit_profile_activity_edit_selected_filter_big_margin_left">90dp</dimen>
 
+    <!-- TimeTrackerFragment -->
+    <dimen name="fragment_time_tracker_project_right_offset">4dp</dimen>
+    <dimen name="fragment_time_tracker_task_top_margin">4dp</dimen>
+    <dimen name="fragment_time_tracker_client_text_size">11sp</dimen>
+    <dimen name="fragment_time_tracker_project_text_size">11sp</dimen>
+    <dimen name="fragment_time_tracker_task_text_size">14sp</dimen>
+    <dimen name="fragment_time_tracker_note_text_size">11sp</dimen>
+    <dimen name="fragment_time_tracker_report_item_padding">16dp</dimen>
+    <dimen name="fragment_time_tracker_time_left_offset">13dp</dimen>
+    <dimen name="fragment_time_tracker_time_text_size">16sp</dimen>
+    <dimen name="fragment_time_tracker_time_right_offset">4dp</dimen>
+    <dimen name="fragment_time_tracker_item_divider_height">1dp</dimen>
+
+    <dimen name="fragment_time_tracker_add_button_heigth">60dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_margin">16dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_margin_bottom">72dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_elevation">8dp</dimen>
+
 </resources>

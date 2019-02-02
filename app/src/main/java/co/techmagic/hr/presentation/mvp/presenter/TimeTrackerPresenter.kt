@@ -5,9 +5,9 @@ import co.techmagic.hr.data.repository.TimeReportNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.mvp.view.CalendarView
+import co.techmagic.hr.presentation.mvp.view.TimeTrackerView
 
-class TimeTrackerPresenter : BasePresenter<CalendarView>() {
+class TimeTrackerPresenter : BasePresenter<TimeTrackerView>() {
 
     private val timeReportRepository: TimeReportRepository
 
