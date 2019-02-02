@@ -18,6 +18,7 @@ import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog;
 import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 
+@Deprecated
 public abstract class ViewImpl implements View {
 
     private android.view.View contentView;

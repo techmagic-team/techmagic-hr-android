@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.techmagic.viper.base.BaseRouter;
 
 import java.util.List;
 
@@ -25,15 +28,17 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
+import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
+import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
-import co.techmagic.hr.presentation.ui.fragment.TimeTrackerFragment;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
+
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
@@ -280,6 +285,15 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 //        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG);
     }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof TimeTrackerFragment) {
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter();
+            TimeTrackerFragment view = (TimeTrackerFragment) fragment;
+            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
+        }
+    }
 
     @OnClick(R.id.btnClearFilters)
     public void onClearFiltersClick() {
@@ -384,7 +398,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
         SharedPreferencesUtil.saveSelectedProjectId(null);
-        loadMoreEmployees(null, selDepId, selLeadId, selProjectId,  0, 0, false);
+        loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
 
 

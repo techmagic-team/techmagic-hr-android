@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import co.techmagic.hr.presentation.mvp.view.View;
 
-
+@Deprecated
 public abstract class BasePresenter<VIEW extends View> {
 
     protected VIEW view;

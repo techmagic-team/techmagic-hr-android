@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.mvp.view;
 
+@Deprecated
 public interface View {
 
     void showMessage(String message);
