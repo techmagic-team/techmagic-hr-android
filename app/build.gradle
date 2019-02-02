@@ -42,7 +42,7 @@ android {
     flavorDimensions "default"
     productFlavors {
         dev {
-            buildConfigField 'String', 'HOST_URL', '"http://techmagic-hr-api-dev.eu-central-1.elasticbeanstalk.com"'
+            buildConfigField 'String', 'HOST_URL', '"https://timeapi-dev.techmagic.co"'
         }
 
         prod {

@@ -10,9 +10,6 @@ import co.techmagic.hr.presentation.mvp.view.TimeTrackerView
 import co.techmagic.hr.presentation.mvp.view.impl.TimeTrackerViewImpl
 
 class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>() {
-    companion object {
-        fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
-    }
 
     override fun initView() = TimeTrackerViewImpl(this, activity!!.findViewById(android.R.id.content))
 

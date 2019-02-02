@@ -275,9 +275,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
     private void addTimeTrackerFragment() {
-        TimeTrackerFragment fragment = TimeTrackerFragment.Companion.newInstance();
-        replaceFragment(fragment, FRAGMENT_TIME_TRACKER_TAG);
-//        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG);
+        replaceFragment(new TimeTrackerFragment(), FRAGMENT_TIME_TRACKER_TAG);
+//        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG); // TODO: 1/21/19 Add tracking? 
     }
 
 
@@ -384,7 +383,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         SharedPreferencesUtil.saveSelectedDepartmentId(null);
         SharedPreferencesUtil.saveSelectedLeadId(null);
         SharedPreferencesUtil.saveSelectedProjectId(null);
-        loadMoreEmployees(null, selDepId, selLeadId, selProjectId,  0, 0, false);
+        loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
     }
 
 
