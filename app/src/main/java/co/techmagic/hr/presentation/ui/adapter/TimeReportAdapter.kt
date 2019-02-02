@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import co.techmagic.hr.presentation.pojo.TimeReportViewModel
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.util.*
+import co.techmagic.hr.presentation.util.TimeFormatUtil
+import co.techmagic.hr.presentation.util.setImageDrawableRes
 
 class TimeReportAdapter(private val context: Context, private val timeReportsClickListener: TimeReportsClickListener)
     : RecyclerView.Adapter<TimeReportAdapter.TimeTrackingViewHolder>() {
 
-    private var data = arrayListOf<TimeReportViewModel>()
+    private var data = arrayListOf<UserReportViewModel>()
 
     private val disabledTextColor = R.color.color_time_report_disabled_text
 
@@ -29,9 +30,9 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
 
         holder.tvTimeReportClient.text = timeReportItem.client
         holder.tvTimeReportProject.text = timeReportItem.project
-        holder.tvTimeReportTask.text = timeReportItem.task
+        holder.tvTimeReportTask.text = timeReportItem.task.name
         holder.tvTimeReportNote.text = timeReportItem.note
-        holder.tvTimeReportTime.text = TimeFormatUtil.formatMinutesToHours(timeReportItem.time)
+        holder.tvTimeReportTime.text = TimeFormatUtil.formatMinutesToHours(timeReportItem.minutes)
 
         holder.tvTimeReportClient.isEnabled = !isLocked
         holder.tvTimeReportProject.isEnabled = !isLocked
@@ -54,14 +55,14 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
 
     override fun getItemCount() = data.size
 
-    fun setNewData(newData: List<TimeReportViewModel>) {
+    fun setNewData(newData: List<UserReportViewModel>) {
         this.data.clear()
         this.data.addAll(newData)
         notifyDataSetChanged()
     }
 
-    fun addReport(timeReport: TimeReportViewModel) {
-        data.add(timeReport)
+    fun addReport(userReport: UserReportViewModel) {
+        data.add(userReport)
         notifyItemInserted(data.size - 1)
     }
 

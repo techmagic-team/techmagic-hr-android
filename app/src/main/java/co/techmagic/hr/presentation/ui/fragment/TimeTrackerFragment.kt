@@ -13,7 +13,7 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.mvp.presenter.TimeTrackerPresenter
 import co.techmagic.hr.presentation.mvp.view.TimeTrackerView
 import co.techmagic.hr.presentation.mvp.view.impl.TimeTrackerViewImpl
-import co.techmagic.hr.presentation.pojo.TimeReportViewModel
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.FabFillScrollListener
@@ -31,7 +31,7 @@ class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>(
 
     override fun initView(): TimeTrackerView {
         return object : TimeTrackerViewImpl(this, activity!!.findViewById(android.R.id.content)) {
-            override fun showReports(reports: List<TimeReportViewModel>) {
+            override fun showReports(reports: List<UserReportViewModel>) {
                 reportsAdapter.setNewData(reports)
             }
 
@@ -53,8 +53,6 @@ class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>(
         btnAddTimeReport = view.findViewById(R.id.btnAddTimeReport)
 
         initRecycler()
-
-        presenter.test()
     }
 
     private fun initRecycler() {
