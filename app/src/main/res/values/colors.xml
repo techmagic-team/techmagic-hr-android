@@ -26,6 +26,7 @@
     <color name="color_time_report_project_text_color">#aaaaaa</color>
     <color name="color_time_report_task_text_color">#373a36</color>
     <color name="color_time_report_note_text_color">#373a36</color>
+    <color name="color_time_report_time_text_color">#373a36</color>
     <color name="color_time_report_disabled_text">#8e9998</color>
     <color name="color_time_report_list_item_divider">#d8d8d8</color>
     <color name="color_time_report_add_report_background">#00b8b2</color>

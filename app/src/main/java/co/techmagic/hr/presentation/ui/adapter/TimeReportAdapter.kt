@@ -33,18 +33,16 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
         holder.tvTimeReportNote.text = timeReportItem.note
         holder.tvTimeReportTime.text = TimeFormatUtil.formatMinutesToHours(timeReportItem.time)
 
-        holder.tvTimeReportClient.setTextColorRes(if (isLocked) disabledTextColor else R.color.color_time_report_client_text_color)
-        holder.tvTimeReportProject.setTextColorRes(if (isLocked) disabledTextColor else R.color.color_time_report_project_text_color)
-        holder.tvTimeReportTask.setTextColorRes(if (isLocked) disabledTextColor else R.color.color_time_report_task_text_color)
-        holder.tvTimeReportNote.setTextColorRes(if (isLocked) disabledTextColor else R.color.color_time_report_note_text_color)
-        holder.tvTimeReportTime.setTextColorRes(if (isLocked) disabledTextColor else R.color.color_time_report_task_text_color)
+        holder.tvTimeReportClient.isEnabled = !isLocked
+        holder.tvTimeReportProject.isEnabled = !isLocked
+        holder.tvTimeReportTask.isEnabled = !isLocked
+        holder.tvTimeReportNote.isEnabled = !isLocked
+        holder.tvTimeReportTime.isEnabled = !isLocked
         holder.ivTimeReportTrackTime.isEnabled = !isLocked
-
+        holder.llTimeReportContainer.isEnabled = !isLocked
         if (isLocked) {
-            holder.llTimeReportContainer.setBackgroundColorRes( R.color.color_time_report_list_item_disabled_background)
             holder.ivTimeReportTrackTime.setImageDrawableRes(R.drawable.ic_tracking_locked)
         } else {
-            holder.llTimeReportContainer.setBackgroundDrawableRes( R.drawable.bg_report_item_enabled)
             holder.ivTimeReportTrackTime.setImageDrawableRes(
                     if (timeReportItem.isCurrentlyTracking) R.drawable.ic_tracking_stop else R.drawable.ic_tracking_start
             )

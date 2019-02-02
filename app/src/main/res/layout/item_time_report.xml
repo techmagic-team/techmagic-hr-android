@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/llTimeReportContainer"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llTimeReportContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_state_time_report_container"
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:padding="@dimen/fragment_time_tracker_report_item_padding">
@@ -83,8 +84,8 @@
         <ImageView
             android:id="@+id/ivTimeReportTrackTime"
             android:layout_width="wrap_content"
-            android:background="?selectableItemBackground"
             android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
             tools:src="@drawable/ic_tracking_start" />
 
     </LinearLayout>
