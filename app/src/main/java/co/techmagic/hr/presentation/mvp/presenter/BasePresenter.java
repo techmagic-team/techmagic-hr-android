@@ -9,7 +9,8 @@ public abstract class BasePresenter<VIEW extends View> {
 
     protected VIEW view;
 
-    public BasePresenter() {}
+    public BasePresenter() {
+    }
 
     public void attachView(@NonNull VIEW view) {
         this.view = view;
@@ -20,15 +21,15 @@ public abstract class BasePresenter<VIEW extends View> {
         onViewDetached();
     }
 
-    public void resume() {}
+    public void resume() {
+    }
 
-    public void pause() {}
+    public void pause() {
+    }
 
-    protected void onViewAttached() {}
+    protected void onViewAttached() {
+    }
 
-
-    protected void onViewDetached() {}
-
-
-    protected void refreshData() {}
+    protected void onViewDetached() {
+    }
 }

@@ -16,6 +16,7 @@ import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -37,12 +38,12 @@ public class ApiClient {
 
 
     private ApiClient() {
-        OkHttpClient client = buildClient();
-        retrofit = getRetrofit(client, false);
+        client = buildOkHttpClientClient();
+        retrofit = getRetrofit(client, GsonConverterFactory.create());
     }
 
-
-    public OkHttpClient buildClient() {
+    // TODO: 1/20/19 provide client to API client through constructor
+    public static OkHttpClient buildOkHttpClientClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(30, TimeUnit.SECONDS);
         builder.writeTimeout(30, TimeUnit.SECONDS);
@@ -65,23 +66,18 @@ public class ApiClient {
         return builder.build();
     }
 
+    @NonNull
+    public static Retrofit getRetrofit(OkHttpClient client) {
+        return getRetrofit(client, GsonConverterFactory.create());
+    }
 
     @NonNull
-    private Retrofit getRetrofit(OkHttpClient client, boolean shouldExcludeNulls) {
-        this.client = client;
-        if (shouldExcludeNulls) {
-            return new Retrofit.Builder()
-                    .baseUrl(BuildConfig.HOST_URL)
-                    .client(client)
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create(getSerializableGson()))
-                    .build();
-        }
+    public static Retrofit getRetrofit(OkHttpClient client, Converter.Factory converterFactory) {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.HOST_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(converterFactory)
                 .build();
     }
 
@@ -93,19 +89,18 @@ public class ApiClient {
 
 
     public IUserApi getUserApiClient() {
-        retrofit = getRetrofit(client, false);
+        retrofit = getRetrofit(client);
         return retrofit.create(IUserApi.class);
     }
 
 
     public IEmployeeApi getEmployeeClient() {
-        retrofit = getRetrofit(client, false);
+        retrofit = getRetrofit(client);
         return retrofit.create(IEmployeeApi.class);
     }
 
-
     public IUserApi getSerializableNullsUserClient() {
-        retrofit = getRetrofit(client, true);
+        retrofit = getRetrofit(client, GsonConverterFactory.create(getSerializableGson()));
         return retrofit.create(IUserApi.class);
     }
 }

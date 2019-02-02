@@ -19,7 +19,7 @@ public class NetworkManagerImpl implements NetworkManager {
     private Context context;
 
 
-    public static synchronized void initNetworkManager (@NonNull Context context) {
+    public static synchronized void initNetworkManager(@NonNull Context context) {
         if (networkManager == null) {
             networkManager = new NetworkManagerImpl(context);
         }
@@ -42,7 +42,7 @@ public class NetworkManagerImpl implements NetworkManager {
             return false;
         }
 
-        ConnectivityManager cm = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if (null != activeNetwork) {

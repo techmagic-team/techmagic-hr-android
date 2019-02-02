@@ -26,6 +26,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.UserProfile;
+import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
+import co.techmagic.hr.data.repository.TimeReportNetworkRepository;
+import co.techmagic.hr.data.store.TimeTrackerApi;
+import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
@@ -38,6 +42,8 @@ import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
@@ -280,16 +286,20 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
     private void addTimeTrackerFragment() {
-        TimeTrackerFragment fragment = TimeTrackerFragment.Companion.newInstance();
-        replaceFragment(fragment, FRAGMENT_TIME_TRACKER_TAG);
-//        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG);
+        replaceFragment(new TimeTrackerFragment(), FRAGMENT_TIME_TRACKER_TAG);
+//        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG); // TODO: 1/21/19 Add tracking? 
     }
 
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         if (fragment instanceof TimeTrackerFragment) {
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter();
+            // TODO: 1/20/19 inject dependencies
+            OkHttpClient okHttpClientClient = ApiClient.buildOkHttpClientClient();
+            Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
+            TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
+            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(timeReportRepository);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
         }
