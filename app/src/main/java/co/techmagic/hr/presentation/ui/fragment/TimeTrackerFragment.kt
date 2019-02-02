@@ -16,6 +16,7 @@ import co.techmagic.hr.presentation.mvp.view.impl.TimeTrackerViewImpl
 import co.techmagic.hr.presentation.pojo.TimeReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
+import co.techmagic.hr.presentation.ui.view.FabFillScrollListener
 
 class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>() {
 
@@ -75,5 +76,7 @@ class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>(
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_time_reports)!!)
 
         rvReports.addItemDecoration(dividerItemDecoration)
+
+        rvReports.addOnScrollListener(FabFillScrollListener(btnAddTimeReport))
     }
 }
