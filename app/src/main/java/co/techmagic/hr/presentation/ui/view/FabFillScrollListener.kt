@@ -21,7 +21,7 @@ class FabFillScrollListener(val fillOnScrollView: View) : RecyclerView.OnScrollL
             if (!isFabHiding) {
                 fillOnScrollView
                         .animate()
-                        .translationY(UiUtil.Dp2Px(ANIMATION_TRANSLATION_HIDE_Y_DP).toFloat())
+                        .translationY(UiUtil.dp2Px(ANIMATION_TRANSLATION_HIDE_Y_DP).toFloat())
                         .alpha(ANIMATION_ALPHA_HIDE)
                         .setDuration(ANIMATION_DURATION)
                         .start()
@@ -32,7 +32,7 @@ class FabFillScrollListener(val fillOnScrollView: View) : RecyclerView.OnScrollL
             if (!isFabShowing) {
                 fillOnScrollView
                         .animate()
-                        .translationY(UiUtil.Dp2Px(ANIMATION_TRANSLATION_SHOW_Y_DP).toFloat())
+                        .translationY(UiUtil.dp2Px(ANIMATION_TRANSLATION_SHOW_Y_DP).toFloat())
                         .alpha(ANIMATION_ALPHA_SHOW)
                         .setDuration(ANIMATION_DURATION)
                         .start()
