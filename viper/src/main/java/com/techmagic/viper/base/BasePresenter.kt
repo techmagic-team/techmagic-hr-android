@@ -17,8 +17,8 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
             val previousView = field
             field = view
             if (previousView != null && previousView !== view) {
-                previousView?.destroyView()
-                previousView?.detachViewOutput()
+                previousView.destroyView()
+                previousView.detachViewOutput()
             }
         }
 
