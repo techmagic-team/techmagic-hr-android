@@ -1,4 +1,4 @@
-package co.techmagic.hr.presentation.ui.fragment
+package co.techmagic.hr.presentation.time_tracker
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -10,40 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.mvp.presenter.TimeTrackerPresenter
-import co.techmagic.hr.presentation.mvp.view.TimeTrackerView
-import co.techmagic.hr.presentation.mvp.view.impl.TimeTrackerViewImpl
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.FabFillScrollListener
+import com.techmagic.viper.base.BaseViewFragment
 
-class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>() {
-
-    lateinit var rvReports: RecyclerView
-    lateinit var btnAddTimeReport: CardView
-
-    private lateinit var reportsAdapter: TimeReportAdapter
-
+class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
     }
 
-    override fun initView(): TimeTrackerView {
-        return object : TimeTrackerViewImpl(this, activity!!.findViewById(android.R.id.content)) {
-            override fun showReports(reports: List<UserReportViewModel>) {
-                reportsAdapter.setNewData(reports)
-            }
+    lateinit var rvReports: RecyclerView
 
-        }
-    }
-
-    override fun initPresenter() = TimeTrackerPresenter()
+    lateinit var btnAddTimeReport: CardView
+    private lateinit var reportsAdapter: TimeReportAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_time_tracker, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_time_tracker, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,6 +37,10 @@ class TimeTrackerFragment : BaseFragment<TimeTrackerView, TimeTrackerPresenter>(
         btnAddTimeReport = view.findViewById(R.id.btnAddTimeReport)
 
         initRecycler()
+    }
+
+    override fun showReports(reports: List<UserReportViewModel>) {
+        reportsAdapter.setNewData(reports)
     }
 
     private fun initRecycler() {
