@@ -1,5 +1,7 @@
 package co.techmagic.hr.presentation.ui.manager.quotes
 
 interface QuotesManager {
-    fun getQuote(): Pair<String, String>
+    fun getRandomQuote(): Pair<String, String>
+
+    fun getRandomFormatedQuote() : String
 }

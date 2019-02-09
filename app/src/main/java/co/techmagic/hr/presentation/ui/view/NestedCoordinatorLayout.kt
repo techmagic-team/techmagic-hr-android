@@ -18,7 +18,7 @@ class NestedScrollCoordinatorLayout @JvmOverloads constructor(
     private val nestedScrollChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
 
     init {
-        setNestedScrollingEnabled(true)
+        isNestedScrollingEnabled = true
     }
 
     override fun isNestedScrollingEnabled(): Boolean {

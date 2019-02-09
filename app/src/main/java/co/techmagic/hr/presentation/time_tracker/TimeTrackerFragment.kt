@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import com.techmagic.viper.base.BaseViewFragment
 
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
+
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
     }
@@ -40,6 +42,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun showReports(reports: List<UserReportViewModel>) {
         reportsAdapter.setNewData(reports)
+    }
+
+    override fun showQuote(quote: String) {
+        Log.d("afsfs", quote)
     }
 
     private fun initRecycler() {
