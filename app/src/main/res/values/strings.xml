@@ -191,4 +191,20 @@
     <string name="tm_hr_edit_profile_activity_text_female">Female</string>
     <string name="tm_hr_edit_profile_activity_text_save">Save</string>
 
+
+    <string-array name="quotes">
+        <item>Time expands, then contracts, all in tune with the stirrings of the heart. - Haruki Murakam</item>
+        <item>When the clock strikes two, three, and four, if the band slows down we\u2019ll yell for more. - Bill Haley</item>
+        <item>They always say time changes things, but you actually have to change them yourself - Andy Warhol</item>
+        <item>With the new day comes new strength and new thoughts. - Eleanor Roosevelt</item>
+        <item>A man who dares to waste one hour of time has not discovered the value of life. - Charles Darwin</item>
+        <item>Take care of the minutes, and the days will take care of themselves. - Eliza Cook</item>
+        <item>Time is the longest distance between two places. - Tennessee Williams</item>
+        <item>Time is a created thing. To say 'I don't have time,' is like saying, 'I don't want to. - Lao Tzu</item>
+        <item>Time is money. - Benjamin Franklin</item>
+        <item>When a man sits with a pretty girl for an hour it seems like a minute.\n      But let him sit on a hot stove for a minute - and it's longer than any hour. That's relativity - Albert Einstein</item>
+        <item>There's never enough time to do all the nothing you want. - Bill Watterson</item>
+        <item>You may delay, but the time will not. - Benjamin Franklin</item>
+        <item>asafs</item>
+    </string-array>
 </resources>
