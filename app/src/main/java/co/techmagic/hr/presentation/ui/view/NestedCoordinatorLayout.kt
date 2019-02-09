@@ -2,46 +2,39 @@ package co.techmagic.hr.presentation.ui.view
 
 import android.content.Context
 import android.support.annotation.Nullable
-import android.support.v4.view.NestedScrollingChildHelper
-import android.support.v4.view.NestedScrollingChild2
 import android.support.design.widget.CoordinatorLayout
+import android.support.v4.view.NestedScrollingChild2
+import android.support.v4.view.NestedScrollingChildHelper
 import android.util.AttributeSet
 import android.view.View
 
 
-class NestedScrollCoordinatorLayout : CoordinatorLayout, NestedScrollingChild2 {
+class NestedScrollCoordinatorLayout @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : CoordinatorLayout(context, attrs, defStyleAttr), NestedScrollingChild2 {
 
-    private var сhildHelper: NestedScrollingChildHelper? = null
+    private val nestedScrollChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
 
-    constructor(context: Context) : super(context) {
-        сhildHelper = NestedScrollingChildHelper(this)
-        isNestedScrollingEnabled = true
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        сhildHelper = NestedScrollingChildHelper(this)
-        isNestedScrollingEnabled = true
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        сhildHelper = NestedScrollingChildHelper(this)
-        isNestedScrollingEnabled = true
+    init {
+        setNestedScrollingEnabled(true)
     }
 
     override fun isNestedScrollingEnabled(): Boolean {
-        return сhildHelper!!.isNestedScrollingEnabled
+        return nestedScrollChildHelper.isNestedScrollingEnabled
     }
 
     override fun setNestedScrollingEnabled(enabled: Boolean) {
-        сhildHelper!!.isNestedScrollingEnabled = enabled
+        nestedScrollChildHelper.isNestedScrollingEnabled = enabled
     }
 
     override fun hasNestedScrollingParent(): Boolean {
-        return сhildHelper!!.hasNestedScrollingParent()
+        return nestedScrollChildHelper.hasNestedScrollingParent()
     }
 
     override fun hasNestedScrollingParent(type: Int): Boolean {
-        return сhildHelper!!.hasNestedScrollingParent(type)
+        return nestedScrollChildHelper.hasNestedScrollingParent(type)
     }
 
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
@@ -78,63 +71,63 @@ class NestedScrollCoordinatorLayout : CoordinatorLayout, NestedScrollingChild2 {
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null)
     }
 
-    override     fun onStopNestedScroll(target: View, type: Int) {
+    override fun onStopNestedScroll(target: View, type: Int) {
         super.onStopNestedScroll(target, type)
         stopNestedScroll(type)
     }
 
-    override   fun onStopNestedScroll(target: View) {
+    override fun onStopNestedScroll(target: View) {
         super.onStopNestedScroll(target)
         stopNestedScroll()
     }
 
-    override   fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
+    override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
         val superResult = super.onNestedPreFling(target, velocityX, velocityY)
         return dispatchNestedPreFling(velocityX, velocityY) || superResult
     }
 
-    override     fun onNestedFling(target: View, velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
+    override fun onNestedFling(target: View, velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
         val superResult = super.onNestedFling(target, velocityX, velocityY, consumed)
         return dispatchNestedFling(velocityX, velocityY, consumed) || superResult
     }
 
     override fun startNestedScroll(axes: Int, type: Int): Boolean {
-        return сhildHelper!!.startNestedScroll(axes, type)
+        return nestedScrollChildHelper.startNestedScroll(axes, type)
     }
 
     override fun startNestedScroll(axes: Int): Boolean {
-        return сhildHelper!!.startNestedScroll(axes)
+        return nestedScrollChildHelper.startNestedScroll(axes)
     }
 
     override fun stopNestedScroll() {
-        сhildHelper!!.stopNestedScroll()
+        nestedScrollChildHelper.stopNestedScroll()
     }
 
     override fun stopNestedScroll(type: Int) {
-        сhildHelper!!.stopNestedScroll(type)
+        nestedScrollChildHelper.stopNestedScroll(type)
     }
 
     override fun dispatchNestedScroll(dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, @Nullable offsetInWindow: IntArray?, type: Int): Boolean {
-        return сhildHelper!!.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type)
+        return nestedScrollChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type)
     }
 
     override fun dispatchNestedScroll(dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, @Nullable offsetInWindow: IntArray?): Boolean {
-        return сhildHelper!!.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow)
+        return nestedScrollChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow)
     }
 
     override fun dispatchNestedPreScroll(dx: Int, dy: Int, @Nullable consumed: IntArray?, @Nullable offsetInWindow: IntArray?): Boolean {
-        return сhildHelper!!.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow)
+        return nestedScrollChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow)
     }
 
     override fun dispatchNestedPreScroll(dx: Int, dy: Int, @Nullable consumed: IntArray?, @Nullable offsetInWindow: IntArray?, type: Int): Boolean {
-        return сhildHelper!!.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
+        return nestedScrollChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
     }
 
     override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float): Boolean {
-        return сhildHelper!!.dispatchNestedPreFling(velocityX, velocityY)
+        return nestedScrollChildHelper.dispatchNestedPreFling(velocityX, velocityY)
     }
 
     override fun dispatchNestedFling(velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
-        return сhildHelper!!.dispatchNestedFling(velocityX, velocityY, consumed)
+        return nestedScrollChildHelper.dispatchNestedFling(velocityX, velocityY, consumed)
     }
 }
