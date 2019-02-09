@@ -13,7 +13,6 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
-import co.techmagic.hr.presentation.ui.view.FabFillScrollListener
 import com.techmagic.viper.base.BaseViewFragment
 
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
@@ -62,7 +61,5 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_time_reports)!!)
 
         rvReports.addItemDecoration(dividerItemDecoration)
-
-        rvReports.addOnScrollListener(FabFillScrollListener(btnAddTimeReport))
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<co.techmagic.hr.presentation.ui.view.NestedScrollCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,6 +21,7 @@
         android:layout_marginTop="@dimen/fragment_time_tracker_add_button_margin"
         android:layout_marginRight="@dimen/fragment_time_tracker_add_button_margin"
         android:layout_marginBottom="@dimen/fragment_time_tracker_add_button_margin_bottom"
+        app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationFabBehavior"
         android:background="?selectableItemBackground"
         app:cardCornerRadius="0dp"
         app:cardElevation="@dimen/fragment_time_tracker_add_button_elevation"
@@ -33,4 +34,4 @@
             android:scaleType="center"
             android:src="@drawable/ic_add_time_report" />
     </android.support.v7.widget.CardView>
-</FrameLayout>
+</co.techmagic.hr.presentation.ui.view.NestedScrollCoordinatorLayout>
