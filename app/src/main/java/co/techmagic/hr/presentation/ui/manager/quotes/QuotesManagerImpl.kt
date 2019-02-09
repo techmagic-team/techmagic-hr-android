@@ -2,7 +2,7 @@ package co.techmagic.hr.presentation.ui.manager.quotes
 
 import android.content.Context
 import co.techmagic.hr.R
-import java.util.*
+import java.util.Random
 
 
 class QuotesManagerImpl(val context: Context) : QuotesManager {
