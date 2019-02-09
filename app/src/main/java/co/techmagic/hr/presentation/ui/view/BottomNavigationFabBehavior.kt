@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.View
-import android.view.View.SCROLL_AXIS_VERTICAL
 import co.techmagic.hr.presentation.util.UiUtil
 import java.lang.Exception
 
