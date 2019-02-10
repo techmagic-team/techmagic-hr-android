@@ -9,12 +9,16 @@ import android.util.AttributeSet
 import android.view.View
 
 
-class NestedScrollCoordinatorLayout(context: Context, attrs: AttributeSet, defStyleAttr: Int) : @JvmOverloads CoordinatorLayout(context, attrs, defStyleAttr), NestedScrollingChild2 {
+class NestedScrollCoordinatorLayout @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : CoordinatorLayout(context, attrs, defStyleAttr), NestedScrollingChild2 {
 
     private val nestedScrollChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
 
     init {
-        isNestedScrollingEnabled = true
+        setNestedScrollingEnabled(true)
     }
 
     override fun isNestedScrollingEnabled(): Boolean {
