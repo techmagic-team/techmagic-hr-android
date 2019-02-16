@@ -16,7 +16,7 @@ abstract class EndlessAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapt
         super.onBindViewHolder(holder, offsetFromCenter, payloads)
     }
 
-    override fun getItemCount(): Int {
+    final override fun getItemCount(): Int {
         return Integer.MAX_VALUE
     }
 }

@@ -12,9 +12,12 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
-import co.techmagic.hr.presentation.ui.view.EndlessAdapter
+import java.util.*
+import kotlin.math.abs
 
-class DayReportsAdapter : EndlessAdapter<DayReportViewHolder>() {
+class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
+        DiscreteDateAdapter<DayReportViewHolder>(recyclerView, anchorDate, Step.DAY) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayReportViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.view_day_reports, parent, false)
@@ -24,7 +27,7 @@ class DayReportsAdapter : EndlessAdapter<DayReportViewHolder>() {
 
     override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
         //TODO: implement
-        when (position % 3) {
+        when (abs(position % 3)) {
             0 -> holder.itemView.setBackgroundColor(Color.RED)
             1 -> holder.itemView.setBackgroundColor(Color.GREEN)
             2 -> holder.itemView.setBackgroundColor(Color.BLUE)

@@ -18,8 +18,14 @@ class WeekView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr) {
 
+    var holidayColor: Int = 0xFFE0004D.toInt()
     var underlineColor: Int = 0xFFE0004D.toInt()
     var selectedDay: Int = 0 //TODO: validate value. Should be in range 0..6
+        set(value) {
+            field = value
+            invalidate()
+        }
+    var selectionOffset: Float = 0f
         set(value) {
             field = value
             invalidate()
@@ -65,14 +71,15 @@ class WeekView @JvmOverloads constructor(
         underlineWidth = monday.measuredWidth
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    override fun dispatchDraw(canvas: Canvas?) {
+        super.dispatchDraw(canvas)
         drawSelection(canvas)
     }
 
     //TODO: implement slide animation
     private fun drawSelection(canvas: Canvas?) {
-        val x = getChildAt(selectedDay).x
+        val dayView = getChildAt(selectedDay)
+        val x = dayView.x + selectionOffset * dayView.width
         val y = height.toFloat() - underlinePaint.strokeWidth
         canvas?.drawLine(x, y, x + underlineWidth.toFloat(), y, underlinePaint)
     }
