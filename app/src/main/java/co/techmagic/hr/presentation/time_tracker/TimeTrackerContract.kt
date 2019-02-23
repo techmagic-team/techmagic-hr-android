@@ -6,7 +6,9 @@ import com.techmagic.viper.View
 import java.util.*
 
 interface TimeTrackerView : View {
+    fun init(today: Calendar)
     fun selectDay(date: Calendar)
+    fun notifyDayReportsChanged(date: Calendar)
 }
 
 interface TimeTrackerDayView {
@@ -17,5 +19,5 @@ interface TimeTrackerDayView {
 interface TimeTrackerPresenter : Presenter {
     fun onWeekSelected(firstDayOfWeek: Calendar)
     fun onDateSelected(date: Calendar)
-    fun onBindDay(day: TimeTrackerDayView, date: Calendar)
+    fun onBindDay(dayView: TimeTrackerDayView, date: Calendar)
 }

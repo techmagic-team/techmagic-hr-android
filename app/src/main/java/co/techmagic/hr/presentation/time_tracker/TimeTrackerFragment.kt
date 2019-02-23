@@ -2,59 +2,80 @@ package co.techmagic.hr.presentation.time_tracker
 
 import android.os.Bundle
 import android.support.v7.widget.CardView
+import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.ui.view.ListenablePagerSnapHelper
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
-import co.techmagic.hr.presentation.util.now
 import com.techmagic.viper.base.BaseViewFragment
-import java.text.SimpleDateFormat
+import org.jetbrains.anko.find
 import java.util.*
+
 
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
     }
 
-    lateinit var weeksAdapter: WeeksAdapter
+    private lateinit var weeks: RecyclerView
+    private lateinit var days: RecyclerView
+    private lateinit var btnAddTimeReport: CardView
 
-    lateinit var daysAdapter: DayReportsAdapter
-
-    lateinit var btnAddTimeReport: CardView
+    private lateinit var weeksAdapter: WeeksAdapter
+    private lateinit var daysAdapter: DayReportsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_time_tracker, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        findViews(view)
         super.onViewCreated(view, savedInstanceState)
-        btnAddTimeReport = view.findViewById(R.id.btnAddTimeReport)
+    }
 
-        var weeks: RecyclerView = view.findViewById(R.id.rvWeeks)
+    override fun init(today: Calendar) {
+        initWeeks(today.firstDayOfWeekDate())
+        initDays(today)
+    }
+
+    override fun selectDay(date: Calendar) {
+        TODO("not implemented")
+    }
+
+    override fun notifyDayReportsChanged(date: Calendar) {
+        daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
+    }
+
+    private fun findViews(view: View) {
+        weeks = view.find(R.id.rvWeeks)
+        days = view.find(R.id.rvDays)
+        btnAddTimeReport = view.find(R.id.btnAddTimeReport)
+    }
+
+    private fun initWeeks(anchor: Calendar) {
         weeks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val calendar = now()
-        calendar.firstDayOfWeek = Calendar.MONDAY
-        val anchor1 = calendar.firstDayOfWeekDate()
-        weeksAdapter = WeeksAdapter(weeks, anchor1)
+        weeksAdapter = WeeksAdapter(weeks, anchor)
         weeks.adapter = weeksAdapter
+    }
 
-        var days: RecyclerView = view.findViewById(R.id.rvDays)
+    private fun initDays(anchor: Calendar) {
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val anchor2 = calendar
-        daysAdapter = object: DayReportsAdapter(days, anchor2) {
+        daysAdapter = object : DayReportsAdapter(days, anchor) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
-                super.onBindViewHolder(holder, position)
                 getPresenter()?.onBindDay(holder, pageToDate(position))
             }
         }
         days.adapter = daysAdapter
 
+        days.itemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
 
         daysAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
@@ -73,9 +94,5 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                 }
             }
         }
-    }
-
-    override fun selectDay(date: Calendar) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

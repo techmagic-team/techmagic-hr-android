@@ -6,8 +6,15 @@ import com.techmagic.viper.Router
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
-                                val quotesManager: QuotesManager): BasePresenter<TimeTrackerView, Router>(), TimeTrackerPresenter {
+class HrAppTimeTrackerPresenter(
+        private val dateTimeProvider: DateTimeProvider,
+        private val timeReportRepository: TimeReportRepository,
+        private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, Router>(), TimeTrackerPresenter {
+
+    override fun onViewCreated(isInitial: Boolean) {
+        super.onViewCreated(isInitial)
+        view?.init(dateTimeProvider.now())
+    }
 
     override fun onWeekSelected(firstDayOfWeek: Calendar) {
         // TODO: implement
@@ -19,6 +26,5 @@ class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
 
     override fun onBindDay(day: TimeTrackerDayView, date: Calendar) {
         // TODO: implement logic to show reports for selected day
-        // day.showReports()
     }
 }
