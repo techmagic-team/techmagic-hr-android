@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.util
 
+import android.annotation.SuppressLint
 import android.support.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,8 +62,9 @@ fun Calendar.firstDayOfWeekDate(): Calendar {
     return date
 }
 
-fun Calendar.toString(pattern: String, locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String {
-    val format = SimpleDateFormat(pattern, locale)
+@SuppressLint("SimpleDateFormat")
+fun Calendar.formatDate(pattern: String = "dd-MM-yyyy", locale: Locale? = null, timeZone: TimeZone = TimeZone.getDefault()): String {
+    val format = if (locale != null) SimpleDateFormat(pattern, locale) else SimpleDateFormat(pattern)
     format.timeZone = timeZone
     return format.format(time)
 }
