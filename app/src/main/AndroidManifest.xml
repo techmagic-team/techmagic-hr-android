@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.ui.activity.LoginActivity"
+            android:name=".presentation.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBarTheme"
             android:windowSoftInputMode="adjustResize" />

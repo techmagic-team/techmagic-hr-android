@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--todo extract colors?-->
+
+    <ImageView
+        android:layout_width="68dp"
+        android:layout_height="54dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/logo_tm" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:text="@string/login_time"
+            android:textColor="#007672"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_tracker"
+            android:textColor="#373a36"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="35dp"
+        android:gravity="center"
+        android:text="@string/login_hint"
+        android:textColor="#373a36"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="40dp"
+        android:background="#00b2a9"
+        android:elevation="5dp"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/login_google_sign_in"
+        android:textColor="@color/colorWhite" />
+
+    <!--todo add shadow-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/cardview_shadow_start_color"
+        android:elevation="1dp" />
+
+    <TextView
+        android:id="@+id/tvCopyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#aaaaaa"
+        android:textSize="11sp"
+        tools:text="@string/login_copyright" />
+
+</LinearLayout>

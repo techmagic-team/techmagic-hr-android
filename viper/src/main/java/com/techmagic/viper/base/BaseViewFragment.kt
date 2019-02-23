@@ -16,13 +16,12 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
 
     private val TAG = javaClass.name
 
-    private var presenter: PRESENTER? = null
-        get
+    protected var presenter: PRESENTER? = null
 
     var isRestored: Boolean = false
         private set
 
-    override fun setPresenter(presenter: PRESENTER) {
+    override fun providePresenter(presenter: PRESENTER) {
         this.presenter = presenter
     }
 

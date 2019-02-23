@@ -84,7 +84,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
             presenter.view = view
             presenter.router = router
             if (view is Presentable<*>) {
-                (view as Presentable<P>).setPresenter(presenter)
+                (view as Presentable<P>).providePresenter(presenter)
             }
         }
     }
