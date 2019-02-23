@@ -17,13 +17,16 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
     private val TAG = javaClass.name
 
     private var presenter: PRESENTER? = null
-        get
 
     var isRestored: Boolean = false
         private set
 
     override fun setPresenter(presenter: PRESENTER) {
         this.presenter = presenter
+    }
+
+    protected fun getPresenter(): PRESENTER? {
+        return presenter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
