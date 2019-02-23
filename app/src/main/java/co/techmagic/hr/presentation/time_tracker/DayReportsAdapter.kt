@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import java.util.*
@@ -47,11 +48,15 @@ class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrack
     }
 
     override fun showReports(reports: List<UserReportViewModel>) {
+        rvReports.visibility = View.VISIBLE
+        llEmptyListContainer.visibility = View.GONE
         reportsAdapter.setNewData(reports)
     }
 
     override fun showEmptyMessage(quote: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        rvReports.visibility = View.GONE
+        llEmptyListContainer.visibility = View.VISIBLE
+        tvEmptyListText.text = quote
     }
 
     private fun initRecycler() {
