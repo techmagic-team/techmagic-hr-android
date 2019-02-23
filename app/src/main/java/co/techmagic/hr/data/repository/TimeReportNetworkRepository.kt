@@ -1,17 +1,15 @@
 package co.techmagic.hr.data.repository
 
 import co.techmagic.hr.data.entity.time_tracker.*
-import co.techmagic.hr.data.exception.NetworkConnectionException
 import co.techmagic.hr.data.manager.NetworkManager
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class TimeReportNetworkRepository(
         private val apiClient: TimeTrackerApi,
-        private val networkManager: NetworkManager) : TimeReportRepository {
+        networkManager: NetworkManager) :
+        BaseNetworkRepository(networkManager), TimeReportRepository {
 
     override fun getMe(): Observable<UserResponse> {
         return setup(apiClient.getMe())
@@ -43,14 +41,5 @@ class TimeReportNetworkRepository(
 
     override fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void> {
         return setup(apiClient.deleteTask(weekId, reportId, body))
-    }
-
-    private fun <T> setup(observable: Observable<T>): Observable<T> {
-        return if (networkManager.isNetworkAvailable) {
-            observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-        } else {
-            Observable.error(NetworkConnectionException())
-        }
     }
 }
