@@ -16,4 +16,9 @@ class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
     override fun onDateSelected(date: Calendar) {
         // TODO: implement
     }
+
+    override fun onBindDay(day: TimeTrackerDayView, date: Calendar) {
+        // TODO: implement logic to show reports for selected day
+        // day.showReports()
+    }
 }
