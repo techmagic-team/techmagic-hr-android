@@ -38,7 +38,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun init(today: Calendar) {
-        initWeeks(today.firstDayOfWeekDate())
+        initWeeks(today)
         initDays(today)
     }
 
@@ -56,15 +56,25 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         btnAddTimeReport = view.find(R.id.btnAddTimeReport)
     }
 
-    private fun initWeeks(anchor: Calendar) {
+    private fun initWeeks(today: Calendar) {
         weeks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        weeksAdapter = WeeksAdapter(weeks, anchor)
+        weeksAdapter = object : WeeksAdapter(weeks, today.firstDayOfWeekDate()) {
+            override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
+                getPresenter()?.onBindWeek(holder, pageToDate(position))
+            }
+        }
         weeks.adapter = weeksAdapter
+
+        weeks.itemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
     }
 
-    private fun initDays(anchor: Calendar) {
+    private fun initDays(today: Calendar) {
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        daysAdapter = object : DayReportsAdapter(days, anchor) {
+        daysAdapter = object : DayReportsAdapter(days, today) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
                 getPresenter()?.onBindDay(holder, pageToDate(position))
             }
@@ -79,8 +89,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         daysAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
-                weeks.smoothScrollToPosition(weeksAdapter.dateToPage(date))
+                val newWeekIndex = weeksAdapter.dateToPage(date)
+                weeks.smoothScrollToPosition(newWeekIndex)
                 getPresenter()?.onDateSelected(date)
+                weeksAdapter.notifyItemChanged(newWeekIndex)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {

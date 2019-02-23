@@ -23,6 +23,7 @@ class WeekView @JvmOverloads constructor(
     var selectedDay: Day = Day.NONE
         set(value) {
             field = value
+            selectionOffset = 0f
             invalidate()
         }
     var selectionOffset: Float = 0f
