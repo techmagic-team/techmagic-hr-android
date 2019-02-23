@@ -39,6 +39,8 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
+import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -106,7 +108,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
         }
     }
-
 
     @Override
     protected void initLayout() {
@@ -299,7 +300,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
             TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
             TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(timeReportRepository);
+            QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
         }

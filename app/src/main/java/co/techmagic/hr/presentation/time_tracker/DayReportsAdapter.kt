@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -37,6 +38,9 @@ open class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
 
 class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrackerDayView {
     private lateinit var rvReports: RecyclerView
+    private lateinit var llEmptyListContainer: ViewGroup
+    private lateinit var tvEmptyListText: TextView
+
     private lateinit var reportsAdapter: TimeReportAdapter
 
     init {
@@ -44,16 +48,23 @@ class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrack
     }
 
     override fun showReports(reports: List<UserReportViewModel>) {
+        rvReports.visibility = View.VISIBLE
+        llEmptyListContainer.visibility = View.GONE
         reportsAdapter.setNewData(reports)
     }
 
     override fun showEmptyMessage(quote: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        rvReports.visibility = View.GONE
+        llEmptyListContainer.visibility = View.VISIBLE
+        tvEmptyListText.text = quote
     }
 
     private fun initRecycler() {
         val context = itemView.context
         rvReports = itemView.findViewById(R.id.rvReports)
+        llEmptyListContainer = itemView.findViewById(R.id.llEmptyViewContainer)
+        tvEmptyListText = itemView.findViewById(R.id.tvEmptyList)
+
         reportsAdapter = TimeReportAdapter(context, object : TimeReportsClickListener {
 
             override fun onTrackTimeClicked(position: Int) {
