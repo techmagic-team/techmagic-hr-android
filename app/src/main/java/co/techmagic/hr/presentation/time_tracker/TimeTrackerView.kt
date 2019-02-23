@@ -6,5 +6,5 @@ import com.techmagic.viper.View
 interface TimeTrackerView : View {
     fun showReports(reports: List<UserReportViewModel>)
 
-    fun showQuote(quote: String)
+    fun showEmptyMessage(quote: String)
 }

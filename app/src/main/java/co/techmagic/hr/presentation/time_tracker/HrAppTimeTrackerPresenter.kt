@@ -16,7 +16,7 @@ class HrAppTimeTrackerPresenter(
     }
 
     private fun displayRandomQuote(){
-        view?.showQuote(quotesManager.getRandomFormatedQuote())
+        view?.showEmptyMessage(quotesManager.getRandomFormatedQuote())
     }
 
 }

@@ -5,10 +5,10 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -23,6 +23,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     lateinit var rvReports: RecyclerView
+    lateinit var llEmptyContainer: ViewGroup
+    lateinit var tvEmpty: TextView
 
     lateinit var btnAddTimeReport: CardView
     private lateinit var reportsAdapter: TimeReportAdapter
@@ -34,18 +36,25 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvReports = view.findViewById(R.id.rvReports)//todo should I resolve ButterKnife code generation with kotlin issue
+        rvReports = view.findViewById(R.id.rvReports)
+        llEmptyContainer = view.findViewById(R.id.llEmptyViewContainer)
+        tvEmpty = view.findViewById(R.id.tvEmptyList)
         btnAddTimeReport = view.findViewById(R.id.btnAddTimeReport)
 
         initRecycler()
     }
 
     override fun showReports(reports: List<UserReportViewModel>) {
+        llEmptyContainer.visibility = View.GONE
+        rvReports.visibility = View.VISIBLE
+
         reportsAdapter.setNewData(reports)
     }
 
-    override fun showQuote(quote: String) {
-        Log.d("afsfs", quote)
+    override fun showEmptyMessage(quote: String) {
+        rvReports.visibility = View.GONE
+        llEmptyContainer.visibility = View.VISIBLE
+        tvEmpty.text = quote
     }
 
     private fun initRecycler() {

@@ -109,7 +109,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         }
     }
 
-
     @Override
     protected void initLayout() {
         setContentView(R.layout.activity_home);
