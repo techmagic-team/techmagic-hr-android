@@ -7,11 +7,15 @@ import java.util.*
 
 interface TimeTrackerView : View {
     fun selectDay(date: Calendar)
-    fun showReports(reports: List<UserReportViewModel>, date: Calendar)
-    fun showEmptyMessage(quote: String, date: Calendar)
+}
+
+interface TimeTrackerDayView {
+    fun showReports(reports: List<UserReportViewModel>)
+    fun showEmptyMessage(quote: String)
 }
 
 interface TimeTrackerPresenter : Presenter {
     fun onWeekSelected(firstDayOfWeek: Calendar)
     fun onDateSelected(date: Calendar)
+    fun onBindDay(day: TimeTrackerDayView, date: Calendar)
 }
