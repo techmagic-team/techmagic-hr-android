@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:weightSum="7"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/monday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/tuesday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/wednesday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/thursday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/friday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/saturday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <co.techmagic.hr.presentation.ui.view.WeekdayView
+        android:id="@+id/sunday"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <!--todo draw underline for selected date-->
+
+</merge>
