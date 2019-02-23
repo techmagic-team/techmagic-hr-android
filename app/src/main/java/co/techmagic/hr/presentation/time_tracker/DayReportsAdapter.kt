@@ -15,7 +15,7 @@ import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import java.util.*
 import kotlin.math.abs
 
-open class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
+class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
         DiscreteDateAdapter<DayReportViewHolder>(recyclerView, anchorDate, Step.DAY) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayReportViewHolder {
@@ -35,20 +35,12 @@ open class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
     }
 }
 
-class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrackerDayView {
+class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private lateinit var rvReports: RecyclerView
     private lateinit var reportsAdapter: TimeReportAdapter
 
     init {
         initRecycler()
-    }
-
-    override fun showReports(reports: List<UserReportViewModel>) {
-        reportsAdapter.setNewData(reports)
-    }
-
-    override fun showEmptyMessage(quote: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun initRecycler() {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.view.ListenablePagerSnapHelper
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
@@ -47,12 +48,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         var days: RecyclerView = view.findViewById(R.id.rvDays)
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val anchor2 = calendar
-        daysAdapter = object: DayReportsAdapter(days, anchor2) {
-            override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
-                super.onBindViewHolder(holder, position)
-                getPresenter()?.onBindDay(holder, pageToDate(position))
-            }
-        }
+        daysAdapter = DayReportsAdapter(days, anchor2)
         days.adapter = daysAdapter
 
 
@@ -76,6 +72,14 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun selectDay(date: Calendar) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
+    }
+
+    override fun showReports(reports: List<UserReportViewModel>, date: Calendar) {
+        TODO("not implemented")
+    }
+
+    override fun showEmptyMessage(quote: String, date: Calendar) {
+        TODO("not implemented")
     }
 }
