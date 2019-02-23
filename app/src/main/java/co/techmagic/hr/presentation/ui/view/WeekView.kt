@@ -20,7 +20,7 @@ class WeekView @JvmOverloads constructor(
 
     var holidayColor: Int = 0xFFE0004D.toInt()
     var underlineColor: Int = 0xFFE0004D.toInt()
-    var selectedDay: Int = 0 //TODO: validate value. Should be in range 0..6
+    var selectedDay: Day = Day.NONE
         set(value) {
             field = value
             invalidate()
@@ -76,12 +76,34 @@ class WeekView @JvmOverloads constructor(
         drawSelection(canvas)
     }
 
-    //TODO: implement slide animation
     private fun drawSelection(canvas: Canvas?) {
-        val dayView = getChildAt(selectedDay)
+        if (selectedDay == Day.NONE) return
+
+        val dayView = getChildAt(selectedDay.ordinal)
         val x = dayView.x + selectionOffset * dayView.width
-        val y = height.toFloat() - underlinePaint.strokeWidth
+        val y = height.toFloat() - underlinePaint.strokeWidth / 2
+//        underlinePaint.color = todo: interpolate color
         canvas?.drawLine(x, y, x + underlineWidth.toFloat(), y, underlinePaint)
+    }
+
+    enum class Day {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY,
+        NONE;
+
+        companion object {
+            fun from(date: Calendar): Day {
+                return when (date[Calendar.DAY_OF_WEEK]) {
+                    Calendar.MONDAY -> MONDAY
+                    Calendar.TUESDAY -> TUESDAY
+                    Calendar.WEDNESDAY -> WEDNESDAY
+                    Calendar.THURSDAY -> THURSDAY
+                    Calendar.FRIDAY -> FRIDAY
+                    Calendar.SATURDAY -> SATURDAY
+                    Calendar.SUNDAY -> SUNDAY
+                    else -> NONE
+                }
+            }
+        }
     }
 }
 

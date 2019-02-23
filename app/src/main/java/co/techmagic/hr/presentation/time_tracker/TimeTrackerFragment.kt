@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.ListenablePagerSnapHelper
+import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.now
 import com.techmagic.viper.base.BaseViewFragment
@@ -52,25 +53,16 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         daysAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
+                weeks.smoothScrollToPosition(weeksAdapter.dateToPage(date))
                 getPresenter()?.onDateSelected(date)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
-                val day = date.get(Calendar.DAY_OF_WEEK)
-                val index = when (day) {
-                    Calendar.MONDAY -> 0
-                    Calendar.TUESDAY -> 1
-                    Calendar.WEDNESDAY -> 2
-                    Calendar.THURSDAY -> 3
-                    Calendar.FRIDAY -> 4
-                    Calendar.SATURDAY -> 5
-                    else -> 6
-                }
                 val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager)
                 val viewHolder = weeks.findContainingViewHolder(currentWeekView)
                 when (viewHolder) {
                     is WeekViewHolder -> {
-                        viewHolder.weekView.selectedDay = index
+                        viewHolder.weekView.selectedDay = WeekView.Day.from(date)
                         viewHolder.weekView.selectionOffset = offset
                     }
                 }

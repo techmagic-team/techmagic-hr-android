@@ -6,6 +6,7 @@ import co.techmagic.hr.presentation.ui.view.EndlessAdapter
 import co.techmagic.hr.presentation.ui.view.ListenablePagerSnapHelper
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.dateOnly
+import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.toString
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -48,25 +49,13 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
     fun dateToPage(date: Calendar): Int {
         return centerIndex + when (step) {
             Step.DAY -> (date.timeInMillis - anchorDate.timeInMillis) / TimeUnit.DAYS.toMillis(1)
-            Step.WEEK -> (date.timeInMillis - anchorDate.timeInMillis) / TimeUnit.DAYS.toMillis(7)
-//            Step.MONTH -> diff(date, anchorDate, Calendar.MONTH)
-//            Step.YEAR -> diff(date, anchorDate, Calendar.YEAR)
+            Step.WEEK -> (date.firstDayOfWeekDate().timeInMillis - anchorDate.timeInMillis) / TimeUnit.DAYS.toMillis(7)
         }.toInt()
     }
 
-//    private fun diff(date1: Calendar, date2: Calendar, field: Int): Int {
-//        return if (date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)) {
-//            date1.get(field) - date2.get(field)
-//        } else {
-//            date1.get(field) - date2.get(field)
-//        }
-//    }
-
     enum class Step(val calendarField: Int) {
         DAY(Calendar.DAY_OF_YEAR),
-        WEEK(Calendar.WEEK_OF_YEAR),
-//        MONTH(Calendar.MONTH),
-//        YEAR(Calendar.YEAR)
+        WEEK(Calendar.WEEK_OF_YEAR)
     }
 
     interface OnDateChangeListener {

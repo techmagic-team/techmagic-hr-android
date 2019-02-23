@@ -16,8 +16,12 @@ class WeeksAdapter(recyclerView: RecyclerView, firstDayOfWeek: Calendar) :
     }
 
     override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
-        //TODO: implement
+        holder.bind(pageToDate(position))
     }
 }
 
-class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView)
+class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView) {
+    fun bind(selectedDate: Calendar) {
+        weekView.selectedDay = WeekView.Day.from(selectedDate)
+    }
+}
