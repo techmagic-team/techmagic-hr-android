@@ -22,7 +22,7 @@ class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
     }
 
     override fun onBindDay(day: TimeTrackerDayView, date: Calendar) {
-        view?.showToolbarTitle(currentDate.toString(TOOLBAR_DATE_FORMAT))
+        view?.showToolbarTitle(date.toString(TOOLBAR_DATE_FORMAT))
         // TODO: implement logic to show reports for selected day
         // day.showReports()
     }
