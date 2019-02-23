@@ -28,7 +28,9 @@
     </style>
 
 
-    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
 
     <style name="AppTheme.Primary.Button" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/colorPrimary</item>

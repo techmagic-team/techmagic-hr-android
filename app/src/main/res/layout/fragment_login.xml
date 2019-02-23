@@ -68,13 +68,12 @@
         android:text="@string/login_google_sign_in"
         android:textColor="@color/colorWhite" />
 
-    <!--todo add shadow-->
-    <View
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_marginBottom="40dp"
-        android:background="@color/cardview_shadow_start_color"
-        android:elevation="1dp" />
+        android:layout_height="50dp"
+        android:elevation="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_login_shadow" />
 
     <TextView
         android:id="@+id/tvCopyright"
