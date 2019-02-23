@@ -11,11 +11,6 @@ abstract class EndlessAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapt
         recyclerView.scrollToPosition(centerIndex)
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<*>) {
-        val offsetFromCenter = position - centerIndex
-        super.onBindViewHolder(holder, offsetFromCenter, payloads)
-    }
-
     final override fun getItemCount(): Int {
         return Integer.MAX_VALUE
     }
