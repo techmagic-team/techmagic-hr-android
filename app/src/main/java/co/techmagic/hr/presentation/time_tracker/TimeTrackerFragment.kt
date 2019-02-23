@@ -47,7 +47,12 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         var days: RecyclerView = view.findViewById(R.id.rvDays)
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val anchor2 = calendar
-        daysAdapter = DayReportsAdapter(days, anchor2)
+        daysAdapter = object: DayReportsAdapter(days, anchor2) {
+            override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
+                super.onBindViewHolder(holder, position)
+                getPresenter()?.onBindDay(holder, pageToDate(position))
+            }
+        }
         days.adapter = daysAdapter
 
 
@@ -68,5 +73,9 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                 }
             }
         }
+    }
+
+    override fun selectDay(date: Calendar) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
