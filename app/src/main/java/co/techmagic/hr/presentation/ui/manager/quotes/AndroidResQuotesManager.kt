@@ -12,14 +12,14 @@ class AndroidResQuotesManager(val context: Context) : QuotesManager {
         private const val QUOTE_AUTHOR_POSITION = 1
     }
 
-    private val quotes: List<Quot>
+    private val quotes: List<Quote>
     private val random = Random()
 
     init {
         val quotesWithAuthors = context.resources.getStringArray(R.array.quotes)
         quotes = quotesWithAuthors.map {
             val quotAndAuthor = it.split("-")
-            return@map Quot(quotAndAuthor[QUOTE_TEXT_POSITION], quotesWithAuthors[QUOTE_AUTHOR_POSITION])
+            return@map Quote(quotAndAuthor[QUOTE_TEXT_POSITION], quotesWithAuthors[QUOTE_AUTHOR_POSITION])
         }
     }
 

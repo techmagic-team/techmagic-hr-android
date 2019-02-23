@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import java.util.*
@@ -37,6 +37,9 @@ class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
 
 class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private lateinit var rvReports: RecyclerView
+    private lateinit var llEmptyListContainer: ViewGroup
+    private lateinit var tvEmptyListText: TextView
+
     private lateinit var reportsAdapter: TimeReportAdapter
 
     init {
@@ -46,6 +49,9 @@ class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private fun initRecycler() {
         val context = itemView.context
         rvReports = itemView.findViewById(R.id.rvReports)
+        llEmptyListContainer = itemView.findViewById(R.id.llEmptyViewContainer)
+        tvEmptyListText = itemView.findViewById(R.id.tvEmptyList)
+
         reportsAdapter = TimeReportAdapter(context, object : TimeReportsClickListener {
 
             override fun onTrackTimeClicked(position: Int) {
