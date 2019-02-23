@@ -7,6 +7,8 @@ import java.util.*
 
 interface TimeTrackerView : View {
     fun selectDay(date: Calendar)
+
+    fun showToolbarTitle(title : String)
 }
 
 interface TimeTrackerDayView {
@@ -18,4 +20,7 @@ interface TimeTrackerPresenter : Presenter {
     fun onWeekSelected(firstDayOfWeek: Calendar)
     fun onDateSelected(date: Calendar)
     fun onBindDay(day: TimeTrackerDayView, date: Calendar)
+    fun onCurrentDayClicked()
+    fun onInfoClicked()
+    fun onCalendarClicked()
 }
