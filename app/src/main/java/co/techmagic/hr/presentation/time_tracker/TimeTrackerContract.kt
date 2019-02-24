@@ -16,7 +16,7 @@ interface TimeTrackerView : View {
 
 interface TimeTrackerWeekView {
     fun setSelectedDay(selectedDate: Calendar, isToday: Boolean)
-    fun setHolidays(holidays: List<HolidayDate>)
+    fun setTotalTime(date: Calendar, minutes: Int, holiday: Holiday?)
 }
 
 interface TimeTrackerDayView {

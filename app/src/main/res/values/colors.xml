@@ -31,4 +31,8 @@
     <color name="color_time_report_list_item_divider">#d8d8d8</color>
     <color name="color_time_report_add_report_background">#00b8b2</color>
 
+    <color name="sickly_yellow">#cddc39</color>
+    <color name="dull_pink">#df73a2</color>
+    <color name="macaroni_and_cheese">#f3bb29</color>
+
 </resources>

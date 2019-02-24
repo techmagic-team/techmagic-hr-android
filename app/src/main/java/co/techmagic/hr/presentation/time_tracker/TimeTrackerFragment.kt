@@ -83,7 +83,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
             override fun onDateSelected(date: Calendar) {
                 val weekView = findCurrentWeekView()
                 val selectedDay = weekView?.selectedDay
-                val selectedDayIndex = if (selectedDay != WeekView.Day.NONE && selectedDay != null) selectedDay.ordinal else 0
+                val selectedDayIndex = selectedDay?.ordinal ?: 0
                 getPresenter()?.onWeekSelected(date, selectedDayIndex)
             }
 

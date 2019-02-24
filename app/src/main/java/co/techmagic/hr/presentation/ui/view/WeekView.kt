@@ -2,9 +2,12 @@ package co.techmagic.hr.presentation.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.support.annotation.DrawableRes
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -20,7 +23,7 @@ class WeekView @JvmOverloads constructor(
 
     var holidayColor: Int = 0xFFE0004D.toInt()
     var underlineColor: Int = 0xFFE0004D.toInt()
-    var selectedDay: Day = Day.NONE
+    var selectedDay: Day? = null
         set(value) {
             field = value
             selectionOffset = 0f
@@ -42,6 +45,7 @@ class WeekView @JvmOverloads constructor(
     private val friday: WeekdayView
     private val saturday: WeekdayView
     private val sunday: WeekdayView
+    private val days: Map<Day, WeekdayView>
 
     init {
         View.inflate(context, R.layout.view_week, this)
@@ -53,19 +57,20 @@ class WeekView @JvmOverloads constructor(
         friday = find(R.id.friday)
         saturday = find(R.id.saturday)
         sunday = find(R.id.sunday)
+        days = mapOf(Day.MONDAY to monday, Day.TUESDAY to tuesday, Day.WEDNESDAY to wednesday,
+                Day.THURSDAY to thursday, Day.FRIDAY to friday, Day.SATURDAY to saturday,
+                Day.SUNDAY to sunday)
 
         val weekdays = DateFormatSymbols().shortWeekdays
-        monday.day = weekdays[Calendar.MONDAY]
-        tuesday.day = weekdays[Calendar.TUESDAY]
-        wednesday.day = weekdays[Calendar.WEDNESDAY]
-        thursday.day = weekdays[Calendar.THURSDAY]
-        friday.day = weekdays[Calendar.FRIDAY]
-        saturday.day = weekdays[Calendar.SATURDAY]
-        sunday.day = weekdays[Calendar.SUNDAY]
+        for ((day, view) in days) {
+            view.day = weekdays[day.toCalendar()]
+        }
 
         underlinePaint.color = underlineColor
         underlinePaint.strokeWidth = dpToPx(4f, resources).toFloat()
     }
+
+    operator fun get(day: Day) = days[day]
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -78,9 +83,8 @@ class WeekView @JvmOverloads constructor(
     }
 
     private fun drawSelection(canvas: Canvas?) {
-        if (selectedDay == Day.NONE) return
-
-        val dayView = getChildAt(selectedDay.ordinal)
+        val day = selectedDay ?: return
+        val dayView = days[day] ?: getChildAt(0)
         val x = dayView.x + selectionOffset * dayView.width
         val y = height.toFloat() - underlinePaint.strokeWidth / 2
 //        underlinePaint.color = todo: interpolate color
@@ -88,8 +92,19 @@ class WeekView @JvmOverloads constructor(
     }
 
     enum class Day {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY,
-        NONE;
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+
+        fun toCalendar(): Int {
+            return when (this) {
+                MONDAY -> Calendar.MONDAY
+                TUESDAY -> Calendar.TUESDAY
+                WEDNESDAY -> Calendar.WEDNESDAY
+                THURSDAY -> Calendar.THURSDAY
+                FRIDAY -> Calendar.FRIDAY
+                SATURDAY -> Calendar.SATURDAY
+                SUNDAY -> Calendar.SUNDAY
+            }
+        }
 
         companion object {
             fun from(date: Calendar): Day {
@@ -101,7 +116,7 @@ class WeekView @JvmOverloads constructor(
                     Calendar.FRIDAY -> FRIDAY
                     Calendar.SATURDAY -> SATURDAY
                     Calendar.SUNDAY -> SUNDAY
-                    else -> NONE
+                    else -> MONDAY
                 }
             }
         }
@@ -114,6 +129,7 @@ class WeekdayView @JvmOverloads constructor(
 
     private val tvDay: TextView
     private val tvHours: TextView
+    private val ivHolidayBg: ImageView
 
     var day: String
         get() = tvDay.text.toString()
@@ -124,12 +140,32 @@ class WeekdayView @JvmOverloads constructor(
     var minutes: Int = 0
         set(value) {
             tvHours.text = String.format("%1d:%02d", value / 60, value % 60)
+            field = value
+        }
+
+    @DrawableRes
+    var holidayImageResource: Int? = null
+        set(resId) {
+            if (resId != null) {
+                ivHolidayBg.setImageResource(resId)
+                ivHolidayBg.visibility = View.VISIBLE
+            } else {
+                ivHolidayBg.visibility = View.GONE
+                ivHolidayBg.background = null
+            }
+            field = resId
         }
 
     init {
         View.inflate(context, R.layout.view_week_day, this)
         tvDay = find(R.id.tvDay)
         tvHours = find(R.id.tvHours)
+        ivHolidayBg = find(R.id.ivHolidayBg)
         minutes = 0
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+        // TODO: update typeface
     }
 }
