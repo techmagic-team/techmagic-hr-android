@@ -54,7 +54,9 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
     fun dateToPage(date: Calendar): Int {
         return centerIndex + when (step) {
             Step.DAY -> (date.timeInMillis - anchorDate.timeInMillis) / dayInMillis
-            Step.WEEK -> (date.firstDayOfWeekDate().timeInMillis - anchorDate.timeInMillis + dayInMillis) / weekInMillis
+            Step.WEEK -> {
+                val diff = TimeUnit.DAYS.convert(date.firstDayOfWeekDate().timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
+                val offset = diff / 7
         }.toInt()
     }
 
