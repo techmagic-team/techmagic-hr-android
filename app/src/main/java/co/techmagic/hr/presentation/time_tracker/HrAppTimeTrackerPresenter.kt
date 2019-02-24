@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_tracker.UserReport
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ReportNameViewModel
@@ -19,6 +20,7 @@ class HrAppTimeTrackerPresenter(
         private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, Router>(), TimeTrackerPresenter {
 
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
+    private val holidays: HashMap<String, Holiday> = HashMap()
     private val subscriptions: HashMap<String, Subscription> = HashMap(7)
 
     var selectedDate: Calendar = dateTimeProvider.now().dateOnly()
@@ -53,7 +55,10 @@ class HrAppTimeTrackerPresenter(
 
     override fun onBindWeek(weekView: TimeTrackerWeekView, firstDayOfWeek: Calendar) {
         weekView.setSelectedDay(selectedDate, dateTimeProvider.now().isSameDate(selectedDate))
-        // todo: set holidays
+        forWeek(firstDayOfWeek) { date ->
+            val key = key(date)
+            weekView.setTotalTime(date, totalDayMinutes(key), holidays[key])
+        }
     }
 
     override fun onBindDay(day: TimeTrackerDayView, date: Calendar) {
@@ -72,6 +77,7 @@ class HrAppTimeTrackerPresenter(
             subscriptions[key]?.unsubscribe()
             subscriptions[key] = timeReportRepository.getDayReports(user.id, date.firstDayOfWeekDate())
                     .subscribe { response ->
+                        cacheHolidays(response.holidays)
                         val weekReports = response.reports.map { reportToViewModel(it) }
                         initWeekCache(date)
                         for (report in weekReports) {
@@ -84,15 +90,36 @@ class HrAppTimeTrackerPresenter(
 
     private fun key(date: Calendar) = date.formatDate()
 
-    private fun initWeekCache(date: Calendar) {
+    private fun forWeek(date: Calendar, callback: (Calendar) -> Unit) {
         val firstDay = date.firstDayOfWeekDate()
         for (i in 0 until 7) {
-            val date = firstDay.copy()
-            date.add(Calendar.DAY_OF_WEEK, i)
-            val key = key(date)
+            val d = firstDay.copy()
+            d.add(Calendar.DAY_OF_WEEK, i)
+            callback(d)
+        }
+    }
+
+    private fun totalDayMinutes(key: String): Int {
+        val list = cache[key]
+        return when {
+            list == null -> 0
+            else -> list.sumBy { it.minutes }
+        }
+    }
+
+    private fun initWeekCache(date: Calendar) {
+        forWeek(date) {
+            val key = key(it)
             if (cache[key] == null) {
                 cache[key] = ArrayList()
             }
+        }
+    }
+
+    private fun cacheHolidays(holidays: List<HolidayDate>) {
+        for (holiday in holidays) {
+            val date = DateUtil.parseStringDate(holiday.date).toCalendar()
+            this.holidays[key(date)] = Holiday.fromString(holiday.name)
         }
     }
 

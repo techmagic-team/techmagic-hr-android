@@ -31,6 +31,7 @@ class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView)
         weekdayView.minutes = minutes
         when (holiday) {
             null -> {
+                if (!weekdayView.isHoliday) return
                 weekdayView.holidayImageResource = null
                 weekdayView.setBackgroundColor(Color.WHITE)
             }
@@ -43,7 +44,7 @@ class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView)
 
     @ColorRes
     private fun getHolidayColorRes(holiday: Holiday): Int {
-        return when(holiday) {
+        return when (holiday) {
             EASTER, NEW_YEAR, INDEPENDENCE_DAY -> R.color.dull_pink
             DEFENDERS_DAY, PENTECOST, WOMEN_DAY -> R.color.macaroni_and_cheese
             CHRISTMAS, CONSTITUTION_DAY, OTHER -> R.color.sickly_yellow
@@ -52,7 +53,7 @@ class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView)
 
     @DrawableRes
     private fun getHolidayIconRes(holiday: Holiday): Int {
-        return when(holiday) {
+        return when (holiday) {
             CHRISTMAS -> R.drawable.ic_christmas
             CONSTITUTION_DAY -> R.drawable.ic_constitution_day
             DEFENDERS_DAY -> R.drawable.ic_defenders_day

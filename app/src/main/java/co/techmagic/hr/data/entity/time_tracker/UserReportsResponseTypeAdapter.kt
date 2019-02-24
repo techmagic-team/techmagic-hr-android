@@ -41,7 +41,7 @@ class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
                             "reports" -> {
                                 // FIXME: returns list of LinkedTreeMap items instead of UserReport
                                 // See https://github.com/google/gson/issues/1107
-//                                return readList(reader)
+                                // reports = readList(reader)
                                 val list: List<LinkedTreeMap<String, Any>> = readList(reader)
                                 val mappedList = list.map {
                                     UserReport(
@@ -59,7 +59,20 @@ class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
                                 }
                                 reports = mappedList
                             }
-                            "holidays" -> holidays = readList(reader)
+                            "holidays" -> {
+                                // FIXME: returns list of LinkedTreeMap items instead of UserReport
+                                // See https://github.com/google/gson/issues/1107
+                                // holidays = readList(reader)
+                                val list: List<LinkedTreeMap<String, Any>> = readList(reader)
+                                val mappedList = list.map {
+                                    HolidayDate(
+                                            it["_id"] as String,
+                                            it["name"] as String,
+                                            it["date"] as String
+                                    )
+                                }
+                                holidays = mappedList
+                            }
                             "weeksId" -> weeksId = readList(reader)
                         }
                     }

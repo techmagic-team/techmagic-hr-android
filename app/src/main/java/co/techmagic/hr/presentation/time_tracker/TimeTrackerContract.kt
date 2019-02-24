@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.time_tracker
 
-import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.View

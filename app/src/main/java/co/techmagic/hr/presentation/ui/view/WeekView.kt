@@ -162,6 +162,8 @@ class WeekdayView @JvmOverloads constructor(
             field = resId
         }
 
+    var isHoliday: Boolean = holidayImageResource != null
+
     init {
         View.inflate(context, R.layout.view_week_day, this)
         tvDay = find(R.id.tvDay)
