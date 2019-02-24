@@ -3,13 +3,14 @@ package co.techmagic.hr.presentation.time_tracker
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.TOOLBAR_DATE_FORMAT
+import co.techmagic.hr.presentation.util.calendar
 import co.techmagic.hr.presentation.util.toString
 import com.techmagic.viper.Router
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
 class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
-                                val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, Router>(), TimeTrackerPresenter {
+                                val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
     private val currentDate = Calendar.getInstance()
 
@@ -27,6 +28,12 @@ class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
         // day.showReports()
     }
 
+    override fun selectDate(year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val dateForSelect = Calendar.getInstance()
+        dateForSelect.set(year, monthOfYear, dayOfMonth)
+        view?.selectDay(dateForSelect)
+    }
+
     override fun onCurrentDayClicked() {
         view?.selectDay(currentDate)
     }
@@ -36,7 +43,7 @@ class HrAppTimeTrackerPresenter(val timeReportRepository: TimeReportRepository,
     }
 
     override fun onCalendarClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        router?.openDatePicker(currentDate)
     }
 
 }

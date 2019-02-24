@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.CardView
@@ -12,12 +13,14 @@ import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.now
 import com.techmagic.viper.base.BaseViewFragment
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.util.*
 
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
 
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
+        private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
 
     private lateinit var actionBarChangeListener: ActionBarChangeListener
@@ -111,5 +114,19 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun showToolbarTitle(title: String) {
         actionBarChangeListener.setActionBarTitle(title)
+    }
+
+    fun showDatePicker(calendar: Calendar) {
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            getPresenter()?.selectDate(year, monthOfYear, dayOfMonth)
+        }
+        val datePickerDialog = DatePickerDialog.newInstance(
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.show(activity?.fragmentManager, TIME_TRACKER_FRAGMENT)
     }
 }

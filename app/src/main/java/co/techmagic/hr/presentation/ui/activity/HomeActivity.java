@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techmagic.viper.base.BaseRouter;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +32,7 @@ import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
+import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
@@ -303,7 +302,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
             HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
-            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
+            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, (TimeTrackerFragment) fragment));
         }
     }
 
