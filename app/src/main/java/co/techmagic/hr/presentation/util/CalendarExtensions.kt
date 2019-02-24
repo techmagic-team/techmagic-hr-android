@@ -28,7 +28,9 @@ fun calendar(@IntRange(from = 1, to = 31) day: Int,
 }
 
 fun Date.toCalendar(): Calendar {
-    return Calendar.getInstance()
+    val instance = Calendar.getInstance()
+    instance.time = this
+    return instance
 }
 
 fun Calendar.copy(): Calendar {
