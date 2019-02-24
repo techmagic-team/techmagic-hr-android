@@ -9,8 +9,9 @@
         android:id="@+id/rvWeeks"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/colorGreenButton"
+        android:background="@color/colorWhite"
         android:orientation="horizontal"
+        android:elevation="8dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <co.techmagic.hr.presentation.ui.view.NestedScrollCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
