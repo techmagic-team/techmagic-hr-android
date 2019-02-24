@@ -21,13 +21,18 @@ class HrAppTimeTrackerPresenter(
         view?.init(selectedDate)
     }
 
-    override fun onWeekSelected(firstDayOfWeek: Calendar) {
-        // TODO: implement
+    override fun onWeekSelected(firstDayOfWeek: Calendar, selectedDayIndex: Int) {
+        val date = firstDayOfWeek.copy()
+        date.add(Calendar.DAY_OF_WEEK, selectedDayIndex)
+        selectedDate = date
+        view?.notifyWeekDataChanged(date)
+        view?.selectDay(date)
     }
 
     override fun onDateSelected(date: Calendar) {
-        // TODO: implement
         selectedDate = date.copy()
+        view?.notifyWeekDataChanged(date)
+        view?.selectWeek(date)
     }
 
     override fun onBindWeek(weekView: TimeTrackerWeekView, firstDayOfWeek: Calendar) {

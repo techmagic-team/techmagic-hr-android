@@ -42,8 +42,16 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         initDays(today)
     }
 
+    override fun selectWeek(date: Calendar) {
+        weeks.smoothScrollToPosition(weeksAdapter.dateToPage(date))
+    }
+
     override fun selectDay(date: Calendar) {
-        TODO("not implemented")
+        days.scrollToPosition(daysAdapter.dateToPage(date))
+    }
+
+    override fun notifyWeekDataChanged(date: Calendar) {
+        weeksAdapter.notifyItemChanged(weeksAdapter.dateToPage(date))
     }
 
     override fun notifyDayReportsChanged(date: Calendar) {
@@ -70,6 +78,18 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                 return true
             }
         }
+
+        weeksAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
+            override fun onDateSelected(date: Calendar) {
+                val weekView = findCurrentWeekView()
+                val selectedDay = weekView?.selectedDay
+                val selectedDayIndex = if (selectedDay != WeekView.Day.NONE && selectedDay != null) selectedDay.ordinal else 0
+                getPresenter()?.onWeekSelected(date, selectedDayIndex)
+            }
+
+            override fun onDateOffsetChanged(date: Calendar, offset: Float) {
+            }
+        }
     }
 
     private fun initDays(today: Calendar) {
@@ -89,22 +109,23 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         daysAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
-                val newWeekIndex = weeksAdapter.dateToPage(date)
-                weeks.smoothScrollToPosition(newWeekIndex)
                 getPresenter()?.onDateSelected(date)
-                weeksAdapter.notifyItemChanged(newWeekIndex)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
-                val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager)
-                val viewHolder = weeks.findContainingViewHolder(currentWeekView)
-                when (viewHolder) {
-                    is WeekViewHolder -> {
-                        viewHolder.weekView.selectedDay = WeekView.Day.from(date)
-                        viewHolder.weekView.selectionOffset = offset
-                    }
-                }
+                val weekView = findCurrentWeekView()
+                weekView?.selectedDay = WeekView.Day.from(date)
+                weekView?.selectionOffset = offset
             }
+        }
+    }
+
+    private fun findCurrentWeekView(): WeekView? {
+        val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager)
+        val viewHolder = weeks.findContainingViewHolder(currentWeekView)
+        return when (viewHolder) {
+            is WeekViewHolder -> viewHolder.weekView
+            else -> null
         }
     }
 }
