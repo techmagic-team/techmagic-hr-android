@@ -61,12 +61,12 @@ class HrAppTimeTrackerPresenter(
         val reports = cache[key]
         if (reports != null) {
             if (reports.isEmpty()) {
-                day.showEmptyMessage(quotesManager.getRandomFormatedQuote())
+                day.showEmptyMessage(quotesManager.getRandomFormattedQuote())
             } else {
                 day.showReports(reports)
             }
         } else {
-            day.showEmptyMessage(quotesManager.getRandomFormatedQuote())
+            day.showEmptyMessage(quotesManager.getRandomFormattedQuote())
 
             val user = SharedPreferencesUtil.readUser() // TODO: refactor - inject account manager instead!!!
             subscriptions[key]?.unsubscribe()
