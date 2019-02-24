@@ -2,7 +2,6 @@ package co.techmagic.hr.presentation.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.support.annotation.DrawableRes
 import android.util.AttributeSet
@@ -22,7 +21,7 @@ class WeekView @JvmOverloads constructor(
         LinearLayout(context, attrs, defStyleAttr) {
 
     var holidayColor: Int = 0xFFE0004D.toInt()
-    var underlineColor: Int = 0xFFE0004D.toInt()
+    var underlineColor: Int = 0xFF00b2a9.toInt()
     var selectedDay: Day? = null
         set(value) {
             field = value
@@ -34,6 +33,8 @@ class WeekView @JvmOverloads constructor(
             field = value
             invalidate()
         }
+
+    var onDayClickListener: OnDayClickListener? = null
 
     private var underlineWidth: Int = 0
     private var underlinePaint: Paint = Paint()
@@ -64,6 +65,7 @@ class WeekView @JvmOverloads constructor(
         val weekdays = DateFormatSymbols().shortWeekdays
         for ((day, view) in days) {
             view.day = weekdays[day.toCalendar()]
+            view.setOnClickListener { onDayClickListener?.onDayClicked(day) }
         }
 
         underlinePaint.color = underlineColor
@@ -120,6 +122,10 @@ class WeekView @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    interface OnDayClickListener {
+        fun onDayClicked(day: Day)
     }
 }
 

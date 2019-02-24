@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.WeekView
+import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import com.techmagic.viper.base.BaseViewFragment
 import org.jetbrains.anko.find
@@ -68,7 +69,15 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         weeks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         weeksAdapter = object : WeeksAdapter(weeks, today.firstDayOfWeekDate()) {
             override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
-                getPresenter()?.onBindWeek(holder, pageToDate(position))
+                val firstDayOfWeek = pageToDate(position)
+                holder.weekView.onDayClickListener = object : WeekView.OnDayClickListener {
+                    override fun onDayClicked(day: WeekView.Day) {
+                        val date = firstDayOfWeek.copy()
+                        date.add(Calendar.DAY_OF_WEEK, day.ordinal)
+                        getPresenter()?.onDateSelected(date)
+                    }
+                }
+                getPresenter()?.onBindWeek(holder, firstDayOfWeek)
             }
         }
         weeks.adapter = weeksAdapter
