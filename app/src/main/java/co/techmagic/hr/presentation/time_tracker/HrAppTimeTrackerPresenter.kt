@@ -120,6 +120,7 @@ class HrAppTimeTrackerPresenter(
         for (holiday in holidays) {
             val date = DateUtil.parseStringDate(holiday.date).toCalendar()
             this.holidays[key(date)] = Holiday.fromString(holiday.name)
+            view?.notifyWeekDataChanged(date)
         }
     }
 
