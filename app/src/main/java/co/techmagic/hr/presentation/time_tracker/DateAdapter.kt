@@ -57,6 +57,8 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
             Step.WEEK -> {
                 val diff = TimeUnit.DAYS.convert(date.firstDayOfWeekDate().timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
                 val offset = diff / 7
+                offset
+            }
         }.toInt()
     }
 
