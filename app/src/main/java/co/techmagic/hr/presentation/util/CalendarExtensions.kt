@@ -43,15 +43,16 @@ fun Calendar.nowMillis(): Long {
 }
 
 fun Calendar.dateOnly(): Calendar {
-    return copy().let {
+    val date = copy()
+    with(date) {
         clear(Calendar.HOUR)
         clear(Calendar.HOUR_OF_DAY)
         clear(Calendar.MINUTE)
         clear(Calendar.SECOND)
         clear(Calendar.MILLISECOND)
         set(Calendar.AM_PM, Calendar.AM)
-        it
     }
+    return date
 }
 
 fun Calendar.firstDayOfWeekDate(): Calendar {
