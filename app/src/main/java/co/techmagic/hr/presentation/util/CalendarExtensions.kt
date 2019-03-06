@@ -27,9 +27,10 @@ fun calendar(@IntRange(from = 1, to = 31) day: Int,
     return date
 }
 
-fun Date.toCalendar(): Calendar {
+fun Date.toCalendar(firstDayOfWeek: Int = Calendar.MONDAY): Calendar {
     val instance = Calendar.getInstance()
     instance.time = this
+    instance.firstDayOfWeek = firstDayOfWeek
     return instance
 }
 
