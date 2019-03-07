@@ -49,6 +49,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun selectDay(date: Calendar) {
         days.scrollToPosition(daysAdapter.dateToPage(date))
+        selectDay(WeekView.Day.from(date))
     }
 
     override fun notifyWeekDataChanged(date: Calendar) {
@@ -135,6 +136,16 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         return when (viewHolder) {
             is WeekViewHolder -> viewHolder.weekView
             else -> null
+        }
+    }
+
+    private fun selectDay(day: WeekView.Day) {
+        for (i in 0 until weeks.childCount) {
+            val child = weeks.getChildAt(i)
+            val vh = weeks.findContainingViewHolder(child)
+            if (vh is WeekViewHolder) {
+                vh.weekView.selectedDay = day
+            }
         }
     }
 }
