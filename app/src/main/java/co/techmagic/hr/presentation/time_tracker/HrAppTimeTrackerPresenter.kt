@@ -54,7 +54,7 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onBindWeek(weekView: TimeTrackerWeekView, firstDayOfWeek: Calendar) {
-        weekView.setSelectedDay(selectedDate, dateTimeProvider.now().isSameDate(selectedDate))
+        weekView.setSelectedDay(selectedDate)
         forWeek(firstDayOfWeek) { date ->
             val key = key(date)
             weekView.setTotalTime(date, totalDayMinutes(key), holidays[key])

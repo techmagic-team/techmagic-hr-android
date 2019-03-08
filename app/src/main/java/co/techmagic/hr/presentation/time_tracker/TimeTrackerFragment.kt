@@ -12,6 +12,8 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
+import co.techmagic.hr.presentation.util.isSameDate
+import co.techmagic.hr.presentation.util.now
 import com.techmagic.viper.base.BaseViewFragment
 import org.jetbrains.anko.find
 import java.util.*
@@ -49,7 +51,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun selectDay(date: Calendar) {
         days.scrollToPosition(daysAdapter.dateToPage(date))
-        selectDay(WeekView.Day.from(date))
+        selectDayInWeeks(date)
     }
 
     override fun notifyWeekDataChanged(date: Calendar) {
@@ -71,12 +73,12 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         weeksAdapter = object : WeeksAdapter(weeks, today.firstDayOfWeekDate()) {
             override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
                 val firstDayOfWeek = pageToDate(position)
-                holder.weekView.onDayClickListener = object : WeekView.OnDayClickListener {
-                    override fun onDayClicked(day: WeekView.Day) {
-                        val date = firstDayOfWeek.copy()
-                        date.add(Calendar.DAY_OF_WEEK, day.ordinal)
-                        getPresenter()?.onDateSelected(date)
-                    }
+                holder.weekView.weekStartDate = firstDayOfWeek
+                holder.weekView.todayDate = today
+                holder.weekView.onDayClickListener = { day ->
+                    val date = firstDayOfWeek.copy()
+                    date.add(Calendar.DAY_OF_WEEK, day.ordinal)
+                    getPresenter()?.onDateSelected(date)
                 }
                 getPresenter()?.onBindWeek(holder, firstDayOfWeek)
             }
@@ -139,12 +141,12 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         }
     }
 
-    private fun selectDay(day: WeekView.Day) {
+    private fun selectDayInWeeks(selectedDate: Calendar) {
         for (i in 0 until weeks.childCount) {
             val child = weeks.getChildAt(i)
             val vh = weeks.findContainingViewHolder(child)
             if (vh is WeekViewHolder) {
-                vh.weekView.selectedDay = day
+                vh.setSelectedDay(selectedDate)
             }
         }
     }

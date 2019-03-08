@@ -22,7 +22,7 @@ abstract class WeeksAdapter(recyclerView: RecyclerView, firstDayOfWeek: Calendar
 }
 
 class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView), TimeTrackerWeekView {
-    override fun setSelectedDay(selectedDate: Calendar, isToday: Boolean) {
+    override fun setSelectedDay(selectedDate: Calendar) {
         weekView.selectedDay = WeekView.Day.from(selectedDate)
     }
 
