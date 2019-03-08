@@ -133,7 +133,7 @@ class HrAppTimeTrackerPresenter(
                 report.note,
                 report.minutes,
                 false,
-                report.lockDate,
+                report.isApproved,
                 report.weekReportId,
                 report.status,
                 report.date
