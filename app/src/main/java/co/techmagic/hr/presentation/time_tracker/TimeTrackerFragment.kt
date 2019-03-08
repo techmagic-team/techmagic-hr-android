@@ -79,6 +79,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                     val date = firstDayOfWeek.copy()
                     date.add(Calendar.DAY_OF_WEEK, day.ordinal)
                     getPresenter()?.onDateSelected(date)
+                    selectDayInWeeks(date)
                 }
                 getPresenter()?.onBindWeek(holder, firstDayOfWeek)
             }
@@ -93,10 +94,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         weeksAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
-                val weekView = findCurrentWeekView()
-                val selectedDay = weekView?.selectedDay
-                val selectedDayIndex = selectedDay?.ordinal ?: 0
-                getPresenter()?.onWeekSelected(date, selectedDayIndex)
+                getPresenter()?.onWeekSelected(date)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
