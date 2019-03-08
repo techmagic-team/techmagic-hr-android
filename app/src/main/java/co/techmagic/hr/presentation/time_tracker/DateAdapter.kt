@@ -16,11 +16,6 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
         anchorDate: Calendar,
         private val step: Step) : EndlessAdapter<VH>() {
 
-    companion object {
-        val dayInMillis = TimeUnit.DAYS.toMillis(1)
-        val weekInMillis = dayInMillis * 7
-    }
-
     @Suppress("JoinDeclarationAndAssignment")
     private val anchorDate: Calendar
     val pagerSnapHelper: ListenablePagerSnapHelper = ListenablePagerSnapHelper()
@@ -53,7 +48,9 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
 
     fun dateToPage(date: Calendar): Int {
         return centerIndex + when (step) {
-            Step.DAY -> (date.timeInMillis - anchorDate.timeInMillis) / dayInMillis
+            Step.DAY -> {
+                TimeUnit.DAYS.convert(date.timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
+            }
             Step.WEEK -> {
                 val diff = TimeUnit.DAYS.convert(date.firstDayOfWeekDate().timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
                 val offset = diff / 7
