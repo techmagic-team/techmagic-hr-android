@@ -41,7 +41,7 @@ class HrAppTimeTrackerPresenter(
     override fun onWeekSelected(firstDayOfWeek: Calendar) {
         val date = firstDayOfWeek.copy()
         val selectedDayIndex = selectedDate.get(Calendar.DAY_OF_WEEK)
-        date.add(Calendar.DAY_OF_WEEK, if (selectedDayIndex == Calendar.SUNDAY) 6 else selectedDayIndex - Calendar.MONDAY )
+        date.add(Calendar.DAY_OF_WEEK, if (selectedDayIndex == Calendar.SUNDAY) 6 else selectedDayIndex - Calendar.MONDAY ) //todo: refactor!
         onDateSelected(date.copy())
     }
 
