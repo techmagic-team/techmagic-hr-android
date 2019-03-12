@@ -12,8 +12,6 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
-import co.techmagic.hr.presentation.util.isSameDate
-import co.techmagic.hr.presentation.util.now
 import com.techmagic.viper.base.BaseViewFragment
 import org.jetbrains.anko.find
 import java.util.*
@@ -131,7 +129,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     private fun findCurrentWeekView(): WeekView? {
-        val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager)
+        val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager) ?: return null
         val viewHolder = weeks.findContainingViewHolder(currentWeekView)
         return when (viewHolder) {
             is WeekViewHolder -> viewHolder.weekView
