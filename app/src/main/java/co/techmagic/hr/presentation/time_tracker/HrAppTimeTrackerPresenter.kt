@@ -85,6 +85,7 @@ class HrAppTimeTrackerPresenter(
                             cache[key(report.date.toCalendar())]?.add(report)
                             view?.notifyDayReportsChanged(date)
                         }
+                        view?.notifyWeekDataChanged(date.firstDayOfWeekDate())
                     }
         }
     }
