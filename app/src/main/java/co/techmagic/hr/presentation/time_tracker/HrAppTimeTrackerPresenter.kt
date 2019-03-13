@@ -71,20 +71,21 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onBindDay(day: TimeTrackerDayView, date: Calendar) {
-        val key = key(date)
-        val reports = cache[key]
-        if (reports != null) {
-            if (reports.isEmpty()) {
+        val dayReports = getCachedReports(date)
+        if (dayReports != null) {
+            if (dayReports.isEmpty()) {
                 day.showEmptyMessage(quotesManager.getRandomFormattedQuote())
             } else {
-                day.showReports(reports)
+                day.showReports(dayReports)
             }
         } else {
             day.showEmptyMessage(quotesManager.getRandomFormattedQuote())
 
             val user = SharedPreferencesUtil.readUser() // TODO: refactor - inject account manager instead!!!
-            subscriptions[key]?.unsubscribe()
-            subscriptions[key] = timeReportRepository.getDayReports(user.id, date.firstDayOfWeekDate())
+            val firstDayOfWeek = date.firstDayOfWeekDate()
+            val weekReportsKey = key(firstDayOfWeek)
+            subscriptions[weekReportsKey]?.unsubscribe()
+            subscriptions[weekReportsKey] = timeReportRepository.getDayReports(user.id, firstDayOfWeek)
                     .subscribe { response ->
                         cacheHolidays(response.holidays)
                         val weekReports = response.reports.map { reportToViewModel(it) }
@@ -93,7 +94,7 @@ class HrAppTimeTrackerPresenter(
                             cache[key(report.date.toCalendar())]?.add(report)
                             view?.notifyDayReportsChanged(date)
                         }
-                        view?.notifyWeekDataChanged(date.firstDayOfWeekDate())
+                        view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
         }
     }
@@ -110,6 +111,8 @@ class HrAppTimeTrackerPresenter(
         router?.openDatePicker(currentDate)
     }
 
+    private fun getCachedReports(date: Calendar) = cache[key(date)]
+
     private fun key(date: Calendar) = date.formatDate()
 
     private fun forWeek(date: Calendar, callback: (Calendar) -> Unit) {
@@ -123,8 +126,8 @@ class HrAppTimeTrackerPresenter(
 
     private fun totalDayMinutes(key: String): Int {
         val list = cache[key]
-        return when {
-            list == null -> 0
+        return when (list) {
+            null -> 0
             else -> list.sumBy { it.minutes }
         }
     }
