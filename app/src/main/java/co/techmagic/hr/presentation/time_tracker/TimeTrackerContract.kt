@@ -12,6 +12,7 @@ interface TimeTrackerView : View {
     fun selectDay(date: Calendar)
     fun notifyWeekDataChanged(date: Calendar)
     fun notifyDayReportsChanged(date: Calendar)
+    fun showMessage(message: String)
 }
 
 interface TimeTrackerWeekView {

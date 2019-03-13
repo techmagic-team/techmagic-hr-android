@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import android.widget.Toast
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.ui.view.WeekView
@@ -68,6 +69,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun notifyDayReportsChanged(date: Calendar) {
         daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun findViews(view: View) {

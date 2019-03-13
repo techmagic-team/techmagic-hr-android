@@ -104,7 +104,8 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onInfoClicked() {
-        TODO("not implemented")
+        //TODO: implement
+        view?.showMessage("Not implemented")
     }
 
     override fun onCalendarClicked() {
