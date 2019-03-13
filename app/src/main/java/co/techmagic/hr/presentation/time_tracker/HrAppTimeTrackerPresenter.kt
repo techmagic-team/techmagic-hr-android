@@ -7,7 +7,6 @@ import co.techmagic.hr.presentation.pojo.ReportNameViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
-import com.techmagic.viper.Router
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
 import java.util.*
@@ -17,13 +16,14 @@ import kotlin.collections.HashMap
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
-        private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, Router>(), TimeTrackerPresenter {
+        private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
     private val holidays: HashMap<String, Holiday> = HashMap()
     private val subscriptions: HashMap<String, Subscription> = HashMap(7)
 
-    var selectedDate: Calendar = dateTimeProvider.now().dateOnly()
+    var currentDate: Calendar = dateTimeProvider.now().dateOnly()
+    var selectedDate: Calendar = currentDate.copy()
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
@@ -52,6 +52,8 @@ class HrAppTimeTrackerPresenter(
         view?.notifyWeekDataChanged(date.firstDayOfWeekDate())
         view?.selectWeek(date.firstDayOfWeekDate())
         view?.selectDay(date.copy())
+
+        view?.showToolbarTitle(date.formatDate(TOOLBAR_DATE_FORMAT))
     }
 
     override fun onBindWeek(weekView: TimeTrackerWeekView, firstDayOfWeek: Calendar) {
@@ -88,6 +90,24 @@ class HrAppTimeTrackerPresenter(
                         view?.notifyWeekDataChanged(date.firstDayOfWeekDate())
                     }
         }
+    }
+
+    override fun selectDate(year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val dateForSelect = Calendar.getInstance()
+        dateForSelect.set(year, monthOfYear, dayOfMonth)
+        view?.selectDay(dateForSelect)
+    }
+
+    override fun onCurrentDayClicked() {
+        view?.selectDay(currentDate)
+    }
+
+    override fun onInfoClicked() {
+        TODO("not implemented")
+    }
+
+    override fun onCalendarClicked() {
+        router?.openDatePicker(currentDate)
     }
 
     private fun key(date: Calendar) = date.formatDate()

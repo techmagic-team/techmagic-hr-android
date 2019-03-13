@@ -9,6 +9,8 @@ fun now(): Calendar {
     return Calendar.getInstance()
 }
 
+const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
+
 fun today(): Calendar {
     return now().dateOnly()
 }

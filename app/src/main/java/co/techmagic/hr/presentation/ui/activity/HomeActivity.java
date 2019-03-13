@@ -38,6 +38,7 @@ import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
+import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
@@ -312,7 +313,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             };
             HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
-            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
+            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
 

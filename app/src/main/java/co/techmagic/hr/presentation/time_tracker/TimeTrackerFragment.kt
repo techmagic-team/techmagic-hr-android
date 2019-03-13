@@ -1,33 +1,42 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import com.techmagic.viper.base.BaseViewFragment
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import org.jetbrains.anko.find
 import java.util.*
 
 
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
+
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
+        private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
 
     private lateinit var weeks: RecyclerView
     private lateinit var days: RecyclerView
     private lateinit var btnAddTimeReport: CardView
+    private lateinit var actionBarChangeListener: ActionBarChangeListener
 
     private lateinit var weeksAdapter: WeeksAdapter
     private lateinit var daysAdapter: DayReportsAdapter
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_time_tracker, container, false)
@@ -36,6 +45,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         super.onViewCreated(view, savedInstanceState)
+        actionBarChangeListener = context as ActionBarChangeListener
     }
 
     override fun init(today: Calendar) {
@@ -129,7 +139,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     private fun findCurrentWeekView(): WeekView? {
-        val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager) ?: return null
+        val currentWeekView = weeksAdapter.pagerSnapHelper.findSnapView(weeks.layoutManager)
+                ?: return null
         val viewHolder = weeks.findContainingViewHolder(currentWeekView)
         return when (viewHolder) {
             is WeekViewHolder -> viewHolder.weekView
@@ -145,5 +156,47 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                 vh.setSelectedDay(selectedDate)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        menu?.clear()
+        inflater?.inflate(R.menu.menu_time_tracker, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.menu_item_current_day -> {
+                getPresenter()?.onCurrentDayClicked()
+                true
+            }
+            R.id.menu_item_info -> {
+                getPresenter()?.onInfoClicked()
+                true
+            }
+            R.id.menu_item_calendar -> {
+                getPresenter()?.onCalendarClicked()
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun showToolbarTitle(title: String) {
+        actionBarChangeListener.setActionBarTitle(title)
+    }
+
+    fun showDatePicker(calendar: Calendar) {
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            getPresenter()?.selectDate(year, monthOfYear, dayOfMonth)
+        }
+        val datePickerDialog = DatePickerDialog.newInstance(
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.show(activity?.fragmentManager, TIME_TRACKER_FRAGMENT)
     }
 }
