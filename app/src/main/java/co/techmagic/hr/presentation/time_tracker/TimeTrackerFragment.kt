@@ -186,15 +186,15 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         actionBarChangeListener.setActionBarTitle(title)
     }
 
-    fun showDatePicker(calendar: Calendar) {
+    fun showDatePicker(date: Calendar) {
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            getPresenter()?.selectDate(year, monthOfYear, dayOfMonth)
+            getPresenter()?.onDateSelected(year, monthOfYear, dayOfMonth)
         }
         val datePickerDialog = DatePickerDialog.newInstance(
                 dateSetListener,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH),
+                date.get(Calendar.DAY_OF_MONTH)
         )
 
         datePickerDialog.show(activity?.fragmentManager, TIME_TRACKER_FRAGMENT)

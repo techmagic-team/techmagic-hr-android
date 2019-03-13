@@ -45,6 +45,12 @@ class HrAppTimeTrackerPresenter(
         onDateSelected(date.copy())
     }
 
+    override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val date = dateTimeProvider.now().dateOnly()
+        date.set(year, monthOfYear, dayOfMonth)
+        onDateSelected(date)
+    }
+
     override fun onDateSelected(date: Calendar) {
         if (selectedDate.isSameDate(date)) return
 
@@ -92,14 +98,8 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    override fun selectDate(year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val dateForSelect = Calendar.getInstance()
-        dateForSelect.set(year, monthOfYear, dayOfMonth)
-        view?.selectDay(dateForSelect)
-    }
-
     override fun onCurrentDayClicked() {
-        view?.selectDay(currentDate)
+        onDateSelected(today())
     }
 
     override fun onInfoClicked() {

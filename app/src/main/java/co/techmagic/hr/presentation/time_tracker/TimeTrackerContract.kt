@@ -27,11 +27,11 @@ interface TimeTrackerDayView {
 interface TimeTrackerPresenter : Presenter {
     fun onWeekSelected(firstDayOfWeek: Calendar)
     fun onDateSelected(date: Calendar)
+    fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
 
     fun onBindWeek(weekView: TimeTrackerWeekView, firstDayOfWeek: Calendar)
     fun onBindDay(dayView: TimeTrackerDayView, date: Calendar)
 
-    fun selectDate(year: Int, monthOfYear: Int, dayOfMonth: Int)
     fun onCurrentDayClicked()
     fun onInfoClicked()
     fun onCalendarClicked()
