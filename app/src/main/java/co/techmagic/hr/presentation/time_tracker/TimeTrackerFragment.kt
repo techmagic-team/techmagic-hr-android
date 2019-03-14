@@ -91,10 +91,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
                 holder.weekView.onDayClickListener = { day ->
                     val date = firstDayOfWeek.copy()
                     date.add(Calendar.DAY_OF_WEEK, day.ordinal)
-                    getPresenter()?.onDateSelected(date)
+                    presenter?.onDateSelected(date)
                     selectDayInWeeks(date)
                 }
-                getPresenter()?.onBindWeek(holder, firstDayOfWeek)
+                presenter?.onBindWeek(holder, firstDayOfWeek)
             }
         }
         weeks.adapter = weeksAdapter
@@ -107,7 +107,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         weeksAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
-                getPresenter()?.onWeekSelected(date)
+                presenter?.onWeekSelected(date)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
@@ -119,7 +119,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         daysAdapter = object : DayReportsAdapter(days, today) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
-                getPresenter()?.onBindDay(holder, pageToDate(position))
+                presenter?.onBindDay(holder, pageToDate(position))
             }
         }
         days.adapter = daysAdapter
@@ -132,7 +132,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
         daysAdapter.listener = object : DiscreteDateAdapter.OnDateChangeListener {
             override fun onDateSelected(date: Calendar) {
-                getPresenter()?.onDateSelected(date)
+                presenter?.onDateSelected(date)
             }
 
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
@@ -172,15 +172,15 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_item_current_day -> {
-                getPresenter()?.onCurrentDayClicked()
+                presenter?.onCurrentDayClicked()
                 true
             }
             R.id.menu_item_info -> {
-                getPresenter()?.onInfoClicked()
+                presenter?.onInfoClicked()
                 true
             }
             R.id.menu_item_calendar -> {
-                getPresenter()?.onCalendarClicked()
+                presenter?.onCalendarClicked()
                 true
             }
             else -> false
@@ -193,7 +193,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     fun showDatePicker(date: Calendar) {
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            getPresenter()?.onDateSelected(year, monthOfYear, dayOfMonth)
+            presenter?.onDateSelected(year, monthOfYear, dayOfMonth)
         }
         val datePickerDialog = DatePickerDialog.newInstance(
                 dateSetListener,
