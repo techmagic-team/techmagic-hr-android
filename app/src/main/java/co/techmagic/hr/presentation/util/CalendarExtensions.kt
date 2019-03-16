@@ -5,6 +5,8 @@ import android.support.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val ISO_DATE_FORMAT = "yyyy-MM-dd"
+
 fun now(): Calendar {
     return Calendar.getInstance()
 }
@@ -69,7 +71,7 @@ fun Calendar.firstDayOfWeekDate(): Calendar {
 }
 
 @SuppressLint("SimpleDateFormat")
-fun Calendar.formatDate(pattern: String = "dd-MM-yyyy", locale: Locale? = null, timeZone: TimeZone = TimeZone.getDefault()): String {
+fun Calendar.formatDate(pattern: String = ISO_DATE_FORMAT, locale: Locale? = null, timeZone: TimeZone = TimeZone.getDefault()): String {
     val format = if (locale != null) SimpleDateFormat(pattern, locale) else SimpleDateFormat(pattern)
     format.timeZone = timeZone
     return format.format(time)
