@@ -31,6 +31,13 @@
     <color name="color_time_report_list_item_divider">#d8d8d8</color>
     <color name="color_time_report_add_report_background">#00b8b2</color>
 
+    <color name="color_time_report_detail_task_header_color">#77807f</color>
+    <color name="color_time_report_detail_picker_text_color">#373a36</color>
+    <color name="color_time_report_detail_input_border_color">#d5e6e4</color>
+    <color name="color_time_report_detail_picker_description_text_color">#333333</color>
+    <color name="color_time_report_detail_picker_description_hint_color">#d8d8d8</color>
+    <color name="color_time_report_detail_time_text_color">#4a4a4a</color>
+
     <color name="sickly_yellow">#cddc39</color>
     <color name="dull_pink">#df73a2</color>
     <color name="macaroni_and_cheese">#f3bb29</color>

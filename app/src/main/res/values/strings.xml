@@ -210,4 +210,16 @@
         <item>"There's never enough time to do all the nothing you want. - Bill Watterson"</item>
         <item>You may delay, but the time will not. - Benjamin Franklin</item>
     </string-array>
+
+    <!-- Time Report Detail -->
+    <string name="tm_hr_time_report_detail_project_header">Project</string>
+    <string name="tm_hr_time_report_detail_task_header">Task</string>
+    <string name="tm_hr_time_report_detail_description_hint">Task description</string>
+    <string name="tm_hr_time_report_detail_time_spent_header">Time spent</string>
+    <string name="tm_hr_time_report_detail_default_time_fifteen_minutes">15 min</string>
+    <string name="tm_hr_time_report_detail_default_time_thirty_minutes">30 min</string>
+    <string name="tm_hr_time_report_detail_default_time_one_hour">1 hour</string>
+    <string name="tm_hr_time_report_detail_default_time_eight_hours">8 hours</string>
+    <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
+    <string name="tm_hr_time_report_detail_save">Save</string>
 </resources>

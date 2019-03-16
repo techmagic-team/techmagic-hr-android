@@ -3,8 +3,10 @@
     android:color="@color/colorPrimary">
     <item>
         <shape>
+            <stroke
+                android:width="@dimen/activity_time_report_detail_secondary_button_stroke_width"
+                android:color="@color/turquoise" />
             <solid android:color="@color/colorWhite" />
         </shape>
     </item>
-
 </ripple>
