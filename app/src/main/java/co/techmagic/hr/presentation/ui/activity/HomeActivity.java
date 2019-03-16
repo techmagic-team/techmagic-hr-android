@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.techmagic.viper.base.BasePresenter;
 import com.techmagic.viper.base.BaseRouter;
 
 import org.jetbrains.annotations.NotNull;
@@ -313,7 +314,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             };
             HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
-            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
+            BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
 
