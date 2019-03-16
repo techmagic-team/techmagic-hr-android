@@ -8,10 +8,13 @@ data class UserReport(
         @SerializedName("_task") val task: ReportName,
         @SerializedName("hours") var minutes: Int,
         val date: Date,
-        val lockDate: Boolean,
+        val lockDate: Boolean, //todo: find out what it actually means
         val note: String,
         val status: String,
         val client: String,
         val project: String,
-        val weekReportId: String
-)
+        val weekReportId: String) {
+
+    val isApproved: Boolean
+        get() = TaskStatus.fromString(status) == TaskStatus.APPROVED
+}

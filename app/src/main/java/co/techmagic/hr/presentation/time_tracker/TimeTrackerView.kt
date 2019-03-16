@@ -1,4 +1,3 @@
-
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import com.techmagic.viper.View
 

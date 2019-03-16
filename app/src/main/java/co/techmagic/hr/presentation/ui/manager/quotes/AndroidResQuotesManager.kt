@@ -18,23 +18,23 @@ class AndroidResQuotesManager(val context: Context) : QuotesManager {
     init {
         val quotesWithAuthors = context.resources.getStringArray(R.array.quotes)
         quotes = quotesWithAuthors.map {
-            val quotAndAuthor = it.split("-")
-            return@map Quote(quotAndAuthor[QUOTE_TEXT_POSITION], quotesWithAuthors[QUOTE_AUTHOR_POSITION])
+            val quoteAndAuthor = it.split("-")
+            return@map Quote(quoteAndAuthor[QUOTE_TEXT_POSITION], quoteAndAuthor[QUOTE_AUTHOR_POSITION])
         }
     }
 
     override fun getRandomQuote() = quotes[getRandomQuotIndex()]
 
-    override fun getRandomFormatedQuote(): String {
+    override fun getRandomFormattedQuote(): String {
         val quote = getRandomQuote()
 
         return StringBuilder()
                 .append("\"")
-                .append(quote.quotText)
+                .append(quote.quoteText)
                 .append("\"")
                 .append("\n")
                 .append(" – ")
-                .append(quote.quotAuthor)
+                .append(quote.quoteAuthor)
                 .toString()
     }
 

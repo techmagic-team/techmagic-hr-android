@@ -51,12 +51,8 @@ class ListenablePagerSnapHelper : PagerSnapHelper() {
         var scrollValue: Int = 0
         var totalSize: Int = 0
 
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-            if (recyclerView == null) {
-                return
-            }
-
             when (newState) {
                 SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING -> {
                     if (startPosition == null) {
@@ -76,9 +72,8 @@ class ListenablePagerSnapHelper : PagerSnapHelper() {
             }
         }
 
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            recyclerView ?: return
             scrollValue += if (isHorizontal) dx else dy
             dispatchOnPageOffsetChanged(startPosition ?: return, scrollValue.toFloat() / totalSize)
         }
@@ -89,7 +84,7 @@ class ListenablePagerSnapHelper : PagerSnapHelper() {
         private var snapPosition: Int? = null
             get() {
                 val layoutManager = recyclerView?.layoutManager ?: return null
-                val snapView = findSnapView(layoutManager)
+                val snapView = findSnapView(layoutManager) ?: return null
                 return recyclerView?.findContainingViewHolder(snapView)?.adapterPosition
             }
     }

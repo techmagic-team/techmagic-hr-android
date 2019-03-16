@@ -7,7 +7,7 @@ import co.techmagic.hr.presentation.ui.view.ListenablePagerSnapHelper
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.dateOnly
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
-import co.techmagic.hr.presentation.util.toString
+import co.techmagic.hr.presentation.util.formatDate
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +28,7 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
         pagerSnapHelper.addOnPageChangeListener(object : ListenablePagerSnapHelper.OnPageChangeListener {
             override fun onPageSelected(page: Int) {
                 val date = pageToDate(page)
-                Log.d("DateAdapter", "offset = ${page - centerIndex} Selected date: ${date.toString("dd-MMM-YYYY")}")
+                Log.d("DateAdapter", "offset = ${page - centerIndex} Selected date: ${date.formatDate()}")
                 listener?.onDateSelected(date)
             }
 
@@ -48,8 +48,14 @@ abstract class DiscreteDateAdapter<VH : RecyclerView.ViewHolder>(
 
     fun dateToPage(date: Calendar): Int {
         return centerIndex + when (step) {
-            Step.DAY -> (date.timeInMillis - anchorDate.timeInMillis) / TimeUnit.DAYS.toMillis(1)
-            Step.WEEK -> (date.firstDayOfWeekDate().timeInMillis - anchorDate.timeInMillis) / TimeUnit.DAYS.toMillis(7)
+            Step.DAY -> {
+                TimeUnit.DAYS.convert(date.timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
+            }
+            Step.WEEK -> {
+                val diff = TimeUnit.DAYS.convert(date.firstDayOfWeekDate().timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(anchorDate.timeInMillis, TimeUnit.MILLISECONDS)
+                val offset = diff / 7
+                offset
+            }
         }.toInt()
     }
 

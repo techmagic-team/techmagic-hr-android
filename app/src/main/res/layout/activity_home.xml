@@ -53,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:splitMotionEvents="true"
+        android:background="@color/colorPrimary"
         app:itemBackground="@color/colorPrimary"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"

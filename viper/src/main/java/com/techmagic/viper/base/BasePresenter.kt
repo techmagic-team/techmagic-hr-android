@@ -22,7 +22,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
             }
         }
 
-    private var router: ROUTER? = null
+    protected var router: ROUTER? = null
 
     protected var initial: Boolean = false
 

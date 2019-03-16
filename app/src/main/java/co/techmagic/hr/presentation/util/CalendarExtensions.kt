@@ -1,8 +1,11 @@
 package co.techmagic.hr.presentation.util
 
+import android.annotation.SuppressLint
 import android.support.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.util.*
+
+const val ISO_DATE_FORMAT = "yyyy-MM-dd"
 
 fun now(): Calendar {
     return Calendar.getInstance()
@@ -26,8 +29,11 @@ fun calendar(@IntRange(from = 1, to = 31) day: Int,
     return date
 }
 
-fun Date.toCalendar(): Calendar {
-    return Calendar.getInstance()
+fun Date.toCalendar(firstDayOfWeek: Int = Calendar.MONDAY): Calendar {
+    val instance = Calendar.getInstance()
+    instance.time = this
+    instance.firstDayOfWeek = firstDayOfWeek
+    return instance
 }
 
 fun Calendar.copy(): Calendar {
@@ -39,15 +45,16 @@ fun Calendar.nowMillis(): Long {
 }
 
 fun Calendar.dateOnly(): Calendar {
-    return copy().let {
+    val date = copy()
+    with(date) {
         clear(Calendar.HOUR)
         clear(Calendar.HOUR_OF_DAY)
         clear(Calendar.MINUTE)
         clear(Calendar.SECOND)
         clear(Calendar.MILLISECOND)
         set(Calendar.AM_PM, Calendar.AM)
-        it
     }
+    return date
 }
 
 fun Calendar.firstDayOfWeekDate(): Calendar {
@@ -61,8 +68,9 @@ fun Calendar.firstDayOfWeekDate(): Calendar {
     return date
 }
 
-fun Calendar.toString(pattern: String, locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String {
-    val format = SimpleDateFormat(pattern, locale)
+@SuppressLint("SimpleDateFormat")
+fun Calendar.formatDate(pattern: String = ISO_DATE_FORMAT, locale: Locale? = null, timeZone: TimeZone = TimeZone.getDefault()): String {
+    val format = if (locale != null) SimpleDateFormat(pattern, locale) else SimpleDateFormat(pattern)
     format.timeZone = timeZone
     return format.format(time)
 }

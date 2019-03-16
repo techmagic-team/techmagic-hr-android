@@ -4,7 +4,11 @@ import co.techmagic.hr.data.entity.time_tracker.*
 import co.techmagic.hr.data.manager.NetworkManager
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.util.ISO_DATE_FORMAT
+import co.techmagic.hr.presentation.util.firstDayOfWeekDate
+import co.techmagic.hr.presentation.util.formatDate
 import rx.Observable
+import java.util.*
 
 class TimeReportNetworkRepository(
         private val apiClient: TimeTrackerApi,
@@ -15,8 +19,10 @@ class TimeReportNetworkRepository(
         return setup(apiClient.getMe())
     }
 
-    override fun getDayReports(userId: String, date: String): Observable<UserReportsResponse> {
-        return setup(apiClient.getReports(userId, date))
+    override fun getDayReports(userId: String, firstDayOfWeek: Calendar): Observable<UserReportsResponse> {
+        // Use date format explicitly to not depend on default param value
+        val dateString = firstDayOfWeek.firstDayOfWeekDate().formatDate(ISO_DATE_FORMAT)
+        return setup(apiClient.getReports(userId, dateString))
     }
 
     override fun getProjects(userId: String, firstDayOfWeek: String): Observable<List<ProjectResponse>> {
