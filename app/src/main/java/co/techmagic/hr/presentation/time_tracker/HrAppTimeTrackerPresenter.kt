@@ -13,6 +13,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+// TODO: use a repository through an interactor abstraction
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
