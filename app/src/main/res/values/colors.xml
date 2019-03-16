@@ -35,6 +35,7 @@
     <color name="color_time_report_detail_picker_text_color">#373a36</color>
     <color name="color_time_report_detail_input_border_color">#d5e6e4</color>
     <color name="color_time_report_detail_picker_description_text_color">#333333</color>
+    <color name="color_time_report_detail_picker_description_error_color">#d0021b</color>
     <color name="color_time_report_detail_picker_description_hint_color">#d8d8d8</color>
     <color name="color_time_report_detail_time_text_color">#4a4a4a</color>
 

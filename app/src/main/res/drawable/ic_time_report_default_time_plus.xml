@@ -1,10 +1,5 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="14dp"
-    android:height="14dp"
-    android:viewportWidth="14"
-    android:viewportHeight="14">
-  <path
-      android:pathData="M5.703,8.27H0V5.758h5.703V0h2.58v5.758H14V8.27H8.282V14H5.703z"
-      android:fillColor="#00B2A9"
-      android:fillType="evenOdd"/>
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:drawable="@drawable/ic_time_report_default_time_plus_disabled"/>
+    <item android:state_enabled="true" android:drawable="@drawable/ic_time_report_detail_plus_time_enabled"/>
+</selector>

@@ -96,7 +96,7 @@
     <dimen name="activity_time_report_detail_padding">16dp</dimen>
     <dimen name="activity_time_report_bottom_padding">72dp</dimen>
     <dimen name="activity_time_report_detail_header_text_size">14sp</dimen>
-    <dimen name="activity_time_report_detail_header_top_offset">16dp</dimen>
+    <dimen name="activity_time_report_header_top_offset">16dp</dimen>
     <dimen name="activity_time_report_detail_header_bottom_offset">9dp</dimen>
     <dimen name="activity_time_report_detail_picker_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_small_border_width">1dp</dimen>
@@ -109,6 +109,8 @@
     <dimen name="activity_time_report_detail_description_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_description_padding">8dp</dimen>
     <dimen name="activity_time_report_detail_description_min_height">56dp</dimen>
+    <dimen name="activity_time_report_detail_description_error_text_size">11sp</dimen>
+    <dimen name="activity_time_report_detail_description_error_vertical_offset">2dp</dimen>
     <dimen name="activity_time_report_detail_default_time_text_size">18sp</dimen>
     <dimen name="activity_time_report_detail_default_time_inner_offset">10dp</dimen>
     <dimen name="activity_time_report_detail_default_time_grid_offset">8dp</dimen>

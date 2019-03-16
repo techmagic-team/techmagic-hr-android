@@ -215,6 +215,7 @@
     <string name="tm_hr_time_report_detail_project_header">Project</string>
     <string name="tm_hr_time_report_detail_task_header">Task</string>
     <string name="tm_hr_time_report_detail_description_hint">Task description</string>
+    <string name="tm_hr_time_report_detail_description_empty_error">Description is required!</string>
     <string name="tm_hr_time_report_detail_time_spent_header">Time spent</string>
     <string name="tm_hr_time_report_detail_default_time_fifteen_minutes">15 min</string>
     <string name="tm_hr_time_report_detail_default_time_thirty_minutes">30 min</string>

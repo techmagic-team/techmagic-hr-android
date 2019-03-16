@@ -27,7 +27,7 @@
 
             <TextView
                 style="@style/TimeReportHeaderTextStyle"
-                android:layout_marginTop="@dimen/activity_time_report_detail_header_top_offset"
+                android:layout_marginTop="@dimen/activity_time_report_header_top_offset"
                 android:text="@string/tm_hr_time_report_detail_task_header" />
 
             <TextView
@@ -41,8 +41,12 @@
                 android:hint="@string/tm_hr_time_report_detail_description_hint" />
 
             <TextView
+                android:id="@+id/tvTimeReportDetailDescriptionError"
+                style="@style/TimeReportDetailDescriptionErrorTextStyle"
+                android:text="@string/tm_hr_time_report_detail_description_empty_error" />
+
+            <TextView
                 style="@style/TimeReportHeaderTextStyle"
-                android:layout_marginTop="@dimen/activity_time_report_detail_header_top_offset"
                 android:text="@string/tm_hr_time_report_detail_time_spent_header" />
 
 
@@ -120,10 +124,10 @@
     </ScrollView>
 
     <LinearLayout
-        android:layout_marginBottom="@dimen/activity_time_report_detail_actions_bottom_offset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/activity_time_report_detail_actions_bottom_offset"
         app:layout_anchorGravity="bottom">
 
         <TextView
