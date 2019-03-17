@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorPrimary">
+    <item
+        android:bottom="@dimen/activity_time_report_detail_small_border_width"
+        android:left="@dimen/activity_time_report_detail_small_border_width"
+        android:right="@dimen/activity_time_report_detail_small_border_width"
+        android:top="@dimen/activity_time_report_detail_small_border_width">
+        <shape>
+            <solid android:color="@color/colorWhite" />
+        </shape>
+    </item>
+
+</ripple>

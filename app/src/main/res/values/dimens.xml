@@ -94,7 +94,7 @@
 
     <!-- TimeReportActivity -->
     <dimen name="activity_time_report_detail_padding">16dp</dimen>
-    <dimen name="activity_time_report_bottom_padding">72dp</dimen>
+    <dimen name="activity_time_report_bottom_padding">72dp</dimen> <!--depends on action buttons-->
     <dimen name="activity_time_report_detail_header_text_size">14sp</dimen>
     <dimen name="activity_time_report_header_top_offset">16dp</dimen>
     <dimen name="activity_time_report_detail_header_bottom_offset">9dp</dimen>
@@ -114,10 +114,12 @@
     <dimen name="activity_time_report_detail_default_time_text_size">18sp</dimen>
     <dimen name="activity_time_report_detail_default_time_inner_offset">10dp</dimen>
     <dimen name="activity_time_report_detail_default_time_grid_offset">8dp</dimen>
-    <dimen name="activity_time_report_detail_time_text_size">50dp</dimen>
+    <dimen name="activity_time_report_detail_time_text_size">50sp</dimen>
     <dimen name="activity_time_report_detail_change_time_buttons_size">50dp</dimen>
-    <dimen name="activity_time_report_detail_time_input_height">100dp</dimen>  <!--this value depends on change time value buttons height (previous dimen)-->
+    <dimen name="activity_time_report_detail_time_input_height">101dp</dimen>  <!--depends on change time buttons height (previous dimen)-->
     <dimen name="activity_time_report_detail_secondary_button_stroke_width">2dp</dimen>
+    <dimen name="activity_time_report_detail_action_button_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_actions_bottom_offset">16dp</dimen>
+    <dimen name="activity_time_report_detail_action_button_height">40dp</dimen>
 
 </resources>

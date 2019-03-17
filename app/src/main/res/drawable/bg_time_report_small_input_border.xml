@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke
-        android:width="@dimen/activity_time_report_detail_small_border_width"
-        android:color="@color/color_time_report_detail_input_border_color" />
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/colorPrimary">
+    <item>
+        <shape tools:ignore="MissingDefaultResource">
+            <stroke
+                android:width="@dimen/activity_time_report_detail_small_border_width"
+                android:color="@color/color_time_report_detail_input_border_color" />
+            <solid android:color="@color/colorWhite" />
+        </shape>
+    </item>
+</ripple>
