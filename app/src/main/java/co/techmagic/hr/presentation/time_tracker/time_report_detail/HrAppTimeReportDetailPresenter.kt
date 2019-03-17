@@ -2,41 +2,44 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
 import com.techmagic.viper.base.BasePresenter
 
-class HrAppTimeReportDetailPresenter : BasePresenter<TimeReportDetailView, TimeReportDetailRouter>(), TimeReportDetailPresenter {
+class HrAppTimeReportDetailPresenter : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
+        TimeReportDetailPresenter {
 
-    override fun changeProjectclicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun changeProjectClicked() {
     }
 
     override fun changeTaskClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun descriptionChanged(description: String) {
     }
 
     override fun addFifteenMinutesClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun addThirtyMinutesclicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun addThirtyMinutesClicked() {
     }
 
     override fun addOneHourClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun addEigthHoursClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun addEightHoursClicked() {
+    }
+
+    override fun increaseTimeClicked() {
     }
 
     override fun reduceTimeClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun startTimerClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun saveClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun deleteClicked() {
+
+    }
+
 }

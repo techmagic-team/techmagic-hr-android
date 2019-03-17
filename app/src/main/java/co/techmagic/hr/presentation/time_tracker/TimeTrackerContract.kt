@@ -36,4 +36,6 @@ interface TimeTrackerPresenter : Presenter {
     fun onCurrentDayClicked()
     fun onInfoClicked()
     fun onCalendarClicked()
+
+    fun onNewTimeReportClicked()
 }

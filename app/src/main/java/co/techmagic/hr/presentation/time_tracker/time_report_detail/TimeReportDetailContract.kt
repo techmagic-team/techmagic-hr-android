@@ -7,17 +7,20 @@ interface TimeReportDetailView : View {
     fun showProject(project: String)
     fun showTask(task: String)
     fun showDescription(description: String)
-    fun setEditingEnabled(enabled: Boolean)
+    fun setDescriptionValid(enabled: Boolean)
 }
 
 interface TimeReportDetailPresenter : Presenter {
-    fun changeProjectclicked()
+    fun changeProjectClicked()
     fun changeTaskClicked()
+    fun descriptionChanged(description: String)
     fun addFifteenMinutesClicked()
-    fun addThirtyMinutesclicked()
+    fun addThirtyMinutesClicked()
     fun addOneHourClicked()
-    fun addEigthHoursClicked()
+    fun addEightHoursClicked()
+    fun increaseTimeClicked()
     fun reduceTimeClicked()
     fun startTimerClicked()
     fun saveClicked()
+    fun deleteClicked()
 }
