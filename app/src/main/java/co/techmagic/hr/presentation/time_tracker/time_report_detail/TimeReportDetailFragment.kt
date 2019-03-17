@@ -94,6 +94,10 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         btnSave.setOnClickListener { presenter?.saveClicked() }
     }
 
+    override fun showDate(date: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun showProject(project: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
