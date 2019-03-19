@@ -22,7 +22,7 @@
     <color name="error_background">#55cb4646</color>
 
     <color name="color_time_report_list_item_disabled_background">#fafafa</color>
-    <color name="color_time_report_client_text_color">#007672</color>
+    <color name="color_time_report_client_text_color">@color/dark_aquamarine</color>
     <color name="color_time_report_project_text_color">#aaaaaa</color>
     <color name="color_time_report_task_text_color">#373a36</color>
     <color name="color_time_report_note_text_color">#373a36</color>
@@ -36,5 +36,6 @@
     <color name="macaroni_and_cheese">#f3bb29</color>
     <color name="turquoise">#00b2a9</color>
     <color name="ruby">#e0004d</color>
+    <color name="dark_aquamarine">#007672</color>
 
 </resources>
