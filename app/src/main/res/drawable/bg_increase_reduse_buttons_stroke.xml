@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/activity_time_report_detail_small_border_width"
+                android:color="@color/color_time_report_detail_input_border_color" />
+            <solid android:color="@color/colorWhite" />
+
+        </shape>
+    </item>
+
+    <item
+        android:bottom="@dimen/activity_time_report_detail_small_border_width"
+        android:right="@dimen/activity_time_report_detail_small_border_width"
+        android:top="@dimen/activity_time_report_detail_small_border_width">
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/activity_time_report_detail_small_border_width"
+                android:color="@color/colorWhite" />
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+
+</layer-list>

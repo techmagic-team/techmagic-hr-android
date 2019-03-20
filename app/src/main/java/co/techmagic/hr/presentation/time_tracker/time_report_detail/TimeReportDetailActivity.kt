@@ -20,7 +20,13 @@ class TimeReportDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_report_detail)
+        init()
+    }
+
+    private fun init(){
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         replaceTimeReportDetailFragment()
+
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
