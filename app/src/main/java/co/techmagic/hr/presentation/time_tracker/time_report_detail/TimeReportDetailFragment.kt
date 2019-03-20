@@ -72,6 +72,9 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         edTime = view.find(R.id.edTimeReportDetailTime)
         btnIncreaseTime = view.find(R.id.btnTimeReportDetailIncreaseTime)
         btnReduceTime = view.find(R.id.btnTimeReportDetailReduceTime)
+
+
+
         btnStartTimer = view.find(R.id.btnTimeReportDetailStartTimer)
         btnSave = view.find(R.id.btnTimeReportDetailSave)
     }

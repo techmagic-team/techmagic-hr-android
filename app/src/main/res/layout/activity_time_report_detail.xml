@@ -25,6 +25,11 @@
                 android:id="@+id/tvTimeReportDetailSelectedProject"
                 style="@style/TimeReportPickerTextStyle" />
 
+
+
+
+
+
             <TextView
                 style="@style/TimeReportHeaderTextStyle"
                 android:layout_marginTop="@dimen/activity_time_report_header_top_offset"
