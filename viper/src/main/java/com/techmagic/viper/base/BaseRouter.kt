@@ -3,15 +3,22 @@ package com.techmagic.viper.base
 import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import com.techmagic.viper.Router
 
-class BaseRouter<T : FragmentActivity>(protected var activity: T) : Router {
+open class BaseRouter<T : AppCompatActivity>(protected var activity: T) : Router {
 
     protected fun addFragment(@IdRes containerId: Int, fragment: Fragment, addToBackStack: Boolean) {
         val fragmentManager = activity.supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
-                .hide(fragmentManager.findFragmentById(containerId))
-                .add(containerId, fragment, fragment.javaClass.canonicalName)
+
+        val existingFragment = fragmentManager.findFragmentById(containerId)
+        if (existingFragment != null) {
+            transaction.hide(existingFragment)
+        }
+
+        transaction.add(containerId, fragment, fragment.javaClass.canonicalName)
+
         if (addToBackStack) {
             transaction.addToBackStack(null)
         }

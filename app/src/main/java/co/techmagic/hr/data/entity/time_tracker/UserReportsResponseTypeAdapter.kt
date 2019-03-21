@@ -3,9 +3,12 @@ package co.techmagic.hr.data.entity.time_tracker
 import co.techmagic.hr.data.entity.HolidayDate
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter
+import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
@@ -35,8 +38,41 @@ class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
                             "firstName" -> first = reader.nextString()
                             "lastName" -> last = reader.nextString()
                             "submitted" -> submitted = reader.nextBoolean()
-                            "reports" -> reports = readList(reader)
-                            "holidays" -> holidays = readList(reader)
+                            "reports" -> {
+                                // FIXME: returns list of LinkedTreeMap items instead of UserReport
+                                // See https://github.com/google/gson/issues/1107
+                                // reports = readList(reader)
+                                val list: List<LinkedTreeMap<String, Any>> = readList(reader)
+                                val mappedList = list.map {
+                                    UserReport(
+                                            it["_id"] as String,
+                                            ReportName((it["_task"] as LinkedTreeMap<*, *>)["name"] as String),
+                                            (it["hours"] as Double).toInt(),
+                                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(it["date"] as String),
+                                            it["lockDate"] as Boolean,
+                                            it["note"] as String,
+                                            it["status"] as String,
+                                            it["client"] as String,
+                                            it["project"] as String,
+                                            it["weekReportId"] as String
+                                    )
+                                }
+                                reports = mappedList
+                            }
+                            "holidays" -> {
+                                // FIXME: returns list of LinkedTreeMap items instead of UserReport
+                                // See https://github.com/google/gson/issues/1107
+                                // holidays = readList(reader)
+                                val list: List<LinkedTreeMap<String, Any>> = readList(reader)
+                                val mappedList = list.map {
+                                    HolidayDate(
+                                            it["_id"] as String,
+                                            it["name"] as String,
+                                            it["date"] as String
+                                    )
+                                }
+                                holidays = mappedList
+                            }
                             "weeksId" -> weeksId = readList(reader)
                         }
                     }

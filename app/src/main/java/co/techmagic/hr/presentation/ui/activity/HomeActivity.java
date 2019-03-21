@@ -17,8 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.techmagic.viper.base.BasePresenter;
 import com.techmagic.viper.base.BaseRouter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,13 +36,17 @@ import co.techmagic.hr.data.store.TimeTrackerApi;
 import co.techmagic.hr.data.store.client.ApiClient;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
+import co.techmagic.hr.presentation.time_tracker.DateTimeProvider;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
+import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
+import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
@@ -106,7 +114,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
         }
     }
-
 
     @Override
     protected void initLayout() {
@@ -286,7 +293,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     }
 
     private void addTimeTrackerFragment() {
-        replaceFragment(new TimeTrackerFragment(), FRAGMENT_TIME_TRACKER_TAG);
+        replaceFragment(TimeTrackerFragment.Companion.newInstance(), FRAGMENT_TIME_TRACKER_TAG);
 //        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_TIME_TRACKER_TAG); // TODO: 1/21/19 Add tracking? 
     }
 
@@ -299,9 +306,15 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
             TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
             TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(timeReportRepository);
+            QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
+            DateTimeProvider dateTimeProvider = () -> {
+                Calendar now = Calendar.getInstance();
+                now.setFirstDayOfWeek(Calendar.MONDAY);
+                return now;
+            };
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
-            HrAppTimeTrackerPresenter.Companion.bind(view, timeTrackerPresenter, new BaseRouter(this));
+            BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
 

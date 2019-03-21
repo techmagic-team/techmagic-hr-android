@@ -28,7 +28,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 3
-        versionName "1.4.8.1-test"
+        versionName "2.1.0.2"
     }
 
     signingConfigs {
@@ -44,6 +44,7 @@ android {
     productFlavors {
         dev {
             buildConfigField 'String', 'HOST_URL', '"https://timeapi-dev.techmagic.co"'
+            versionName = android.defaultConfig.versionName + "(Dev)"
         }
 
         prod {
@@ -53,7 +54,7 @@ android {
 
     buildTypes {
         debug {
-            ext.betaDistributionEmails = "nazar.vrublevskyi@techmagic.co, ruslan.kuziak@techmagic.co, yulia.kotsur@techmagic.co"
+            ext.betaDistributionEmailsFilePath = "fabric_distribution_emails.txt"
         }
 
         release {

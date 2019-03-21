@@ -16,13 +16,16 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
 
     private val TAG = javaClass.name
 
-    protected var presenter: PRESENTER? = null
+    private var _presenter: PRESENTER? = null
+
+    protected val presenter: PRESENTER?
+        get() = _presenter
 
     var isRestored: Boolean = false
         private set
 
-    override fun providePresenter(presenter: PRESENTER) {
-        this.presenter = presenter
+    override fun setPresenter(presenter: PRESENTER) {
+        this._presenter = presenter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +77,7 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
 
     override fun detachViewOutput() {
         presenter?.onViewDetached()
-        presenter = null
+        _presenter = null
     }
 
     override fun onDestroyView() {
@@ -98,11 +101,9 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
     }
 
     protected fun saveState(outState: Bundle) {
-        if (presenter != null) {
-            val state = presenter!!.onStateSaved()
-            if (state != null) {
-                outState.putParcelable(KEY_SAVED_STATE, convert(state))
-            }
+        val state = presenter?.onStateSaved()
+        if (state != null) {
+            outState.putParcelable(KEY_SAVED_STATE, convert(state))
         }
     }
 
@@ -118,8 +119,8 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
         }
     }
 
-    protected fun <T : Fragment> getFragment(@IdRes id: Int): T {
-        return childFragmentManager.findFragmentById(id) as T
+    protected inline fun <reified T : Fragment> getFragment(@IdRes id: Int): T? {
+        return childFragmentManager.findFragmentById(id) as? T
     }
 
     protected fun replaceFragment(@IdRes id: Int, fragment: Fragment, shouldAddToBackStack: Boolean) {
