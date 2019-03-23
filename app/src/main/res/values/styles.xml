@@ -292,6 +292,28 @@
         <item name="android:background">@color/turquoise</item>
     </style>
 
+    <style name="ReportPropertyHeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_header_text_size</item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_header_top_offset</item>
+        <item name="android:paddingBottom">@dimen/fragment_report_properties_header_bottom_offset</item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_inner_offset</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/color_report_properties_property_header_text_color</item>
+    </style>
+
+    <style name="ReportPropertyTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_property_text_size</item>
+        <item name="android:background">@drawable/bg_ripple_accent</item>
+        <item name="android:textColor">@color/color_report_properties_property_text_color</item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_property_left_margin</item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_property_vertical_offset</item>
+        <item name="android:paddingBottom">@dimen/fragment_report_properties_property_vertical_offset</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

@@ -1,16 +1,24 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.TASK
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ChooseReportPropertyAdapter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProperty
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyParentHeaderDecorator
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
 class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), ReportProjectsView {
+
+    private lateinit var rvReportProperties: RecyclerView
+
+    private var chooseReportProjectAdapter = ChooseReportPropertyAdapter<ReportProperty>()
 
     companion object {
         const val ARG_TYPE = "arg_type"
@@ -44,6 +52,25 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_report_projects, container, false)
+        val view = inflater.inflate(R.layout.fragment_report_projects, container, false)
+
+        findViews(view)
+
+        return view
+    }
+
+    override fun showProperties(props: List<ReportProperty>) {
+        chooseReportProjectAdapter.setData(props)
+    }
+
+    private fun findViews(view: View) {
+        rvReportProperties = view.findViewById(R.id.rvReportProperties)
+
+        initRecycler()
+    }
+
+    private fun initRecycler() {
+        rvReportProperties.adapter = chooseReportProjectAdapter
+        rvReportProperties.addItemDecoration(ReportPropertyParentHeaderDecorator())
     }
 }

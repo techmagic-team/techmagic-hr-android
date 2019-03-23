@@ -122,4 +122,13 @@
     <dimen name="activity_time_report_detail_actions_bottom_offset">16dp</dimen>
     <dimen name="activity_time_report_detail_action_button_height">40dp</dimen>
 
+    <!-- ReportPropertiesFragment -->
+    <dimen name="fragment_report_properties_property_text_size">14sp</dimen>
+    <dimen name="fragment_report_properties_property_left_margin">46dp</dimen>
+    <dimen name="fragment_report_properties_property_vertical_offset">5dp</dimen>
+    <dimen name="fragment_report_properties_header_text_size">14sp</dimen>
+    <dimen name="fragment_report_properties_header_top_offset">15dp</dimen>
+    <dimen name="fragment_report_properties_header_bottom_offset">5dp</dimen>
+    <dimen name="fragment_report_properties_inner_offset">16dp</dimen>
+
 </resources>

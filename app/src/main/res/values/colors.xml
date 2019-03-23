@@ -40,6 +40,10 @@
     <color name="color_time_report_detail_picker_description_hint_color">#d8d8d8</color>
     <color name="color_time_report_detail_time_text_color">#4a4a4a</color>
 
+    <color name="color_report_properties_property_header_text_color">#aaaaaa</color>
+    <color name="color_report_properties_property_text_color">#373a36</color>
+
+
     <color name="sickly_yellow">#cddc39</color>
     <color name="dull_pink">#df73a2</color>
     <color name="macaroni_and_cheese">#f3bb29</color>
