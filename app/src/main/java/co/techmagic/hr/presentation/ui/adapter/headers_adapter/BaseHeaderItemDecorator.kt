@@ -1,18 +1,18 @@
-package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter
+package co.techmagic.hr.presentation.ui.adapter.headers_adapter
 
 import android.graphics.Canvas
 import android.graphics.Rect
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import co.techmagic.hr.R
 
 
-class ReportPropertyParentHeaderDecorator : RecyclerView.ItemDecoration() {
-    private val headers = SparseArray<TextView>()
+abstract class BaseHeaderItemDecorator<T : HasHeaderProperty<*>, V : View> : RecyclerView.ItemDecoration() {
+    private val headers = SparseArray<V>()
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val currentPosition = parent.getChildLayoutPosition(view)
@@ -20,20 +20,19 @@ class ReportPropertyParentHeaderDecorator : RecyclerView.ItemDecoration() {
             return
         }
 
-        val currentProperty = (parent.adapter as? ChooseReportPropertyAdapter<*>)?.getItem(currentPosition)
-        val previousProperty = (parent.adapter as? ChooseReportPropertyAdapter<*>)?.getItem(currentPosition - 1)
+        val currentProperty = (parent.adapter as? BaseHeadersAdapter<*, T, *>)?.getItem(currentPosition)//todo do something with warning
+        val previousProperty = (parent.adapter as? BaseHeadersAdapter<*, T, *>)?.getItem(currentPosition - 1)
 
         if (previousProperty == null || previousProperty.getParent() != currentProperty?.getParent() ?: false) {
 
             if (headers.get(currentPosition) == null) {
-                val view = createHeader(parent)
+                val headerView = createHeader(parent)
 
-                measureHeader(view, parent)
+                measureHeader(headerView, parent)
 
-                headers.put(currentPosition, view)
+                headers.put(currentPosition, headerView)
+                currentProperty?.let { fillUpHeader(headerView, currentProperty) }
             }
-
-            headers.get(currentPosition).text = currentProperty?.getParent()
 
             outRect.top = headers.get(currentPosition).measuredHeight
 
@@ -56,18 +55,14 @@ class ReportPropertyParentHeaderDecorator : RecyclerView.ItemDecoration() {
         }
     }
 
-    private fun createHeader(parent: ViewGroup) = LayoutInflater.from(parent.context)?.inflate(
-            R.layout.item_report_property_header,
-            parent,
-            false
-    ) as TextView
+    abstract fun fillUpHeader(view: V, item: T)
 
-    private fun measureHeader(view : View, parent: RecyclerView) {
-        // Specs for parent (RecyclerView)
+    abstract fun createHeader(parent: ViewGroup) : V
+
+    private fun measureHeader(view: View, parent: RecyclerView) {
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
 
-        // Specs for children (headers)
         val childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec, parent.paddingLeft + parent.paddingRight, view.layoutParams.width)
         val childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec, parent.paddingTop + parent.paddingBottom, view.layoutParams.height)
 

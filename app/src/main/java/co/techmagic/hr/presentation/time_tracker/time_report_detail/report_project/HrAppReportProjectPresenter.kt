@@ -1,7 +1,8 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
 import android.support.annotation.IntDef
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProperty
+import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.presentation.ui.adapter.headers_adapter.HasHeaderProperty
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
@@ -33,48 +34,17 @@ class HrAppReportProjectPresenter : BasePresenter<ReportProjectsView, IReportPro
     }
 
     private fun loadProjects() {
-        val projects = arrayListOf<ReportProperty>()
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 1"
+        val projects = arrayListOf<ProjectViewModel>()
+        projects.add(ProjectViewModel("Text", "Text some text"))
+        projects.add(ProjectViewModel("Text", "Text some text"))
+        projects.add(ProjectViewModel("Text", "Text some text"))
+        projects.add(ProjectViewModel("Text", "Text some text"))
+        projects.add(ProjectViewModel("Text", "Text some text"))
+        projects.add(ProjectViewModel("Text2", "Text some text"))
+        projects.add(ProjectViewModel("Text2", "Text some text"))
+        projects.add(ProjectViewModel("Text2", "Text some text"))
+        projects.add(ProjectViewModel("Text2", "Text some text"))
 
-            override fun getTitle() = "Title 1"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 1"
-
-            override fun getTitle() = "Title 2"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 2"
-
-            override fun getTitle() = "Title 1"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 2"
-
-            override fun getTitle() = "Title 2"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 2"
-
-            override fun getTitle() = "Title 3"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 2"
-
-            override fun getTitle() = "Title 4"
-        })
-
-        projects.add(object : ReportProperty {
-            override fun getParent() = "Parent 5"
-
-            override fun getTitle() = "Title 1"
-        })
 
         view?.showProperties(projects)
     }

@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.presentation.pojo.TaskViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.TASK
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ChooseReportPropertyAdapter
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProperty
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyParentHeaderDecorator
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ProjectsAdapter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyHeaderItemDecorator
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
@@ -18,7 +20,8 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
 
     private lateinit var rvReportProperties: RecyclerView
 
-    private var chooseReportProjectAdapter = ChooseReportPropertyAdapter<ReportProperty>()
+    private var projectAdapter: ProjectsAdapter? = null
+    private var tasksAdapter: TasksAdapter? = null
 
     companion object {
         const val ARG_TYPE = "arg_type"
@@ -59,8 +62,22 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
         return view
     }
 
-    override fun showProperties(props: List<ReportProperty>) {
-        chooseReportProjectAdapter.setData(props)
+    override fun showProperties(props: List<ProjectViewModel>) {
+        if (projectAdapter == null) {
+            projectAdapter = ProjectsAdapter()
+            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectViewModel>())
+            rvReportProperties.adapter = projectAdapter
+        }
+        projectAdapter?.setData(props)
+    }
+
+    override fun showTasks(props: List<TaskViewModel>) {
+        if (tasksAdapter == null) {
+            tasksAdapter = TasksAdapter()
+            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<TaskViewModel>())
+            rvReportProperties.adapter = tasksAdapter
+        }
+        tasksAdapter?.setData(props)
     }
 
     private fun findViews(view: View) {
@@ -70,7 +87,6 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
     }
 
     private fun initRecycler() {
-        rvReportProperties.adapter = chooseReportProjectAdapter
-        rvReportProperties.addItemDecoration(ReportPropertyParentHeaderDecorator())
+        rvReportProperties.adapter = projectAdapter
     }
 }
