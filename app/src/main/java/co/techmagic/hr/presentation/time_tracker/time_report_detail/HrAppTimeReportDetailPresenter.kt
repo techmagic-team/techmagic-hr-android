@@ -1,14 +1,17 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
 import com.techmagic.viper.base.BasePresenter
+import java.util.Calendar
 
 class HrAppTimeReportDetailPresenter : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
         TimeReportDetailPresenter {
 
     override fun changeProjectClicked() {
+        router?.openSelectProject("12421", Calendar.getInstance().time)
     }
 
     override fun changeTaskClicked() {
+        router?.openSelectTask("fq9qw9")
     }
 
     override fun descriptionChanged(description: String) {
