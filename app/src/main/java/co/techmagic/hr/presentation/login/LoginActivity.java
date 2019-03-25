@@ -12,6 +12,7 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.data.repository.UserRepositoryImpl;
 import co.techmagic.hr.domain.repository.IUserRepository;
 import co.techmagic.hr.presentation.ui.activity.HomeActivity;
+import co.techmagic.hr.presentation.ui.manager.AccountManager;
 import co.techmagic.hr.presentation.ui.manager.MixpanelManager;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,7 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onAttachFragment(fragment);
         if (fragment instanceof LoginFragment) {
             IUserRepository userRepository = new UserRepositoryImpl();
-            HrAppLoginPresenter loginPresenter = new HrAppLoginPresenter(userRepository);
+            AccountManager accountManager = new AccountManager(this);
+            HrAppLoginPresenter loginPresenter = new HrAppLoginPresenter(userRepository, accountManager);
             BasePresenter.Companion.bind((LoginView)fragment, loginPresenter, (LoginRouter) () -> {
                 mixpanelManager.sendLoggedInUserToMixpanel();
                 mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);

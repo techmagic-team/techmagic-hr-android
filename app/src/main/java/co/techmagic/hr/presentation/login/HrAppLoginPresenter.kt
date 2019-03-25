@@ -1,21 +1,21 @@
 package co.techmagic.hr.presentation.login
 
 import co.techmagic.hr.domain.repository.IUserRepository
-import co.techmagic.hr.presentation.util.SharedPreferencesUtil
+import co.techmagic.hr.presentation.ui.manager.AccountManager
 import com.techmagic.viper.base.BasePresenter
 
 
-class HrAppLoginPresenter(private val userRepository: IUserRepository) : BasePresenter<LoginView, LoginRouter>(), LoginPresenter {
+class HrAppLoginPresenter(private val userRepository: IUserRepository,
+                          private val accountManager: AccountManager) : BasePresenter<LoginView, LoginRouter>(), LoginPresenter {
 
     override fun handleLoginClick(googleAuthToken: String) {
-        // todo implement correct logic handling
         userRepository.googleLogin(googleAuthToken)
-                .subscribe( {
-//                    SharedPreferencesUtil.saveAccessToken(it.accessToken)
-//                    SharedPreferencesUtil.saveUser(it)
-                    view?.showMessage("Logged in")
+                .subscribe({
+                    accountManager.saveUser(it)
+                    router?.onSuccessfulLogin()
                 }, {
-                    view?.showMessage(""+it.message)
+                    // TODO add error handling
+                    view?.showMessage("" + it.message)
                     it.printStackTrace()
                 })
     }
