@@ -4,5 +4,5 @@ import com.techmagic.viper.Presenter
 
 interface LoginPresenter : Presenter {
 
-    fun handleLoginClick(email: String)
+    fun handleLoginClick(googleAuthToken: String)
 }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
 
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
 import co.techmagic.hr.presentation.util.LocaleUtil;
@@ -33,6 +34,8 @@ public class TechMagicHrApplication extends Application {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }
+
+        FirebaseApp.initializeApp(this);
 
         SNTP.setClient(AndroidSNTPClientFactory.create());
         SNTP.setCache(AndroidSNTPCacheFactory.create(this));

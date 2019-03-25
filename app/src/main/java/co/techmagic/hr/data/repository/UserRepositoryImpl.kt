@@ -28,6 +28,10 @@ class UserRepositoryImpl(
             ApiClient.getApiClient().userApiClient,
             ApiClient.getApiClient().serializableNullsUserClient)
 
+    override fun googleLogin(googleAuthToken: String): Observable<User> {
+        return setup(userApiClient.googleLogin(googleAuthToken))
+    }
+
     override fun login(loginRequest: LoginRequest): Observable<User> {
         return setup(userApiClient.login(loginRequest))
     }

@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.login
 
-import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import co.techmagic.hr.BuildConfig
 import co.techmagic.hr.R
-import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.techmagic.viper.base.BaseViewFragment
@@ -36,19 +37,32 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
         tvSignIn.setOnClickListener {
 
             val gso = GoogleSignInOptions.Builder()
-//                    .requestIdToken("server client id")
-                    .requestEmail()
+                    .requestServerAuthCode(BuildConfig.GOOGLE_SERVER_KEY)
+                    .requestEmail() // should be requested or sign in will fail with API_NOT_CONNECTED error
                     .build()
 
             val googleSignInClient = GoogleSignIn.getClient(context!!, gso)
-            googleSignInClient.signOut().addOnCompleteListener {
-                val signInIntent = googleSignInClient.signInIntent
-                startActivityForResult(signInIntent, rcSignIn)
+
+            if (GoogleSignIn.getLastSignedInAccount(context) != null) {
+                googleSignInClient.signOut().addOnCompleteListener {
+                    attemptLogin(googleSignInClient)
+                }
+            } else {
+                attemptLogin(googleSignInClient)
             }
         }
 
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         tvCopyright.text = getString(R.string.login_copyright, currentYear)
+    }
+
+    override fun showMessage(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun attemptLogin(googleSignInClient: GoogleSignInClient) {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, rcSignIn)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,14 +78,13 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val account2 = Account(account.email!!, "com.google")
-//            val token = GoogleAuthUtil.getToken(context, account2, "oauth2: https://www.googleapis.com/auth/userinfo.email")
-            System.out.println()
-//            presenter?.handleLoginClick()
+            presenter?.handleLoginClick(account?.serverAuthCode!!)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("Google SignIn", "signInResult:failed code=" + e.statusCode)
+            val msg = "signInResult:failed code=" + e.statusCode
+            Log.w("Google SignIn", msg)
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
         }
 
     }
