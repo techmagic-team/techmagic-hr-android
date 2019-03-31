@@ -1,11 +1,11 @@
 package co.techmagic.hr.presentation.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import co.techmagic.hr.BuildConfig
@@ -15,8 +15,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
 import com.techmagic.viper.base.BaseViewFragment
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.item_list_select_filter.*
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.util.*
 
@@ -68,6 +66,10 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
         if (BuildConfig.DEBUG) {
             e.printStackTrace()
         }
+    }
+
+    override fun showProgress(show: Boolean) {
+        tvSignIn.visibility = if (show) GONE else VISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

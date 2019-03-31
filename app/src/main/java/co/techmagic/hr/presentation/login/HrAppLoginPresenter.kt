@@ -9,12 +9,15 @@ class HrAppLoginPresenter(private val userRepository: IUserRepository,
                           private val accountManager: AccountManager) : BasePresenter<LoginView, LoginRouter>(), LoginPresenter {
 
     override fun handleLoginClick(googleAuthToken: String) {
+        view?.showProgress(true)
         userRepository.googleLogin(googleAuthToken)
                 .subscribe({
                     accountManager.saveUser(it)
+                    // view?.showProgress(false) // will be hidden during redirect
                     router?.onSuccessfulLogin()
                 }, {
                     view?.handleError(it)
+                    view?.showProgress(false)
                 })
     }
 }
