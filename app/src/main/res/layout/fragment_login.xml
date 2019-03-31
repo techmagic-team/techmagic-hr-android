@@ -7,8 +7,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <!--todo extract colors?-->
-
     <ImageView
         android:layout_width="68dp"
         android:layout_height="54dp"
@@ -27,7 +25,7 @@
             android:layout_marginRight="4dp"
             android:fontFamily="@font/raleway_extrabold"
             android:text="@string/login_time"
-            android:textColor="#007672"
+            android:textColor="@color/pine_green"
             android:textSize="25sp" />
 
         <TextView
@@ -35,7 +33,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/raleway_regular"
             android:text="@string/login_tracker"
-            android:textColor="#373a36"
+            android:textColor="@color/oil"
             android:textSize="25sp" />
     </LinearLayout>
 
@@ -48,7 +46,7 @@
         android:fontFamily="@font/open_sans_regular"
         android:gravity="center"
         android:text="@string/login_hint"
-        android:textColor="#373a36"
+        android:textColor="@color/oil"
         android:textSize="18sp" />
 
     <RelativeLayout
@@ -62,7 +60,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:background="#00b2a9"
+            android:background="@color/turquoise"
             android:elevation="5dp"
             android:fontFamily="@font/raleway_extrabold"
             android:gravity="center"
@@ -96,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_regular"
-        android:textColor="#aaaaaa"
+        android:textColor="@color/dark_gray"
         android:textSize="11sp"
         tools:text="@string/login_copyright" />
 
