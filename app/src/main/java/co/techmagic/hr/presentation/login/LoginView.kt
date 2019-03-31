@@ -4,5 +4,5 @@ import com.techmagic.viper.View
 
 interface LoginView : View {
 
-    fun showMessage(msg: String)
+    fun handleError(e: Throwable)
 }

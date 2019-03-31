@@ -14,9 +14,7 @@ class HrAppLoginPresenter(private val userRepository: IUserRepository,
                     accountManager.saveUser(it)
                     router?.onSuccessfulLogin()
                 }, {
-                    // TODO add error handling
-                    view?.showMessage("" + it.message)
-                    it.printStackTrace()
+                    view?.handleError(it)
                 })
     }
 }

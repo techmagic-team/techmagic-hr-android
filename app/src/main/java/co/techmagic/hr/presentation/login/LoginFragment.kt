@@ -1,23 +1,23 @@
 package co.techmagic.hr.presentation.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import co.techmagic.hr.BuildConfig
 import co.techmagic.hr.R
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
+import co.techmagic.hr.data.exception.NetworkConnectionException
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.techmagic.viper.base.BaseViewFragment
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.item_list_select_filter.*
+import java.lang.Exception
+import java.net.SocketTimeoutException
 import java.util.*
 
 
@@ -26,7 +26,7 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
         fun newInstance() = LoginFragment()
     }
 
-    private val rcSignIn = 1235
+    private var googleLoginDelegate: GoogleLoginDelegate? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -34,58 +34,52 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
 
     override fun initView() {
         super.initView()
+
+        googleLoginDelegate = GoogleLoginDelegate(this, object : GoogleLoginCallback {
+            override fun onSuccess(authCode: String) {
+                presenter?.handleLoginClick(authCode)
+            }
+
+            override fun onError(e: ApiException) {
+                if (e.statusCode == ConnectionResult.NETWORK_ERROR) {
+                    showConnectionErrorMessage()
+                } else {
+                    showMessage("Google Sign In error. Code: " + e.statusCode)
+                }
+            }
+        })
+
         tvSignIn.setOnClickListener {
 
-            val gso = GoogleSignInOptions.Builder()
-                    .requestServerAuthCode(BuildConfig.GOOGLE_SERVER_KEY)
-                    .requestEmail() // should be requested or sign in will fail with API_NOT_CONNECTED error
-                    .build()
-
-            val googleSignInClient = GoogleSignIn.getClient(context!!, gso)
-
-            if (GoogleSignIn.getLastSignedInAccount(context) != null) {
-                googleSignInClient.signOut().addOnCompleteListener {
-                    attemptLogin(googleSignInClient)
-                }
-            } else {
-                attemptLogin(googleSignInClient)
-            }
+            googleLoginDelegate?.login()
         }
 
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         tvCopyright.text = getString(R.string.login_copyright, currentYear)
     }
 
-    override fun showMessage(msg: String) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-    }
+    override fun handleError(e: Throwable) {
+        if (e is NetworkConnectionException || e is SocketTimeoutException) {
+            showConnectionErrorMessage()
+        } else {
+            showMessage("Error " + e.message)
+        }
 
-    private fun attemptLogin(googleSignInClient: GoogleSignInClient) {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, rcSignIn)
+        if (BuildConfig.DEBUG) {
+            e.printStackTrace()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == rcSignIn) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
+        googleLoginDelegate?.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-            presenter?.handleLoginClick(account?.serverAuthCode!!)
-        } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            val msg = "signInResult:failed code=" + e.statusCode
-            Log.w("Google SignIn", msg)
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-        }
+    fun showMessage(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
 
+    fun showConnectionErrorMessage() {
+        showMessage(getString(R.string.message_connection_error))
     }
 }
