@@ -1,11 +1,17 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
 import android.support.annotation.IntDef
-import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
+import co.techmagic.hr.presentation.util.formatDate
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class HrAppReportPropertiesPresenter : BasePresenter<ReportPropertiesView, IReportPropertiesRouter>(), ReportPropertiesPresenter {
+class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportRepository,
+                                     val projectsViewModelMapper: ProjectViewModelMapper,
+                                     val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
+    : BasePresenter<ReportPropertiesView, IReportPropertiesRouter>(), ReportPropertiesPresenter {
 
     @ReportProjectType
     var type = PROJECT
@@ -13,7 +19,7 @@ class HrAppReportPropertiesPresenter : BasePresenter<ReportPropertiesView, IRepo
     var userId: String? = null
 
     var projectId: String? = null
-    var firstDayOfWeek: Date? = null
+    var firstDayOfWeek: Calendar? = null
 
     companion object {
         @IntDef()
@@ -33,22 +39,22 @@ class HrAppReportPropertiesPresenter : BasePresenter<ReportPropertiesView, IRepo
     }
 
     private fun loadProjects() {
-        val projects = arrayListOf<ProjectViewModel>()
-        projects.add(ProjectViewModel("Text", "Text some text"))
-        projects.add(ProjectViewModel("Text", "Text some text"))
-        projects.add(ProjectViewModel("Text", "Text some text"))
-        projects.add(ProjectViewModel("Text", "Text some text"))
-        projects.add(ProjectViewModel("Text", "Text some text"))
-        projects.add(ProjectViewModel("Text2", "Text some text"))
-        projects.add(ProjectViewModel("Text2", "Text some text"))
-        projects.add(ProjectViewModel("Text2", "Text some text"))
-        projects.add(ProjectViewModel("Text2", "Text some text"))
-
-
-        view?.showProperties(projects)
+        timeReportRepository
+                .getProjects(userId!!, firstDayOfWeek!!.formatDate())
+                .map { projectsViewModelMapper.transform(it) }
+                .subscribe(
+                        { view?.showProperties(it) },
+                        { it?.message?.let { view?.showErrorMessage(it) } }
+                )
     }
 
     private fun loadTasks() {
-
+        timeReportRepository
+                .getProjectTasks(projectId!!)
+                .map { projectTaskViewModelMapper.transform(it) }
+                .subscribe(
+                        { view?.showTasks(it) },
+                        { it?.message?.let { view?.showErrorMessage(it) } }
+                )
     }
 }

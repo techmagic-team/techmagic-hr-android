@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
-import co.techmagic.hr.presentation.pojo.TaskViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.TASK
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProjectsAdapter
@@ -32,9 +32,9 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         const val ARG_FIRST_DAY_OF_WEEK = "arg_first_day_of_week"
         const val ARG_PROJECT_ID = "arg_project_id"
 
-        fun newProjectsInstance(userId: String, firstDayOfWeek: Date): ReportPropertiesFragment {
+        fun newProjectsInstance(userId: String, firstDayOfWeek: Calendar): ReportPropertiesFragment {
             val args = Bundle()
-            args.putInt(ARG_TYPE, TASK)
+            args.putInt(ARG_TYPE, PROJECT)
             args.putString(ARG_USER_ID, userId)
             args.putSerializable(ARG_FIRST_DAY_OF_WEEK, firstDayOfWeek)
 
@@ -46,7 +46,7 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
 
         fun newTasksInstance(projectId: String): ReportPropertiesFragment {
             val args = Bundle()
-            args.putInt(ARG_TYPE, PROJECT)
+            args.putInt(ARG_TYPE, TASK)
             args.putString(ARG_PROJECT_ID, projectId)
 
 
@@ -80,11 +80,11 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         projectsAdapter?.setData(props)
     }
 
-    override fun showTasks(props: List<TaskViewModel>) {
+    override fun showTasks(props: List<ProjectTaskViewModel>) {
         toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_task))
         if (tasksAdapter == null) {
             tasksAdapter = TasksAdapter()
-            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<TaskViewModel>())
+            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectTaskViewModel>())
             rvReportProperties.adapter = tasksAdapter
         }
         tasksAdapter?.setData(props)

@@ -21,6 +21,8 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_TYPE
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesRouter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.HrAppDateTimeProvider
 import com.techmagic.viper.base.BasePresenter
@@ -82,18 +84,29 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 @ReportProjectType val type = fragment.arguments?.getInt(ARG_TYPE)
                 val projectId = fragment.arguments?.getString(ARG_PROJECT_ID)
                 val userId = fragment.arguments?.getString(ARG_USER_ID)
-                val firstDayOfWeek = fragment.arguments?.getSerializable(ARG_FIRST_DAY_OF_WEEK) as? Date
+                val firstDayOfWeek = fragment.arguments?.getSerializable(ARG_FIRST_DAY_OF_WEEK) as? Calendar
 
-                val reportPropertiesPresenter = HrAppReportPropertiesPresenter()
+                //todo remove duplicated di code
+                val okHttpClientClient = ApiClient.buildOkHttpClientClient()
+                val retrofit = ApiClient.getRetrofit(okHttpClientClient)
+                val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
+                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
+
+                val reportPropertiesPresenter = HrAppReportPropertiesPresenter(
+                        timeReportRepository,
+                        ProjectViewModelMapper(),
+                        ProjectTaskViewModelMapper())
                 val reportPropertiesRouter = ReportPropertiesRouter(this)
 
                 reportPropertiesPresenter.type = type!!
 
                 when (type) {
-                    PROJECT -> reportPropertiesPresenter.userId = userId
+                    PROJECT -> {
+                        reportPropertiesPresenter.userId = userId
+                        reportPropertiesPresenter.firstDayOfWeek = firstDayOfWeek
+                    }
                     TASK -> {
                         reportPropertiesPresenter.projectId = projectId
-                        reportPropertiesPresenter.firstDayOfWeek = firstDayOfWeek
                     }
                 }
 

@@ -4,7 +4,7 @@ import com.techmagic.viper.Router
 import java.util.*
 
 interface ITimeReportDetailRouter : Router {
-    fun openSelectProject(userId : String, firstDayOfWeek : Date)
+    fun openSelectProject(userId : String, firstDayOfWeek : Calendar)
     fun openSelectTask(projectId : String)
     fun close()
 }

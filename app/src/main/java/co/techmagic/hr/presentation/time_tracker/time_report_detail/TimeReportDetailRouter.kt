@@ -8,7 +8,7 @@ import java.util.*
 class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: TimeReportDetailFragment)
     : BaseRouter<TimeReportDetailActivity>(activity), ITimeReportDetailRouter {
 
-    override fun openSelectProject(userId: String, firstDayOfWeek: Date) {
+    override fun openSelectProject(userId: String, firstDayOfWeek: Calendar) {
         replaceFragment(R.id.fragment_container, ReportPropertiesFragment.newProjectsInstance(userId, firstDayOfWeek), true)
     }
 

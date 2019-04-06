@@ -35,11 +35,11 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     }
 
     override fun changeProjectClicked() {
-        router?.openSelectProject("12421", Calendar.getInstance().time)
+        router?.openSelectProject(userId, reportDate.firstDayOfWeekDate())
     }
 
     override fun changeTaskClicked() {
-        router?.openSelectTask("fq9qw9")
+        router?.openSelectTask(projectId)
     }
 
     override fun descriptionChanged(description: String) {
