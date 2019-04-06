@@ -39,11 +39,9 @@ android {
             keyAlias "androiddebugkey"
             keyPassword "android"
         }
-
         release {
-            // TODO fix release signing
-        }
 
+        }
     }
 
     android.compileOptions.sourceCompatibility 1.8
@@ -144,9 +142,15 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 
-//def props = new Properties()
-//props.load(new FileInputStream(rootProject.file("release.properties")))
-//android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
-//android.signingConfigs.release.storePassword props.keyStorePassword
-//android.signingConfigs.release.keyAlias props.keyAlias
-//android.signingConfigs.release.keyPassword props.keyAliasPassword
+def releaseProps = new Properties()
+releaseProps.load(new FileInputStream(rootProject.file("app/keys/release.properties")))
+android {
+    signingConfigs {
+        release {
+            keyAlias = releaseProps['keyAlias']
+            keyPassword = releaseProps['keyPassword']
+            storeFile = file(releaseProps['storeFile'])
+            storePassword = releaseProps['storePassword']
+        }
+    }
+}
