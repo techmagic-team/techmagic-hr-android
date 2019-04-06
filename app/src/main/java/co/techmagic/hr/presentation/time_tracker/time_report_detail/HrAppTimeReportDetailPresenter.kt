@@ -1,10 +1,15 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
 import com.techmagic.viper.base.BasePresenter
-import java.util.Calendar
+import java.util.*
 
 class HrAppTimeReportDetailPresenter : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
         TimeReportDetailPresenter {
+
+    override fun onViewResumed() {
+        super.onViewResumed()
+        view?.showDate(getFormatedDate())
+    }
 
     override fun changeProjectClicked() {
         router?.openSelectProject("12421", Calendar.getInstance().time)
@@ -45,4 +50,5 @@ class HrAppTimeReportDetailPresenter : BasePresenter<TimeReportDetailView, ITime
 
     }
 
+    private fun getFormatedDate() = "Not implemented"
 }

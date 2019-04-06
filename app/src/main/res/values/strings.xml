@@ -224,4 +224,9 @@
     <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
     <string name="tm_hr_time_report_detail_save">Save</string>
     <string name="tm_hr_time_report_detail_delete">Delete</string>
+
+    <!-- Report Properties-->
+    <string name="tm_hr_report_select_project">Select Project</string>
+    <string name="tm_hr_report_select_task">Select Task</string>
+
 </resources>

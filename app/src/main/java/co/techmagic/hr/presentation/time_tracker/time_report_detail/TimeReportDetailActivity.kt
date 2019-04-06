@@ -5,21 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.ReportProjectType
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.TASK
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsFragment
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsFragment.Companion.ARG_FIRST_DAY_OF_WEEK
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsFragment.Companion.ARG_PROJECT_ID
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsFragment.Companion.ARG_TYPE
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsRouter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_FIRST_DAY_OF_WEEK
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_PROJECT_ID
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_TYPE
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class TimeReportDetailActivity : AppCompatActivity() {
+
+class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     companion object {
         fun start(context: Context) {
@@ -47,7 +50,7 @@ class TimeReportDetailActivity : AppCompatActivity() {
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
                 BasePresenter.bind(fragment, timeReportDetailPresenter, timeReportRouter)
             }
-            is ReportProjectsFragment -> {
+            is ReportPropertiesFragment -> {
                 @ReportProjectType val type = fragment.arguments?.getInt(ARG_TYPE)
                 val projectId = fragment.arguments?.getString(ARG_PROJECT_ID)
                 val userId = fragment.arguments?.getString(ARG_USER_ID)
@@ -69,6 +72,21 @@ class TimeReportDetailActivity : AppCompatActivity() {
                 BasePresenter.bind(fragment, reportProjectsPresenter, reportProjectsRouter)
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+        return true
+    }
+
+    override fun setActionBarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    override fun showBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun replaceTimeReportDetailFragment() {

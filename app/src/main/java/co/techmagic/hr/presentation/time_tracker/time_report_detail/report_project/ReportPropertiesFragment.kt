@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,15 +14,17 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ProjectsAdapter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyHeaderItemDecorator
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
-class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), ReportProjectsView {
+class ReportPropertiesFragment : BaseViewFragment<ReportProjectsPresenter>(), ReportProjectsView {
 
     private lateinit var rvReportProperties: RecyclerView
 
     private var projectAdapter: ProjectsAdapter? = null
     private var tasksAdapter: TasksAdapter? = null
+    private lateinit var toolbarChangeListener: ActionBarChangeListener
 
     companion object {
         const val ARG_TYPE = "arg_type"
@@ -29,25 +32,25 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
         const val ARG_FIRST_DAY_OF_WEEK = "arg_first_day_of_week"
         const val ARG_PROJECT_ID = "arg_project_id"
 
-        fun newProjectsInstance(userId: String, firstDayOfWeek: Date): ReportProjectsFragment {
+        fun newProjectsInstance(userId: String, firstDayOfWeek: Date): ReportPropertiesFragment {
             val args = Bundle()
             args.putInt(ARG_TYPE, TASK)
             args.putString(ARG_USER_ID, userId)
             args.putSerializable(ARG_FIRST_DAY_OF_WEEK, firstDayOfWeek)
 
-            val fragment = ReportProjectsFragment()
+            val fragment = ReportPropertiesFragment()
             fragment.arguments = args
 
             return fragment
         }
 
-        fun newTasksInstance(projectId: String): ReportProjectsFragment {
+        fun newTasksInstance(projectId: String): ReportPropertiesFragment {
             val args = Bundle()
             args.putInt(ARG_TYPE, PROJECT)
             args.putString(ARG_PROJECT_ID, projectId)
 
 
-            val fragment = ReportProjectsFragment()
+            val fragment = ReportPropertiesFragment()
             fragment.arguments = args
 
             return fragment
@@ -62,7 +65,13 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
         return view
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        toolbarChangeListener = context as ActionBarChangeListener
+    }
+
     override fun showProperties(props: List<ProjectViewModel>) {
+        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_project))
         if (projectAdapter == null) {
             projectAdapter = ProjectsAdapter()
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectViewModel>())
@@ -72,6 +81,7 @@ class ReportProjectsFragment : BaseViewFragment<ReportProjectsPresenter>(), Repo
     }
 
     override fun showTasks(props: List<TaskViewModel>) {
+        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_task))
         if (tasksAdapter == null) {
             tasksAdapter = TasksAdapter()
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<TaskViewModel>())

@@ -1,16 +1,19 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.*
-import co.techmagic.hr.R
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import co.techmagic.hr.R
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
 import co.techmagic.hr.presentation.util.changeRippleShapeStrokeColor
 import com.techmagic.viper.base.BaseViewFragment
 import org.jetbrains.anko.find
+
 
 class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         TimeReportDetailView {
@@ -28,6 +31,8 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
     private lateinit var btnReduceTime: ImageView
     private lateinit var btnStartTimer: TextView
     private lateinit var btnSave: TextView
+
+    private lateinit var toolbarChangeListener: ActionBarChangeListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_time_report_detail, container, false)
@@ -58,6 +63,11 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        toolbarChangeListener = context as ActionBarChangeListener
     }
 
     private fun findViews(view: View) {
@@ -95,7 +105,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
     }
 
     override fun showDate(date: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        toolbarChangeListener.setActionBarTitle(date)
     }
 
     override fun showProject(project: String) {
