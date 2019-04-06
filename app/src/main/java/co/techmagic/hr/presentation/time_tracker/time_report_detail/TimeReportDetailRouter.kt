@@ -15,4 +15,8 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: T
     override fun openSelectTask(projectId: String) {
         replaceFragment(R.id.fragment_container, ReportPropertiesFragment.newTasksInstance(projectId), true)
     }
+
+    override fun close() {
+        activity.finish()
+    }
 }

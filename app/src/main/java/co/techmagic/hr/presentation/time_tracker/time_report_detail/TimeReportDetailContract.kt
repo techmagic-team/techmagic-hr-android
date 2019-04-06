@@ -4,7 +4,7 @@ import com.techmagic.viper.Presenter
 import com.techmagic.viper.View
 
 interface TimeReportDetailView : View {
-    fun showDate(date : String)
+    fun showDate(date: String)
     fun showProject(project: String)
     fun showTask(task: String)
     fun showDescription(description: String)
@@ -22,6 +22,6 @@ interface TimeReportDetailPresenter : Presenter {
     fun increaseTimeClicked()
     fun reduceTimeClicked()
     fun startTimerClicked()
-    fun saveClicked()
     fun deleteClicked()
+    fun saveClicked(hours: Int, note: String)
 }

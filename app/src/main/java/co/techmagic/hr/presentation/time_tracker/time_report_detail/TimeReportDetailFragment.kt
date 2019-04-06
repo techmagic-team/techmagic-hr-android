@@ -101,7 +101,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         btnIncreaseTime.setOnClickListener { presenter?.increaseTimeClicked() }
         btnReduceTime.setOnClickListener { presenter?.reduceTimeClicked() }
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
-        btnSave.setOnClickListener { presenter?.saveClicked() }
+        btnSave.setOnClickListener { presenter?.saveClicked(60, edDescription.text.toString()) }
     }
 
     override fun showDate(date: String) {

@@ -8,12 +8,13 @@ import java.util.*
 class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragment) :
         BaseRouter<HomeActivity>(activity),
         ITimeTrackerRouter {
+
     override fun openDatePicker(currentDate: Calendar) {
         fragment.showDatePicker(currentDate)
     }
 
     override fun openTimeReportDetail() {
-        TimeReportDetailActivity.start(activity)
+        TimeReportDetailActivity.start(activity, null, null, Calendar.getInstance())
     }
 
 }

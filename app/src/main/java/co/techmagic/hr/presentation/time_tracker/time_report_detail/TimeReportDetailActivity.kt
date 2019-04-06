@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import co.techmagic.hr.R
+import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
+import co.techmagic.hr.data.repository.TimeReportNetworkRepository
+import co.techmagic.hr.data.store.TimeTrackerApi
+import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
@@ -18,6 +22,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesRouter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
+import co.techmagic.hr.presentation.util.HrAppDateTimeProvider
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
@@ -25,8 +30,18 @@ import java.util.*
 class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     companion object {
-        fun start(context: Context) {
-            context.startActivity(Intent(context, TimeReportDetailActivity::class.java))
+        const val EXTRA_WEEK_ID = "extra_week_id"
+        const val EXTRA_REPORT_ID = "extra_report_id"
+        const val EXTRA_REPORT_DATE = "extra_report_date"
+
+        fun start(context: Context, weekId: String?, reportId: String?, reportDate: Calendar) {
+            val intent = Intent(context, TimeReportDetailActivity::class.java);
+
+            intent.putExtra(EXTRA_WEEK_ID, weekId)
+            intent.putExtra(EXTRA_REPORT_ID, reportId)
+            intent.putExtra(EXTRA_REPORT_DATE, reportDate)
+
+            context.startActivity(intent)
         }
     }
 
@@ -46,8 +61,21 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         super.onAttachFragment(fragment)
         when (fragment) {
             is TimeReportDetailFragment -> {
-                val timeReportDetailPresenter = HrAppTimeReportDetailPresenter()
+                val okHttpClientClient = ApiClient.buildOkHttpClientClient()
+                val retrofit = ApiClient.getRetrofit(okHttpClientClient)
+                val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
+                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
+                val dateTimeProvider = HrAppDateTimeProvider()
+
+                val timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository, dateTimeProvider)
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
+
+                timeReportDetailPresenter.weekId = getWeekIdFromIntent()
+                timeReportDetailPresenter.reportId = getReportIdFromIntent()
+                val timeReportDate = getReportDateFromExtra()//todo refactor changes
+                timeReportDate.firstDayOfWeek = Calendar.MONDAY
+                timeReportDetailPresenter.reportDate = timeReportDate
+
                 BasePresenter.bind(fragment, timeReportDetailPresenter, timeReportRouter)
             }
             is ReportPropertiesFragment -> {
@@ -95,4 +123,8 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 .replace(R.id.fragment_container, TimeReportDetailFragment.newInstance())
                 .commit()
     }
+
+    private fun getWeekIdFromIntent() = intent.getStringExtra(EXTRA_WEEK_ID)
+    private fun getReportIdFromIntent() = intent.getStringExtra(EXTRA_REPORT_ID)
+    private fun getReportDateFromExtra() = intent.getSerializableExtra(EXTRA_REPORT_DATE) as Calendar
 }
