@@ -117,6 +117,10 @@ class HrAppTimeTrackerPresenter(
         router?.openDatePicker(currentDate)
     }
 
+    override fun onNewTimeReportClicked() {
+        router?.openTimeReportDetail()
+    }
+
     private fun getCachedReports(date: Calendar) = cache[key(date)]
 
     private fun key(date: Calendar) = date.formatDate()

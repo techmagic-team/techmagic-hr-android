@@ -55,6 +55,12 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".presentation.time_tracker.time_report_detail.TimeReportDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
         <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />

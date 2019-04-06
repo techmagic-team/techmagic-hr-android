@@ -5,4 +5,5 @@ import java.util.*
 
 interface ITimeTrackerRouter : Router {
     fun openDatePicker(currentDate: Calendar)
+    fun openTimeReportDetail()
 }

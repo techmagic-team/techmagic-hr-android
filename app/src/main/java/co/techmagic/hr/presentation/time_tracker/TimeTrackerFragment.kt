@@ -45,6 +45,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
+        initClicks()
         super.onViewCreated(view, savedInstanceState)
         actionBarChangeListener = context as ActionBarChangeListener
     }
@@ -79,6 +80,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         weeks = view.find(R.id.rvWeeks)
         days = view.find(R.id.rvDays)
         btnAddTimeReport = view.find(R.id.btnAddTimeReport)
+    }
+
+    private fun initClicks(){
+        btnAddTimeReport.setOnClickListener { presenter?.onNewTimeReportClicked() }
     }
 
     private fun initWeeks(today: Calendar) {
