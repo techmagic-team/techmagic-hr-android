@@ -3,7 +3,7 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import com.techmagic.viper.base.BaseRouter
 
-class ReportProjectsRouter(activity: TimeReportDetailActivity)
-    : BaseRouter<TimeReportDetailActivity>(activity), IReportProjectsRouter {
+class ReportPropertiesRouter(activity: TimeReportDetailActivity)
+    : BaseRouter<TimeReportDetailActivity>(activity), IReportPropertiesRouter {
 
 }

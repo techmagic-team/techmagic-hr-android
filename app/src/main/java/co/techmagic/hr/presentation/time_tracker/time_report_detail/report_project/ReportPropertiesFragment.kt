@@ -9,20 +9,20 @@ import android.view.ViewGroup
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.TaskViewModel
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.PROJECT
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.TASK
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ProjectsAdapter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.TASK
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProjectsAdapter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyHeaderItemDecorator
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
-class ReportPropertiesFragment : BaseViewFragment<ReportProjectsPresenter>(), ReportProjectsView {
+class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
 
     private lateinit var rvReportProperties: RecyclerView
 
-    private var projectAdapter: ProjectsAdapter? = null
+    private var projectsAdapter: ReportProjectsAdapter? = null
     private var tasksAdapter: TasksAdapter? = null
     private lateinit var toolbarChangeListener: ActionBarChangeListener
 
@@ -72,12 +72,12 @@ class ReportPropertiesFragment : BaseViewFragment<ReportProjectsPresenter>(), Re
 
     override fun showProperties(props: List<ProjectViewModel>) {
         toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_project))
-        if (projectAdapter == null) {
-            projectAdapter = ProjectsAdapter()
+        if (projectsAdapter == null) {
+            projectsAdapter = ReportProjectsAdapter()
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectViewModel>())
-            rvReportProperties.adapter = projectAdapter
+            rvReportProperties.adapter = projectsAdapter
         }
-        projectAdapter?.setData(props)
+        projectsAdapter?.setData(props)
     }
 
     override fun showTasks(props: List<TaskViewModel>) {
@@ -97,6 +97,6 @@ class ReportPropertiesFragment : BaseViewFragment<ReportProjectsPresenter>(), Re
     }
 
     private fun initRecycler() {
-        rvReportProperties.adapter = projectAdapter
+        rvReportProperties.adapter = projectsAdapter
     }
 }

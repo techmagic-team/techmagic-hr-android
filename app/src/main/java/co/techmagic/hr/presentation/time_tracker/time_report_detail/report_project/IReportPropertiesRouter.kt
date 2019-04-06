@@ -2,6 +2,6 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 
 import com.techmagic.viper.Router
 
-interface IReportProjectsRouter : Router {
+interface IReportPropertiesRouter : Router {
 
 }

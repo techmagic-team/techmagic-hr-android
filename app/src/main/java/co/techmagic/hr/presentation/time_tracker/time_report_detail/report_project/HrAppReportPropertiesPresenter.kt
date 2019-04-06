@@ -2,11 +2,10 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 
 import android.support.annotation.IntDef
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
-import co.techmagic.hr.presentation.ui.adapter.headers_adapter.HasHeaderProperty
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class HrAppReportProjectPresenter : BasePresenter<ReportProjectsView, IReportProjectsRouter>(), ReportProjectsPresenter {
+class HrAppReportPropertiesPresenter : BasePresenter<ReportPropertiesView, IReportPropertiesRouter>(), ReportPropertiesPresenter {
 
     @ReportProjectType
     var type = PROJECT

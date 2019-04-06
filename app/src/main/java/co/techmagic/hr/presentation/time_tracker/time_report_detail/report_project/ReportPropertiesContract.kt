@@ -5,11 +5,11 @@ import co.techmagic.hr.presentation.pojo.TaskViewModel
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.View
 
-interface ReportProjectsView : View {
+interface ReportPropertiesView : View {
     fun showProperties(props: List<ProjectViewModel>)
     fun showTasks(props: List<TaskViewModel>)
 }
 
-interface ReportProjectsPresenter : Presenter {
+interface ReportPropertiesPresenter : Presenter {
 
 }

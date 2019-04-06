@@ -7,16 +7,16 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.PROJECT
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.ReportProjectType
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportProjectPresenter.Companion.TASK
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportProjectsRouter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.TASK
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_FIRST_DAY_OF_WEEK
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_PROJECT_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_TYPE
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesRouter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
@@ -56,20 +56,20 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val userId = fragment.arguments?.getString(ARG_USER_ID)
                 val firstDayOfWeek = fragment.arguments?.getSerializable(ARG_FIRST_DAY_OF_WEEK) as? Date
 
-                val reportProjectsPresenter = HrAppReportProjectPresenter()
-                val reportProjectsRouter = ReportProjectsRouter(this)
+                val reportPropertiesPresenter = HrAppReportPropertiesPresenter()
+                val reportPropertiesRouter = ReportPropertiesRouter(this)
 
-                reportProjectsPresenter.type = type!!
+                reportPropertiesPresenter.type = type!!
 
                 when (type) {
-                    PROJECT -> reportProjectsPresenter.userId = userId
+                    PROJECT -> reportPropertiesPresenter.userId = userId
                     TASK -> {
-                        reportProjectsPresenter.projectId = projectId
-                        reportProjectsPresenter.firstDayOfWeek = firstDayOfWeek
+                        reportPropertiesPresenter.projectId = projectId
+                        reportPropertiesPresenter.firstDayOfWeek = firstDayOfWeek
                     }
                 }
 
-                BasePresenter.bind(fragment, reportProjectsPresenter, reportProjectsRouter)
+                BasePresenter.bind(fragment, reportPropertiesPresenter, reportPropertiesRouter)
             }
         }
     }

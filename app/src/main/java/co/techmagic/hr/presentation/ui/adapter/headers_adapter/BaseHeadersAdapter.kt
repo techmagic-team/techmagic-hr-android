@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import co.techmagic.hr.R
 
 abstract class BaseHeadersAdapter<H, T : HasHeaderProperty<H>, ViewHolder : BaseHeadersAdapter.BaseHeadersAdapterViewHolder<T>> //H - Type of header identifier
     : RecyclerView.Adapter<ViewHolder>() {

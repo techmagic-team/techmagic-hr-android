@@ -4,11 +4,10 @@ import android.view.View
 import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
-import co.techmagic.hr.presentation.pojo.TaskViewModel
 import co.techmagic.hr.presentation.ui.adapter.headers_adapter.BaseHeadersAdapter
 
 
-class ProjectsAdapter : BaseHeadersAdapter<String, ProjectViewModel, ProjectsViewHolder>() {
+class ReportProjectsAdapter : BaseHeadersAdapter<String, ProjectViewModel, ProjectsViewHolder>() {
 
     override fun getItemLayout(viewType: Int) = R.layout.item_report_property
 
