@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "co.techmagic.hr"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 3
         versionName "2.1.0.2"
