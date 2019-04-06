@@ -1,5 +1,7 @@
 package co.techmagic.hr.domain.repository;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
@@ -13,6 +15,8 @@ import co.techmagic.hr.data.request.UploadPhotoRequest;
 import rx.Observable;
 
 public interface IUserRepository {
+
+    Observable<User> googleLogin(@NonNull String googleAuthToken);
 
     Observable<User> login(LoginRequest loginRequest);
 

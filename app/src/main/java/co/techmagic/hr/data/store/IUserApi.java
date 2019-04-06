@@ -3,8 +3,8 @@ package co.techmagic.hr.data.store;
 import java.util.List;
 
 import co.techmagic.hr.data.entity.Company;
-import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.data.entity.UserProfile;
 import co.techmagic.hr.data.request.EditProfileRequest;
 import co.techmagic.hr.data.request.ForgotPasswordRequest;
 import co.techmagic.hr.data.request.LoginRequest;
@@ -16,12 +16,16 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
  * Created by techmagic on 8/30/16.
  */
 public interface IUserApi {
+
+    @GET("v1/google-auth")
+    Observable<User> googleLogin(@Query("code") String googleAuthToken);
 
     @POST("v1/auth")
     Observable<User> login(@Body LoginRequest loginRequest);
