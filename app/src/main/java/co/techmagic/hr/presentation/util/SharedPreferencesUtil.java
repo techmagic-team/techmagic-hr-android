@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
 
+// Use AccountManager or move needed logic to it
+@Deprecated
 public class SharedPreferencesUtil {
 
     private static SharedPreferences prefs;

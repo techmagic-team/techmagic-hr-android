@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.ui.activity.LoginActivity"
+            android:name=".presentation.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBarTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -71,6 +71,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="01eedfc003ebb8ee5d931547b6ae783e5e1eb080" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 
