@@ -18,9 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techmagic.viper.base.BasePresenter;
-import com.techmagic.viper.base.BaseRouter;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.List;
@@ -45,8 +42,8 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
-import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
+import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
