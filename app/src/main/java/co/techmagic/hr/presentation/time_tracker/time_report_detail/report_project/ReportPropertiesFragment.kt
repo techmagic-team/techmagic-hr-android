@@ -17,7 +17,6 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
 import co.techmagic.hr.presentation.ui.adapter.headers_adapter.BaseHeadersAdapter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
-import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
 class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
@@ -72,8 +71,11 @@ class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter
         toolbarChangeListener = context as ActionBarChangeListener
     }
 
+    override fun showTitle(titleRes: Int) {
+        toolbarChangeListener.setActionBarTitle(getString(titleRes))
+    }
+
     override fun showProperties(props: List<ProjectViewModel>) {
-        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_project))
         if (projectsAdapter == null) {
             projectsAdapter = ReportProjectsAdapter()
             projectsAdapter!!.clickListener = object : BaseHeadersAdapter
@@ -89,7 +91,6 @@ class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter
     }
 
     override fun showTasks(props: List<ProjectTaskViewModel>) {
-        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_task))
         if (tasksAdapter == null) {
             tasksAdapter = TasksAdapter()
             tasksAdapter!!.clickListener = object : BaseHeadersAdapter

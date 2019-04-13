@@ -6,10 +6,7 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
-import co.techmagic.hr.presentation.util.SharedPreferencesUtil
-import co.techmagic.hr.presentation.util.TimeFormatUtil
-import co.techmagic.hr.presentation.util.firstDayOfWeekDate
-import co.techmagic.hr.presentation.util.formatDate
+import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
@@ -22,19 +19,19 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     }
 
     var userReportForEdit: UserReportViewModel? = null
-        set(value) {
-            field = value
-        }
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
         set(value) {
             field = value
+            projectTaskViewModel = null
+            validateProject()
             showProject()
         }
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
+            validateProjectTask()
             showProjectTask()
         }
 
@@ -43,8 +40,12 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     private var timeInMinutes = 0
     private var description = ""
 
-    override fun onViewResumed() {
-        super.onViewResumed()
+    override fun onViewCreated(isInitial: Boolean) {
+        super.onViewCreated(isInitial)
+        view?.showDate(getFormattedDate())
+    }
+
+    override fun onVisibleToUser() {
         view?.showDate(getFormattedDate())
     }
 
@@ -58,6 +59,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
 
     override fun descriptionChanged(description: String) {
         this.description = description
+        validateDescription()
     }
 
     override fun addFifteenMinutesClicked() {
@@ -91,6 +93,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     }
 
     override fun saveClicked() {
+        if (!validateInfo()) {
+            return
+        }
+
         if (isNewReport()) {
             createReport()
         } else {
@@ -109,8 +115,6 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     private fun isNewReport() = userReportForEdit == null
 
     private fun createReport() {
-        projectViewModel ?: return
-        projectTaskViewModel ?: return
 
         reportRepository
                 .reportTask(createReportTaskRequestBody(
@@ -171,7 +175,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
                                             taskId: String,
                                             userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, projectId, taskId, userId)
 
-    private fun getFormattedDate() = "Not implemented"
+    private fun getFormattedDate() = reportDate.formatDate(TOOLBAR_DATE_FORMAT)
 
     private fun changeSelectedTime(value: Int) {
         timeInMinutes += value
@@ -180,5 +184,27 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
         }
 
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
+    }
+
+    private fun validateInfo(): Boolean {
+        return validateDescription() && validateProject() && validateProjectTask()
+    }
+
+    private fun validateDescription(): Boolean {
+        val isDescriptionValid = !description.isEmpty()
+        view?.setDescriptionValid(isDescriptionValid)
+        return isDescriptionValid
+    }
+
+    private fun validateProject(): Boolean {
+        val isProjectValid = projectViewModel != null
+        view?.setProjectValid(isProjectValid)
+        return isProjectValid
+    }
+
+    private fun validateProjectTask(): Boolean {
+        val isTaskValid = projectTaskViewModel != null
+        view?.setTaskValid(isTaskValid)
+        return isTaskValid
     }
 }

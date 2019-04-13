@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 const val ISO_DATE_FORMAT = "yyyy-MM-dd"
+const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
+
 
 fun now(): Calendar {
     return Calendar.getInstance()

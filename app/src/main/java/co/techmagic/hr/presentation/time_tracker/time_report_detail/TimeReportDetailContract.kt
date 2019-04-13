@@ -10,10 +10,13 @@ interface TimeReportDetailView : View, ProgressableView {
     fun showTask(task: String)
     fun showDescription(description: String)
     fun setDescriptionValid(enabled: Boolean)
+    fun setProjectValid(isValid: Boolean)
+    fun setTaskValid(isValid: Boolean)
     fun showTime(formattedTime : String)
 }
 
 interface TimeReportDetailPresenter : Presenter {
+    fun onVisibleToUser()
     fun changeProjectClicked()
     fun changeTaskClicked()
     fun descriptionChanged(description: String)

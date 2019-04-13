@@ -27,7 +27,6 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
-import co.techmagic.hr.presentation.util.HrAppDateTimeProvider
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
@@ -80,6 +79,11 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 timeReportDate.firstDayOfWeek = Calendar.MONDAY
                 timeReportDetailPresenter.reportDate = timeReportDate
 
+                supportFragmentManager.addOnBackStackChangedListener {
+                    val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+                    currentFragment?.userVisibleHint = true
+                }
+
                 BasePresenter.bind(fragment, timeReportDetailPresenter, timeReportRouter)
             }
             is ReportPropertiesFragment -> {
@@ -102,12 +106,12 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val reportPropertiesRouter = object : IReportPropertiesRouter {
                     override fun closeWithProject(projectViewModel: ProjectViewModel) {
                         timeReportDetailPresenter.projectViewModel = projectViewModel
-                        onBackPressed() //todo don`t use onBackPressed
+                        supportFragmentManager.popBackStack()
                     }
 
                     override fun closeWithProjectTask(projectTaskViewModel: ProjectTaskViewModel) {
                         timeReportDetailPresenter.projectTaskViewModel = projectTaskViewModel
-                        onBackPressed() //todo don`t use onBackPressed
+                        supportFragmentManager.popBackStack()
                     }
                 }
 
