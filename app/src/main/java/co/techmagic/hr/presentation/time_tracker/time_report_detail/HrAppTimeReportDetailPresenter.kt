@@ -6,6 +6,7 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 import com.techmagic.viper.base.BasePresenter
@@ -30,13 +31,8 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
             showProjectTask()
         }
 
-/*------------------------------------------*/
-
-
-    private var rate = 12 //todo I don`t know where I can get this value
-    private var companyId: String = "58133d8488dbe7d5b0bfb745" //todo get from task response
-    private var userId: String = "5c02b40ca8ed0759deba2344"//todo get from bundle or from request
-
+    private var companyId: String = SharedPreferencesUtil.readUser().company.id
+    private var userId: String = SharedPreferencesUtil.readUser().id
 
     override fun onViewResumed() {
         super.onViewResumed()
@@ -107,7 +103,6 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                         reportDate.firstDayOfWeekDate().formatDate(),
                         hours,
                         note,
-                        rate,
                         projectViewModel!!.client.id,
                         companyId,
                         projectViewModel!!.id,
@@ -126,7 +121,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
 
         reportRepository
                 .updateTask(weekId!!, reportId!!, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
-                        .firstDayOfWeekDate().formatDate(), hours, note, rate, projectViewModel!!.id,
+                        .firstDayOfWeekDate().formatDate(), hours, note, projectViewModel!!.id,
                         projectTaskViewModel!!.id, userId
                 ))
                 .subscribe(
@@ -139,21 +134,19 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                                             firstDayOfWeek: String,
                                             hours: Int,
                                             note: String,
-                                            rate: Int,
                                             clientId: String,
                                             companyId: String,
                                             projectId: String,
                                             taskId: String,
-                                            userId: String) = ReportTaskRequestBody(date, firstDayOfWeek, hours, note, rate, clientId, companyId, projectId, taskId, userId)
+                                            userId: String) = ReportTaskRequestBody(date, firstDayOfWeek, hours, note, clientId, companyId, projectId, taskId, userId)
 
     private fun createUpdateTaskRequestBody(date: String,
                                             firstDayOfWeek: String,
                                             hours: Int,
                                             note: String,
-                                            rate: Int,
                                             projectId: String,
                                             taskId: String,
-                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, rate, projectId, taskId, userId)
+                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, projectId, taskId, userId)
 
     private fun getFormattedDate() = "Not implemented"
 

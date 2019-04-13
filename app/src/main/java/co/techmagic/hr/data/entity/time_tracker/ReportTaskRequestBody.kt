@@ -7,7 +7,6 @@ data class ReportTaskRequestBody(
         @SerializedName("firstDayOfWeek") val firstDayOfWeek: String,
         @SerializedName("hours") val hours: Int,
         @SerializedName("note") val note: String,
-        @SerializedName("rate") val rate: Int,
         @SerializedName("_client") val clientId: String,
         @SerializedName("_company") val companyId: String,
         @SerializedName("_project") val projectId: String,
