@@ -13,6 +13,7 @@ import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
@@ -34,15 +35,13 @@ import java.util.*
 class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     companion object {
-        const val EXTRA_WEEK_ID = "extra_week_id"
-        const val EXTRA_REPORT_ID = "extra_report_id"
+        const val EXTRA_USER_REPORT_FOR_EDIT = "extra_time_report_for_edit"
         const val EXTRA_REPORT_DATE = "extra_report_date"
 
-        fun start(context: Context, weekId: String?, reportId: String?, reportDate: Calendar) {
-            val intent = Intent(context, TimeReportDetailActivity::class.java);
+        fun start(context: Context, userReportForEdit : UserReportViewModel?, reportDate: Calendar) {
+            val intent = Intent(context, TimeReportDetailActivity::class.java)
 
-            intent.putExtra(EXTRA_WEEK_ID, weekId)
-            intent.putExtra(EXTRA_REPORT_ID, reportId)
+            intent.putExtra(EXTRA_USER_REPORT_FOR_EDIT, userReportForEdit)
             intent.putExtra(EXTRA_REPORT_DATE, reportDate)
 
             context.startActivity(intent)
@@ -77,8 +76,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository, dateTimeProvider)
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
 
-                timeReportDetailPresenter.weekId = getWeekIdFromIntent()
-                timeReportDetailPresenter.reportId = getReportIdFromIntent()
+                timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
                 val timeReportDate = getReportDateFromExtra()//todo refactor changes
                 timeReportDate.firstDayOfWeek = Calendar.MONDAY
                 timeReportDetailPresenter.reportDate = timeReportDate
@@ -101,6 +99,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                         timeReportRepository,
                         ProjectViewModelMapper(),
                         ProjectTaskViewModelMapper())
+
                 val reportPropertiesRouter = object : IReportPropertiesRouter {
                     override fun closeWithProject(projectViewModel: ProjectViewModel) {
                         timeReportDetailPresenter.projectViewModel = projectViewModel
@@ -152,7 +151,6 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 .commit()
     }
 
-    private fun getWeekIdFromIntent() = intent.getStringExtra(EXTRA_WEEK_ID)
-    private fun getReportIdFromIntent() = intent.getStringExtra(EXTRA_REPORT_ID)
+    private fun getUserReportForEdit(): UserReportViewModel? = intent.getParcelableExtra(EXTRA_USER_REPORT_FOR_EDIT) as? UserReportViewModel
     private fun getReportDateFromExtra() = intent.getSerializableExtra(EXTRA_REPORT_DATE) as Calendar
 }

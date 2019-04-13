@@ -5,6 +5,7 @@ import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import co.techmagic.hr.presentation.util.TimeFormatUtil
@@ -21,8 +22,11 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
         const val RATE = 12
     }
 
-    var weekId: String? = null
-    var reportId: String? = null
+    var userReportForEdit : UserReportViewModel? = null
+    set(value) {
+        field = value
+    }
+
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
         set(value) {
@@ -85,7 +89,6 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     }
 
     override fun deleteClicked() {
-
     }
 
     override fun saveClicked() {
@@ -104,7 +107,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
         projectTaskViewModel?.task?.name?.let { view?.showTask(it) }
     }
 
-    private fun isNewReport() = weekId == null || reportId == null
+    private fun isNewReport() = userReportForEdit == null
 
     private fun createReport() {
         projectViewModel ?: return
@@ -131,9 +134,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     private fun updateReport() {
         projectViewModel ?: return
         projectTaskViewModel ?: return
+        userReportForEdit ?: return
 
         reportRepository
-                .updateTask(weekId!!, reportId!!, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
+                .updateTask(userReportForEdit!!.weekReportId, userReportForEdit!!.id, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
                         .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel!!.id,
                         projectTaskViewModel!!.id, userId
                 ))
@@ -165,6 +169,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
 
     private fun changeSelectedTime(value: Int) {
         timeInMinutes += value
+        if (timeInMinutes < 0) {
+            timeInMinutes = 0
+        }
+
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
 }

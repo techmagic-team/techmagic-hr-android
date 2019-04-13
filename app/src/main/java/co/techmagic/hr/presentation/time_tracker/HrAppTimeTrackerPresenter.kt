@@ -118,7 +118,12 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-        router?.openTimeReportDetail()
+       onEditTimeReportClicked(22)
+    }
+
+    override fun onEditTimeReportClicked(position: Int) {
+        val userReportViewModel : UserReportViewModel = cache[key(today())]!![0]
+        router?.openEditTimeReport(userReportViewModel,userReportViewModel.date.toCalendar())
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]
