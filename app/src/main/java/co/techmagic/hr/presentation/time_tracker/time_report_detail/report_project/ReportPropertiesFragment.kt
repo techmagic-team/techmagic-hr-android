@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
@@ -19,7 +20,7 @@ import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
-class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
+class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
 
     private lateinit var rvReportProperties: RecyclerView
 

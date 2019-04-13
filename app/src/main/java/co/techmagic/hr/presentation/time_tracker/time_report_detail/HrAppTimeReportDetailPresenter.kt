@@ -6,7 +6,6 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
-import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
@@ -14,7 +13,7 @@ import co.techmagic.hr.presentation.util.formatDate
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository, dateTimeProvider: DateTimeProvider)
+class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
         TimeReportDetailPresenter {
 
@@ -22,10 +21,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
         const val RATE = 12
     }
 
-    var userReportForEdit : UserReportViewModel? = null
-    set(value) {
-        field = value
-    }
+    var userReportForEdit: UserReportViewModel? = null
+        set(value) {
+            field = value
+        }
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
@@ -125,9 +124,16 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                         projectTaskViewModel!!.task.id,
                         userId
                 ))
+                .doOnSubscribe { view?.showProgress(true) }
                 .subscribe(
-                        { router?.close() },
-                        { it.message?.let { view?.showErrorMessage(it) } }
+                        {
+                            router?.close()
+                            view?.showProgress(false)
+                        },
+                        {
+                            view?.showProgress(false)
+                            it.message?.let { view?.showErrorMessage(it) }
+                        }
                 )
     }
 

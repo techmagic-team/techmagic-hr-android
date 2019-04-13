@@ -51,20 +51,34 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
     private fun loadProjects() {
         timeReportRepository
                 .getProjects(userId!!, firstDayOfWeek!!.formatDate())
+                .doOnSubscribe { view?.showProgress(true) }
                 .map { projectsViewModelMapper.transform(it) }
                 .subscribe(
-                        { view?.showProperties(it) },
-                        { it?.message?.let { view?.showErrorMessage(it) } }
+                        {
+                            view?.showProperties(it)
+                            view?.showProgress(false)
+                        },
+                        {
+                            it?.message?.let { view?.showErrorMessage(it) }
+                            view?.showProgress(false)
+                        }
                 )
     }
 
     private fun loadTasks() {
         timeReportRepository
                 .getProjectTasks(projectId!!)
+                .doOnSubscribe { view?.showProgress(true) }
                 .map { projectTaskViewModelMapper.transform(it) }
                 .subscribe(
-                        { view?.showTasks(it) },
-                        { it?.message?.let { view?.showErrorMessage(it) } }
+                        {
+                            view?.showTasks(it)
+                            view?.showProgress(false)
+                        },
+                        {
+                            it?.message?.let { view?.showErrorMessage(it) }
+                            view?.showProgress(false)
+                        }
                 )
     }
 }

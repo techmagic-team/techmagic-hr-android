@@ -118,7 +118,7 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-       onEditTimeReportClicked(22)
+        router?.openCreateTimeReport()
     }
 
     override fun onEditTimeReportClicked(position: Int) {

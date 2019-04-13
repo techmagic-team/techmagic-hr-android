@@ -8,14 +8,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
 import co.techmagic.hr.presentation.util.changeRippleShapeStrokeColor
-import com.techmagic.viper.base.BaseViewFragment
 import org.jetbrains.anko.find
 
 
-class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
+class TimeReportDetailFragment : HrAppBaseViewFragment<TimeReportDetailPresenter>(),
         TimeReportDetailView {
 
     private lateinit var tvSelectedProject: TextView
@@ -135,8 +135,8 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         btnReduceTime.isEnabled = isValid
     }
 
-    override fun showTime(formatedTime: String) {
-        edTime.setText(formatedTime)
+    override fun showTime(formattedTime: String) {
+        edTime.setText(formattedTime)
     }
 
     companion object {

@@ -1,15 +1,16 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
+import co.techmagic.hr.presentation.mvp.base.ProgressableView
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.View
 
-interface TimeReportDetailView : View {
+interface TimeReportDetailView : View, ProgressableView {
     fun showDate(date: String)
     fun showProject(project: String)
     fun showTask(task: String)
     fun showDescription(description: String)
     fun setDescriptionValid(enabled: Boolean)
-    fun showTime(formatedTime : String)
+    fun showTime(formattedTime : String)
 }
 
 interface TimeReportDetailPresenter : Presenter {

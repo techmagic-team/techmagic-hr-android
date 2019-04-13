@@ -71,9 +71,8 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val retrofit = ApiClient.getRetrofit(okHttpClientClient)
                 val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
                 val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
-                val dateTimeProvider = HrAppDateTimeProvider()
 
-                timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository, dateTimeProvider)
+                timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository)
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
 
                 timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
