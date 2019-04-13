@@ -2,6 +2,8 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 
 import android.support.annotation.IntDef
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
+import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.util.formatDate
@@ -36,6 +38,14 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
             PROJECT -> loadProjects()
             TASK -> loadTasks()
         }
+    }
+
+    override fun onProjectClicked(projectViewModel: ProjectViewModel) {
+        router?.closeWithProject(projectViewModel)
+    }
+
+    override fun onProjectTaskClicked(projectTaskViewModel: ProjectTaskViewModel) {
+        router?.closeWithProjectTask(projectTaskViewModel)
     }
 
     private fun loadProjects() {

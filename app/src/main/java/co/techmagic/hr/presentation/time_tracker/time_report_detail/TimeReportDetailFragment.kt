@@ -19,7 +19,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         TimeReportDetailView {
 
     private lateinit var tvSelectedProject: TextView
-    private lateinit var tvSelectedTask: TextView
+    private lateinit var tvSelectedProjectTask: TextView
     private lateinit var edDescription: EditText
     private lateinit var tvDescriptionError: TextView
     private lateinit var btnFifteenMinutes: TextView
@@ -72,7 +72,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
 
     private fun findViews(view: View) {
         tvSelectedProject = view.find(R.id.tvTimeReportDetailSelectedProject)
-        tvSelectedTask = view.find(R.id.tvTimeReportDetailSelectedTask)
+        tvSelectedProjectTask = view.find(R.id.tvTimeReportDetailSelectedTask)
         edDescription = view.find(R.id.edTimeReportDetailDescription)
         tvDescriptionError = view.find(R.id.tvTimeReportDetailDescriptionError)
         btnFifteenMinutes = view.find(R.id.btnTimeReportDetailDefaultTimeFifteenMinutes)
@@ -88,7 +88,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
 
     private fun initClicks() {
         tvSelectedProject.setOnClickListener { presenter?.changeProjectClicked() }
-        tvSelectedTask.setOnClickListener { presenter?.changeTaskClicked() }
+        tvSelectedProjectTask.setOnClickListener { presenter?.changeTaskClicked() }
         edDescription.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 presenter?.descriptionChanged(s.toString())
@@ -109,11 +109,11 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
     }
 
     override fun showProject(project: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        tvSelectedProject.setText(project)
     }
 
     override fun showTask(task: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        tvSelectedProjectTask.setText(task)
     }
 
     override fun showDescription(description: String) {

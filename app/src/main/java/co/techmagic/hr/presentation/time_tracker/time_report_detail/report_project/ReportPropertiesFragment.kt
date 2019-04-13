@@ -14,6 +14,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProjectsAdapter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyHeaderItemDecorator
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
+import co.techmagic.hr.presentation.ui.adapter.headers_adapter.BaseHeadersAdapter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
@@ -74,6 +75,12 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_project))
         if (projectsAdapter == null) {
             projectsAdapter = ReportProjectsAdapter()
+            projectsAdapter!!.clickListener = object : BaseHeadersAdapter
+            .HeaderAdapterItemClickListener<ProjectViewModel> {
+                override fun onItemClick(item: ProjectViewModel) {
+                    presenter?.onProjectClicked(item)
+                }
+            }
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectViewModel>())
             rvReportProperties.adapter = projectsAdapter
         }
@@ -84,6 +91,12 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_task))
         if (tasksAdapter == null) {
             tasksAdapter = TasksAdapter()
+            tasksAdapter!!.clickListener = object : BaseHeadersAdapter
+            .HeaderAdapterItemClickListener<ProjectTaskViewModel> {
+                override fun onItemClick(item: ProjectTaskViewModel) {
+                    presenter?.onProjectTaskClicked(item)
+                }
+            }
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectTaskViewModel>())
             rvReportProperties.adapter = tasksAdapter
         }

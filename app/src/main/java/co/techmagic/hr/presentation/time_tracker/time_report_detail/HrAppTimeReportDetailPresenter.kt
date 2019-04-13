@@ -3,6 +3,8 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail
 import co.techmagic.hr.data.entity.time_tracker.ReportTaskRequestBody
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
+import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
@@ -17,15 +19,22 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     var weekId: String? = null
     var reportId: String? = null
     lateinit var reportDate: Calendar
+    var projectViewModel: ProjectViewModel? = null
+        set(value) {
+            field = value
+            showProject()
+        }
+    var projectTaskViewModel: ProjectTaskViewModel? = null
+        set(value) {
+            field = value
+            showProjectTask()
+        }
 
 /*------------------------------------------*/
 
 
     private var rate = 12 //todo I don`t know where I can get this value
-    private var clientId: String = "5ae1e7bd06fdcf255ec09373"//todo get from task response
     private var companyId: String = "58133d8488dbe7d5b0bfb745" //todo get from task response
-    private var projectId: String = "5b7d9309e8ef8c6d6759b919"//todo get from task response
-    private var taskId: String = "5ae1e32006fdcf255ec0885c" //todo get from task response
     private var userId: String = "5c02b40ca8ed0759deba2344"//todo get from bundle or from request
 
 
@@ -39,7 +48,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     }
 
     override fun changeTaskClicked() {
-        router?.openSelectTask(projectId)
+        router?.openSelectTask(projectViewModel?.id ?: "")
     }
 
     override fun descriptionChanged(description: String) {
@@ -78,9 +87,20 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
         }
     }
 
+    private fun showProject() {
+        projectViewModel?.title?.let { view?.showProject(it) }
+    }
+
+    private fun showProjectTask() {
+        projectTaskViewModel?.task?.name?.let { view?.showTask(it) }
+    }
+
     private fun isNewReport() = weekId == null || reportId == null
 
     private fun createReport(hours: Int, note: String) {
+        projectViewModel ?: return
+        projectTaskViewModel ?: return
+
         reportRepository
                 .reportTask(createReportTaskRequestBody(
                         reportDate.formatDate(),
@@ -88,10 +108,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                         hours,
                         note,
                         rate,
-                        clientId,
+                        projectViewModel!!.client.id,
                         companyId,
-                        projectId,
-                        taskId,
+                        projectViewModel!!.id,
+                        projectTaskViewModel!!.task.id,
                         userId
                 ))
                 .subscribe(
@@ -101,9 +121,13 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     }
 
     private fun updateReport(hours: Int, note: String) {
+        projectViewModel ?: return
+        projectTaskViewModel ?: return
+
         reportRepository
                 .updateTask(weekId!!, reportId!!, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
-                        .firstDayOfWeekDate().formatDate(), hours, note, rate, projectId, taskId, userId
+                        .firstDayOfWeekDate().formatDate(), hours, note, rate, projectViewModel!!.id,
+                        projectTaskViewModel!!.id, userId
                 ))
                 .subscribe(
                         { router?.close() },

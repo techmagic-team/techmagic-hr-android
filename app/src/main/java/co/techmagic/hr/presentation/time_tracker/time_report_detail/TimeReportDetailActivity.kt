@@ -11,16 +11,18 @@ import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
+import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.TASK
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.IReportPropertiesRouter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_FIRST_DAY_OF_WEEK
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_PROJECT_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_TYPE
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesRouter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
@@ -47,6 +49,9 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         }
     }
 
+    private lateinit var timeReportDetailPresenter: HrAppTimeReportDetailPresenter
+    private lateinit var reportPropertiesPresenter: HrAppReportPropertiesPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_report_detail)
@@ -69,7 +74,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
                 val dateTimeProvider = HrAppDateTimeProvider()
 
-                val timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository, dateTimeProvider)
+                timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository, dateTimeProvider)
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
 
                 timeReportDetailPresenter.weekId = getWeekIdFromIntent()
@@ -92,11 +97,21 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
                 val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
 
-                val reportPropertiesPresenter = HrAppReportPropertiesPresenter(
+                reportPropertiesPresenter = HrAppReportPropertiesPresenter(
                         timeReportRepository,
                         ProjectViewModelMapper(),
                         ProjectTaskViewModelMapper())
-                val reportPropertiesRouter = ReportPropertiesRouter(this)
+                val reportPropertiesRouter = object : IReportPropertiesRouter {
+                    override fun closeWithProject(projectViewModel: ProjectViewModel) {
+                        timeReportDetailPresenter.projectViewModel = projectViewModel
+                        onBackPressed() //todo don`t use onBackPressed
+                    }
+
+                    override fun closeWithProjectTask(projectTaskViewModel: ProjectTaskViewModel) {
+                        timeReportDetailPresenter.projectTaskViewModel = projectTaskViewModel
+                        onBackPressed() //todo don`t use onBackPressed
+                    }
+                }
 
                 reportPropertiesPresenter.type = type!!
 

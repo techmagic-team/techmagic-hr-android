@@ -9,11 +9,11 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: T
     : BaseRouter<TimeReportDetailActivity>(activity), ITimeReportDetailRouter {
 
     override fun openSelectProject(userId: String, firstDayOfWeek: Calendar) {
-        replaceFragment(R.id.fragment_container, ReportPropertiesFragment.newProjectsInstance(userId, firstDayOfWeek), true)
+        addFragment(R.id.fragment_container, ReportPropertiesFragment.newProjectsInstance(userId, firstDayOfWeek), true)
     }
 
     override fun openSelectTask(projectId: String) {
-        replaceFragment(R.id.fragment_container, ReportPropertiesFragment.newTasksInstance(projectId), true)
+        addFragment(R.id.fragment_container, ReportPropertiesFragment.newTasksInstance(projectId), true)
     }
 
     override fun close() {

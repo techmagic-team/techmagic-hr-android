@@ -11,5 +11,6 @@ interface ReportPropertiesView : View {
 }
 
 interface ReportPropertiesPresenter : Presenter {
-
+    fun onProjectClicked(projectViewModel: ProjectViewModel)
+    fun onProjectTaskClicked(projectTaskViewModel: ProjectTaskViewModel)
 }
