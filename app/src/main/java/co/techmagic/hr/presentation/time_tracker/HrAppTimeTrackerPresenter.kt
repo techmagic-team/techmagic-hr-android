@@ -32,7 +32,9 @@ class HrAppTimeTrackerPresenter(
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
-        view?.init(selectedDate)
+        currentDate = dateTimeProvider.now().dateOnly()
+        selectedDate = currentDate.copy()
+        view?.init(currentDate)
     }
 
     override fun onViewDestroyed() {
