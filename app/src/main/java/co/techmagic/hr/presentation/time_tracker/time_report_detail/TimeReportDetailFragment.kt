@@ -101,7 +101,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         btnIncreaseTime.setOnClickListener { presenter?.increaseTimeClicked() }
         btnReduceTime.setOnClickListener { presenter?.reduceTimeClicked() }
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
-        btnSave.setOnClickListener { presenter?.saveClicked(60, edDescription.text.toString()) }
+        btnSave.setOnClickListener { presenter?.saveClicked() }
     }
 
     override fun showDate(date: String) {
@@ -133,6 +133,10 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         btnEightHours.isEnabled = isValid
         btnIncreaseTime.isEnabled = isValid
         btnReduceTime.isEnabled = isValid
+    }
+
+    override fun showTime(formatedTime: String) {
+        edTime.setText(formatedTime)
     }
 
     companion object {

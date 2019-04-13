@@ -262,6 +262,7 @@
         <item name="android:layout_height">@dimen/activity_time_report_detail_time_input_height</item>
         <item name="android:layout_marginRight">@dimen/activity_time_report_detail_change_time_buttons_size</item>
         <item name="android:gravity">center_vertical|right</item>
+        <item name="android:paddingRight">@dimen/activity_time_report_detail_time_input_right_padding</item>
         <item name="android:textColor">@color/color_time_report_detail_time_text_color</item>
         <item name="android:textSize">@dimen/activity_time_report_detail_time_text_size</item>
     </style>

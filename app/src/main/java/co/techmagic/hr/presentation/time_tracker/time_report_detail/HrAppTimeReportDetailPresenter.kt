@@ -7,6 +7,7 @@ import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
+import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 import com.techmagic.viper.base.BasePresenter
@@ -16,6 +17,9 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
         TimeReportDetailPresenter {
 
+    companion object {
+        const val RATE = 12
+    }
 
     var weekId: String? = null
     var reportId: String? = null
@@ -33,6 +37,8 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
 
     private var companyId: String = SharedPreferencesUtil.readUser().company.id
     private var userId: String = SharedPreferencesUtil.readUser().id
+    private var timeInMinutes = 0
+    private var description = ""
 
     override fun onViewResumed() {
         super.onViewResumed()
@@ -48,24 +54,31 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
     }
 
     override fun descriptionChanged(description: String) {
+        this.description = description
     }
 
     override fun addFifteenMinutesClicked() {
+        changeSelectedTime(TimeValue.FIFTEEN_MINUTES.value)
     }
 
     override fun addThirtyMinutesClicked() {
+        changeSelectedTime(TimeValue.THIRTY_MINUTES.value)
     }
 
     override fun addOneHourClicked() {
+        changeSelectedTime(TimeValue.ONE_HOUR.value)
     }
 
     override fun addEightHoursClicked() {
+        changeSelectedTime(TimeValue.EIGHT_HOURS.value)
     }
 
     override fun increaseTimeClicked() {
+        changeSelectedTime(TimeValue.FIFTEEN_MINUTES.value)
     }
 
     override fun reduceTimeClicked() {
+        changeSelectedTime(-TimeValue.FIFTEEN_MINUTES.value)
     }
 
     override fun startTimerClicked() {
@@ -75,11 +88,11 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
 
     }
 
-    override fun saveClicked(hours: Int, note: String) {
+    override fun saveClicked() {
         if (isNewReport()) {
-            createReport(hours, note)
+            createReport()
         } else {
-            updateReport(hours, note)
+            updateReport()
         }
     }
 
@@ -93,7 +106,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
 
     private fun isNewReport() = weekId == null || reportId == null
 
-    private fun createReport(hours: Int, note: String) {
+    private fun createReport() {
         projectViewModel ?: return
         projectTaskViewModel ?: return
 
@@ -101,8 +114,8 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                 .reportTask(createReportTaskRequestBody(
                         reportDate.formatDate(),
                         reportDate.firstDayOfWeekDate().formatDate(),
-                        hours,
-                        note,
+                        timeInMinutes,
+                        description,
                         projectViewModel!!.client.id,
                         companyId,
                         projectViewModel!!.id,
@@ -115,13 +128,13 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                 )
     }
 
-    private fun updateReport(hours: Int, note: String) {
+    private fun updateReport() {
         projectViewModel ?: return
         projectTaskViewModel ?: return
 
         reportRepository
                 .updateTask(weekId!!, reportId!!, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
-                        .firstDayOfWeekDate().formatDate(), hours, note, projectViewModel!!.id,
+                        .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel!!.id,
                         projectTaskViewModel!!.id, userId
                 ))
                 .subscribe(
@@ -138,7 +151,7 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                                             companyId: String,
                                             projectId: String,
                                             taskId: String,
-                                            userId: String) = ReportTaskRequestBody(date, firstDayOfWeek, hours, note, clientId, companyId, projectId, taskId, userId)
+                                            userId: String) = ReportTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, clientId, companyId, projectId, taskId, userId)
 
     private fun createUpdateTaskRequestBody(date: String,
                                             firstDayOfWeek: String,
@@ -146,8 +159,12 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository,
                                             note: String,
                                             projectId: String,
                                             taskId: String,
-                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, projectId, taskId, userId)
+                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, projectId, taskId, userId)
 
     private fun getFormattedDate() = "Not implemented"
 
+    private fun changeSelectedTime(value: Int) {
+        timeInMinutes += value
+        view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
+    }
 }

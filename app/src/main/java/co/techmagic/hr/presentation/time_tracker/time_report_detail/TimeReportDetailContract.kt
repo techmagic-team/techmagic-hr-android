@@ -9,6 +9,7 @@ interface TimeReportDetailView : View {
     fun showTask(task: String)
     fun showDescription(description: String)
     fun setDescriptionValid(enabled: Boolean)
+    fun showTime(formatedTime : String)
 }
 
 interface TimeReportDetailPresenter : Presenter {
@@ -23,5 +24,5 @@ interface TimeReportDetailPresenter : Presenter {
     fun reduceTimeClicked()
     fun startTimerClicked()
     fun deleteClicked()
-    fun saveClicked(hours: Int, note: String)
+    fun saveClicked()
 }

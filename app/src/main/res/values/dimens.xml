@@ -116,6 +116,7 @@
     <dimen name="activity_time_report_detail_default_time_grid_offset">8dp</dimen>
     <dimen name="activity_time_report_detail_time_text_size">50sp</dimen>
     <dimen name="activity_time_report_detail_change_time_buttons_size">50dp</dimen>
+    <dimen name="activity_time_report_detail_time_input_right_padding">34dp</dimen>
     <dimen name="activity_time_report_detail_time_input_height">101dp</dimen>  <!--depends on change time buttons height (previous dimen)-->
     <dimen name="activity_time_report_detail_secondary_button_stroke_width">2dp</dimen>
     <dimen name="activity_time_report_detail_action_button_text_size">14sp</dimen>
