@@ -8,8 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 
@@ -29,8 +28,9 @@
     </style>
 
 
-    <style name="NoActionBarTheme" parent="Theme.AppCompat.NoActionBar" />
-
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
 
     <style name="AppTheme.Primary.Button" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/colorPrimary</item>
@@ -233,16 +233,16 @@
         <item name="android:textColorHint">@color/color_time_report_detail_picker_description_hint_color</item>
     </style>
 
-    <style name="TimeReportDetailDescriptionErrorTextStyle">
+    <style name="ErrorFieldTextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">right</item>
+        <item name="android:visibility">invisible</item>
         <item name="android:textSize">@dimen/activity_time_report_detail_description_error_text_size</item>
         <item name="android:textColor">@color/color_time_report_detail_picker_description_error_color</item>
         <item name="android:layout_marginTop">@dimen/activity_time_report_detail_description_error_vertical_offset</item>
         <item name="android:layout_marginBottom">@dimen/activity_time_report_detail_description_error_vertical_offset</item>
     </style>
-
 
     <style name="TimeReportDetailDefaultTimeButtonStyle">
         <item name="android:layout_width">0dp</item>
@@ -262,6 +262,7 @@
         <item name="android:layout_height">@dimen/activity_time_report_detail_time_input_height</item>
         <item name="android:layout_marginRight">@dimen/activity_time_report_detail_change_time_buttons_size</item>
         <item name="android:gravity">center_vertical|right</item>
+        <item name="android:paddingRight">@dimen/activity_time_report_detail_time_input_right_padding</item>
         <item name="android:textColor">@color/color_time_report_detail_time_text_color</item>
         <item name="android:textSize">@dimen/activity_time_report_detail_time_text_size</item>
     </style>
@@ -290,6 +291,28 @@
     <style name="TimeReportDetailPrimaryButtonStyle" parent="TimeReportDetailActionButtonStyle">
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:background">@color/turquoise</item>
+    </style>
+
+    <style name="ReportPropertyHeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_header_text_size</item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_header_top_offset</item>
+        <item name="android:paddingBottom">@dimen/fragment_report_properties_header_bottom_offset</item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_inner_offset</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/color_report_properties_property_header_text_color</item>
+    </style>
+
+    <style name="ReportPropertyTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_property_text_size</item>
+        <item name="android:background">@drawable/bg_ripple_accent</item>
+        <item name="android:textColor">@color/color_report_properties_property_text_color</item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_property_left_margin</item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_property_vertical_offset</item>
+        <item name="android:paddingBottom">@dimen/fragment_report_properties_property_vertical_offset</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

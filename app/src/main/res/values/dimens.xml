@@ -96,7 +96,6 @@
     <dimen name="activity_time_report_detail_padding">16dp</dimen>
     <dimen name="activity_time_report_bottom_padding">72dp</dimen> <!--depends on action buttons-->
     <dimen name="activity_time_report_detail_header_text_size">14sp</dimen>
-    <dimen name="activity_time_report_header_top_offset">16dp</dimen>
     <dimen name="activity_time_report_detail_header_bottom_offset">9dp</dimen>
     <dimen name="activity_time_report_detail_picker_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_small_border_width">1dp</dimen>
@@ -105,7 +104,6 @@
     <dimen name="activity_time_report_detail_picker_top_padding">9dp</dimen>
     <dimen name="activity_time_report_detail_picker_right_padding">6dp</dimen>
     <dimen name="activity_time_report_detail_picker_bottom_padding">9dp</dimen>
-    <dimen name="activity_time_report_detail_description_top_offset">10dp</dimen>
     <dimen name="activity_time_report_detail_description_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_description_padding">8dp</dimen>
     <dimen name="activity_time_report_detail_description_min_height">56dp</dimen>
@@ -116,10 +114,20 @@
     <dimen name="activity_time_report_detail_default_time_grid_offset">8dp</dimen>
     <dimen name="activity_time_report_detail_time_text_size">50sp</dimen>
     <dimen name="activity_time_report_detail_change_time_buttons_size">50dp</dimen>
+    <dimen name="activity_time_report_detail_time_input_right_padding">34dp</dimen>
     <dimen name="activity_time_report_detail_time_input_height">101dp</dimen>  <!--depends on change time buttons height (previous dimen)-->
     <dimen name="activity_time_report_detail_secondary_button_stroke_width">2dp</dimen>
     <dimen name="activity_time_report_detail_action_button_text_size">14sp</dimen>
     <dimen name="activity_time_report_detail_actions_bottom_offset">16dp</dimen>
     <dimen name="activity_time_report_detail_action_button_height">40dp</dimen>
+
+    <!-- ReportPropertiesFragment -->
+    <dimen name="fragment_report_properties_property_text_size">14sp</dimen>
+    <dimen name="fragment_report_properties_property_left_margin">46dp</dimen>
+    <dimen name="fragment_report_properties_property_vertical_offset">5dp</dimen>
+    <dimen name="fragment_report_properties_header_text_size">14sp</dimen>
+    <dimen name="fragment_report_properties_header_top_offset">15dp</dimen>
+    <dimen name="fragment_report_properties_header_bottom_offset">5dp</dimen>
+    <dimen name="fragment_report_properties_inner_offset">16dp</dimen>
 
 </resources>

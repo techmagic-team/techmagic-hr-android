@@ -4,4 +4,5 @@ interface View {
     fun initView()
     fun destroyView()
     fun detachViewOutput()
+    fun showErrorMessage(message: String)
 }

@@ -1,22 +1,29 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.*
-import co.techmagic.hr.R
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import co.techmagic.hr.R
+import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
+import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
-import co.techmagic.hr.presentation.util.changeRippleShapeStrokeColor
-import com.techmagic.viper.base.BaseViewFragment
+import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
-class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
+
+class TimeReportDetailFragment : HrAppBaseViewFragment<TimeReportDetailPresenter>(),
         TimeReportDetailView {
 
+    private lateinit var flTimeReportDetailContainer: FrameLayout
     private lateinit var tvSelectedProject: TextView
-    private lateinit var tvSelectedTask: TextView
+    private lateinit var tvTimeReportDetailProjectError: TextView
+    private lateinit var tvSelectedProjectTask: TextView
+    private lateinit var tvTimeReportDetailTaskError: TextView
     private lateinit var edDescription: EditText
     private lateinit var tvDescriptionError: TextView
     private lateinit var btnFifteenMinutes: TextView
@@ -29,6 +36,8 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
     private lateinit var btnStartTimer: TextView
     private lateinit var btnSave: TextView
 
+    private lateinit var toolbarChangeListener: ActionBarChangeListener
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_time_report_detail, container, false)
     }
@@ -37,10 +46,6 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
         initClicks()
-        edDescription.changeRippleShapeStrokeColor(
-                R.dimen.activity_time_report_detail_small_border_width,
-                R.color.color_time_report_detail_picker_description_error_color
-        )
     }
 
 
@@ -48,6 +53,11 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         menu?.clear()
         inflater?.inflate(R.menu.menu_time_report_detail, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        presenter?.onVisibleToUser()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -60,9 +70,17 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
         }
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        toolbarChangeListener = context as ActionBarChangeListener
+    }
+
     private fun findViews(view: View) {
+        flTimeReportDetailContainer = view.find(R.id.flTimeReportDetailContainer)
         tvSelectedProject = view.find(R.id.tvTimeReportDetailSelectedProject)
-        tvSelectedTask = view.find(R.id.tvTimeReportDetailSelectedTask)
+        tvTimeReportDetailProjectError = view.find(R.id.tvTimeReportDetailProjectError)
+        tvSelectedProjectTask = view.find(R.id.tvTimeReportDetailSelectedTask)
+        tvTimeReportDetailTaskError = view.findViewById(R.id.tvTimeReportDetailTaskError)
         edDescription = view.find(R.id.edTimeReportDetailDescription)
         tvDescriptionError = view.find(R.id.tvTimeReportDetailDescriptionError)
         btnFifteenMinutes = view.find(R.id.btnTimeReportDetailDefaultTimeFifteenMinutes)
@@ -81,7 +99,7 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
 
     private fun initClicks() {
         tvSelectedProject.setOnClickListener { presenter?.changeProjectClicked() }
-        tvSelectedTask.setOnClickListener { presenter?.changeTaskClicked() }
+        tvSelectedProjectTask.setOnClickListener { presenter?.changeTaskClicked() }
         edDescription.addTextChangedListener(object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 presenter?.descriptionChanged(s.toString())
@@ -98,34 +116,45 @@ class TimeReportDetailFragment : BaseViewFragment<TimeReportDetailPresenter>(),
     }
 
     override fun showDate(date: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        toolbarChangeListener.setActionBarTitle(date)
     }
 
     override fun showProject(project: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        tvSelectedProject.setText(project)
     }
 
     override fun showTask(task: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        tvSelectedProjectTask.setText(task)
     }
 
     override fun showDescription(description: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        edDescription.setText(description)
     }
 
     override fun setDescriptionValid(isValid: Boolean) {
+        tvDescriptionError.visibility = if (isValid) View.INVISIBLE else View.VISIBLE
+        setBackgroundByValid(edDescription, isValid)
+    }
 
-        tvDescriptionError.visibility = if (isValid) View.VISIBLE else View.INVISIBLE
-        edDescription.changeRippleShapeStrokeColor(
+    override fun setProjectValid(isValid: Boolean) {
+        tvTimeReportDetailProjectError.visibility = if (isValid) View.INVISIBLE else View.VISIBLE
+        setBackgroundByValid(tvSelectedProject, isValid)
+    }
+
+    override fun setTaskValid(isValid: Boolean) {
+        tvTimeReportDetailTaskError.visibility = if (isValid) View.INVISIBLE else View.VISIBLE
+        setBackgroundByValid(tvSelectedProjectTask, isValid)
+    }
+
+    override fun showTime(formattedTime: String) {
+        edTime.setText(formattedTime)
+    }
+
+    private fun setBackgroundByValid(view: View, isValid: Boolean) {
+        view.changeShapeStrokeColor(
                 R.dimen.activity_time_report_detail_small_border_width,
                 if (isValid) R.color.color_time_report_detail_input_border_color else R.color.color_time_report_detail_picker_description_error_color
         )
-        btnFifteenMinutes.isEnabled = isValid
-        btnThirtyMinutes.isEnabled = isValid
-        btnOneHour.isEnabled = isValid
-        btnEightHours.isEnabled = isValid
-        btnIncreaseTime.isEnabled = isValid
-        btnReduceTime.isEnabled = isValid
     }
 
     companion object {

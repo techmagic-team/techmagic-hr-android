@@ -39,6 +39,12 @@
     <string name="message_short_password">Password must contain at least 6 characters</string>
 
 
+    <string name="login_time">TIME</string>
+    <string name="login_tracker">Tracker</string>
+    <string name="login_hint">Authorize with your\n@techmagic.co email</string>
+    <string name="login_google_sign_in">SIGN IN WITH GOOGLE</string>
+    <string name="login_copyright">© TechMagic 2016 - %d</string>
+
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
@@ -216,6 +222,8 @@
     <string name="tm_hr_time_report_detail_task_header">Task</string>
     <string name="tm_hr_time_report_detail_description_hint">Task description</string>
     <string name="tm_hr_time_report_detail_description_empty_error">Description is required!</string>
+    <string name="tm_hr_time_report_detail_project_empty_error">Please select a project</string>
+    <string name="tm_hr_time_report_detail_task_empty_error">Please select a task</string>
     <string name="tm_hr_time_report_detail_time_spent_header">Time spent</string>
     <string name="tm_hr_time_report_detail_default_time_fifteen_minutes">15 min</string>
     <string name="tm_hr_time_report_detail_default_time_thirty_minutes">30 min</string>
@@ -224,4 +232,9 @@
     <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
     <string name="tm_hr_time_report_detail_save">Save</string>
     <string name="tm_hr_time_report_detail_delete">Delete</string>
+
+    <!-- Report Properties-->
+    <string name="tm_hr_report_select_project">Select Project</string>
+    <string name="tm_hr_report_select_task">Select Task</string>
+
 </resources>

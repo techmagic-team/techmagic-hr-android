@@ -18,11 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techmagic.viper.base.BasePresenter;
-import com.techmagic.viper.base.BaseRouter;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,10 +41,11 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
-import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
+import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
+import co.techmagic.hr.presentation.util.HrAppDateTimeProvider;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -307,11 +304,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
             TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
-            DateTimeProvider dateTimeProvider = () -> {
-                Calendar now = Calendar.getInstance();
-                now.setFirstDayOfWeek(Calendar.MONDAY);
-                return now;
-            };
+            DateTimeProvider dateTimeProvider = new HrAppDateTimeProvider();
             HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));

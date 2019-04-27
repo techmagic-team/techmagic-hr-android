@@ -6,7 +6,6 @@
             <stroke
                 android:width="@dimen/activity_time_report_detail_large_border_width"
                 android:color="@color/color_time_report_detail_input_border_color" />
-            <solid android:color="@color/colorWhite"/>
         </shape>
     </item>
 </ripple>

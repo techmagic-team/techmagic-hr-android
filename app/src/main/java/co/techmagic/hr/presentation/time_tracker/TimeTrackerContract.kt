@@ -38,4 +38,6 @@ interface TimeTrackerPresenter : Presenter {
     fun onCalendarClicked()
 
     fun onNewTimeReportClicked()
+
+    fun onEditTimeReportClicked(position : Int)
 }

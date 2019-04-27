@@ -44,7 +44,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/login_view" />
+        <include layout="@layout/fragment_login" />
 
         <include layout="@layout/forgot_pass_view" />
 

@@ -11,9 +11,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.presentation.login.LoginActivity;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
-import co.techmagic.hr.presentation.ui.activity.LoginActivity;
 import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog;
 import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;

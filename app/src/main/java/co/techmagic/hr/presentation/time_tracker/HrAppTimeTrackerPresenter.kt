@@ -19,10 +19,6 @@ class HrAppTimeTrackerPresenter(
         private val timeReportRepository: TimeReportRepository,
         private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
-    companion object {
-        const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
-    }
-
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
     private val holidays: HashMap<String, Holiday> = HashMap()
     private val subscriptions: HashMap<String, Subscription> = HashMap(7)
@@ -118,7 +114,12 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-        router?.openTimeReportDetail()
+        router?.openCreateTimeReport()
+    }
+
+    override fun onEditTimeReportClicked(position: Int) {
+        val userReportViewModel : UserReportViewModel = cache[key(today())]!![0]
+        router?.openEditTimeReport(userReportViewModel,userReportViewModel.date.toCalendar())
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]
