@@ -7,6 +7,7 @@ import java.util.*
 
 const val ISO_DATE_FORMAT = "yyyy-MM-dd"
 const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
+const val ISO_WITH_TIME_ZONE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
 
 fun now(): Calendar {
@@ -15,6 +16,12 @@ fun now(): Calendar {
 
 fun today(): Calendar {
     return now().dateOnly()
+}
+
+fun calendar(date: Date) : Calendar{
+    val calendarDate = Calendar.getInstance()
+    calendarDate.time = date
+    return calendarDate
 }
 
 fun calendar(@IntRange(from = 1, to = 12) month: Int,

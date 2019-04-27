@@ -16,7 +16,7 @@ import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
 
-class TimeReportDetailFragment : HrAppBaseViewFragment<TimeReportDetailPresenter>(),
+class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPresenter>(),
         TimeReportDetailView {
 
     private lateinit var flTimeReportDetailContainer: FrameLayout

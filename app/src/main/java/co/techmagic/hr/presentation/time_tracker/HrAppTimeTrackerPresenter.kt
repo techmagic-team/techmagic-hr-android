@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import android.os.Handler
 import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_tracker.UserReport
 import co.techmagic.hr.domain.repository.TimeReportRepository
@@ -29,6 +30,7 @@ class HrAppTimeTrackerPresenter(
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         view?.init(selectedDate)
+        Handler().postDelayed({ onEditTimeReportClicked(0) }, 5000)
     }
 
     override fun onViewDestroyed() {
@@ -118,8 +120,8 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onEditTimeReportClicked(position: Int) {
-        val userReportViewModel : UserReportViewModel = cache[key(today())]!![0]
-        router?.openEditTimeReport(userReportViewModel,userReportViewModel.date.toCalendar())
+        val userReportViewModel: UserReportViewModel = cache[key(today())]!![0]
+        router?.openEditTimeReport(userReportViewModel, userReportViewModel.date.toCalendar())
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]

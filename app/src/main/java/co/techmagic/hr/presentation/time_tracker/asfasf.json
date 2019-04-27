@@ -1,0 +1,23 @@
+{
+  "project": {
+    "_id": "5b33abd747b0db06e2fce45d",
+    "name": "Good&Co"
+  },
+  "client": {
+    "name": "Good&Co"
+  },
+  "status": "PENDING",
+  "firstDayOfWeek": "2019-04-22T00:00:00.000Z",
+  "dailyReports": [
+    {
+      "hours": 90,
+      "_task": {
+        "name": "iOS development"
+      },
+      "date": "2019-04-27T00:00:00.000Z",
+      "_id": "5cc45745e074f415a149f084",
+      "lockDate": false,
+      "note": "fhrh"
+    }
+  ]
+}

@@ -15,7 +15,7 @@ interface TimeReportDetailView : View, ProgressableView {
     fun showTime(formattedTime : String)
 }
 
-interface TimeReportDetailPresenter : Presenter {
+interface BaseTimeReportDetailPresenter : Presenter {
     fun onVisibleToUser()
     fun changeProjectClicked()
     fun changeTaskClicked()

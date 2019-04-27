@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper
 
+import co.techmagic.hr.data.entity.time_tracker.Project
 import co.techmagic.hr.data.entity.time_tracker.ProjectResponse
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 
@@ -11,5 +12,11 @@ class ProjectViewModelMapper {
             projectResponse.id,
             projectResponse.name,
             projectResponse.client
+    )
+
+    fun transform(project: Project) = ProjectViewModel(
+            project.id,
+            project.name,
+            null
     )
 }

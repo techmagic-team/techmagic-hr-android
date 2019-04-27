@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
-import co.techmagic.hr.data.entity.time_tracker.ReportTaskRequestBody
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
@@ -10,9 +9,9 @@ import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
+abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
-        TimeReportDetailPresenter {
+        BaseTimeReportDetailPresenter {
 
     companion object {
         const val RATE = 12
@@ -35,10 +34,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
             showProjectTask()
         }
 
-    private var companyId: String = SharedPreferencesUtil.readUser().company.id
-    private var userId: String = SharedPreferencesUtil.readUser().id
-    private var timeInMinutes = 0
-    private var description = ""
+    open var companyId: String = SharedPreferencesUtil.readUser().company.id
+    open var userId: String = SharedPreferencesUtil.readUser().id
+    open var timeInMinutes = 0
+    open var description = ""
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
@@ -96,13 +95,10 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
         if (!validateInfo()) {
             return
         }
-
-        if (isNewReport()) {
-            createReport()
-        } else {
-            updateReport()
-        }
+        makeRequest()
     }
+
+    abstract fun makeRequest()
 
     private fun showProject() {
         projectViewModel?.title?.let { view?.showProject(it) }
@@ -113,67 +109,6 @@ class HrAppTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
     }
 
     private fun isNewReport() = userReportForEdit == null
-
-    private fun createReport() {
-
-        reportRepository
-                .reportTask(createReportTaskRequestBody(
-                        reportDate.formatDate(),
-                        reportDate.firstDayOfWeekDate().formatDate(),
-                        timeInMinutes,
-                        description,
-                        projectViewModel!!.client.id,
-                        companyId,
-                        projectViewModel!!.id,
-                        projectTaskViewModel!!.task.id,
-                        userId
-                ))
-                .doOnSubscribe { view?.showProgress(true) }
-                .subscribe(
-                        {
-                            router?.close()
-                            view?.showProgress(false)
-                        },
-                        {
-                            view?.showProgress(false)
-                            it.message?.let { view?.showErrorMessage(it) }
-                        }
-                )
-    }
-
-    private fun updateReport() {
-        projectViewModel ?: return
-        projectTaskViewModel ?: return
-        userReportForEdit ?: return
-
-        reportRepository
-                .updateTask(userReportForEdit!!.weekReportId, userReportForEdit!!.id, createUpdateTaskRequestBody(reportDate.formatDate(), reportDate
-                        .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel!!.id,
-                        projectTaskViewModel!!.id, userId
-                ))
-                .subscribe(
-                        { router?.close() },
-                        { it.message?.let { view?.showErrorMessage(it) } }
-                )
-    }
-
-    private fun createReportTaskRequestBody(date: String,
-                                            firstDayOfWeek: String,
-                                            hours: Int,
-                                            note: String,
-                                            clientId: String,
-                                            companyId: String,
-                                            projectId: String,
-                                            taskId: String,
-                                            userId: String) = ReportTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, clientId, companyId, projectId, taskId, userId)
-
-    private fun createUpdateTaskRequestBody(date: String,
-                                            firstDayOfWeek: String,
-                                            hours: Int,
-                                            note: String,
-                                            projectId: String,
-                                            taskId: String,
-                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, projectId, taskId, userId)
 
     private fun getFormattedDate() = reportDate.formatDate(TOOLBAR_DATE_FORMAT)
 

@@ -14,6 +14,7 @@ import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report.HrAppCreateBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
@@ -26,6 +27,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppTimReportDetailUpdatePresenter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
@@ -37,7 +39,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         const val EXTRA_USER_REPORT_FOR_EDIT = "extra_time_report_for_edit"
         const val EXTRA_REPORT_DATE = "extra_report_date"
 
-        fun start(context: Context, userReportForEdit : UserReportViewModel?, reportDate: Calendar) {
+        fun start(context: Context, userReportForEdit: UserReportViewModel?, reportDate: Calendar) {
             val intent = Intent(context, TimeReportDetailActivity::class.java)
 
             intent.putExtra(EXTRA_USER_REPORT_FOR_EDIT, userReportForEdit)
@@ -47,7 +49,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         }
     }
 
-    private lateinit var timeReportDetailPresenter: HrAppTimeReportDetailPresenter
+    private lateinit var timeReportDetailPresenter: HrAppBaseBaseTimeReportDetailPresenter
     private lateinit var reportPropertiesPresenter: HrAppReportPropertiesPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,16 +71,22 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val okHttpClientClient = ApiClient.buildOkHttpClientClient()
                 val retrofit = ApiClient.getRetrofit(okHttpClientClient)
                 val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
-                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
 
-                timeReportDetailPresenter = HrAppTimeReportDetailPresenter(timeReportRepository)
+                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
                 val timeReportRouter = TimeReportDetailRouter(this, fragment)
 
-                timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
                 val timeReportDate = getReportDateFromExtra()//todo refactor changes
                 timeReportDate.firstDayOfWeek = Calendar.MONDAY
-                timeReportDetailPresenter.reportDate = timeReportDate
 
+                if (getUserReportForEdit() == null) {
+                    timeReportDetailPresenter = HrAppCreateBaseTimeReportDetailPresenter(timeReportRepository)
+                } else {
+                    //todo crate another presenter
+                    timeReportDetailPresenter = HrAppTimReportDetailUpdatePresenter(timeReportRepository, ProjectViewModelMapper(), ProjectTaskViewModelMapper())
+                    timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
+                }
+
+                timeReportDetailPresenter.reportDate = timeReportDate
                 supportFragmentManager.addOnBackStackChangedListener {
                     val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
                     currentFragment?.userVisibleHint = true

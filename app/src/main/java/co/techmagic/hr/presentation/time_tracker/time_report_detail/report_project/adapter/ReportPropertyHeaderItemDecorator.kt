@@ -13,7 +13,7 @@ class ReportPropertyHeaderItemDecorator<T : HasHeaderProperty<*>> : BaseHeaderIt
 
     override fun fillUpHeader(view: TextView, item: T) {
         when (item) {
-            is ProjectViewModel -> view.text = item.client.name
+            is ProjectViewModel -> view.text = item.client!!.name
             is ProjectTaskViewModel -> view.text = item.task.name
             else -> throw IllegalArgumentException("Unknown ViewModel")
         }

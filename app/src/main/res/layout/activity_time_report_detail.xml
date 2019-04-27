@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_container"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_time_report_detail_padding"
     android:paddingTop="@dimen/activity_time_report_detail_padding"
@@ -26,13 +27,8 @@
                 style="@style/TimeReportPickerTextStyle" />
 
 
-
-
-
-
             <TextView
                 style="@style/TimeReportHeaderTextStyle"
-                android:layout_marginTop="@dimen/activity_time_report_header_top_offset"
                 android:text="@string/tm_hr_time_report_detail_task_header" />
 
             <TextView
@@ -42,13 +38,13 @@
             <EditText
                 android:id="@+id/edTimeReportDetailDescription"
                 style="@style/TimeReportDetailDescriptionInputStyle"
-                android:layout_marginTop="@dimen/activity_time_report_detail_description_top_offset"
                 android:hint="@string/tm_hr_time_report_detail_description_hint" />
 
             <TextView
                 android:id="@+id/tvTimeReportDetailDescriptionError"
-                style="@style/TimeReportDetailDescriptionErrorTextStyle"
-                android:text="@string/tm_hr_time_report_detail_description_empty_error" />
+                android:text="@string/tm_hr_time_report_detail_description_empty_error"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
 
             <TextView
                 style="@style/TimeReportHeaderTextStyle"
@@ -112,6 +108,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:orientation="vertical">
+                    android:orientation="vertical"/>
 
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
