@@ -6,10 +6,8 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseBas
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.util.*
-import rx.Observable
-import java.util.*
 
-class HrAppTimReportDetailUpdatePresenter(timeReportRepository: TimeReportRepository,
+class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           val projectsViewModelMapper: ProjectViewModelMapper,
                                           val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
     : HrAppBaseBaseTimeReportDetailPresenter(timeReportRepository) {
@@ -17,6 +15,20 @@ class HrAppTimReportDetailUpdatePresenter(timeReportRepository: TimeReportReposi
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         loadProjectAndTask()
+    }
+
+    override fun validateInfo(): Boolean {
+        if (!isDescriptionValid()) {
+            validateDescription()
+            return false
+        }
+
+        if (isProjectReSelected() && !isProjectTaskValid()) {
+            validateProjectTask()
+            return false
+        }
+
+        return true
     }
 
     override fun makeRequest() {
@@ -34,8 +46,9 @@ class HrAppTimReportDetailUpdatePresenter(timeReportRepository: TimeReportReposi
                                 initTaskForEdit()
                                 displayInfo()
                                 this.projectViewModel = projectsViewModelMapper.transform(it.project)
-                                //just display task, in update request null task will be skipped
+                                //just display task, in PATCH request null task should be skipped
                                 view?.showTask(userReportForEdit?.task!!.name)
+                                view?.setTaskValid(true)
                             },
                             {
                                 it.message?.let { view?.showErrorMessage(it) }
@@ -56,30 +69,29 @@ class HrAppTimReportDetailUpdatePresenter(timeReportRepository: TimeReportReposi
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
 
-    private fun updateReport() {
-        projectViewModel ?: return
-        projectTaskViewModel ?: return
-        userReportForEdit ?: return
+    private fun isProjectReSelected() = userReportForEdit?.id?.equals(projectViewModel?.id) ?: true
 
+    private fun updateReport() {
         reportRepository
                 .updateTask(userReportForEdit!!.weekReportId, userReportForEdit!!.id, createUpdateTaskRequestBody(
                         reportDate.formatDate(ISO_WITH_TIME_ZONE_DATE_FORMAT), reportDate
-                        .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel!!.id,
-                        projectTaskViewModel!!.task.id, userId
+                        .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel?.id,
+                        projectTaskViewModel?.task?.id, userId
                 ))
+                .doOnSubscribe { view?.showProgress(true) }
+                .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
                         { router?.close() },
                         { it.message?.let { view?.showErrorMessage(it) } }
                 )
     }
 
-
     private fun createUpdateTaskRequestBody(date: String,
                                             firstDayOfWeek: String,
                                             hours: Int,
                                             note: String,
-                                            projectId: String,
-                                            taskId: String,
+                                            projectId: String?,
+                                            taskId: String?,
                                             userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, projectId, taskId, userId)
 
 }

@@ -8,7 +8,7 @@ data class UpdateTaskRequestBody(
         @SerializedName("hours") val minutes: Int,
         @SerializedName("note") val note: String,
         @SerializedName("rate") val rate: Int,
-        @SerializedName("_project") val projectId: String,
-        @SerializedName("_task") val taskId: String,
+        @SerializedName("_project") val projectId: String?,
+        @SerializedName("_task") val taskId: String?,
         @SerializedName("_user") val userId: String
 )

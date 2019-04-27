@@ -17,7 +17,7 @@ abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: Time
         const val RATE = 12
     }
 
-    var userReportForEdit: UserReportViewModel? = null
+    var userReportForEdit: UserReportViewModel? = null //todo move to update presenter
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
@@ -27,6 +27,7 @@ abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: Time
             validateProject()
             showProject()
         }
+
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
@@ -98,6 +99,8 @@ abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: Time
         makeRequest()
     }
 
+    abstract fun validateInfo(): Boolean
+
     abstract fun makeRequest()
 
     private fun showProject() {
@@ -121,25 +124,11 @@ abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: Time
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
 
-    private fun validateInfo(): Boolean {
-        return validateDescription() && validateProject() && validateProjectTask()
-    }
+    protected fun validateDescription() = view?.setDescriptionValid(isDescriptionValid())
+    protected fun validateProject() = view?.setProjectValid(isProjectValid())
+    protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
 
-    private fun validateDescription(): Boolean {
-        val isDescriptionValid = !description.isEmpty()
-        view?.setDescriptionValid(isDescriptionValid)
-        return isDescriptionValid
-    }
-
-    private fun validateProject(): Boolean {
-        val isProjectValid = projectViewModel != null
-        view?.setProjectValid(isProjectValid)
-        return isProjectValid
-    }
-
-    private fun validateProjectTask(): Boolean {
-        val isTaskValid = projectTaskViewModel != null
-        view?.setTaskValid(isTaskValid)
-        return isTaskValid
-    }
+    protected fun isDescriptionValid() = !description.isEmpty()
+    protected fun isProjectValid() = projectViewModel != null
+    protected fun isProjectTaskValid() = projectTaskViewModel != null
 }

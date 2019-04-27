@@ -14,7 +14,7 @@ import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report.HrAppCreateBaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report.HrAppCreateTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.ReportProjectType
@@ -27,7 +27,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppTimReportDetailUpdatePresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppUpdateTimReportDetailPresenter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
@@ -79,10 +79,10 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 timeReportDate.firstDayOfWeek = Calendar.MONDAY
 
                 if (getUserReportForEdit() == null) {
-                    timeReportDetailPresenter = HrAppCreateBaseTimeReportDetailPresenter(timeReportRepository)
+                    timeReportDetailPresenter = HrAppCreateTimeReportDetailPresenter(timeReportRepository)
                 } else {
                     //todo crate another presenter
-                    timeReportDetailPresenter = HrAppTimReportDetailUpdatePresenter(timeReportRepository, ProjectViewModelMapper(), ProjectTaskViewModelMapper())
+                    timeReportDetailPresenter = HrAppUpdateTimReportDetailPresenter(timeReportRepository, ProjectViewModelMapper(), ProjectTaskViewModelMapper())
                     timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
                 }
 

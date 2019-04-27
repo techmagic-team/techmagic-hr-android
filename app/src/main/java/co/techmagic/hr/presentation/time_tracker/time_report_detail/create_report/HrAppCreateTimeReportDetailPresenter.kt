@@ -6,8 +6,27 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseBas
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
-class HrAppCreateBaseTimeReportDetailPresenter(reportRepository: TimeReportRepository)
+class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository)
     : HrAppBaseBaseTimeReportDetailPresenter(reportRepository) {
+
+    override fun validateInfo(): Boolean {
+        if (!isDescriptionValid()) {
+            validateDescription()
+            return false
+        }
+
+        if (!isProjectValid()) {
+            validateProject()
+            return false
+        }
+
+        if (!isProjectTaskValid()) {
+            validateProjectTask()
+            return false
+        }
+
+        return true
+    }
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
