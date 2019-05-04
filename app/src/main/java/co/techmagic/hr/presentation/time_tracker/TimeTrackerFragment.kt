@@ -9,7 +9,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
@@ -20,7 +21,7 @@ import org.jetbrains.anko.find
 import java.util.*
 
 
-class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
+class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView, TimeReportsClickListener {
 
     companion object {
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
@@ -83,7 +84,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         btnAddTimeReport = view.find(R.id.btnAddTimeReport)
     }
 
-    private fun initClicks(){
+    private fun initClicks() {
         btnAddTimeReport.setOnClickListener { presenter?.onNewTimeReportClicked() }
     }
 
@@ -123,7 +124,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     private fun initDays(today: Calendar) {
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        daysAdapter = object : DayReportsAdapter(days, today) {
+        daysAdapter = object : DayReportsAdapter(this, days, today) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
                 presenter?.onBindDay(holder, pageToDate(position))
             }
@@ -195,6 +196,14 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun showToolbarTitle(title: String) {
         actionBarChangeListener.setActionBarTitle(title)
+    }
+
+    override fun onItemClicked(reportViewModel: UserReportViewModel) {
+        presenter?.onEditTimeReportClicked(reportViewModel)
+    }
+
+    override fun onTrackTimeClicked(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun showDatePicker(date: Calendar) {

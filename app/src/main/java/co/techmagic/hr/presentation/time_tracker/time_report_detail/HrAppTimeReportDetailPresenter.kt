@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
-import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel

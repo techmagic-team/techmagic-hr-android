@@ -7,25 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.ui.adapter.TimeReportAdapter
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import java.util.*
 
-abstract class DayReportsAdapter(recyclerView: RecyclerView, anchorDate: Calendar) :
+abstract class DayReportsAdapter(val timeReportsClickListener: TimeReportsClickListener, recyclerView: RecyclerView, anchorDate: Calendar) :
         DiscreteDateAdapter<DayReportViewHolder>(recyclerView, anchorDate, Step.DAY) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayReportViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.view_day_reports, parent, false)
         view.layoutParams = ViewGroup.LayoutParams(parent.measuredWidth, parent.measuredHeight)
-        return DayReportViewHolder(view)
+        return DayReportViewHolder(timeReportsClickListener, view)
     }
 }
 
-class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrackerDayView {
+class DayReportViewHolder(val timeReportsClickListener: TimeReportsClickListener, view: View) : RecyclerView.ViewHolder(view), TimeTrackerDayView {
     private lateinit var rvReports: RecyclerView
     private lateinit var llEmptyListContainer: ViewGroup
     private lateinit var tvEmptyListText: TextView
@@ -54,17 +53,7 @@ class DayReportViewHolder(view: View) : RecyclerView.ViewHolder(view), TimeTrack
         llEmptyListContainer = itemView.findViewById(R.id.llEmptyViewContainer)
         tvEmptyListText = itemView.findViewById(R.id.tvEmptyList)
 
-        reportsAdapter = TimeReportAdapter(context, object : TimeReportsClickListener {
-
-            override fun onTrackTimeClicked(position: Int) {
-                Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onItemClicked(position: Int) {
-                Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
-            }
-
-        })
+        reportsAdapter = TimeReportAdapter(context, timeReportsClickListener)
 
         rvReports.adapter = reportsAdapter
 

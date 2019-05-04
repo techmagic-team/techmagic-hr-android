@@ -39,5 +39,5 @@ interface TimeTrackerPresenter : Presenter {
 
     fun onNewTimeReportClicked()
 
-    fun onEditTimeReportClicked(position : Int)
+    fun onEditTimeReportClicked(reportViewModel: UserReportViewModel)
 }

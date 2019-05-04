@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.setImageDrawableRes
 
@@ -49,7 +49,7 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
             )
         }
 
-        holder.llTimeReportContainer.setOnClickListener { timeReportsClickListener.onItemClicked(position) }
+        holder.llTimeReportContainer.setOnClickListener { timeReportsClickListener.onItemClicked(timeReportItem) }
         holder.ivTimeReportTrackTime.setOnClickListener { timeReportsClickListener.onTrackTimeClicked(position) }
     }
 
@@ -81,5 +81,5 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
 interface TimeReportsClickListener {
     fun onTrackTimeClicked(position: Int)
 
-    fun onItemClicked(position: Int)
+    fun onItemClicked(reportViewModel: UserReportViewModel)
 }
