@@ -4,11 +4,13 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-abstract class HrAppBaseBaseTimeReportDetailPresenter(val reportRepository: TimeReportRepository)
+abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository: TimeReportRepository,
+                                                  protected val userReportViewModelMapper: UserReportViewModelMapper)
     : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 

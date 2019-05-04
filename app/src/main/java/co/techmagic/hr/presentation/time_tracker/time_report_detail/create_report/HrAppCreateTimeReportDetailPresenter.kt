@@ -2,12 +2,14 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_repo
 
 import co.techmagic.hr.data.entity.time_tracker.ReportTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseBaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
-class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository)
-    : HrAppBaseBaseTimeReportDetailPresenter(reportRepository) {
+class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository,
+                                           userReportViewModelMapper: UserReportViewModelMapper)
+    : HrAppBaseTimeReportDetailPresenter(reportRepository, userReportViewModelMapper) {
 
     override fun validateInfo(): Boolean {
         if (!isDescriptionValid()) {
@@ -26,10 +28,6 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
         }
 
         return true
-    }
-
-    override fun onViewCreated(isInitial: Boolean) {
-        super.onViewCreated(isInitial)
     }
 
     override fun makeRequest() {
@@ -52,7 +50,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 .doOnSubscribe { view?.showProgress(true) }
                 .subscribe(
                         {
-                            router?.close()
+                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report)) }
                             view?.showProgress(false)
                         },
                         {

@@ -1,6 +1,8 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DefaultItemAnimator
@@ -10,6 +12,7 @@ import android.view.*
 import android.widget.Toast
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.ui.view.WeekView
@@ -24,9 +27,13 @@ import java.util.*
 class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView, TimeReportsClickListener {
 
     companion object {
+        const val REQUEST_CREATE_NEW_TASK = 1001
+        const val REQUEST_UPDATE_TASK = 1002
+
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
+    var companion = Companion //TODO FIX ME please
 
     private lateinit var weeks: RecyclerView
     private lateinit var days: RecyclerView
@@ -76,6 +83,18 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun showMessage(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode != Activity.RESULT_OK) {
+            super.onActivityResult(requestCode, resultCode, data)
+            return
+        }
+        when(requestCode){
+            REQUEST_CREATE_NEW_TASK -> presenter?.onTaskCreated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+            REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun findViews(view: View) {

@@ -36,6 +36,7 @@ import co.techmagic.hr.presentation.time_tracker.DateTimeProvider;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
@@ -305,11 +306,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
             DateTimeProvider dateTimeProvider = new HrAppDateTimeProvider();
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager, new UserReportViewModelMapper());
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
+
 
     @OnClick(R.id.btnClearFilters)
     public void onClearFiltersClick() {

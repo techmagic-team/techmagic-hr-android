@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -27,6 +26,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppUpdateTimReportDetailPresenter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
@@ -36,20 +36,20 @@ import java.util.*
 class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     companion object {
-        const val EXTRA_USER_REPORT_FOR_EDIT = "extra_time_report_for_edit"
+        const val EXTRA_USER_REPORT = "extra_time_report"
         const val EXTRA_REPORT_DATE = "extra_report_date"
 
-        fun start(context: Context, userReportForEdit: UserReportViewModel?, reportDate: Calendar) {
-            val intent = Intent(context, TimeReportDetailActivity::class.java)
+        fun start(fragment: Fragment, userReportForEdit: UserReportViewModel?, reportDate: Calendar, requestCode : Int) {
+            val intent = Intent(fragment.activity, TimeReportDetailActivity::class.java)
 
-            intent.putExtra(EXTRA_USER_REPORT_FOR_EDIT, userReportForEdit)
+            intent.putExtra(EXTRA_USER_REPORT, userReportForEdit)
             intent.putExtra(EXTRA_REPORT_DATE, reportDate)
 
-            context.startActivity(intent)
+            fragment.startActivityForResult(intent, requestCode)
         }
     }
 
-    private lateinit var timeReportDetailPresenter: HrAppBaseBaseTimeReportDetailPresenter
+    private lateinit var timeReportDetailPresenter: HrAppBaseTimeReportDetailPresenter
     private lateinit var reportPropertiesPresenter: HrAppReportPropertiesPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,10 +79,10 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 timeReportDate.firstDayOfWeek = Calendar.MONDAY
 
                 if (getUserReportForEdit() == null) {
-                    timeReportDetailPresenter = HrAppCreateTimeReportDetailPresenter(timeReportRepository)
+                    timeReportDetailPresenter = HrAppCreateTimeReportDetailPresenter(timeReportRepository, UserReportViewModelMapper())
                 } else {
                     //todo crate another presenter
-                    timeReportDetailPresenter = HrAppUpdateTimReportDetailPresenter(timeReportRepository, ProjectViewModelMapper(), ProjectTaskViewModelMapper())
+                    timeReportDetailPresenter = HrAppUpdateTimReportDetailPresenter(timeReportRepository, UserReportViewModelMapper(), ProjectViewModelMapper(), ProjectTaskViewModelMapper())
                     timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
                 }
 
@@ -162,6 +162,6 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 .commit()
     }
 
-    private fun getUserReportForEdit(): UserReportViewModel? = intent.getParcelableExtra(EXTRA_USER_REPORT_FOR_EDIT) as? UserReportViewModel
+    private fun getUserReportForEdit(): UserReportViewModel? = intent.getParcelableExtra(EXTRA_USER_REPORT) as? UserReportViewModel
     private fun getReportDateFromExtra() = intent.getSerializableExtra(EXTRA_REPORT_DATE) as Calendar
 }

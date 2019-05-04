@@ -2,18 +2,20 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_repo
 
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseBaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
+                                          userReportViewModelMapper: UserReportViewModelMapper,
                                           val projectsViewModelMapper: ProjectViewModelMapper,
                                           val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
-    : HrAppBaseBaseTimeReportDetailPresenter(timeReportRepository) {
+    : HrAppBaseTimeReportDetailPresenter(timeReportRepository, userReportViewModelMapper) {
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
@@ -84,7 +86,9 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                 .doOnSubscribe { view?.showProgress(true) }
                 .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
-                        { router?.close() },
+                        {
+                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report)) }
+                        },
                         {
                             it.message?.let { view?.showErrorMessage(it) }
                             it?.printStackTrace()
