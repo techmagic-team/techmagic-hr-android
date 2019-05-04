@@ -41,7 +41,7 @@ class TimeReportNetworkRepository(
         return setup(apiClient.reportTask(requestBody))
     }
 
-    override fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UserReportsResponse> {
+    override fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UpdateUserReportResponse> {
         return setup(apiClient.updateTask(weekId, reportId, body))
     }
 

@@ -11,6 +11,6 @@ interface TimeReportRepository {
     fun getProjectTasks(projectId: String): Observable<List<TaskResponse>>
     fun getTaskDetails(weekId: String, reportId: String): Observable<TaskDetailsResponse>
     fun reportTask(requestBody: ReportTaskRequestBody): Observable<ReportTaskResponse>
-    fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UserReportsResponse>
+    fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UpdateUserReportResponse>
     fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void>
 }

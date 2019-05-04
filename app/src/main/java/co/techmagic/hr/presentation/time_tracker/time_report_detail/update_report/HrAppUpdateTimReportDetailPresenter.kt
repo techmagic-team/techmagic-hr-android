@@ -5,7 +5,10 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
-import co.techmagic.hr.presentation.util.*
+import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
+import co.techmagic.hr.presentation.util.TimeFormatUtil
+import co.techmagic.hr.presentation.util.firstDayOfWeekDate
+import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           val projectsViewModelMapper: ProjectViewModelMapper,
@@ -82,7 +85,10 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                 .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
                         { router?.close() },
-                        { it.message?.let { view?.showErrorMessage(it) } }
+                        {
+                            it.message?.let { view?.showErrorMessage(it) }
+                            it?.printStackTrace()
+                        }
                 )
     }
 
