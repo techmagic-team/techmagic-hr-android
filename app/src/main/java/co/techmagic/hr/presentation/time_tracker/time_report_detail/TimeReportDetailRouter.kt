@@ -19,9 +19,10 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: T
         addFragment(R.id.fragment_container, ReportPropertiesFragment.newTasksInstance(projectId), true)
     }
 
-    override fun close(userReport: UserReportViewModel?) {
+    override fun close(userReport: UserReportViewModel?, oldReportId: String?) {
         val intent = Intent()
         intent.putExtra(TimeReportDetailActivity.EXTRA_USER_REPORT, userReport)
+        intent.putExtra(TimeReportDetailActivity.EXTRA_OLD_ID, oldReportId)
         activity.setResult(Activity.RESULT_OK, intent)
         activity.finish()
     }

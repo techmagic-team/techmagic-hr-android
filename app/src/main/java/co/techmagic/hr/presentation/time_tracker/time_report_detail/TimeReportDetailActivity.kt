@@ -38,6 +38,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     companion object {
         const val EXTRA_USER_REPORT = "extra_time_report"
         const val EXTRA_REPORT_DATE = "extra_report_date"
+        const val EXTRA_OLD_ID = "EXTRA_OLD_ID"
 
         fun start(fragment: Fragment, userReportForEdit: UserReportViewModel?, reportDate: Calendar, requestCode : Int) {
             val intent = Intent(fragment.activity, TimeReportDetailActivity::class.java)

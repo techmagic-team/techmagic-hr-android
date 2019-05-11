@@ -122,19 +122,19 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
-        view?.showMessage("handle task creating don`t implemented")
+        view?.showMessage("handle task creating doesn`t implemented")
     }
 
-    override fun onTaskUpdated(userReportViewModel: UserReportViewModel?) {
+    override fun onTaskUpdated(oldoldReportId : String?, userReportViewModel: UserReportViewModel?) {
         userReportViewModel?.let {
             val reportDate = calendar(userReportViewModel.date)
             val reports = cache[key(reportDate)]
             reports?.map {
                 //todo refactor this replace
-                if (it.id == userReportViewModel.id) {
+                if (it.id == userReportViewModel.id || it.id == oldoldReportId) {
                     val index = reports.indexOf(it)
                     reports[index] = userReportViewModel
-                    view?.notifyDayReportsChanged(reportDate.firstDayOfWeekDate()) //todo is it ok?
+                    view?.notifyDayReportsChanged(reportDate.firstDayOfWeekDate()) //todo is it ok? updated may 11: No!
                 }
             }
         }

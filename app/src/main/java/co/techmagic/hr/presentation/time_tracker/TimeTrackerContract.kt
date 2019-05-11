@@ -42,5 +42,5 @@ interface TimeTrackerPresenter : Presenter {
     fun onEditTimeReportClicked(reportViewModel: UserReportViewModel)
 
     fun onTaskCreated(userReportViewModel: UserReportViewModel?)
-    fun onTaskUpdated(userReportViewModel: UserReportViewModel?)
+    fun onTaskUpdated(oldReportId : String?, userReportViewModel: UserReportViewModel?)
 }

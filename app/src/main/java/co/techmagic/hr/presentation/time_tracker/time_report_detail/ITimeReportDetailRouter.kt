@@ -7,5 +7,5 @@ import java.util.*
 interface ITimeReportDetailRouter : Router {
     fun openSelectProject(userId: String, firstDayOfWeek: Calendar)
     fun openSelectTask(projectId: String)
-    fun close(userReport: UserReportViewModel?)
+    fun close(userReport: UserReportViewModel?, oldReportId: String? = null)
 }

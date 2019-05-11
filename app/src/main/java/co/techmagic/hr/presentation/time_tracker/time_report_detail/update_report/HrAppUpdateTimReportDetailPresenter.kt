@@ -87,7 +87,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                 .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
                         {
-                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report)) }
+                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report), userReportForEdit?.id) }
                         },
                         {
                             it.message?.let { view?.showErrorMessage(it) }

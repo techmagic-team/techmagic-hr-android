@@ -33,6 +33,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
+
     var companion = Companion //TODO FIX ME please
 
     private lateinit var weeks: RecyclerView
@@ -78,7 +79,9 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun notifyDayReportsChanged(date: Calendar) {
-        daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
+        //      daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
+        daysAdapter.notifyDataSetChanged()
+        //todo fixme
     }
 
     override fun showMessage(message: String) {
@@ -86,13 +89,13 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode != Activity.RESULT_OK) {
+        if (resultCode != Activity.RESULT_OK) {
             super.onActivityResult(requestCode, resultCode, data)
             return
         }
-        when(requestCode){
+        when (requestCode) {
             REQUEST_CREATE_NEW_TASK -> presenter?.onTaskCreated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
-            REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+            REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getStringExtra(TimeReportDetailActivity.EXTRA_OLD_ID), data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
