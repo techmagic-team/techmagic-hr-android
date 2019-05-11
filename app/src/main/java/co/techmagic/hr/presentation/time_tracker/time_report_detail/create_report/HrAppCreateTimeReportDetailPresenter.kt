@@ -50,7 +50,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 .doOnSubscribe { view?.showProgress(true) }
                 .subscribe(
                         {
-                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report)) }
+                            it.report?.let { report -> router?.onReportAdded(userReportViewModelMapper.transform(report)) }
                             view?.showProgress(false)
                         },
                         {

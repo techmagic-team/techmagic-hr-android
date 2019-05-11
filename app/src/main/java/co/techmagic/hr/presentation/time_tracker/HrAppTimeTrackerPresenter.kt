@@ -129,15 +129,28 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    override fun onTaskUpdated(oldoldReportId: String?, userReportViewModel: UserReportViewModel?) {
+    override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
         userReportViewModel?.let {
             val reports = getDayReports(userReportViewModel.date)
             reports?.forEach {
-                if (it.id == userReportViewModel.id || it.id == oldoldReportId) {
+                if (it.id == userReportViewModel.id || it.id == oldReportId) {
                     val index = reports.indexOf(it)
                     reports[index] = userReportViewModel
                     view?.notifyDayReportsChanged(calendar(userReportViewModel.date).firstDayOfWeekDate())
                 }
+            }
+        }
+    }
+
+    override fun onTaskDeleted(userReportViewModel: UserReportViewModel?) {
+        userReportViewModel?.let {
+            with(getDayReports(userReportViewModel.date)) {
+                this
+                        ?.find { it.id == userReportViewModel.id }
+                        ?.let {
+                            remove(it)
+                            view?.notifyDayReportRemoved(calendar(userReportViewModel.date))
+                        }
             }
         }
     }

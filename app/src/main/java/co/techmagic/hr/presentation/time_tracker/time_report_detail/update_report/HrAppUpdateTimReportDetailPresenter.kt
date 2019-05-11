@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report
 
+import co.techmagic.hr.data.entity.time_tracker.DeleteTaskRequestBody
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -23,6 +24,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         loadProjectAndTask()
+        view?.setDeleteReportButtonVisible(true)
     }
 
     override fun validateInfo(): Boolean {
@@ -41,6 +43,25 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
 
     override fun makeRequest() {
         updateReport()
+    }
+
+    override fun deleteClicked() {
+        userReportForEdit?.let {
+            reportRepository
+                    .deleteTask(
+                            userReportForEdit!!.weekReportId,
+                            userReportForEdit!!.id,
+                            createDeleteReportRequestBody(userReportForEdit!!))
+                    .doOnSubscribe { view?.showProgress(true) }
+                    .doOnTerminate { view?.showProgress(false) }
+                    .subscribe(
+                            {
+                                router?.projectDeleted(userReportForEdit)
+                            },
+                            {
+                                it?.message?.let { view?.showErrorMessage(it) }
+                            })
+        }
     }
 
     private fun loadProjectAndTask() {
@@ -90,7 +111,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                 .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
                         {
-                            it.report?.let { report -> router?.close(userReportViewModelMapper.transform(report), userReportForEdit?.id) }
+                            it.report?.let { report -> router?.onReportUpdated(userReportViewModelMapper.transform(report), userReportForEdit?.id) }
                         },
                         {
                             it.message?.let { view?.showErrorMessage(it) }
@@ -107,4 +128,10 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                                             taskId: String?,
                                             userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, RATE, projectId, taskId, userId)
 
+
+    private fun createDeleteReportRequestBody(userReportForDelete: UserReportViewModel) = DeleteTaskRequestBody(
+            userReportForDelete.date,
+            userId,
+            projectViewModel!!.id
+    )
 }

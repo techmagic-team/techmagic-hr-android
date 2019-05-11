@@ -7,5 +7,7 @@ import java.util.*
 interface ITimeReportDetailRouter : Router {
     fun openSelectProject(userId: String, firstDayOfWeek: Calendar)
     fun openSelectTask(projectId: String)
-    fun close(userReport: UserReportViewModel?, oldReportId: String? = null)
+    fun onReportAdded(userReport: UserReportViewModel?)
+    fun onReportUpdated(userReport: UserReportViewModel?, oldReportId: String? = null)
+    fun projectDeleted(deletedReport: UserReportViewModel?)
 }

@@ -49,15 +49,15 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu?.clear()
-        inflater?.inflate(R.menu.menu_time_report_detail, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         presenter?.onVisibleToUser()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        menu?.clear()
+        inflater?.inflate(R.menu.menu_time_report_detail_update, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -113,6 +113,10 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
         btnReduceTime.setOnClickListener { presenter?.reduceTimeClicked() }
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
         btnSave.setOnClickListener { presenter?.saveClicked() }
+    }
+
+    override fun setDeleteReportButtonVisible(visible: Boolean) {
+        setHasOptionsMenu(true)
     }
 
     override fun showDate(date: String) {

@@ -88,6 +88,7 @@ abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository
     }
 
     override fun deleteClicked() {
+        throw IllegalStateException("Override this method") //todo move to only update presenter maybe
     }
 
     override fun saveClicked() {

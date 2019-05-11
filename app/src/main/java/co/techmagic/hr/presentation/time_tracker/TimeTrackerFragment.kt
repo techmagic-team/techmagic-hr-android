@@ -1,6 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +29,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     companion object {
         const val REQUEST_CREATE_NEW_TASK = 1001
         const val REQUEST_UPDATE_TASK = 1002
+        const val RESULT_REPORT_DELETED = 2001
 
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
@@ -81,7 +82,12 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun notifyDayReportsChanged(date: Calendar) {
         //      daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
         daysAdapter.notifyDataSetChanged()
-        //todo fixme
+        //todo fixme to notify about item changed in inner adapter
+    }
+
+    override fun notifyDayReportRemoved(date: Calendar) {
+        daysAdapter.notifyDataSetChanged()
+        //todo fixme to notify about item removed in inner adapter
     }
 
     override fun showMessage(message: String) {
@@ -89,15 +95,21 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK) {
-            super.onActivityResult(requestCode, resultCode, data)
-            return
-        }
-        when (requestCode) {
-            REQUEST_CREATE_NEW_TASK -> presenter?.onTaskCreated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
-            REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getStringExtra(TimeReportDetailActivity.EXTRA_OLD_ID), data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+        when (resultCode) {
+            RESULT_OK ->
+                when (requestCode) {
+                    REQUEST_CREATE_NEW_TASK -> presenter?.onTaskCreated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getStringExtra(TimeReportDetailActivity.EXTRA_OLD_ID), data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    else -> super.onActivityResult(requestCode, resultCode, data)
+                }
+            RESULT_REPORT_DELETED ->
+                when (requestCode) {
+                    REQUEST_UPDATE_TASK -> presenter?.onTaskDeleted(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    else -> super.onActivityResult(requestCode, resultCode, data)
+                }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+
     }
 
     private fun findViews(view: View) {

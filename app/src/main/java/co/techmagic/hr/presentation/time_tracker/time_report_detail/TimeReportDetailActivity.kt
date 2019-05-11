@@ -40,7 +40,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         const val EXTRA_REPORT_DATE = "extra_report_date"
         const val EXTRA_OLD_ID = "EXTRA_OLD_ID"
 
-        fun start(fragment: Fragment, userReportForEdit: UserReportViewModel?, reportDate: Calendar, requestCode : Int) {
+        fun start(fragment: Fragment, userReportForEdit: UserReportViewModel?, reportDate: Calendar, requestCode: Int) {
             val intent = Intent(fragment.activity, TimeReportDetailActivity::class.java)
 
             intent.putExtra(EXTRA_USER_REPORT, userReportForEdit)
@@ -142,10 +142,13 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return true
     }
 
     override fun setActionBarTitle(title: String) {
