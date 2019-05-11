@@ -12,6 +12,7 @@ import co.techmagic.hr.R
 import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
+import co.techmagic.hr.presentation.util.TimeInputTextWatcher
 import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
@@ -45,7 +46,7 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
-        initClicks()
+        initListeners()
     }
 
 
@@ -90,14 +91,11 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
         edTime = view.find(R.id.edTimeReportDetailTime)
         btnIncreaseTime = view.find(R.id.btnTimeReportDetailIncreaseTime)
         btnReduceTime = view.find(R.id.btnTimeReportDetailReduceTime)
-
-
-
         btnStartTimer = view.find(R.id.btnTimeReportDetailStartTimer)
         btnSave = view.find(R.id.btnTimeReportDetailSave)
     }
 
-    private fun initClicks() {
+    private fun initListeners() {
         tvSelectedProject.setOnClickListener { presenter?.changeProjectClicked() }
         tvSelectedProjectTask.setOnClickListener { presenter?.changeTaskClicked() }
         edDescription.addTextChangedListener(object : SimpleTextWatcher() {
@@ -113,6 +111,8 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
         btnReduceTime.setOnClickListener { presenter?.reduceTimeClicked() }
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
         btnSave.setOnClickListener { presenter?.saveClicked() }
+
+        edTime.addTextChangedListener(TimeInputTextWatcher(edTime))
     }
 
     override fun setDeleteReportButtonVisible(visible: Boolean) {
