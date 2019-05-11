@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_repo
 
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
@@ -16,6 +17,8 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                                           val projectsViewModelMapper: ProjectViewModelMapper,
                                           val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
     : HrAppBaseTimeReportDetailPresenter(timeReportRepository, userReportViewModelMapper) {
+
+    var userReportForEdit: UserReportViewModel? = null
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)

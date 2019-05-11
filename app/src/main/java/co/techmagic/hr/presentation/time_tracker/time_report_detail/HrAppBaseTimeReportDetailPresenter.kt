@@ -3,7 +3,6 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
-import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
@@ -17,8 +16,6 @@ abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository
     companion object {
         const val RATE = 12
     }
-
-    var userReportForEdit: UserReportViewModel? = null //todo move to update presenter
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
@@ -111,8 +108,6 @@ abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository
     private fun showProjectTask() {
         projectTaskViewModel?.task?.name?.let { view?.showTask(it) }
     }
-
-    private fun isNewReport() = userReportForEdit == null
 
     private fun getFormattedDate() = reportDate.formatDate(TOOLBAR_DATE_FORMAT)
 

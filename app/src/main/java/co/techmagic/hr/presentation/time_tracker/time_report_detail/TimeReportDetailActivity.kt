@@ -84,7 +84,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 } else {
                     //todo crate another presenter
                     timeReportDetailPresenter = HrAppUpdateTimReportDetailPresenter(timeReportRepository, UserReportViewModelMapper(), ProjectViewModelMapper(), ProjectTaskViewModelMapper())
-                    timeReportDetailPresenter.userReportForEdit = getUserReportForEdit()
+                    (timeReportDetailPresenter as HrAppUpdateTimReportDetailPresenter).userReportForEdit = getUserReportForEdit()
                 }
 
                 timeReportDetailPresenter.reportDate = timeReportDate
