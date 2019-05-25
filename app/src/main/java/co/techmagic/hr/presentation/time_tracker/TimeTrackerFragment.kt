@@ -35,8 +35,6 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
 
-    var companion = Companion //TODO FIX ME please
-
     private lateinit var weeks: RecyclerView
     private lateinit var days: RecyclerView
     private lateinit var btnAddTimeReport: CardView
