@@ -17,7 +17,8 @@ class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
         private val quotesManager: QuotesManager,
-        private val userReportViewMadelMapper: UserReportViewModelMapper) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
+        private val userReportViewMadelMapper: UserReportViewModelMapper
+) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
     private val holidays: HashMap<String, Holiday> = HashMap()
@@ -122,36 +123,36 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
-        userReportViewModel?.let {
-            val reports = getDayReports(userReportViewModel.date)
-            reports?.add(userReportViewModel)
-            view?.notifyDayReportsChanged(calendar(userReportViewModel.date).firstDayOfWeekDate())
-        }
+        userReportViewModel ?: return
+
+        val reports = getDayReports(userReportViewModel.date)
+        reports?.add(userReportViewModel)
+        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).firstDayOfWeekDate())
     }
 
     override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
-        userReportViewModel?.let {
-            val reports = getDayReports(userReportViewModel.date)
-            reports?.forEach {
-                if (it.id == userReportViewModel.id || it.id == oldReportId) {
-                    val index = reports.indexOf(it)
-                    reports[index] = userReportViewModel
-                    view?.notifyDayReportsChanged(calendar(userReportViewModel.date).firstDayOfWeekDate())
-                }
-            }
+        userReportViewModel ?: return
+
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
+                    ?.forEachIndexed { index, viewModel ->
+                        this[index] = userReportViewModel
+                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).firstDayOfWeekDate())
+                    }
         }
     }
 
     override fun onTaskDeleted(userReportViewModel: UserReportViewModel?) {
-        userReportViewModel?.let {
-            with(getDayReports(userReportViewModel.date)) {
-                this
-                        ?.find { it.id == userReportViewModel.id }
-                        ?.let {
-                            remove(it)
-                            view?.notifyDayReportRemoved(calendar(userReportViewModel.date))
-                        }
-            }
+        userReportViewModel ?: return
+
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.find { it.id == userReportViewModel.id }
+                    ?.let {
+                        this.remove(it)
+                        view?.notifyDayReportRemoved(calendar(userReportViewModel.date))
+                    }
         }
     }
 
