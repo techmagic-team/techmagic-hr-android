@@ -22,6 +22,7 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
 
         const val MAX_HOURS_CURSOR_POSITION = 2
         const val MAX_MINUTES_CURSOR_POSITION = 5
+        const val START_MINUTES_CURSOR_POSITION = 3
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -46,7 +47,9 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
             moveCursor(hours, minutes, editText.selectionEnd)
             isInnerChange = false
         } catch (ex: Exception) {
-            Log.d("TEST_EX", ex.message)
+            Log.d("TEST_EX", "------------------------------------------------------------------------------------------------------------------------------------------")
+            ex.printStackTrace()
+            isInnerChange = false
         }
 
     }
@@ -58,7 +61,7 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
         return if (hoursMatcher.find())
             hoursMatcher.group().dropLast(1).toInt()
         else
-            0
+            -1
     }
 
     private fun getMinutes(text: String): Int {
@@ -70,17 +73,26 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
         return if (minutesMatcher.find())
             minutesMatcher.group().drop(1).toInt()
         else
-            0
+            -1
     }
 
-    private fun getValidTime(hours: Int, minutes: Int) = String.format("%d:%d", hours, minutes)
+    private fun getValidTime(hours: Int, minutes: Int) = String.format("%s:%s", if (hours != -1) hours else "", if (minutes != -1) minutes else "")
 
     private fun moveCursor(hours: Int, minutes: Int, currentCursorPosition: Int) {
-        Log.d("val editText : EditText", "$currentCursorPosition")
-        if (hours.toString().length == MAX_HOURS_LENGTH && currentCursorPosition <= MAX_HOURS_CURSOR_POSITION) {
-            editText.setSelection(3)
-        } else if (editText.text.length == MAX_MINUTES_LENGTH && currentCursorPosition <= MAX_HOURS_CURSOR_POSITION) {
-            editText.setSelection(MAX_MINUTES_CURSOR_POSITION)
+        if (isHoursChange(currentCursorPosition) && isHoursFillUped(hours)) {
+            if (isMinutesFillUpped(minutes)) {
+                editText.setSelection(editText.text.length - minutes.toString().length, editText.length())
+            } else {
+                editText.setSelection(START_MINUTES_CURSOR_POSITION)
+            }
+        } else if (isHoursFillUped(hours) && isMinutesFillUpped(minutes)) {
+            editText.setSelection(editText.text.length)
         }
     }
+
+    private fun isHoursFillUped(hours: Int) = hours.toString().length == MAX_HOURS_LENGTH
+
+    private fun isMinutesFillUpped(minutes: Int) = minutes != -1 && minutes.toString().length == MAX_MINUTES_LENGTH
+
+    private fun isHoursChange(currentCursorPosition: Int) = currentCursorPosition <= MAX_HOURS_CURSOR_POSITION
 }
