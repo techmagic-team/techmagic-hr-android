@@ -85,7 +85,6 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val userId = fragment.arguments?.getString(ARG_USER_ID)
                 val firstDayOfWeek = fragment.arguments?.getSerializable(ARG_FIRST_DAY_OF_WEEK) as? Calendar
 
-                //todo remove duplicated di code
                 val okHttpClientClient = ApiClient.buildOkHttpClientClient()
                 val retrofit = ApiClient.getRetrofit(okHttpClientClient)
                 val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
