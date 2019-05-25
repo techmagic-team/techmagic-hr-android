@@ -11,7 +11,7 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
 
     companion object {
         const val INPUT_PATTERN = "\\d*:\\d*"
-        const val HOURS_PATTERN = "\\d{1,2}:"
+        const val HOURS_PATTERN = "(\\d{1,2}:|^\\d{1,2})"
         const val MINUTES_PATTERN = ":\\d{1,2}"
 
         const val MAX_HOURS = 24
@@ -43,12 +43,13 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
             }
 
             isInnerChange = true
-            s.replace(0, s.length, getValidTime(hours, minutes))
-            moveCursor(hours, minutes, editText.selectionEnd)
-            isInnerChange = false
+            val formatedText = getValidTime(hours, minutes)
+            s.replace(0, s.length, formatedText)
+            moveCursor(formatedText, hours, minutes, editText.selectionEnd)
         } catch (ex: Exception) {
             Log.d("TEST_EX", "------------------------------------------------------------------------------------------------------------------------------------------")
             ex.printStackTrace()
+        } finally {
             isInnerChange = false
         }
 
@@ -59,7 +60,7 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
                 .compile(HOURS_PATTERN)
                 .matcher(text)
         return if (hoursMatcher.find())
-            hoursMatcher.group().dropLast(1).toInt()
+            hoursMatcher.group().dropLastWhile { it == ':' }.toInt()
         else
             -1
     }
@@ -69,7 +70,6 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
                 .compile(MINUTES_PATTERN)
                 .matcher(text)
 
-        //todo fix dropLast
         return if (minutesMatcher.find())
             minutesMatcher.group().drop(1).toInt()
         else
@@ -78,21 +78,29 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
 
     private fun getValidTime(hours: Int, minutes: Int) = String.format("%s:%s", if (hours != -1) hours else "", if (minutes != -1) minutes else "")
 
-    private fun moveCursor(hours: Int, minutes: Int, currentCursorPosition: Int) {
-        if (isHoursChange(currentCursorPosition) && isHoursFillUped(hours)) {
+    private fun moveCursor(text: String, hours: Int, minutes: Int, currentCursorPosition: Int) {
+        if (isHoursChange(hours, currentCursorPosition) && isHoursFilledUp(hours)) {
             if (isMinutesFillUpped(minutes)) {
                 editText.setSelection(editText.text.length - minutes.toString().length, editText.length())
             } else {
                 editText.setSelection(START_MINUTES_CURSOR_POSITION)
             }
-        } else if (isHoursFillUped(hours) && isMinutesFillUpped(minutes)) {
+        } else if (isHoursFilledUp(hours) && isMinutesFillUpped(minutes)) {
             editText.setSelection(editText.text.length)
+        } else if (isHoursChange(hours, currentCursorPosition) && !isHoursFilledUp(hours)) {
+            //   editText.setSelection(hours.toString().length)
+        } else if (isMinutesChange(text, minutes, currentCursorPosition) && !isMinutesFillUpped(minutes) && isMinutesEmpty(minutes)) {
+            editText.setSelection(currentCursorPosition - 1)
         }
     }
 
-    private fun isHoursFillUped(hours: Int) = hours.toString().length == MAX_HOURS_LENGTH
+    private fun isHoursFilledUp(hours: Int) = hours != -1 && hours.toString().length == MAX_HOURS_LENGTH
 
     private fun isMinutesFillUpped(minutes: Int) = minutes != -1 && minutes.toString().length == MAX_MINUTES_LENGTH
 
-    private fun isHoursChange(currentCursorPosition: Int) = currentCursorPosition <= MAX_HOURS_CURSOR_POSITION
+    private fun isHoursChange(hours: Int, currentCursorPosition: Int) = currentCursorPosition <= hours.toString().length || (hours.toString().length < MAX_HOURS_LENGTH && currentCursorPosition < MAX_HOURS_LENGTH)
+
+    private fun isMinutesChange(text: String, minutes: Int, currentCursorPosition: Int) = !isMinutesEmpty(minutes) && currentCursorPosition >= text.length - minutes.toString().length
+
+    private fun isMinutesEmpty(minutes: Int) = minutes == -1
 }
