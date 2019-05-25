@@ -1,0 +1,8 @@
+package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report
+
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailView
+
+interface CreateTimeReportView : BaseTimeReportDetailView
+
+interface CreateTimeReportPresenter : BaseTimeReportDetailPresenter

@@ -4,8 +4,7 @@ import co.techmagic.hr.data.entity.time_tracker.DeleteTaskRequestBody
 import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.HrAppBaseTimeReportDetailPresenter
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
@@ -15,9 +14,8 @@ import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           userReportViewModelMapper: UserReportViewModelMapper,
-                                          val projectsViewModelMapper: ProjectViewModelMapper,
-                                          val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
-    : HrAppBaseTimeReportDetailPresenter(timeReportRepository, userReportViewModelMapper) {
+                                          val projectsViewModelMapper: ProjectViewModelMapper)
+    : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper), UpdateTimeReportPresenter {
 
     var userReportForEdit: UserReportViewModel? = null
 
@@ -41,7 +39,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         return true
     }
 
-    override fun makeRequest() {
+    override fun makeSaveRequest() {
         updateReport()
     }
 

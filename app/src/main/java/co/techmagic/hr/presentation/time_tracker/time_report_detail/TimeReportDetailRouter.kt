@@ -5,11 +5,12 @@ import android.content.Intent
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment
 import com.techmagic.viper.base.BaseRouter
 import java.util.*
 
-class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: TimeReportDetailFragment)
+class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: BaseTimeReportDetailFragment<*>)
     : BaseRouter<TimeReportDetailActivity>(activity), ITimeReportDetailRouter {
 
     override fun openSelectProject(userId: String, firstDayOfWeek: Calendar) {

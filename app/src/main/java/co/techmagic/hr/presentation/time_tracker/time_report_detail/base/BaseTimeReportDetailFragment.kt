@@ -1,9 +1,11 @@
-package co.techmagic.hr.presentation.time_tracker.time_report_detail
+package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -17,8 +19,8 @@ import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
 
-class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPresenter>(),
-        TimeReportDetailView {
+open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrAppBaseViewFragment<T>(),
+        BaseTimeReportDetailView {
 
     private lateinit var flTimeReportDetailContainer: FrameLayout
     private lateinit var tvSelectedProject: TextView
@@ -53,22 +55,6 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         presenter?.onVisibleToUser()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu?.clear()
-        inflater?.inflate(R.menu.menu_time_report_detail_update, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.menu_item_delete -> {
-                presenter?.deleteClicked()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onAttach(context: Context?) {
@@ -159,9 +145,5 @@ class TimeReportDetailFragment : HrAppBaseViewFragment<BaseTimeReportDetailPrese
                 R.dimen.activity_time_report_detail_small_border_width,
                 if (isValid) R.color.color_time_report_detail_input_border_color else R.color.color_time_report_detail_picker_description_error_color
         )
-    }
-
-    companion object {
-        fun newInstance() = TimeReportDetailFragment()
     }
 }

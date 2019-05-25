@@ -1,20 +1,22 @@
-package co.techmagic.hr.presentation.time_tracker.time_report_detail
+package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.ITimeReportDetailRouter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeValue
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository: TimeReportRepository,
-                                                  protected val userReportViewModelMapper: UserReportViewModelMapper)
-    : BasePresenter<TimeReportDetailView, ITimeReportDetailRouter>(),
+abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(protected val reportRepository: TimeReportRepository,
+                                                                                protected val userReportViewModelMapper: UserReportViewModelMapper)
+    : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
     companion object {
-        const val RATE = 12
+        const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why, but it is OK for now
     }
 
     lateinit var reportDate: Calendar
@@ -87,20 +89,15 @@ abstract class HrAppBaseTimeReportDetailPresenter(protected val reportRepository
     override fun startTimerClicked() {
     }
 
-    override fun deleteClicked() {
-        throw IllegalStateException("Override this method") //todo move to only update presenter maybe
-    }
-
     override fun saveClicked() {
-        if (!validateInfo()) {
-            return
+        if (validateInfo()) {
+            makeSaveRequest()
         }
-        makeRequest()
     }
 
     abstract fun validateInfo(): Boolean
 
-    abstract fun makeRequest()
+    abstract fun makeSaveRequest()
 
     private fun showProject() {
         view?.showProject(projectViewModel?.title ?: "")

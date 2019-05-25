@@ -1,10 +1,10 @@
-package co.techmagic.hr.presentation.time_tracker.time_report_detail
+package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import co.techmagic.hr.presentation.mvp.base.ProgressableView
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.View
 
-interface TimeReportDetailView : View, ProgressableView {
+interface BaseTimeReportDetailView : View, ProgressableView {
     fun setDeleteReportButtonVisible(visible : Boolean)
     fun showDate(date: String)
     fun showProject(project: String)
@@ -28,6 +28,5 @@ interface BaseTimeReportDetailPresenter : Presenter {
     fun increaseTimeClicked()
     fun reduceTimeClicked()
     fun startTimerClicked()
-    fun deleteClicked()
     fun saveClicked()
 }
