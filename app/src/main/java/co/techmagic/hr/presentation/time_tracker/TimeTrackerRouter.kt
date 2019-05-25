@@ -14,8 +14,8 @@ class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragmen
         fragment.showDatePicker(currentDate)
     }
 
-    override fun openCreateTimeReport() {
-        TimeReportDetailActivity.start(fragment, null, Calendar.getInstance(), TimeTrackerFragment.REQUEST_CREATE_NEW_TASK)
+    override fun openCreateTimeReport(selectedDate : Calendar) {
+        TimeReportDetailActivity.start(fragment, null, selectedDate, TimeTrackerFragment.REQUEST_CREATE_NEW_TASK)
     }
 
     override fun openEditTimeReport(userReport: UserReportViewModel, reportDate: Calendar) {
