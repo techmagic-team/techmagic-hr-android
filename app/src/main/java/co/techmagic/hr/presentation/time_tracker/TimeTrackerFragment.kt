@@ -228,7 +228,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun onTrackTimeClicked(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showErrorMessage("not implemented")
     }
 
     fun showDatePicker(date: Calendar) {
