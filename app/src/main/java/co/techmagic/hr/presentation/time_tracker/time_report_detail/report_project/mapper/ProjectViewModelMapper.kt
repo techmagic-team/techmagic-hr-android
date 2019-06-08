@@ -19,4 +19,10 @@ class ProjectViewModelMapper {
             project.name,
             null
     )
+
+    fun reTransform(projectViewModel: ProjectViewModel) = ProjectResponse(
+            projectViewModel.id,
+            projectViewModel.title,
+            projectViewModel.client
+    )
 }

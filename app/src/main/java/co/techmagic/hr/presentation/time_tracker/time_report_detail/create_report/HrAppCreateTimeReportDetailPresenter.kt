@@ -3,13 +3,22 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_repo
 import co.techmagic.hr.data.entity.time_tracker.ReportTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository,
-                                           userReportViewModelMapper: UserReportViewModelMapper)
+                                           userReportViewModelMapper: UserReportViewModelMapper,
+                                           val projectsViewModelMapper: ProjectViewModelMapper,
+                                           val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
     : HrAppBaseTimeReportDetailPresenter<CreateTimeReportView>(reportRepository, userReportViewModelMapper), CreateTimeReportPresenter {
+
+    override fun onViewCreated(isInitial: Boolean) {
+        super.onViewCreated(isInitial)
+        loadLastSelectedProjectWithTask()
+    }
 
     override fun validateInfo(): Boolean {
         if (!isDescriptionValid()) {
@@ -32,6 +41,16 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
 
     override fun makeSaveRequest() {
         createReport()
+    }
+
+    private fun loadLastSelectedProjectWithTask() {
+        reportRepository
+                .getLastSelectedProject()
+                .zipWith(reportRepository.getLastSelectedTask()) { project, task ->
+                    this.projectViewModel = projectsViewModelMapper.transform(project)
+                    this.projectTaskViewModel = projectTaskViewModelMapper.transform(task)
+                }
+                .subscribe({}, { })
     }
 
     private fun createReport() {

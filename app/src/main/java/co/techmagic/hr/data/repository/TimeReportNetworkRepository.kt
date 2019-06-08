@@ -4,15 +4,19 @@ import co.techmagic.hr.data.entity.time_tracker.*
 import co.techmagic.hr.data.manager.NetworkManager
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.ui.manager.AccountManager
 import co.techmagic.hr.presentation.util.ISO_DATE_FORMAT
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
+import rx.Completable
 import rx.Observable
+import rx.Single
 import java.util.*
 
 class TimeReportNetworkRepository(
         private val apiClient: TimeTrackerApi,
-        networkManager: NetworkManager) :
+        networkManager: NetworkManager,
+        val accouManager: AccountManager) :
         BaseNetworkRepository(networkManager), TimeReportRepository {
 
     override fun getMe(): Observable<UserResponse> {
@@ -48,4 +52,25 @@ class TimeReportNetworkRepository(
     override fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void> {
         return setup(apiClient.deleteTask(weekId, reportId, body))
     }
+
+    override fun changeLastSelectedProject(projectResponse: ProjectResponse): Completable {
+        return Single.just(projectResponse)
+                .flatMapCompletable {
+                    accouManager.saveLastSelectedProject(projectResponse)
+                    accouManager.saveLastSelectedTask(null)
+                    return@flatMapCompletable Completable.complete()
+                }
+    }
+
+    override fun changeLastSelectedTask(taskResponse: TaskResponse): Completable {
+        return Single.just(taskResponse)
+                .flatMapCompletable {
+                    accouManager.saveLastSelectedTask(taskResponse)
+                    return@flatMapCompletable Completable.complete()
+                }
+    }
+
+    override fun getLastSelectedProject(): Observable<ProjectResponse> = Observable.just(accouManager.getLastSelectedProject())
+
+    override fun getLastSelectedTask(): Observable<TaskResponse> = Observable.just(accouManager.getLastSelectedTask())
 }
