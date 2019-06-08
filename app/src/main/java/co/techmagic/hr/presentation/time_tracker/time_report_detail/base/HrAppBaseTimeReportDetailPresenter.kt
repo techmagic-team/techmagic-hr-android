@@ -86,6 +86,10 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         changeSelectedTime(-TimeValue.FIFTEEN_MINUTES.value)
     }
 
+    override fun timeChanged(time: String) {
+        timeInMinutes = TimeFormatUtil.textToMinutes(time)
+    }
+
     override fun startTimerClicked() {
     }
 

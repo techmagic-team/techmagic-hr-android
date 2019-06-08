@@ -98,7 +98,12 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
         btnSave.setOnClickListener { presenter?.saveClicked() }
 
-        edTime.addTextChangedListener(TimeInputTextWatcher(edTime))
+        edTime.addTextChangedListener(object : TimeInputTextWatcher(edTime){
+            override fun afterTextChanged(s: Editable?) {
+                super.afterTextChanged(s)
+                presenter?.timeChanged(s.toString())
+            }
+        })
     }
 
     override fun setDeleteReportButtonVisible(visible: Boolean) {

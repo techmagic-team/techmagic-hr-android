@@ -27,6 +27,7 @@ interface BaseTimeReportDetailPresenter : Presenter {
     fun addEightHoursClicked()
     fun increaseTimeClicked()
     fun reduceTimeClicked()
+    fun timeChanged(time : String);
     fun startTimerClicked()
     fun saveClicked()
 }

@@ -2,25 +2,18 @@ package co.techmagic.hr.presentation.util
 
 import android.text.Editable
 import android.widget.EditText
-import java.util.regex.Pattern
 
-class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
+open class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
 
     private var isInnerChange = false
 
     companion object {
-        const val INPUT_PATTERN = "\\d*:\\d*"
-        const val HOURS_PATTERN = "(\\d{1,2}:|^\\d{1,2})"
-        const val MINUTES_PATTERN = ":\\d{1,2}"
-
         const val MAX_HOURS = 24
         const val MAX_MINUTES = 59
 
         const val MAX_HOURS_LENGTH = 2
         const val MAX_MINUTES_LENGTH = 2
 
-        const val MAX_HOURS_CURSOR_POSITION = 2
-        const val MAX_MINUTES_CURSOR_POSITION = 5
         const val START_MINUTES_CURSOR_POSITION = 3
     }
 
@@ -30,8 +23,8 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
 
         try {
             val text = s.toString()
-            var hours = getHours(text)
-            var minutes = getMinutes(text)
+            var hours = TimeFormatUtil.getHours(text) ?: -1
+            var minutes = TimeFormatUtil.getMinutes(text) ?: -1
 
             if (hours > MAX_HOURS) {
                 hours = MAX_HOURS
@@ -51,27 +44,6 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
             isInnerChange = false
         }
 
-    }
-
-    private fun getHours(text: String): Int {
-        val hoursMatcher = Pattern
-                .compile(HOURS_PATTERN)
-                .matcher(text)
-        return if (hoursMatcher.find())
-            hoursMatcher.group().dropLastWhile { it == ':' }.toInt()
-        else
-            -1
-    }
-
-    private fun getMinutes(text: String): Int {
-        val minutesMatcher = Pattern
-                .compile(MINUTES_PATTERN)
-                .matcher(text)
-
-        return if (minutesMatcher.find())
-            minutesMatcher.group().drop(1).toInt()
-        else
-            -1
     }
 
     private fun getValidTime(hours: Int, minutes: Int) = String.format("%s:%s", if (hours != -1) hours else "", if (minutes != -1) minutes else "")
