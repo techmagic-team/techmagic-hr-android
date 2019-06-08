@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -38,7 +39,9 @@ class DayReportViewHolder(val timeReportsClickListener: TimeReportsClickListener
     override fun showReports(reports: List<UserReportViewModel>) {
         rvReports.visibility = View.VISIBLE
         llEmptyListContainer.visibility = View.GONE
-        reportsAdapter.setNewData(reports)
+        val diffResult = DiffUtil.calculateDiff(TimeReportsDiffUtilCallback(reports, reportsAdapter.data))
+        reportsAdapter.setData(reports)
+        diffResult.dispatchUpdatesTo(reportsAdapter)
     }
 
     override fun showEmptyMessage(quote: String) {

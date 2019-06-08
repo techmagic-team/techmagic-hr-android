@@ -16,7 +16,7 @@ import co.techmagic.hr.presentation.util.setImageDrawableRes
 class TimeReportAdapter(private val context: Context, private val timeReportsClickListener: TimeReportsClickListener)
     : RecyclerView.Adapter<TimeReportAdapter.TimeTrackingViewHolder>() {
 
-    private var data = arrayListOf<UserReportViewModel>()
+    var data = arrayListOf<UserReportViewModel>()
 
     private val disabledTextColor = R.color.color_time_report_disabled_text
 
@@ -55,10 +55,9 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
 
     override fun getItemCount() = data.size
 
-    fun setNewData(newData: List<UserReportViewModel>) {
+    fun setData(newData: List<UserReportViewModel>) {
         this.data.clear()
         this.data.addAll(newData)
-        notifyDataSetChanged()
     }
 
     fun addReport(userReport: UserReportViewModel) {

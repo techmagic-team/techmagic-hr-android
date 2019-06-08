@@ -1,7 +1,6 @@
 package co.techmagic.hr.presentation.util
 
 import android.text.Editable
-import android.util.Log
 import android.widget.EditText
 import java.util.regex.Pattern
 
@@ -47,7 +46,6 @@ class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
             s.replace(0, s.length, formatedText)
             moveCursor(formatedText, hours, minutes, editText.selectionEnd)
         } catch (ex: Exception) {
-            Log.d("TEST_EX", "------------------------------------------------------------------------------------------------------------------------------------------")
             ex.printStackTrace()
         } finally {
             isInnerChange = false

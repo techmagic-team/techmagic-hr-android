@@ -12,7 +12,6 @@ interface TimeTrackerView : View {
     fun selectDay(date: Calendar)
     fun notifyWeekDataChanged(date: Calendar)
     fun notifyDayReportsChanged(date: Calendar)
-    fun notifyDayReportRemoved(date: Calendar)
     fun showMessage(message: String)
 }
 
@@ -43,6 +42,6 @@ interface TimeTrackerPresenter : Presenter {
     fun onEditTimeReportClicked(reportViewModel: UserReportViewModel)
 
     fun onTaskCreated(userReportViewModel: UserReportViewModel?)
-    fun onTaskUpdated(oldReportId : String?, userReportViewModel: UserReportViewModel?)
-    fun onTaskDeleted(userReportViewModel : UserReportViewModel?)
+    fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?)
+    fun onTaskDeleted(userReportViewModel: UserReportViewModel?)
 }

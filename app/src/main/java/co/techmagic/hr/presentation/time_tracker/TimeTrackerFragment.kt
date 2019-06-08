@@ -78,14 +78,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun notifyDayReportsChanged(date: Calendar) {
-        //      daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
-        daysAdapter.notifyDataSetChanged()
-        //todo fixme to notify about item changed in inner adapter
-    }
-
-    override fun notifyDayReportRemoved(date: Calendar) {
-        daysAdapter.notifyDataSetChanged()
-        //todo fixme to notify about item removed in inner adapter
+        daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
     }
 
     override fun showMessage(message: String) {
