@@ -50,7 +50,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                     this.projectViewModel = projectsViewModelMapper.transform(project)
                     this.projectTaskViewModel = projectTaskViewModelMapper.transform(task)
                 }
-                .subscribe({}, { })
+                .subscribe({}, {})
     }
 
     private fun createReport() {
