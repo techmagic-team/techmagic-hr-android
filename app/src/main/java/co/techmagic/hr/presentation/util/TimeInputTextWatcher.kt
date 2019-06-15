@@ -3,9 +3,13 @@ package co.techmagic.hr.presentation.util
 import android.text.Editable
 import android.widget.EditText
 
-open class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
+open class TimeInputTextWatcher constructor(val editText: EditText) : SimpleTextWatcher() {
 
     private var isInnerChange = false
+
+    init {
+        editText.setText(TIME_SEPARATOR)
+    }
 
     companion object {
         const val MAX_HOURS = 24
@@ -15,6 +19,8 @@ open class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
         const val MAX_MINUTES_LENGTH = 2
 
         const val START_MINUTES_CURSOR_POSITION = 3
+
+        const val TIME_SEPARATOR = ":"
     }
 
     override fun afterTextChanged(s: Editable?) {
@@ -22,22 +28,32 @@ open class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
         if (isInnerChange) return
 
         try {
-            val text = s.toString()
+            var text = s.toString()
             var hours = TimeFormatUtil.getHours(text) ?: -1
             var minutes = TimeFormatUtil.getMinutes(text) ?: -1
 
-            if (hours > MAX_HOURS) {
-                hours = MAX_HOURS
-            }
-
-            if (minutes > MAX_MINUTES) {
-                minutes = MAX_MINUTES
-            }
-
             isInnerChange = true
-            val formatedText = getValidTime(hours, minutes)
-            s.replace(0, s.length, formatedText)
-            moveCursor(formatedText, hours, minutes, editText.selectionEnd)
+
+            if (!text.contains(TIME_SEPARATOR)) {
+                text = text.substring(0, editText.selectionEnd) + ":" + text.substring(editText.selectionEnd, text.length)
+                s.replace(0, s.length, text)
+            } else if (!isTextValid(text, hours, minutes)) {
+
+                if (hours > MAX_HOURS) {
+                    hours = MAX_HOURS
+                }
+
+                if (minutes > MAX_MINUTES) {
+                    minutes = MAX_MINUTES
+                }
+
+                val formattedText = getValidTime(hours, minutes)
+                s.replace(0, s.length, formattedText)
+                moveCursor(formattedText, hours, minutes, editText.selectionEnd)
+            } else {
+                moveCursor(text, hours, minutes, editText.selectionEnd)
+            }
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         } finally {
@@ -45,6 +61,8 @@ open class TimeInputTextWatcher(val editText: EditText) : SimpleTextWatcher() {
         }
 
     }
+
+    private fun isTextValid(text: String, hours: Int, minutes: Int) = TimeFormatUtil.matchesTime(text) && hours <= MAX_HOURS && minutes <= MAX_MINUTES
 
     private fun getValidTime(hours: Int, minutes: Int) = String.format("%s:%s", if (hours != -1) hours else "", if (minutes != -1) minutes else "")
 
