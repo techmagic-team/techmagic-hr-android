@@ -78,6 +78,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun notifyDayReportsChanged(date: Calendar) {
+        weeksAdapter.notifyItemChanged(weeksAdapter.dateToPage(date))
         daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
     }
 
