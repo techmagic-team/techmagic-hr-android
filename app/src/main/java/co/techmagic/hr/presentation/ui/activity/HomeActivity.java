@@ -42,6 +42,7 @@ import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.manager.AccountManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
@@ -303,7 +304,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             OkHttpClient okHttpClientClient = ApiClient.buildOkHttpClientClient();
             Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
             TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
-            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
+            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), new AccountManager(getApplicationContext()));
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
             DateTimeProvider dateTimeProvider = new HrAppDateTimeProvider();
             HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager, new UserReportViewModelMapper());

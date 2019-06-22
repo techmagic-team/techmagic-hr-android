@@ -48,11 +48,22 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
     }
 
     override fun onProjectClicked(projectViewModel: ProjectViewModel) {
-        router?.closeWithProject(projectViewModel)
+        timeReportRepository
+                .changeLastSelectedProject(projectsViewModelMapper.reTransform(projectViewModel))
+                .subscribe(
+                        { router?.closeWithProject(projectViewModel) },
+                        { view?.showErrorMessage(it.message ?: "") }
+                )
+
     }
 
     override fun onProjectTaskClicked(projectTaskViewModel: ProjectTaskViewModel) {
-        router?.closeWithProjectTask(projectTaskViewModel)
+        timeReportRepository
+                .changeLastSelectedTask(projectTaskViewModelMapper.reTransform(projectTaskViewModel))
+                .subscribe(
+                        { router?.closeWithProjectTask(projectTaskViewModel) },
+                        { view?.showErrorMessage(it.message ?: "") }
+                )
     }
 
     private fun loadProjects() {

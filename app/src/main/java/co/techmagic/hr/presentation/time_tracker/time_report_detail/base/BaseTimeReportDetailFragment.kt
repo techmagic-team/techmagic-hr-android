@@ -47,7 +47,6 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        findViews(view)
         initListeners()
     }
 
@@ -62,23 +61,25 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         toolbarChangeListener = context as ActionBarChangeListener
     }
 
-    private fun findViews(view: View) {
-        flTimeReportDetailContainer = view.find(R.id.flTimeReportDetailContainer)
-        tvSelectedProject = view.find(R.id.tvTimeReportDetailSelectedProject)
-        tvTimeReportDetailProjectError = view.find(R.id.tvTimeReportDetailProjectError)
-        tvSelectedProjectTask = view.find(R.id.tvTimeReportDetailSelectedTask)
-        tvTimeReportDetailTaskError = view.findViewById(R.id.tvTimeReportDetailTaskError)
-        edDescription = view.find(R.id.edTimeReportDetailDescription)
-        tvDescriptionError = view.find(R.id.tvTimeReportDetailDescriptionError)
-        btnFifteenMinutes = view.find(R.id.btnTimeReportDetailDefaultTimeFifteenMinutes)
-        btnThirtyMinutes = view.find(R.id.btnTimeReportDetailDefaultTimeThirtyMinutes)
-        btnOneHour = view.find(R.id.btnTimeReportDetailDefaultTimeOneHour)
-        btnEightHours = view.find(R.id.btnTimeReportDetailDefaultTimeEightHours)
-        edTime = view.find(R.id.edTimeReportDetailTime)
-        btnIncreaseTime = view.find(R.id.btnTimeReportDetailIncreaseTime)
-        btnReduceTime = view.find(R.id.btnTimeReportDetailReduceTime)
-        btnStartTimer = view.find(R.id.btnTimeReportDetailStartTimer)
-        btnSave = view.find(R.id.btnTimeReportDetailSave)
+    override fun initView() {
+        view ?: return
+
+        flTimeReportDetailContainer = view!!.find(R.id.flTimeReportDetailContainer)
+        tvSelectedProject = view!!.find(R.id.tvTimeReportDetailSelectedProject)
+        tvTimeReportDetailProjectError = view!!.find(R.id.tvTimeReportDetailProjectError)
+        tvSelectedProjectTask = view!!.find(R.id.tvTimeReportDetailSelectedTask)
+        tvTimeReportDetailTaskError = view!!.findViewById(R.id.tvTimeReportDetailTaskError)
+        edDescription = view!!.find(R.id.edTimeReportDetailDescription)
+        tvDescriptionError = view!!.find(R.id.tvTimeReportDetailDescriptionError)
+        btnFifteenMinutes = view!!.find(R.id.btnTimeReportDetailDefaultTimeFifteenMinutes)
+        btnThirtyMinutes = view!!.find(R.id.btnTimeReportDetailDefaultTimeThirtyMinutes)
+        btnOneHour = view!!.find(R.id.btnTimeReportDetailDefaultTimeOneHour)
+        btnEightHours = view!!.find(R.id.btnTimeReportDetailDefaultTimeEightHours)
+        edTime = view!!.find(R.id.edTimeReportDetailTime)
+        btnIncreaseTime = view!!.find(R.id.btnTimeReportDetailIncreaseTime)
+        btnReduceTime = view!!.find(R.id.btnTimeReportDetailReduceTime)
+        btnStartTimer = view!!.find(R.id.btnTimeReportDetailStartTimer)
+        btnSave = view!!.find(R.id.btnTimeReportDetailSave)
     }
 
     private fun initListeners() {

@@ -32,6 +32,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppUpdateTimReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.UpdateTimeReportFragment
+import co.techmagic.hr.presentation.ui.manager.AccountManager
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
@@ -88,7 +89,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 val okHttpClientClient = ApiClient.buildOkHttpClientClient()
                 val retrofit = ApiClient.getRetrofit(okHttpClientClient)
                 val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
-                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
+                val timeReportRepository = TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), AccountManager(applicationContext))
 
                 reportPropertiesPresenter = HrAppReportPropertiesPresenter(
                         timeReportRepository,
@@ -172,7 +173,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     }
 
     private fun provideCreateReportPresenter(): HrAppCreateTimeReportDetailPresenter {
-        val presenter = HrAppCreateTimeReportDetailPresenter(provideTimeReportRepository(), UserReportViewModelMapper())
+        val presenter = HrAppCreateTimeReportDetailPresenter(provideTimeReportRepository(), UserReportViewModelMapper(), ProjectViewModelMapper(), ProjectTaskViewModelMapper())
 
         presenter.reportDate = getTimeReportDate()
 
@@ -197,7 +198,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         val retrofit = ApiClient.getRetrofit(okHttpClientClient)
         val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
 
-        return TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager())
+        return TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), AccountManager(applicationContext))
     }
 
     private fun provideTimeReportRouter(fragment: BaseTimeReportDetailFragment<*>): TimeReportDetailRouter {

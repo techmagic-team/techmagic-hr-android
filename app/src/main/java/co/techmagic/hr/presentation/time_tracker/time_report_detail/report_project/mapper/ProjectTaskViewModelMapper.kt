@@ -8,4 +8,6 @@ class ProjectTaskViewModelMapper {
     fun transform(taskResponses: List<TaskResponse>) = taskResponses.map { transform(it) }
 
     fun transform(taskResponse: TaskResponse) = ProjectTaskViewModel(taskResponse.id, taskResponse.task)
+
+    fun reTransform(projectTaskViewModel: ProjectTaskViewModel) = TaskResponse(projectTaskViewModel.id, projectTaskViewModel.task)
 }
