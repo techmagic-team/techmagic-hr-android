@@ -29,7 +29,7 @@ interface TimeTrackerApi {
     @PATCH("/v1/time-reporting/report/{weekId}/day/{reportId}")
     fun updateTask(@Path("weekId") weekId: String,
                    @Path("reportId") reportId: String,
-                   @Body body: UpdateTaskRequestBody): Observable<UserReportsResponse>
+                   @Body body: UpdateTaskRequestBody): Observable<UpdateUserReportResponse>
 
     @HTTP(method = "DELETE", path = "/v1/time-reporting/report/{weekId}/day/{reportId}", hasBody = true)
     // @DELETE("/v1/time-reporting/report/{weekId}/day/{reportId}") -> IllegalArgumentException: Non-body HTTP method cannot contain @Body.

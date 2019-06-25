@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/flTimeReportDetailContainer"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
@@ -29,24 +31,35 @@
                 style="@style/TimeReportPickerTextStyle" />
 
             <TextView
+                android:id="@+id/tvTimeReportDetailProjectError"
+                style="@style/ErrorFieldTextViewStyle"
+                android:text="@string/tm_hr_time_report_detail_project_empty_error"
+                tools:visibility="visible" />
+
+            <TextView
                 style="@style/TimeReportHeaderTextStyle"
-                android:layout_marginTop="@dimen/activity_time_report_header_top_offset"
                 android:text="@string/tm_hr_time_report_detail_task_header" />
 
             <TextView
                 android:id="@+id/tvTimeReportDetailSelectedTask"
                 style="@style/TimeReportPickerTextStyle" />
 
+            <TextView
+                android:id="@+id/tvTimeReportDetailTaskError"
+                style="@style/ErrorFieldTextViewStyle"
+                android:text="@string/tm_hr_time_report_detail_task_empty_error"
+                tools:visibility="visible" />
+
             <EditText
                 android:id="@+id/edTimeReportDetailDescription"
                 style="@style/TimeReportDetailDescriptionInputStyle"
-                android:layout_marginTop="@dimen/activity_time_report_detail_description_top_offset"
                 android:hint="@string/tm_hr_time_report_detail_description_hint" />
 
             <TextView
                 android:id="@+id/tvTimeReportDetailDescriptionError"
-                style="@style/TimeReportDetailDescriptionErrorTextStyle"
-                android:text="@string/tm_hr_time_report_detail_description_empty_error" />
+                style="@style/ErrorFieldTextViewStyle"
+                android:text="@string/tm_hr_time_report_detail_description_empty_error"
+                tools:visibility="visible" />
 
             <TextView
                 style="@style/TimeReportHeaderTextStyle"

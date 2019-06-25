@@ -1,6 +1,8 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DefaultItemAnimator
@@ -9,6 +11,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
+import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
@@ -19,9 +24,13 @@ import org.jetbrains.anko.find
 import java.util.*
 
 
-class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView {
+class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTrackerView, TimeReportsClickListener {
 
     companion object {
+        const val REQUEST_CREATE_NEW_TASK = 1001
+        const val REQUEST_UPDATE_TASK = 1002
+        const val RESULT_REPORT_DELETED = 2001
+
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
     }
@@ -69,11 +78,30 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun notifyDayReportsChanged(date: Calendar) {
+        weeksAdapter.notifyItemChanged(weeksAdapter.dateToPage(date))
         daysAdapter.notifyItemChanged(daysAdapter.dateToPage(date))
     }
 
     override fun showMessage(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            RESULT_OK ->
+                when (requestCode) {
+                    REQUEST_CREATE_NEW_TASK -> presenter?.onTaskCreated(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    REQUEST_UPDATE_TASK -> presenter?.onTaskUpdated(data?.getStringExtra(TimeReportDetailActivity.EXTRA_OLD_ID), data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    else -> super.onActivityResult(requestCode, resultCode, data)
+                }
+            RESULT_REPORT_DELETED ->
+                when (requestCode) {
+                    REQUEST_UPDATE_TASK -> presenter?.onTaskDeleted(data?.getParcelableExtra(TimeReportDetailActivity.EXTRA_USER_REPORT))
+                    else -> super.onActivityResult(requestCode, resultCode, data)
+                }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+
     }
 
     private fun findViews(view: View) {
@@ -82,7 +110,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         btnAddTimeReport = view.find(R.id.btnAddTimeReport)
     }
 
-    private fun initClicks(){
+    private fun initClicks() {
         btnAddTimeReport.setOnClickListener { presenter?.onNewTimeReportClicked() }
     }
 
@@ -122,7 +150,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     private fun initDays(today: Calendar) {
         days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        daysAdapter = object : DayReportsAdapter(days, today) {
+        daysAdapter = object : DayReportsAdapter(this, days, today) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
                 presenter?.onBindDay(holder, pageToDate(position))
             }
@@ -194,6 +222,14 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
 
     override fun showToolbarTitle(title: String) {
         actionBarChangeListener.setActionBarTitle(title)
+    }
+
+    override fun onItemClicked(reportViewModel: UserReportViewModel) {
+        presenter?.onEditTimeReportClicked(reportViewModel)
+    }
+
+    override fun onTrackTimeClicked(position: Int) {
+        showErrorMessage("not implemented")
     }
 
     fun showDatePicker(date: Calendar) {

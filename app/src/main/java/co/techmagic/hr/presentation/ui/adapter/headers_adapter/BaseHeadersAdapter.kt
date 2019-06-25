@@ -11,6 +11,8 @@ abstract class BaseHeadersAdapter<H, T : HasHeaderProperty<H>, ViewHolder : Base
 
     private var data = arrayListOf<T>()
 
+    var clickListener: HeaderAdapterItemClickListener<T>? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(getItemLayout(viewType), parent, false)
         return createViewHolder(viewType, view)
@@ -20,14 +22,16 @@ abstract class BaseHeadersAdapter<H, T : HasHeaderProperty<H>, ViewHolder : Base
         return data.size
     }
 
-    override fun onBindViewHolder(holder : ViewHolder, position: Int) {
-        holder.bind(data[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = data[position];
+        holder.bind(item)
+        holder.itemView.setOnClickListener { clickListener?.onItemClick(item) }
     }
 
     @LayoutRes
-    abstract fun getItemLayout(viewType : Int) : Int
+    abstract fun getItemLayout(viewType: Int): Int
 
-    abstract fun createViewHolder(viewType : Int, view : View) : ViewHolder
+    abstract fun createViewHolder(viewType: Int, view: View): ViewHolder
 
     public fun setData(data: List<T>) {
         this.data.clear()
@@ -47,5 +51,9 @@ abstract class BaseHeadersAdapter<H, T : HasHeaderProperty<H>, ViewHolder : Base
         open fun bind(property: T) {
 
         }
+    }
+
+    interface HeaderAdapterItemClickListener<T> {
+        fun onItemClick(item: T)
     }
 }

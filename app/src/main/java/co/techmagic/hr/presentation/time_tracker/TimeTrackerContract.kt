@@ -38,4 +38,10 @@ interface TimeTrackerPresenter : Presenter {
     fun onCalendarClicked()
 
     fun onNewTimeReportClicked()
+
+    fun onEditTimeReportClicked(reportViewModel: UserReportViewModel)
+
+    fun onTaskCreated(userReportViewModel: UserReportViewModel?)
+    fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?)
+    fun onTaskDeleted(userReportViewModel: UserReportViewModel?)
 }

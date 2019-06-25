@@ -1,10 +1,9 @@
 package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.data.entity.HolidayDate
-import co.techmagic.hr.data.entity.time_tracker.UserReport
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.pojo.ReportNameViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
@@ -17,11 +16,9 @@ import kotlin.collections.HashMap
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
-        private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
-
-    companion object {
-        const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
-    }
+        private val quotesManager: QuotesManager,
+        private val userReportViewMadelMapper: UserReportViewModelMapper
+) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
     private val holidays: HashMap<String, Holiday> = HashMap()
@@ -95,7 +92,7 @@ class HrAppTimeTrackerPresenter(
             subscriptions[weekReportsKey] = timeReportRepository.getDayReports(user.id, firstDayOfWeek)
                     .subscribe { response ->
                         cacheHolidays(response.holidays)
-                        val weekReports = response.reports.map { reportToViewModel(it) }
+                        val weekReports = response.reports.map { userReportViewMadelMapper.transform(it) }
                         initWeekCache(date)
                         for (report in weekReports) {
                             cache[key(report.date.toCalendar())]?.add(report)
@@ -120,7 +117,45 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-        router?.openTimeReportDetail()
+        router?.openCreateTimeReport(selectedDate)
+    }
+
+    override fun onEditTimeReportClicked(reportViewModel: UserReportViewModel) {
+        router?.openEditTimeReport(reportViewModel, reportViewModel.date.toCalendar())
+    }
+
+    override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        val reports = getDayReports(userReportViewModel.date)
+        reports?.add(userReportViewModel)
+        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+    }
+
+    override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
+                    ?.forEachIndexed { index, viewModel ->
+                        this[index] = userReportViewModel
+                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                    }
+        }
+    }
+
+    override fun onTaskDeleted(userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.find { it.id == userReportViewModel.id }
+                    ?.let {
+                        this.remove(it)
+                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                    }
+        }
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]
@@ -161,19 +196,5 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    private fun reportToViewModel(report: UserReport): UserReportViewModel {
-        return UserReportViewModel(
-                report.id,
-                report.client,
-                report.project,
-                ReportNameViewModel(report.task.name),
-                report.note,
-                report.minutes,
-                false,
-                report.isApproved,
-                report.weekReportId,
-                report.status,
-                report.date
-        )
-    }
+    private fun getDayReports(reportsDate: Date) = cache[key(calendar(reportsDate))]
 }

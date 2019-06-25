@@ -7,18 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
-import co.techmagic.hr.presentation.pojo.TaskViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.PROJECT
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.HrAppReportPropertiesPresenter.Companion.TASK
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportProjectsAdapter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.ReportPropertyHeaderItemDecorator
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.adapter.TasksAdapter
+import co.techmagic.hr.presentation.ui.adapter.headers_adapter.BaseHeadersAdapter
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
-import com.techmagic.viper.base.BaseViewFragment
 import java.util.*
 
-class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
+class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
 
     private lateinit var rvReportProperties: RecyclerView
 
@@ -32,9 +33,9 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         const val ARG_FIRST_DAY_OF_WEEK = "arg_first_day_of_week"
         const val ARG_PROJECT_ID = "arg_project_id"
 
-        fun newProjectsInstance(userId: String, firstDayOfWeek: Date): ReportPropertiesFragment {
+        fun newProjectsInstance(userId: String, firstDayOfWeek: Calendar): ReportPropertiesFragment {
             val args = Bundle()
-            args.putInt(ARG_TYPE, TASK)
+            args.putInt(ARG_TYPE, PROJECT)
             args.putString(ARG_USER_ID, userId)
             args.putSerializable(ARG_FIRST_DAY_OF_WEEK, firstDayOfWeek)
 
@@ -46,7 +47,7 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
 
         fun newTasksInstance(projectId: String): ReportPropertiesFragment {
             val args = Bundle()
-            args.putInt(ARG_TYPE, PROJECT)
+            args.putInt(ARG_TYPE, TASK)
             args.putString(ARG_PROJECT_ID, projectId)
 
 
@@ -70,21 +71,35 @@ class ReportPropertiesFragment : BaseViewFragment<ReportPropertiesPresenter>(), 
         toolbarChangeListener = context as ActionBarChangeListener
     }
 
+    override fun showTitle(titleRes: Int) {
+        toolbarChangeListener.setActionBarTitle(getString(titleRes))
+    }
+
     override fun showProperties(props: List<ProjectViewModel>) {
-        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_project))
         if (projectsAdapter == null) {
             projectsAdapter = ReportProjectsAdapter()
+            projectsAdapter!!.clickListener = object : BaseHeadersAdapter
+            .HeaderAdapterItemClickListener<ProjectViewModel> {
+                override fun onItemClick(item: ProjectViewModel) {
+                    presenter?.onProjectClicked(item)
+                }
+            }
             rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectViewModel>())
             rvReportProperties.adapter = projectsAdapter
         }
         projectsAdapter?.setData(props)
     }
 
-    override fun showTasks(props: List<TaskViewModel>) {
-        toolbarChangeListener.setActionBarTitle(getString(R.string.tm_hr_report_select_task))
+    override fun showTasks(props: List<ProjectTaskViewModel>) {
         if (tasksAdapter == null) {
             tasksAdapter = TasksAdapter()
-            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<TaskViewModel>())
+            tasksAdapter!!.clickListener = object : BaseHeadersAdapter
+            .HeaderAdapterItemClickListener<ProjectTaskViewModel> {
+                override fun onItemClick(item: ProjectTaskViewModel) {
+                    presenter?.onProjectTaskClicked(item)
+                }
+            }
+            rvReportProperties.addItemDecoration(ReportPropertyHeaderItemDecorator<ProjectTaskViewModel>())
             rvReportProperties.adapter = tasksAdapter
         }
         tasksAdapter?.setData(props)

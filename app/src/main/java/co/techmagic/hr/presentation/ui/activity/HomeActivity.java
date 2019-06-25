@@ -37,15 +37,18 @@ import co.techmagic.hr.presentation.time_tracker.DateTimeProvider;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
+import co.techmagic.hr.presentation.ui.manager.AccountManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
+import co.techmagic.hr.presentation.util.HrAppDateTimeProvider;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -302,18 +305,15 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             OkHttpClient okHttpClientClient = ApiClient.buildOkHttpClientClient();
             Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
             TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
-            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
+            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), new AccountManager(getApplicationContext()));
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
-            DateTimeProvider dateTimeProvider = () -> {
-                Calendar now = Calendar.getInstance();
-                now.setFirstDayOfWeek(Calendar.MONDAY);
-                return now;
-            };
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
+            DateTimeProvider dateTimeProvider = new HrAppDateTimeProvider();
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager, new UserReportViewModelMapper());
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
+
 
     @OnClick(R.id.btnClearFilters)
     public void onClearFiltersClick() {

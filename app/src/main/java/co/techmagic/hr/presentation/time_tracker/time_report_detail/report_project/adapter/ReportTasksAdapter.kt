@@ -3,10 +3,10 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 import android.view.View
 import android.widget.TextView
 import co.techmagic.hr.R
-import co.techmagic.hr.presentation.pojo.TaskViewModel
+import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.ui.adapter.headers_adapter.BaseHeadersAdapter
 
-class TasksAdapter : BaseHeadersAdapter<String, TaskViewModel, TaskViewHolder>() {
+class TasksAdapter : BaseHeadersAdapter<String, ProjectTaskViewModel, TaskViewHolder>() {
 
     override fun getItemLayout(viewType: Int) = R.layout.item_report_property
 
@@ -14,10 +14,10 @@ class TasksAdapter : BaseHeadersAdapter<String, TaskViewModel, TaskViewHolder>()
 
 }
 
-class TaskViewHolder(view: View) : BaseHeadersAdapter.BaseHeadersAdapterViewHolder<TaskViewModel>(view) {
+class TaskViewHolder(view: View) : BaseHeadersAdapter.BaseHeadersAdapterViewHolder<ProjectTaskViewModel>(view) {
     val title:TextView = itemView.findViewById(R.id.tvReportPropertyTitle)
 
-    override fun bind(property: TaskViewModel) {
-        title.text = property.title
+    override fun bind(property: ProjectTaskViewModel) {
+        title.text = property.task.name
     }
 }
