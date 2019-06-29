@@ -57,7 +57,11 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     }
 
     override fun changeTaskClicked() {
-        router?.openSelectTask(projectViewModel?.id ?: "")
+        if (projectViewModel != null) {
+            router?.openSelectTask(projectViewModel?.id ?: "")
+        } else {
+            view?.setProjectValid(false)
+        }
     }
 
     override fun descriptionChanged(description: String) {
