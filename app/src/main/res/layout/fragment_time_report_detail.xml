@@ -60,7 +60,7 @@
             <TextView
                 android:id="@+id/tvTimeReportDetailDescriptionError"
                 style="@style/ErrorFieldTextViewStyle"
-                android:text="@string/tm_hr_time_report_detail_description_empty_error"
+                tools:text="@string/tm_hr_time_report_detail_description_empty_error"
                 tools:visibility="visible" />
 
             <TextView

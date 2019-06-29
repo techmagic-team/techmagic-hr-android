@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
+import co.techmagic.hr.R
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
@@ -16,8 +17,10 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         BaseTimeReportDetailPresenter {
 
     companion object {
-        const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why, but it is OK for now
+        const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why we should send it in the request, but it is OK for now
+        const val MAX_DESCRIPTION_LENGTH = 600
     }
+
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
@@ -122,11 +125,23 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
 
-    protected fun validateDescription() = view?.setDescriptionValid(isDescriptionValid())
+    protected fun validateDescription() {
+        val errorRes = when {
+            isDescriptionLengthLongerThanMax() -> R.string.tm_hr_time_report_detail_description_tool_long_error
+            isDescriptionEmpty() -> R.string.tm_hr_time_report_detail_description_empty_error
+            else -> null
+        }
+
+        view?.setDescriptionValid(isDescriptionValid(), errorRes)
+    }
+
     protected fun validateProject() = view?.setProjectValid(isProjectValid())
     protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
 
-    protected fun isDescriptionValid() = !description.isEmpty()
+    protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
     protected fun isProjectTaskValid() = projectTaskViewModel != null
+
+    protected fun isDescriptionEmpty() = description.isEmpty()
+    protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH
 }
