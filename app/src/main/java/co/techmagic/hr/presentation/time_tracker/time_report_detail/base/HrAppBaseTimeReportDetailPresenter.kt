@@ -104,7 +104,7 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     abstract fun makeSaveRequest()
 
     private fun showProject() {
-        view?.showProject(projectViewModel?.title)
+        view?.showProject(projectViewModel?.title ?: null)
     }
 
     private fun showProjectTask() {
