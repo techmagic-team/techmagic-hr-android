@@ -28,6 +28,7 @@
 
             <TextView
                 android:id="@+id/tvTimeReportDetailSelectedProject"
+                android:text="@string/tm_hr_time_report_detail_project_empty_error"
                 style="@style/TimeReportPickerTextStyle" />
 
             <TextView
@@ -42,6 +43,7 @@
 
             <TextView
                 android:id="@+id/tvTimeReportDetailSelectedTask"
+                android:text="@string/tm_hr_time_report_detail_task_empty_error"
                 style="@style/TimeReportPickerTextStyle" />
 
             <TextView

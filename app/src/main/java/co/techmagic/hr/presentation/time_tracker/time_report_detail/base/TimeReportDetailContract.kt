@@ -7,8 +7,8 @@ import com.techmagic.viper.View
 interface BaseTimeReportDetailView : View, ProgressableView {
     fun setDeleteReportButtonVisible(visible : Boolean)
     fun showDate(date: String)
-    fun showProject(project: String)
-    fun showTask(task: String)
+    fun showProject(project: String?)
+    fun showTask(task: String?)
     fun showDescription(description: String)
     fun setDescriptionValid(enabled: Boolean)
     fun setProjectValid(isValid: Boolean)

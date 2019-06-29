@@ -115,12 +115,12 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         toolbarChangeListener.setActionBarTitle(date)
     }
 
-    override fun showProject(project: String) {
-        tvSelectedProject.setText(project)
+    override fun showProject(project: String?) {
+        tvSelectedProject.text = project ?: getString(R.string.tm_hr_time_report_detail_project_empty_error)
     }
 
-    override fun showTask(task: String) {
-        tvSelectedProjectTask.setText(task)
+    override fun showTask(task: String?) {
+        tvSelectedProjectTask.text = task ?: getString(R.string.tm_hr_time_report_detail_task_empty_error)
     }
 
     override fun showDescription(description: String) {

@@ -104,11 +104,11 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     abstract fun makeSaveRequest()
 
     private fun showProject() {
-        view?.showProject(projectViewModel?.title ?: "")
+        view?.showProject(projectViewModel?.title)
     }
 
     private fun showProjectTask() {
-        view?.showTask(projectTaskViewModel?.task?.name ?: "")
+        view?.showTask(projectTaskViewModel?.task?.name)
     }
 
     private fun getFormattedDate() = reportDate.formatDate(TOOLBAR_DATE_FORMAT)
