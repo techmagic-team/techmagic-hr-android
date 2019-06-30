@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
+import android.support.annotation.StringRes
 import co.techmagic.hr.presentation.mvp.base.ProgressableView
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.View
@@ -7,10 +8,10 @@ import com.techmagic.viper.View
 interface BaseTimeReportDetailView : View, ProgressableView {
     fun setDeleteReportButtonVisible(visible : Boolean)
     fun showDate(date: String)
-    fun showProject(project: String)
-    fun showTask(task: String)
+    fun showProject(project: String?)
+    fun showTask(task: String?)
     fun showDescription(description: String)
-    fun setDescriptionValid(enabled: Boolean)
+    fun setDescriptionValid(enabled: Boolean, @StringRes errorRes : Int?)
     fun setProjectValid(isValid: Boolean)
     fun setTaskValid(isValid: Boolean)
     fun showTime(formattedTime : String)

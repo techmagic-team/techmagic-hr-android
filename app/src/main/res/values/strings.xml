@@ -222,6 +222,7 @@
     <string name="tm_hr_time_report_detail_task_header">Task</string>
     <string name="tm_hr_time_report_detail_description_hint">Task description</string>
     <string name="tm_hr_time_report_detail_description_empty_error">Description is required!</string>
+    <string name="tm_hr_time_report_detail_description_tool_long_error">Max size - 600!</string>
     <string name="tm_hr_time_report_detail_project_empty_error">Please select a project</string>
     <string name="tm_hr_time_report_detail_task_empty_error">Please select a task</string>
     <string name="tm_hr_time_report_detail_time_spent_header">Time spent</string>

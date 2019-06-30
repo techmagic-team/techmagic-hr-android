@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -99,7 +100,7 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         btnStartTimer.setOnClickListener { presenter?.startTimerClicked() }
         btnSave.setOnClickListener { presenter?.saveClicked() }
 
-        edTime.addTextChangedListener(object : TimeInputTextWatcher(edTime){
+        edTime.addTextChangedListener(object : TimeInputTextWatcher(edTime) {
             override fun afterTextChanged(s: Editable?) {
                 super.afterTextChanged(s)
                 presenter?.timeChanged(s.toString())
@@ -115,20 +116,23 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         toolbarChangeListener.setActionBarTitle(date)
     }
 
-    override fun showProject(project: String) {
-        tvSelectedProject.setText(project)
+    override fun showProject(project: String?) {
+        tvSelectedProject.text = project
+                ?: getString(R.string.tm_hr_time_report_detail_project_empty_error)
     }
 
-    override fun showTask(task: String) {
-        tvSelectedProjectTask.setText(task)
+    override fun showTask(task: String?) {
+        tvSelectedProjectTask.text = task
+                ?: getString(R.string.tm_hr_time_report_detail_task_empty_error)
     }
 
     override fun showDescription(description: String) {
         edDescription.setText(description)
     }
 
-    override fun setDescriptionValid(isValid: Boolean) {
+    override fun setDescriptionValid(isValid: Boolean, @StringRes errorRes: Int?) {
         tvDescriptionError.visibility = if (isValid) View.INVISIBLE else View.VISIBLE
+        errorRes?.let { tvDescriptionError.setText(errorRes) }
         setBackgroundByValid(edDescription, isValid)
     }
 

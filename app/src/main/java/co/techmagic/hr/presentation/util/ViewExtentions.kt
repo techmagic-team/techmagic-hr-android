@@ -25,9 +25,10 @@ fun View.changeShapeStrokeColor(@DimenRes strokeWidth: Int, @ColorRes colorRes: 
     } else {
         throw IllegalArgumentException()
     }
-    drawable.setStroke(
+
+    val newDrawable = drawable.mutate() as GradientDrawable
+    newDrawable.setStroke(
             resources.getDimensionPixelOffset(strokeWidth),
-            ContextCompat.getColor(context, colorRes)
-    )
-    drawable.mutate()
+            ContextCompat.getColor(context, colorRes))
+    background = drawable
 }

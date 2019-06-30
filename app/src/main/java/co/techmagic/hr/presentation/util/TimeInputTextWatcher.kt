@@ -8,7 +8,7 @@ open class TimeInputTextWatcher constructor(val editText: EditText) : SimpleText
     private var isInnerChange = false
 
     init {
-        editText.setText(TIME_SEPARATOR)
+       // editText.setText(TIME_SEPARATOR)
     }
 
     companion object {
@@ -37,6 +37,7 @@ open class TimeInputTextWatcher constructor(val editText: EditText) : SimpleText
             if (!text.contains(TIME_SEPARATOR)) {
                 text = text.substring(0, editText.selectionEnd) + ":" + text.substring(editText.selectionEnd, text.length)
                 s.replace(0, s.length, text)
+                editText.setSelection(s.indexOf(TIME_SEPARATOR))
             } else if (!isTextValid(text, hours, minutes)) {
 
                 if (hours > MAX_HOURS) {
