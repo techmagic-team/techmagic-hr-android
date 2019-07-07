@@ -1,5 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
+    <dimen name="design_bottom_navigation_height" tools:override="true">56dp</dimen>
     <!-- LoginActivity -->
     <dimen name="activity_login_horizontal_margin">16dp</dimen>
     <dimen name="activity_login_vertical_margin">16dp</dimen>
@@ -88,6 +89,7 @@
     <dimen name="fragment_time_tracker_add_button_margin">16dp</dimen>
     <dimen name="fragment_time_tracker_add_button_margin_bottom">72dp</dimen>
     <dimen name="fragment_time_tracker_add_button_elevation">8dp</dimen>
+    <dimen name="fragment_time_tracker_reports_list_bottom_padding">100dp</dimen> <!--depends on 'Add new report' button-->
     <dimen name="fragment_time_tracker_empty_view_text_top_margin">10dp</dimen>
     <dimen name="fragment_time_tracker_empty_view_text_horizontal_offset">36dp</dimen>
     <dimen name="fragment_time_tracker_empty_view_text_size">14sp</dimen>
