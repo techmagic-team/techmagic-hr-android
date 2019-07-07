@@ -9,6 +9,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.time_tracker.Holiday.*
 import co.techmagic.hr.presentation.ui.view.WeekView
+import co.techmagic.hr.presentation.ui.view.WeekdayView
 import java.util.*
 
 abstract class WeeksAdapter(recyclerView: RecyclerView, firstDayOfWeek: Calendar) :
@@ -23,7 +24,14 @@ abstract class WeeksAdapter(recyclerView: RecyclerView, firstDayOfWeek: Calendar
 
 class WeekViewHolder(val weekView: WeekView) : RecyclerView.ViewHolder(weekView), TimeTrackerWeekView {
     override fun setSelectedDay(selectedDate: Calendar) {
+        var oldWeekdayView: WeekdayView? = null
+        val newWeekdayView = weekView[WeekView.Day.from(selectedDate)] ?: return
+
+        weekView.selectedDay?.let { oldWeekdayView = weekView[weekView.selectedDay!!] }
         weekView.selectedDay = WeekView.Day.from(selectedDate)
+
+        oldWeekdayView?.isSelected = false
+        newWeekdayView.isSelected = true
     }
 
     override fun setTotalTime(date: Calendar, minutes: Int, holiday: Holiday?) {
