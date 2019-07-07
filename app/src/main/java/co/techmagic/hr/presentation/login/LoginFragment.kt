@@ -39,10 +39,19 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
             }
 
             override fun onError(e: ApiException) {
-                if (e.statusCode == ConnectionResult.NETWORK_ERROR) {
-                    showConnectionErrorMessage()
-                } else {
-                    showMessage("Google Sign In error. Code: " + e.statusCode)
+                when (e.statusCode) {
+                    ConnectionResult.NETWORK_ERROR -> showConnectionErrorMessage()
+
+                    ConnectionResult.UNKNOWN, ConnectionResult.SUCCESS, ConnectionResult.SERVICE_MISSING,
+                    ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED, ConnectionResult.SERVICE_DISABLED,
+                    ConnectionResult.SIGN_IN_REQUIRED, ConnectionResult.INVALID_ACCOUNT,
+                    ConnectionResult.RESOLUTION_REQUIRED, ConnectionResult.SERVICE_INVALID,
+                    ConnectionResult.INTERNAL_ERROR, ConnectionResult.DEVELOPER_ERROR,
+                    ConnectionResult.LICENSE_CHECK_FAILED, ConnectionResult.CANCELED,
+                    ConnectionResult.TIMEOUT, ConnectionResult.INTERRUPTED,
+                    ConnectionResult.API_UNAVAILABLE, ConnectionResult.SIGN_IN_FAILED,
+                    ConnectionResult.SERVICE_UPDATING, ConnectionResult.SERVICE_MISSING_PERMISSION,
+                    ConnectionResult.RESTRICTED_PROFILE -> showMessage("Google Sign In error. Code: " + e.statusCode)
                 }
             }
         })
