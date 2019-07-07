@@ -55,8 +55,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         initClicks()
-        super.onViewCreated(view, savedInstanceState)
         actionBarChangeListener = context as ActionBarChangeListener
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun init(today: Calendar) {
@@ -231,6 +231,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onTrackTimeClicked(position: Int) {
         showErrorMessage("not implemented")
     }
+
+
 
     fun showDatePicker(date: Calendar) {
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
