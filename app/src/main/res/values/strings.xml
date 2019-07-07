@@ -39,8 +39,8 @@
     <string name="message_short_password">Password must contain at least 6 characters</string>
 
 
-    <string name="login_time">TIME</string>
-    <string name="login_tracker">Tracker</string>
+    <string name="login_techmagic">Techmagic</string>
+    <string name="login_time_hr">TIME/HR</string>
     <string name="login_hint">Authorize with your\n@techmagic.co email</string>
     <string name="login_google_sign_in">SIGN IN WITH GOOGLE</string>
     <string name="login_copyright">© TechMagic 2016 - %d</string>
