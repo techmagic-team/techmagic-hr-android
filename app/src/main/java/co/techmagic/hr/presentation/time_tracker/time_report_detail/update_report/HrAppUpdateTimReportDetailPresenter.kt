@@ -25,20 +25,6 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         view?.setDeleteReportButtonVisible(true)
     }
 
-    override fun validateInfo(): Boolean {
-        if (!isDescriptionValid()) {
-            validateDescription()
-            return false
-        }
-
-        if (isProjectReSelected() && !isProjectTaskValid()) {
-            validateProjectTask()
-            return false
-        }
-
-        return true
-    }
-
     override fun makeSaveRequest() {
         updateReport()
     }
@@ -95,8 +81,6 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         view?.showDescription(description)
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
-
-    private fun isProjectReSelected() = userReportForEdit?.id?.equals(projectViewModel?.id) ?: true
 
     private fun updateReport() {
         reportRepository

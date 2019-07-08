@@ -34,7 +34,9 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
-            validateProjectTask()
+            if (value != null) {
+                validateProjectTask()
+            }
             showProjectTask()
         }
 
@@ -106,7 +108,24 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         }
     }
 
-    abstract fun validateInfo(): Boolean
+    private fun validateInfo(): Boolean {
+        if (!isProjectValid()) {
+            validateProject()
+            return false
+        }
+
+        if (!isProjectTaskValid()) {
+            validateProjectTask()
+            return false
+        }
+
+        if (!isDescriptionValid()) {
+            validateDescription()
+            return false
+        }
+
+        return true
+    }
 
     abstract fun makeSaveRequest()
 

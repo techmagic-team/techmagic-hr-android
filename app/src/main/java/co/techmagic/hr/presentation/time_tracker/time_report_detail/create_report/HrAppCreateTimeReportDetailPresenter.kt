@@ -20,25 +20,6 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
         loadLastSelectedProjectWithTask()
     }
 
-    override fun validateInfo(): Boolean {
-        if (!isDescriptionValid()) {
-            validateDescription()
-            return false
-        }
-
-        if (!isProjectValid()) {
-            validateProject()
-            return false
-        }
-
-        if (!isProjectTaskValid()) {
-            validateProjectTask()
-            return false
-        }
-
-        return true
-    }
-
     override fun makeSaveRequest() {
         createReport()
     }
