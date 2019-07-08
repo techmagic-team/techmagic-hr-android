@@ -32,6 +32,7 @@ class HrAppTimeTrackerPresenter(
         currentDate = dateTimeProvider.now().dateOnly()
         selectedDate = currentDate.copy()
         view?.init(currentDate)
+        view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
     }
 
     override fun onViewDestroyed() {

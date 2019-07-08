@@ -10,11 +10,8 @@ import java.lang.Exception
 class BottomNavigationFabBehavior(context: Context?, attrs: AttributeSet?) : CoordinatorLayout.Behavior<View>(context, attrs) {
     
     companion object {
-        const val ANIMATION_TRANSLATION_HIDE_Y_DP = 100f
         const val ANIMATION_TRANSLATION_SHOW_Y_DP = 0f
         const val ANIMATION_DURATION = 100L
-        const val ANIMATION_ALPHA_HIDE = 0f
-        const val ANIMATION_ALPHA_SHOW = 1f
     }
     
     private var isFabHiding = false
@@ -30,8 +27,7 @@ class BottomNavigationFabBehavior(context: Context?, attrs: AttributeSet?) : Coo
             if (!isFabHiding) {
                 child
                         .animate()
-                        .translationY(UiUtil.dp2Px(ANIMATION_TRANSLATION_HIDE_Y_DP).toFloat())
-                        .alpha(ANIMATION_ALPHA_HIDE)
+                        .translationY(UiUtil.getBottomNavigationHeigth(child.context).toFloat())
                         .setDuration(ANIMATION_DURATION)
                         .start()
                 isFabHiding = true
@@ -41,8 +37,7 @@ class BottomNavigationFabBehavior(context: Context?, attrs: AttributeSet?) : Coo
             if (!isFabShowing) {
                 child
                         .animate()
-                        .translationY(UiUtil.dp2Px(ANIMATION_TRANSLATION_SHOW_Y_DP).toFloat())
-                        .alpha(ANIMATION_ALPHA_SHOW)
+                        .translationY(ANIMATION_TRANSLATION_SHOW_Y_DP)
                         .setDuration(ANIMATION_DURATION)
                         .start()
                 isFabShowing = true

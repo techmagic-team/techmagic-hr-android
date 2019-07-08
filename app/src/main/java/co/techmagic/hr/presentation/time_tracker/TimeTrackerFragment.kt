@@ -8,6 +8,8 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.*
 import android.widget.Toast
 import co.techmagic.hr.R
@@ -15,6 +17,7 @@ import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import co.techmagic.hr.presentation.ui.adapter.TimeReportsClickListener
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
+import co.techmagic.hr.presentation.ui.view.ScrollRemovableLinearLayoutManager
 import co.techmagic.hr.presentation.ui.view.WeekView
 import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
@@ -55,8 +58,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         findViews(view)
         initClicks()
-        super.onViewCreated(view, savedInstanceState)
         actionBarChangeListener = context as ActionBarChangeListener
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun init(today: Calendar) {
@@ -146,10 +149,21 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
             override fun onDateOffsetChanged(date: Calendar, offset: Float) {
             }
         }
+
+        weeks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //disables days recycler scroll while weeks are scrolling
+                when (newState) {
+                    SCROLL_STATE_DRAGGING -> setDaysRecyclerScrollEnabled(false)
+                    SCROLL_STATE_IDLE -> setDaysRecyclerScrollEnabled(true)
+                }
+            }
+        })
     }
 
     private fun initDays(today: Calendar) {
-        days.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        days.layoutManager = ScrollRemovableLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         daysAdapter = object : DayReportsAdapter(this, days, today) {
             override fun onBindViewHolder(holder: DayReportViewHolder, position: Int) {
                 presenter?.onBindDay(holder, pageToDate(position))
@@ -196,6 +210,10 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         }
     }
 
+    private fun setDaysRecyclerScrollEnabled(isScrollEnabled: Boolean) {
+        (days.layoutManager as ScrollRemovableLinearLayoutManager).setIsScrollEnabled(isScrollEnabled)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         inflater?.inflate(R.menu.menu_time_tracker, menu)
@@ -231,6 +249,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     override fun onTrackTimeClicked(position: Int) {
         showErrorMessage("not implemented")
     }
+
 
     fun showDatePicker(date: Calendar) {
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->

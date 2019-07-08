@@ -8,8 +8,7 @@ import java.util.*
 class AndroidResQuotesManager(val context: Context) : QuotesManager {
 
     companion object {
-        private const val QUOTE_TEXT_POSITION = 0
-        private const val QUOTE_AUTHOR_POSITION = 1
+        private const val QUOTE_SEPARATOR = '-'
     }
 
     private val quotes: List<Quote>
@@ -18,8 +17,8 @@ class AndroidResQuotesManager(val context: Context) : QuotesManager {
     init {
         val quotesWithAuthors = context.resources.getStringArray(R.array.quotes)
         quotes = quotesWithAuthors.map {
-            val quoteAndAuthor = it.split("-")
-            return@map Quote(quoteAndAuthor[QUOTE_TEXT_POSITION], quoteAndAuthor[QUOTE_AUTHOR_POSITION])
+            val separatorLastIndex = it.lastIndexOf(QUOTE_SEPARATOR)
+            return@map Quote(it.substring(0, separatorLastIndex), it.substring(separatorLastIndex + 1))
         }
     }
 

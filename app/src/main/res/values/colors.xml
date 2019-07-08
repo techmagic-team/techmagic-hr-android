@@ -29,6 +29,8 @@
     <color name="color_time_report_disabled_text">#8e9998</color>
     <color name="color_time_report_list_item_divider">#d8d8d8</color>
     <color name="color_time_report_add_report_background">#00b8b2</color>
+    <color name="color_time_report_selected_date">@color/oil</color>
+    <color name="color_time_report_un_selected_date">@color/dark_gray</color>
 
     <color name="oil">#373a36</color>
     <color name="dark_gray">#aaaaaa</color>

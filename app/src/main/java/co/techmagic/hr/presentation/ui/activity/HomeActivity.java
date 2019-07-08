@@ -194,7 +194,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setTitle(getString(R.string.app_name));
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         return true;
@@ -353,6 +352,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
                 case R.id.action_ninjas:
                     if (allowChangeTab) {
+                        actionBar.setTitle(getString(R.string.app_name));
                         clearFragmentsBackStack(this);
                         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
                     }
