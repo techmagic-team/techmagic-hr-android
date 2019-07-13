@@ -1,4 +1,4 @@
-package co.techmagic.hr.data.entity.time_tracker
+package co.techmagic.hr.data.entity.time_report
 
 import co.techmagic.hr.data.entity.HolidayDate
 import com.google.gson.Gson
@@ -7,15 +7,16 @@ import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
+import java.text.SimpleDateFormat
 
 
-class UpdateUserReportResponseTypeAdapter : TypeAdapter<UpdateUserReportResponse>() {
-    override fun write(out: JsonWriter?, value: UpdateUserReportResponse?) {
+class UserReportsResponseTypeAdapter : TypeAdapter<UserReportsResponse>() {
+    override fun write(out: JsonWriter?, value: UserReportsResponse?) {
         TODO("Not implemented yet. Implement if needed")
     }
 
-    override fun read(reader: JsonReader?): UpdateUserReportResponse {
-        var report: UserReport? = null
+    override fun read(reader: JsonReader?): UserReportsResponse {
+        var reports: List<UserReport>? = null
         var weeksId: List<String>? = null
         var holidays: List<HolidayDate>? = null
         var first: String? = null
@@ -37,7 +38,25 @@ class UpdateUserReportResponseTypeAdapter : TypeAdapter<UpdateUserReportResponse
                             "lastName" -> last = reader.nextString()
                             "submitted" -> submitted = reader.nextBoolean()
                             "reports" -> {
-                                report = Gson().fromJson<UserReport>(reader, UserReport::class.java)
+                                // FIXME: returns list of LinkedTreeMap items instead of UserReport
+                                // See https://github.com/google/gson/issues/1107
+                                // reports = readList(reader)
+                                val list: List<LinkedTreeMap<String, Any>> = readList(reader)
+                                val mappedList = list.map {
+                                    UserReport(
+                                            it["_id"] as String,
+                                            ReportName((it["_task"] as LinkedTreeMap<*, *>)["name"] as String),
+                                            (it["hours"] as Double).toInt(),
+                                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(it["date"] as String),
+                                            it["lockDate"] as Boolean,
+                                            it["note"] as String,
+                                            it["status"] as String,
+                                            it["client"] as String,
+                                            it["project"] as String,
+                                            it["weekReportId"] as String
+                                    )
+                                }
+                                reports = mappedList
                             }
                             "holidays" -> {
                                 // FIXME: returns list of LinkedTreeMap items instead of UserReport
@@ -66,11 +85,11 @@ class UpdateUserReportResponseTypeAdapter : TypeAdapter<UpdateUserReportResponse
             reader.close()
         }
 
-        return UpdateUserReportResponse(
+        return UserReportsResponse(
                 first ?: "",
                 last ?: "",
                 submitted ?: false,
-                report,
+                reports ?: emptyList(),
                 weeksId ?: emptyList(),
                 holidays ?: emptyList()
         )

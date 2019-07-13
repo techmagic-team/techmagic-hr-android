@@ -1,7 +1,8 @@
 package co.techmagic.hr.data.repository
 
-import co.techmagic.hr.data.entity.time_tracker.*
+import co.techmagic.hr.data.entity.time_report.*
 import co.techmagic.hr.data.manager.NetworkManager
+import co.techmagic.hr.data.repository.base.BaseNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.ui.manager.AccountManager
@@ -45,8 +46,8 @@ class TimeReportNetworkRepository(
         return setup(apiClient.reportTask(requestBody))
     }
 
-    override fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UpdateUserReportResponse> {
-        return setup(apiClient.updateTask(weekId, reportId, body))
+    override fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Single<UpdateUserReportResponse> {
+        return setup(apiClient.updateTask(weekId, reportId, body)).toSingle()
     }
 
     override fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void> {

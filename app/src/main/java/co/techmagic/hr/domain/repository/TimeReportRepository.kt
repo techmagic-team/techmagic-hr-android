@@ -1,8 +1,9 @@
 package co.techmagic.hr.domain.repository
 
-import co.techmagic.hr.data.entity.time_tracker.*
+import co.techmagic.hr.data.entity.time_report.*
 import rx.Completable
 import rx.Observable
+import rx.Single
 import java.util.*
 
 interface TimeReportRepository {
@@ -12,7 +13,7 @@ interface TimeReportRepository {
     fun getProjectTasks(projectId: String): Observable<List<TaskResponse>>
     fun getTaskDetails(weekId: String, reportId: String): Observable<TaskDetailsResponse>
     fun reportTask(requestBody: ReportTaskRequestBody): Observable<ReportTaskResponse>
-    fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Observable<UpdateUserReportResponse>
+    fun updateTask(weekId: String, reportId: String, body: UpdateTaskRequestBody): Single<UpdateUserReportResponse>
     fun deleteTask(weekId: String, reportId: String, body: DeleteTaskRequestBody): Observable<Void>
     fun changeLastSelectedProject(projectResponse: ProjectResponse) : Completable
     fun changeLastSelectedTask(taskResponse : TaskResponse) : Completable

@@ -1,4 +1,4 @@
-package co.techmagic.hr.data.entity.time_tracker
+package co.techmagic.hr.data.entity.time_report
 
 enum class TaskStatus {
     PENDING,

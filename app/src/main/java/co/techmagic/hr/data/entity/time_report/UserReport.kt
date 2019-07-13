@@ -1,9 +1,9 @@
-package co.techmagic.hr.data.entity.time_tracker
+package co.techmagic.hr.data.entity.time_report
 
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class UserReport(
+data class UserReport constructor(
         @SerializedName("_id") val id: String,
         @SerializedName("_task") val task: ReportName,
         @SerializedName("hours") var minutes: Int,

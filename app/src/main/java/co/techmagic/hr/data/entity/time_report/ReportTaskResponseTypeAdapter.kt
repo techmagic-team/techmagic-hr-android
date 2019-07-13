@@ -1,4 +1,4 @@
-package co.techmagic.hr.data.entity.time_tracker
+package co.techmagic.hr.data.entity.time_report
 
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter

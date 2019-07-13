@@ -1,7 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report
 
-import co.techmagic.hr.data.entity.time_tracker.DeleteTaskRequestBody
-import co.techmagic.hr.data.entity.time_tracker.UpdateTaskRequestBody
+import co.techmagic.hr.data.entity.time_report.DeleteTaskRequestBody
+import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
@@ -90,12 +90,13 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                         projectTaskViewModel?.task?.id, userId
                 ))
                 .doOnSubscribe { view?.showProgress(true) }
-                .doOnTerminate { view?.showProgress(false) }
                 .subscribe(
                         {
+                            view?.showProgress(false)
                             it.report?.let { report -> router?.onReportUpdated(userReportViewModelMapper.transform(report), userReportForEdit?.id) }
                         },
                         {
+                            view?.showProgress(false)
                             it.message?.let { view?.showErrorMessage(it) }
                             it?.printStackTrace()
                         }

@@ -8,6 +8,7 @@ data class UserReportViewModel(
         val id: String,
         val client: String,
         val project: String,
+        val lockDate: Boolean,
         val task: ReportNameViewModel,
         val note: String,
         var minutes: Int,
@@ -21,6 +22,7 @@ data class UserReportViewModel(
             source.readString(),
             source.readString(),
             source.readString(),
+            1 == source.readInt(),
             source.readParcelable<ReportNameViewModel>(ReportNameViewModel::class.java.classLoader),
             source.readString(),
             source.readInt(),
@@ -37,6 +39,7 @@ data class UserReportViewModel(
         writeString(id)
         writeString(client)
         writeString(project)
+        writeInt((if (lockDate) 1 else 0))
         writeParcelable(task, 0)
         writeString(note)
         writeInt(minutes)

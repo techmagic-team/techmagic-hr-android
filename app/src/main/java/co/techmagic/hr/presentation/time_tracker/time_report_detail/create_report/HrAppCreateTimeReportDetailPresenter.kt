@@ -1,6 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report
 
-import co.techmagic.hr.data.entity.time_tracker.ReportTaskRequestBody
+import co.techmagic.hr.data.entity.time_report.ReportTaskRequestBody
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
