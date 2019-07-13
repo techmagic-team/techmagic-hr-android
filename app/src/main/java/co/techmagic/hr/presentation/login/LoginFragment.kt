@@ -8,14 +8,11 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
-import co.techmagic.hr.BuildConfig
 import co.techmagic.hr.R
-import co.techmagic.hr.data.exception.NetworkConnectionException
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
 import com.techmagic.viper.base.BaseViewFragment
 import kotlinx.android.synthetic.main.fragment_login.*
-import java.net.SocketTimeoutException
 import java.util.*
 
 
@@ -40,7 +37,7 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
 
             override fun onError(e: ApiException) {
                 when (e.statusCode) {
-                    ConnectionResult.NETWORK_ERROR -> showConnectionErrorMessage()
+                    ConnectionResult.NETWORK_ERROR -> showErrorMessage(getString(R.string.message_connection_error))
 
                     ConnectionResult.UNKNOWN, ConnectionResult.SUCCESS, ConnectionResult.SERVICE_MISSING,
                     ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED, ConnectionResult.SERVICE_DISABLED,
@@ -65,18 +62,6 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
         tvCopyright.text = getString(R.string.login_copyright, currentYear)
     }
 
-    override fun handleError(e: Throwable) {
-        if (e is NetworkConnectionException || e is SocketTimeoutException) {
-            showConnectionErrorMessage()
-        } else {
-            showMessage("Error " + e.message)
-        }
-
-        if (BuildConfig.DEBUG) {
-            e.printStackTrace()
-        }
-    }
-
     override fun showProgress(show: Boolean) {
         tvSignIn.visibility = if (show) GONE else VISIBLE
     }
@@ -88,9 +73,5 @@ class LoginFragment : BaseViewFragment<LoginPresenter>(), LoginView {
 
     fun showMessage(msg: String) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-    }
-
-    fun showConnectionErrorMessage() {
-        showMessage(getString(R.string.message_connection_error))
     }
 }
