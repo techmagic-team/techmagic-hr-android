@@ -13,6 +13,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 // TODO: use a repository through an interactor abstraction
+// TODO: inject TimeTrackerInteractor
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
@@ -157,6 +158,10 @@ class HrAppTimeTrackerPresenter(
                         view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
                     }
         }
+    }
+
+    override fun onTaskTimerToggled(position: Int) {
+        TODO("not implemented")
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]

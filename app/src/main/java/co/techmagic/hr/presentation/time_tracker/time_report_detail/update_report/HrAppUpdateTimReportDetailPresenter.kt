@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_repo
 
 import co.techmagic.hr.data.entity.time_report.DeleteTaskRequestBody
 import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
@@ -13,9 +14,10 @@ import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
+                                          timeTrackerInteractor: TimeTrackerInteractor,
                                           userReportViewModelMapper: UserReportViewModelMapper,
                                           val projectsViewModelMapper: ProjectViewModelMapper)
-    : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper), UpdateTimeReportPresenter {
+    : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper, timeTrackerInteractor), UpdateTimeReportPresenter {
 
     var userReportForEdit: UserReportViewModel? = null
 

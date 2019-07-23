@@ -8,8 +8,11 @@ import android.view.MenuItem
 import co.techmagic.hr.R
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
+import co.techmagic.hr.data.repository.time_tracker.TimeTrackerRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
+import co.techmagic.hr.device.time_tracker.tracker_service.TimeTrackerDataSource
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -172,8 +175,22 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 
+    // TODO: provide as a singleton
+    private fun provideTimeTrackerInteractor(): TimeTrackerInteractor {
+        val dataSource = TimeTrackerDataSource()
+        val reportRepository = provideTimeReportRepository()
+        val repository = TimeTrackerRepository(dataSource, reportRepository)
+        return TimeTrackerInteractor(repository)
+    }
+
     private fun provideCreateReportPresenter(): HrAppCreateTimeReportDetailPresenter {
-        val presenter = HrAppCreateTimeReportDetailPresenter(provideTimeReportRepository(), UserReportViewModelMapper(), ProjectViewModelMapper(), ProjectTaskViewModelMapper())
+        val presenter = HrAppCreateTimeReportDetailPresenter(
+                provideTimeReportRepository(),
+                provideTimeTrackerInteractor(),
+                UserReportViewModelMapper(),
+                ProjectViewModelMapper(),
+                ProjectTaskViewModelMapper()
+        )
 
         presenter.reportDate = getTimeReportDate()
 
@@ -183,6 +200,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     private fun provideUpdateReportPresenter(): HrAppUpdateTimReportDetailPresenter {
         val presenter = HrAppUpdateTimReportDetailPresenter(
                 provideTimeReportRepository(),
+                provideTimeTrackerInteractor(),
                 UserReportViewModelMapper(),
                 ProjectViewModelMapper()
         )

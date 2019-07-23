@@ -247,7 +247,7 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun onTrackTimeClicked(position: Int) {
-        showErrorMessage("not implemented")
+        presenter?.onTaskTimerToggled(position)
     }
 
 

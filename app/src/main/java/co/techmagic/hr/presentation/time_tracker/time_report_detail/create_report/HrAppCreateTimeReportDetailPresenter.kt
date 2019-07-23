@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report
 
 import co.techmagic.hr.data.entity.time_report.ReportTaskRequestBody
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
@@ -10,10 +11,11 @@ import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository,
+                                           timeTrackerInteractor: TimeTrackerInteractor,
                                            userReportViewModelMapper: UserReportViewModelMapper,
                                            val projectsViewModelMapper: ProjectViewModelMapper,
                                            val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
-    : HrAppBaseTimeReportDetailPresenter<CreateTimeReportView>(reportRepository, userReportViewModelMapper), CreateTimeReportPresenter {
+    : HrAppBaseTimeReportDetailPresenter<CreateTimeReportView>(reportRepository, userReportViewModelMapper, timeTrackerInteractor), CreateTimeReportPresenter {
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
