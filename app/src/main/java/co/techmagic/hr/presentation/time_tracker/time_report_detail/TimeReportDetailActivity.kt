@@ -8,8 +8,11 @@ import android.view.MenuItem
 import co.techmagic.hr.R
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
+import co.techmagic.hr.data.repository.time_tracker.TimeTrackerRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
+import co.techmagic.hr.device.time_tracker.tracker_service.TimeTrackerDataSource
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -184,6 +187,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         val presenter = HrAppUpdateTimReportDetailPresenter(
                 provideTimeReportRepository(),
                 UserReportViewModelMapper(),
+                provideTimeTrackerInteractor(),
                 ProjectViewModelMapper()
         )
 
@@ -199,6 +203,15 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
 
         return TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), AccountManager(applicationContext))
+    }
+
+    private fun provideTimeTrackerInteractor(): TimeTrackerInteractor {
+        return TimeTrackerInteractor(
+                TimeTrackerRepository(
+                        TimeTrackerDataSource(applicationContext),
+                        provideTimeReportRepository()
+                )
+        )
     }
 
     private fun provideTimeReportRouter(fragment: BaseTimeReportDetailFragment<*>): TimeReportDetailRouter {

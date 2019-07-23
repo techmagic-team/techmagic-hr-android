@@ -1,7 +1,9 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report
 
+import android.util.Log
 import co.techmagic.hr.data.entity.time_report.DeleteTaskRequestBody
 import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
@@ -11,9 +13,11 @@ import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
+import java.util.logging.Handler
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           userReportViewModelMapper: UserReportViewModelMapper,
+                                          val timeTrackerInteractor: TimeTrackerInteractor,
                                           val projectsViewModelMapper: ProjectViewModelMapper)
     : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper), UpdateTimeReportPresenter {
 
@@ -46,6 +50,21 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                                 it?.message?.let { view?.showErrorMessage(it) }
                             })
         }
+    }
+
+    override fun startTimerClicked() {
+        timeTrackerInteractor
+                .startTimer(userReportViewModelMapper.retransform(userReportForEdit!!))
+                .subscribe {
+                    Log.d("TEST_TIMER", "startTimer subscribe in presenter")
+                    android.os.Handler().postDelayed({
+                        timeTrackerInteractor
+                                .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(userReportForEdit!!))
+                                .subscribe {
+                                    Log.d("TEST_TIMER", "Update in presenter $it")
+                                }
+                    }, 5000)
+                }
     }
 
     private fun loadProjectAndTask() {
