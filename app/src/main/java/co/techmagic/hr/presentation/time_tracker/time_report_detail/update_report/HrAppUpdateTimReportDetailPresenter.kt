@@ -55,15 +55,27 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
     override fun startTimerClicked() {
         timeTrackerInteractor
                 .startTimer(userReportViewModelMapper.retransform(userReportForEdit!!))
-                .subscribe {
-                    Log.d("TEST_TIMER", "startTimer subscribe in presenter")
-                    android.os.Handler().postDelayed({
-                        timeTrackerInteractor
-                                .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(userReportForEdit!!))
-                                .subscribe {
+                .doOnCompleted {
+                    timeTrackerInteractor
+                            .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(userReportForEdit!!))
+                            .subscribe({
+                                run {
                                     Log.d("TEST_TIMER", "Update in presenter $it")
                                 }
-                    }, 5000)
+                            },
+                                    {
+                                        {
+                                            Log.d("TEST_TIMER", "Update in presenter error")
+                                        }
+                                    },
+                                    {
+                                        Log.d("TEST_TIMER", "Update in presenter complete")
+
+                                    })
+                }
+                .subscribe {
+                    Log.d("TEST_TIMER", "OnComplete from start timer")
+
                 }
     }
 

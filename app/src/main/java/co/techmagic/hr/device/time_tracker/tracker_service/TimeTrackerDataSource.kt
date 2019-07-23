@@ -20,24 +20,25 @@ class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataS
     var timeTracker: IHrAppTimeTracker? = null
 
     override fun startTimer(userReport: UserReport): Completable {
-        val intent = Intent(applicationContext, HrAppTimeTrackerService::class.java)
-        sConn = object : ServiceConnection {
+        return Completable.create {
+            val intent = Intent(applicationContext, HrAppTimeTrackerService::class.java)
+            sConn = object : ServiceConnection {
 
-            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                timeTracker = (service as HrAppTimeTrackerBinder).timeTracker
-                Log.d("TEST_TIMER", "onServiceConnected")
+                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                    timeTracker = (service as HrAppTimeTrackerBinder).timeTracker
+                    Log.d("TEST_TIMER", "onServiceConnected")
+                    timeTracker?.startTimer(userReport)
+                    it.onCompleted()
+                }
+
+                override fun onServiceDisconnected(name: ComponentName?) {
+                    Log.d("TEST_TIMER", "onServiceDisconnected")
+                    timeTracker?.close()
+                }
             }
 
-            override fun onServiceDisconnected(name: ComponentName?) {
-                Log.d("TEST_TIMER", "onServiceDisconnected")
-                timeTracker?.close()
-            }
+            applicationContext.bindService(intent, sConn!!, Context.BIND_AUTO_CREATE)
         }
-
-
-        applicationContext.bindService(intent, sConn!!, Context.BIND_AUTO_CREATE)
-
-        return Completable.complete()
     }
 
     override fun stopTimer(reportId: String): Single<UserReport> {

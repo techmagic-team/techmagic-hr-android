@@ -42,6 +42,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     override fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport> {
         timer ?: throw NoTrackingReportException()
         return timer
+                ?.flatMap { Observable.just(1,2, 3, 4, 5, 6, 7, 8) }
                 ?.map {
                     userReport.minutes = (it / 60).toInt()
                     return@map userReport
