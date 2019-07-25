@@ -10,6 +10,7 @@ import rx.Single
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import java.lang.IllegalStateException
 
@@ -37,6 +38,7 @@ class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataS
                 }
             }
 
+            ContextCompat.startForegroundService(applicationContext, intent)
             applicationContext.bindService(intent, sConn!!, Context.BIND_AUTO_CREATE)
         }
     }

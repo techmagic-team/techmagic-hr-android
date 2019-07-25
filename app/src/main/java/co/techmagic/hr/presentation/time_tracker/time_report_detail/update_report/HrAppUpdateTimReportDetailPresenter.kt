@@ -16,11 +16,10 @@ import co.techmagic.hr.presentation.util.formatDate
 import java.util.logging.Handler
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
-                                          timeTrackerInteractor: TimeTrackerInteractor,
                                           userReportViewModelMapper: UserReportViewModelMapper,
                                           val timeTrackerInteractor: TimeTrackerInteractor,
                                           val projectsViewModelMapper: ProjectViewModelMapper)
-    : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper, timeTrackerInteractor), UpdateTimeReportPresenter {
+    : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper), UpdateTimeReportPresenter {
 
     var userReportForEdit: UserReportViewModel? = null
 

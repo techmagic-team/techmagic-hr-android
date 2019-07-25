@@ -175,14 +175,6 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 
-    // TODO: provide as a singleton
-    private fun provideTimeTrackerInteractor(): TimeTrackerInteractor {
-        val dataSource = TimeTrackerDataSource()
-        val reportRepository = provideTimeReportRepository()
-        val repository = TimeTrackerRepository(dataSource, reportRepository)
-        return TimeTrackerInteractor(repository)
-    }
-
     private fun provideCreateReportPresenter(): HrAppCreateTimeReportDetailPresenter {
         val presenter = HrAppCreateTimeReportDetailPresenter(
                 provideTimeReportRepository(),
@@ -200,7 +192,6 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     private fun provideUpdateReportPresenter(): HrAppUpdateTimReportDetailPresenter {
         val presenter = HrAppUpdateTimReportDetailPresenter(
                 provideTimeReportRepository(),
-                provideTimeTrackerInteractor(),
                 UserReportViewModelMapper(),
                 provideTimeTrackerInteractor(),
                 ProjectViewModelMapper()

@@ -11,11 +11,11 @@ import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 
 class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository,
-                                           timeTrackerInteractor: TimeTrackerInteractor,
+                                           val timeTrackerInteractor: TimeTrackerInteractor,
                                            userReportViewModelMapper: UserReportViewModelMapper,
                                            val projectsViewModelMapper: ProjectViewModelMapper,
                                            val projectTaskViewModelMapper: ProjectTaskViewModelMapper)
-    : HrAppBaseTimeReportDetailPresenter<CreateTimeReportView>(reportRepository, userReportViewModelMapper, timeTrackerInteractor), CreateTimeReportPresenter {
+    : HrAppBaseTimeReportDetailPresenter<CreateTimeReportView>(reportRepository, userReportViewModelMapper), CreateTimeReportPresenter {
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
