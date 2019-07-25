@@ -61,6 +61,9 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <service android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
+            android:exported="false"/>
+
         <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />

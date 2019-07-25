@@ -202,6 +202,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
                 provideTimeReportRepository(),
                 provideTimeTrackerInteractor(),
                 UserReportViewModelMapper(),
+                provideTimeTrackerInteractor(),
                 ProjectViewModelMapper()
         )
 
@@ -217,6 +218,15 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
 
         return TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), AccountManager(applicationContext))
+    }
+
+    private fun provideTimeTrackerInteractor(): TimeTrackerInteractor {
+        return TimeTrackerInteractor(
+                TimeTrackerRepository(
+                        TimeTrackerDataSource(applicationContext),
+                        provideTimeReportRepository()
+                )
+        )
     }
 
     private fun provideTimeReportRouter(fragment: BaseTimeReportDetailFragment<*>): TimeReportDetailRouter {

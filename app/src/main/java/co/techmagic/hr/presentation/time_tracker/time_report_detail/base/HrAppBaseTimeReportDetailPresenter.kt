@@ -12,9 +12,9 @@ import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
-abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(protected val reportRepository: TimeReportRepository,
-                                                                                protected val userReportViewModelMapper: UserReportViewModelMapper,
-                                                                                protected val timeTrackerInteractor: TimeTrackerInteractor)
+abstract class HrAppBaseTimeReportDetailPresenter
+<T : BaseTimeReportDetailView>(protected val reportRepository: TimeReportRepository,
+                               protected val userReportViewModelMapper: UserReportViewModelMapper)
     : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
@@ -102,8 +102,6 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     }
 
     override fun startTimerClicked() {
-        TODO()
-//        timeTrackerInteractor.startTimer()
     }
 
     override fun saveClicked() {
