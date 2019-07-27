@@ -19,12 +19,14 @@ interface ITimeTrackerRepository {
      * @param reportId - reports id for stopping tracking
      * @return updated user report
      */
+    //todo: remove params
     fun stopTimer(reportId: String, date: String, firstDayOfWeek: String): Single<UpdateUserReportResponse>
 
     /**
      * @param userReport - report, for handling time changes
      * @return Observable, subscribed on updating
      */
+    //todo: remove params
     fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport>
 
     /*

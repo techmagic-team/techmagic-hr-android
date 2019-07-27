@@ -10,6 +10,8 @@ interface IHrAppTimeTracker {
 
     fun stopTimer(reportId : String): Single<UserReport>
 
+    fun isRunning(reportId : String): Single<Boolean>
+
     fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport>
 
     fun getReport(reportId : String): Single<UserReport>

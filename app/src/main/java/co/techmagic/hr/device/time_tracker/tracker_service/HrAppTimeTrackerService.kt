@@ -15,42 +15,27 @@ import rx.Completable
 import rx.Observable
 import rx.Single
 import rx.Subscription
-import rx.observables.ConnectableObservable
-import java.lang.IllegalStateException
+import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
+typealias Seconds = Long
 
 class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
 
+    private var trackingReportOrigin: UserReport? = null
     private var trackingReport: UserReport? = null
-    private var timer: Observable<Long>? = null
+
+    private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
-
-    private var startTrackingMillis: Long = 0L
-
-    private val timePassed: String
-        get() {
-            val elapsedTimeMillis = if (startTrackingMillis != 0L) System.currentTimeMillis() - startTrackingMillis else 0
-            val timeMinutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeMillis).toInt()
-            return TimeFormatUtil.formatMinutesToHours(timeMinutes)
-        }
-
-    override fun onCreate() {
-        super.onCreate()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel(TIME_TRACKER_CHANNEL_ID)
 
         when (intent?.action) {
-            null -> showForeground(Action.ACTION_START)
-            Action.ACTION_START.value -> showForeground(Action.ACTION_PAUSE, Action.ACTION_STOP)
-            Action.ACTION_PAUSE.value -> showForeground(Action.ACTION_START)
-            Action.ACTION_STOP.value -> showForeground(Action.ACTION_START)
+            null -> showForeground()
+            Action.ACTION_START.value -> trackingReport?.let { startTimer(it) }
+            Action.ACTION_PAUSE.value ->  trackingReport?.let { stopTimer(it.id) } //todo: pause timer
+            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer(it.id) }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -62,37 +47,69 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     }
 
     override fun startTimer(userReport: UserReport): Completable {
-        timer = Observable
-                .timer(1, TimeUnit.SECONDS)
-                .publish()
+        return isRunning(userReport.id)
+                .flatMap { isRunning ->
+                    if (isRunning) {
+                        return@flatMap Single.just(userReport)
+                    } else {
+                        return@flatMap stopTimer(userReport.id)
+                    }
+                }.flatMapCompletable {
+                    Completable.create { subscriber ->
+                        trackingReportOrigin = userReport.copy()
+                        trackingReport = userReport.copy()
 
-        (timer as ConnectableObservable).connect {
-            timerSubscription = it
-            NotificationManagerCompat.from(this).notify(FOREGROUND_NOTIFICATION_ID, createRunningTaskNotification())
-        }
+                        timer = Observable
+                                .interval(1, 1, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .publish().also {
+                                    timerSubscription = it.connect()
 
-        startTrackingMillis = System.currentTimeMillis()
-
-        return Completable.complete()
+                                    it.subscribe { secondsPassed ->
+                                        trackingReport?.let { report ->
+                                            val originalTime = trackingReportOrigin?.minutes ?: 0
+                                            report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
+                                            updateTaskNotification()
+                                        }
+                                        subscriber.onCompleted()
+                                    }
+                                }
+                    }
+                }.also {
+                    it.subscribe()
+                }
     }
 
     override fun stopTimer(reportId: String): Single<UserReport> {
+        // todo: no need for reportId as we already have instance of running report
         timerSubscription?.unsubscribe()
+        updateTaskNotification()
         return Single.just(trackingReport)
+    }
+
+    override fun isRunning(reportId: String): Single<Boolean> {
+        return Single.just(trackingReport?.id == reportId)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport> {
-        timer ?: throw NoTrackingReportException()
-        return timer
-                ?.flatMap { Observable.just(1, 2, 3, 4, 5, 6, 7, 8) }
-                ?.map {
-                    userReport.minutes = (it / 60).toInt()
-                    return@map userReport
-                }!!
+        return timer?.let {
+            return it.map { seconds ->
+                //                userReport.minutes = (trackingReportOrigin?.minutes
+//                        ?: 0) + TimeUnit.SECONDS.toMinutes(seconds).toInt()
+                return@map userReport
+            }
+        } ?: Observable.just(userReport) //throw NoTrackingReportException() //todo: fix an issue
     }
 
     override fun getReport(reportId: String): Single<UserReport> {
-        return Single.just(trackingReport)
+        return isRunning(reportId).flatMap { running ->
+            if (running)
+                Single.just(trackingReport)
+            else
+                Single.error(IllegalStateException("Timer is not running for the report"))
+        }
     }
 
     override fun removeReport(reportId: String): Completable {
@@ -117,28 +134,43 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
         }
     }
 
-    private fun showForeground(vararg actions: Action) {
-        startForeground(FOREGROUND_NOTIFICATION_ID, createRunningTaskNotification())
+    private fun showForeground() {
+        startForeground(FOREGROUND_NOTIFICATION_ID, createNotification("", emptyArray()))
     }
 
-    private fun createRunningTaskNotification(): Notification {
-        return createNotification(trackingReport, Action.ACTION_PAUSE, Action.ACTION_STOP)
+    private fun getActionsForCurrentState(): Array<Action> {
+        return timerSubscription?.let {
+            if (!it.isUnsubscribed) arrayOf(Action.ACTION_PAUSE, Action.ACTION_STOP)
+            else arrayOf(Action.ACTION_START)
+        } ?: emptyArray()
     }
 
-    private fun createNotification(userReport: UserReport?, vararg actions: Action): Notification {
+    private fun updateTaskNotification() {
+        trackingReport?.let { report ->
+            NotificationManagerCompat.from(this).also {
+                it.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, getActionsForCurrentState()))
+            }
+        }
+    }
+
+    var ss = 0
+
+    private fun createTaskNotification(report: UserReport, actions: Array<Action>): Notification {
+        val text = String.format("%s %s",
+                report.task.name,
+                TimeFormatUtil.formatMinutesToHours(report.minutes)
+                        + String.format(":%02d", ss++ % 60)) //todo: remove when is not needed anymore
+        return createNotification(text, actions)
+    }
+
+    private fun createNotification(text: CharSequence, actions: Array<Action>): Notification {
         val notificationIntent = Intent(this, HomeActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0)
 
         val notification = NotificationCompat.Builder(this, TIME_TRACKER_CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_name))
-                .also {
-                    if (userReport != null) {
-                        it.setContentText(userReport?.task?.name + " " + timePassed) //TODO: concat task name and status
-                    } else {
-                        it.setContentText("")
-                    }
-                }
+                .setContentText(text)
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
                 .also {
                     if (actions.contains(Action.ACTION_START)) it.addAction(android.R.drawable.ic_media_play, "Start", startIntent())

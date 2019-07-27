@@ -13,7 +13,6 @@ import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
-import java.util.logging.Handler
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           userReportViewModelMapper: UserReportViewModelMapper,
@@ -34,49 +33,50 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
     }
 
     override fun deleteClicked() {
-        userReportForEdit?.let {
+        userReportForEdit?.let { report ->
             reportRepository
                     .deleteTask(
-                            userReportForEdit!!.weekReportId,
-                            userReportForEdit!!.id,
-                            createDeleteReportRequestBody(userReportForEdit!!))
+                            report.weekReportId,
+                            report.id,
+                            createDeleteReportRequestBody(report))
                     .doOnSubscribe { view?.showProgress(true) }
                     .doOnTerminate { view?.showProgress(false) }
-                    .subscribe(
-                            {
-                                router?.projectDeleted(userReportForEdit)
-                            },
-                            {
-                                it?.message?.let { view?.showErrorMessage(it) }
-                            })
+                    .subscribe({
+//                        timeTrackerInteractor.discardTimer() //todo: discard timer if needed
+                        router?.projectDeleted(userReportForEdit)
+                    }, { error ->
+                        error?.message?.let { view?.showErrorMessage(it) }
+                    })
         }
     }
 
     override fun startTimerClicked() {
-        timeTrackerInteractor
-                .startTimer(userReportViewModelMapper.retransform(userReportForEdit!!))
-                .doOnCompleted {
-                    timeTrackerInteractor
-                            .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(userReportForEdit!!))
-                            .subscribe({
-                                run {
-                                    Log.d("TEST_TIMER", "Update in presenter $it")
-                                }
-                            },
-                                    {
+        userReportForEdit?.let { report ->
+            timeTrackerInteractor
+                    .startTimer(userReportViewModelMapper.retransform(report))
+                    .doOnCompleted {
+                        timeTrackerInteractor
+                                .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(report))
+                                .subscribe({
+                                    run {
+                                        Log.d("TEST_TIMER", "Update in presenter $it")
+                                    }
+                                },
                                         {
-                                            Log.d("TEST_TIMER", "Update in presenter error")
-                                        }
-                                    },
-                                    {
-                                        Log.d("TEST_TIMER", "Update in presenter complete")
+                                            {
+                                                Log.d("TEST_TIMER", "Update in presenter error")
+                                            }
+                                        },
+                                        {
+                                            Log.d("TEST_TIMER", "Update in presenter complete")
 
-                                    })
-                }
-                .subscribe {
-                    Log.d("TEST_TIMER", "OnComplete from start timer")
+                                        })
+                    }
+                    .subscribe {
+                        Log.d("TEST_TIMER", "OnComplete from start timer")
 
-                }
+                    }
+        }
     }
 
     private fun loadProjectAndTask() {

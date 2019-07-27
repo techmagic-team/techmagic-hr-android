@@ -7,11 +7,15 @@ import rx.Single
 
 class TimeTrackerInteractor(val timeTrackerRepository: ITimeTrackerRepository) {
 
+//    fun isTracking(reportId: String) = timeTrackerRepository.isTracking(reportId)
+
     fun startTimer(timeReport: UserReport) = timeTrackerRepository.startTimer(timeReport)
 
+    //todo: remove params
     fun stopTimer(userReportId: String, date: String, firstDayOfWeek: String): Single<UpdateUserReportResponse> {
         return timeTrackerRepository.stopTimer(userReportId, date, firstDayOfWeek)
     }
 
+    //todo: remove params
     fun subscribeOnTimerUpdates(userReport: UserReport) = timeTrackerRepository.subscribeOnTimeUpdates(userReport)
 }
