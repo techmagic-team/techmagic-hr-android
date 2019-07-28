@@ -1,18 +1,5 @@
 package co.techmagic.hr.data.repository.time_tracker
 
-import co.techmagic.hr.data.entity.time_report.UserReport
-import rx.Completable
-import rx.Observable
-import rx.Single
+import co.techmagic.hr.device.time_tracker.tracker_service.TimeTracker
 
-interface ITimeTrackerDataSource {
-    fun startTimer(userReport: UserReport): Completable
-
-    fun stopTimer(reportId : String): Single<UserReport>
-
-    fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport>
-
-    fun getReport(reportId : String): Single<UserReport>
-
-    fun removeReport(reportId: String) : Completable
-}
+interface ITimeTrackerDataSource : TimeTracker

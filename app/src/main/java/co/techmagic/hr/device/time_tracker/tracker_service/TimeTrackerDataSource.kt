@@ -14,10 +14,10 @@ import rx.Observable
 import rx.Single
 
 
-class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataSource {
-    var sConn: ServiceConnection? = null
-    var intent: Intent? = null
-    var timeTracker: IHrAppTimeTracker? = null
+@Suppress("UnstableApiUsage")
+class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrackerDataSource {
+    private var sConn: ServiceConnection? = null
+    private var timeTracker: TimeTracker? = null
 
     override fun startTimer(userReport: UserReport): Completable {
         return Completable.create { subscriber ->
@@ -25,11 +25,12 @@ class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataS
             sConn = object : ServiceConnection {
 
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                    timeTracker = (service as HrAppTimeTrackerBinder).timeTracker
+                    val tracker = service as TimeTracker
+                    timeTracker = tracker
                     Log.d("TEST_TIMER", "onServiceConnected")
-                    timeTracker?.startTimer(userReport)?.let {
+                    tracker.startTimer(userReport).doOnCompleted {
                         subscriber.onCompleted()
-                    } ?: subscriber.onCompleted()
+                    }
                 }
 
                 override fun onServiceDisconnected(name: ComponentName?) {
@@ -43,24 +44,17 @@ class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataS
         }
     }
 
-    override fun stopTimer(reportId: String): Single<UserReport> {
-        timeTracker ?: throw IllegalStateException("No currently connected services")
-        applicationContext.unbindService(sConn!!)
-        return timeTracker!!.stopTimer()
-    }
+    override fun pauseTimer(): Single<UserReport> = timeTracker?.pauseTimer() ?: throwNoService()
 
-    override fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport> {
-        timeTracker ?: throw IllegalStateException("No currently connected services")
-        return timeTracker!!.subscribeOnTimeUpdates(userReport)
-    }
+    override fun stopTimer(): Single<UserReport> = timeTracker?.stopTimer() ?: throwNoService()
 
-    override fun getReport(reportId: String): Single<UserReport> {
-        timeTracker ?: throw IllegalStateException("No currently connected services")
-        return timeTracker!!.getReport(reportId)
-    }
+    override fun isRunning(reportId: String): Single<Boolean> =
+            timeTracker?.isRunning(reportId) ?: throwNoService()
 
-    override fun removeReport(reportId: String): Completable {
-        timeTracker ?: throw IllegalStateException("No currently connected services")
-        return timeTracker!!.removeReport(reportId)
-    }
+    override fun subscribeOnTimeUpdates(): Observable<UserReport> =
+            timeTracker?.subscribeOnTimeUpdates() ?: throwNoService()
+
+    override fun close() = timeTracker?.close() ?: throwNoService()
+
+    private fun throwNoService(): Nothing = run { throw IllegalStateException("No currently connected services") }
 }

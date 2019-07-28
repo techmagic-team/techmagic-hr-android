@@ -8,7 +8,6 @@ import android.view.MenuItem
 import co.techmagic.hr.R
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
-import co.techmagic.hr.data.repository.time_tracker.TimeTrackerRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
 import co.techmagic.hr.device.time_tracker.tracker_service.TimeTrackerDataSource
@@ -212,12 +211,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     }
 
     private fun provideTimeTrackerInteractor(): TimeTrackerInteractor {
-        return TimeTrackerInteractor(
-                TimeTrackerRepository(
-                        TimeTrackerDataSource(applicationContext),
-                        provideTimeReportRepository()
-                )
-        )
+        return TimeTrackerInteractor(TimeTrackerDataSource(applicationContext))
     }
 
     private fun provideTimeReportRouter(fragment: BaseTimeReportDetailFragment<*>): TimeReportDetailRouter {

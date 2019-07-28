@@ -20,11 +20,14 @@ import rx.Observable
 import rx.Single
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
+import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 typealias Seconds = Long
 
-class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
+// rx.Completable is marker with @Beta annotation and considered unstable
+@Suppress("UnstableApiUsage")
+class HrAppTimeTrackerService : Service(), TimeTracker {
 
     private var trackingReportOrigin: UserReport? = null
     private var trackingReport: UserReport? = null
@@ -32,8 +35,10 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
+    private val publish: PublishSubject<UserReport> = PublishSubject.create()
+
     private val userId
-    get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
+        get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
 
     private lateinit var reportRepository: TimeReportRepository
 
@@ -66,7 +71,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                     if (isRunning || trackingReport == null) {
                         return@flatMap Single.just(userReport)
                     } else {
-                        return@flatMap stopTimer()
+                        return@flatMap pauseTimer()
                     }
                 }.flatMapCompletable {
                     Completable.create { subscriber ->
@@ -83,7 +88,8 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                                         trackingReport?.let { report ->
                                             val originalTime = trackingReportOrigin?.minutes ?: 0
                                             report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
-                                            updateTaskNotification()
+                                            updateTaskNotification(secondsPassed)
+                                            publish.onNext(report)
                                         }
                                         subscriber.onCompleted()
                                     }
@@ -97,7 +103,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     override fun pauseTimer(): Single<UserReport> {
         return Completable.create {
             timerSubscription?.unsubscribe()
-            updateTaskNotification()
+            updateTaskNotification(0)
             it.onCompleted()
         }.andThen(updateReport())
     }
@@ -112,29 +118,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport> {
-        return timer?.let {
-            return it.map { seconds ->
-                //                userReport.minutes = (trackingReportOrigin?.minutes
-//                        ?: 0) + TimeUnit.SECONDS.toMinutes(seconds).toInt()
-                return@map userReport
-            }
-        } ?: Observable.just(userReport) //throw NoTrackingReportException() //todo: fix an issue
-    }
-
-    override fun getReport(reportId: String): Single<UserReport> {
-        return isRunning(reportId).flatMap { running ->
-            if (running)
-                Single.just(trackingReport)
-            else
-                Single.error(IllegalStateException("Timer is not running for the report"))
-        }
-    }
-
-    override fun removeReport(reportId: String): Completable {
-        throw IllegalArgumentException("Do not implement this method")
-        return Completable.complete()
-    }
+    override fun subscribeOnTimeUpdates() = publish
 
     override fun close() {
         stopForeground(true)
@@ -152,9 +136,9 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                             userId
                     ))
                     .map { response ->
-                        response.report?.also {
-                            trackingReportOrigin = it.copy()
-                            trackingReport = it.copy()
+                        response.report?.also { updatedReport ->
+                            trackingReportOrigin = updatedReport.copy()
+                            trackingReport = updatedReport.copy()
                         } ?: it
                     }
         } ?: Single.error(java.lang.IllegalStateException())
@@ -192,22 +176,19 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
         } ?: emptyArray()
     }
 
-    private fun updateTaskNotification() {
+    private fun updateTaskNotification(seconds: Long) {
         trackingReport?.let { report ->
             NotificationManagerCompat.from(this).also {
-                it.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, getActionsForCurrentState()))
+                it.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, seconds, getActionsForCurrentState()))
             }
         }
     }
 
-    var ss = 0
-
-    private fun createTaskNotification(report: UserReport, actions: Array<Action>): Notification {
+    private fun createTaskNotification(report: UserReport, seconds: Long, actions: Array<Action>): Notification {
         val title = report.project
-        val text = String.format("%s %s",
+        val text = String.format("%s %s:%02d",
                 report.task.name,
-                TimeFormatUtil.formatMinutesToHours(report.minutes)
-                        + String.format(":%02d", ss++ % 60)) //todo: remove when is not needed anymore
+                TimeFormatUtil.formatMinutesToHours(report.minutes), seconds % 60)
         return createNotification(title, text, actions)
     }
 
@@ -219,7 +200,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
         val pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0)
 
-        val notification = NotificationCompat.Builder(this, TIME_TRACKER_CHANNEL_ID)
+        return NotificationCompat.Builder(this, TIME_TRACKER_CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
@@ -230,18 +211,25 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                 }
                 .setContentIntent(pendingIntent)
                 .build()
-
-        return notification
     }
 
     private fun startIntent() = PendingIntent.getService(this,
-            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_START.value }, 0)
+            0,
+            Intent(this, HrAppTimeTrackerService::class.java)
+                    .also { it.action = Action.ACTION_START.value },
+            0)
 
     private fun stopIntent() = PendingIntent.getService(this,
-            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_STOP.value }, 0)
+            0,
+            Intent(this, HrAppTimeTrackerService::class.java)
+                    .also { it.action = Action.ACTION_STOP.value },
+            0)
 
     private fun pauseIntent() = PendingIntent.getService(this,
-            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_PAUSE.value }, 0)
+            0,
+            Intent(this, HrAppTimeTrackerService::class.java)
+                    .also { it.action = Action.ACTION_PAUSE.value },
+            0)
 
     companion object {
         const val TIME_TRACKER_CHANNEL_ID = "TIME_TRACKER_CHANNEL"

@@ -5,7 +5,7 @@ import rx.Completable
 import rx.Observable
 import rx.Single
 
-interface IHrAppTimeTracker {
+interface TimeTracker {
     fun startTimer(userReport: UserReport): Completable
 
     fun pauseTimer(): Single<UserReport>
@@ -14,11 +14,7 @@ interface IHrAppTimeTracker {
 
     fun isRunning(reportId : String): Single<Boolean>
 
-    fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport>
-
-    fun getReport(reportId : String): Single<UserReport>
-
-    fun removeReport(reportId: String) : Completable
+    fun subscribeOnTimeUpdates(): Observable<UserReport>
 
     fun close()
 }

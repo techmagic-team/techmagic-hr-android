@@ -42,7 +42,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                     .doOnSubscribe { view?.showProgress(true) }
                     .doOnTerminate { view?.showProgress(false) }
                     .subscribe({
-//                        timeTrackerInteractor.discardTimer() //todo: discard timer if needed
+                        //                        timeTrackerInteractor.discardTimer() //todo: discard timer if needed
                         router?.projectDeleted(userReportForEdit)
                     }, { error ->
                         error?.message?.let { view?.showErrorMessage(it) }
@@ -55,22 +55,14 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
             timeTrackerInteractor
                     .startTimer(userReportViewModelMapper.retransform(report))
                     .doOnCompleted {
-                        timeTrackerInteractor
-                                .subscribeOnTimerUpdates(userReportViewModelMapper.retransform(report))
+                        timeTrackerInteractor.subscribeOnTimeUpdates()
                                 .subscribe({
-                                    run {
-                                        Log.d("TEST_TIMER", "Update in presenter $it")
-                                    }
-                                },
-                                        {
-                                            {
-                                                Log.d("TEST_TIMER", "Update in presenter error")
-                                            }
-                                        },
-                                        {
-                                            Log.d("TEST_TIMER", "Update in presenter complete")
-
-                                        })
+                                    Log.d("TEST_TIMER", "Update in presenter $it")
+                                }, {
+                                    Log.d("TEST_TIMER", "Update in presenter error")
+                                }, {
+                                    Log.d("TEST_TIMER", "Update in presenter complete")
+                                })
                     }
                     .subscribe {
                         Log.d("TEST_TIMER", "OnComplete from start timer")
