@@ -2,6 +2,8 @@ package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
 import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -40,12 +42,7 @@ class HrAppTimeTrackerPresenter(
 
         subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
                 .throttleWithTimeout(1, TimeUnit.MINUTES) // There is no seconds on the UI, no need to update too often
-                .subscribe({
-                    findReport(it)?.let { reportViewModel ->
-                        reportViewModel.minutes = it.minutes
-                        notifyDateChanged(reportViewModel.date)
-                    }
-                }, this::showError)
+                .subscribe(this::updateReportViewModel, this::showError)
     }
 
     override fun onViewDestroyed() {
@@ -173,31 +170,35 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onTaskTimerToggled(userReportViewModel: UserReportViewModel) {
-        val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
-        timeTrackerInteractor.startTimer(userReport)
-//                .doOnSubscribe { view?.showProgress(true) }
-//                .doOnTerminate { view?.showProgress(false) }
-                .subscribe({
-                    it.previous?.date?.let { previousTimerDate ->
-                        getDayReports(previousTimerDate)?.forEach { model ->
-                            model.isCurrentlyTracking = false
-                        }
-                        notifyDateChanged(previousTimerDate)
-                    }
+        if (userReportViewModel.isCurrentlyTracking) {
+            timeTrackerInteractor.stopTimer().subscribe({
+                updateReportViewModel(TaskUpdate(it, TaskTimerState.STOPPED))
+            }, this::showError)
 
-                    getDayReports(userReport.date)?.forEach { model ->
-                        model.isCurrentlyTracking = model.id == userReport.id
-                    }
-                    notifyDateChanged(userReport.date)
-                }, this::showError)
+        } else {
+            val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
+            timeTrackerInteractor.startTimer(userReport)
+                    .subscribe({
+                        it.previous?.let { updateReportViewModel(TaskUpdate(it, TaskTimerState.STOPPED)) }
+                        updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING))
+                    }, this::showError)
+        }
     }
 
-    private fun showError(t: Throwable) {
-        view?.showErrorMessage(t.localizedMessage ?: "Error occurred!")
+    private fun updateReportViewModel(taskUpdate: TaskUpdate) {
+        findReport(taskUpdate.report)?.let { reportViewModel ->
+            reportViewModel.minutes = taskUpdate.report.minutes
+            reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
+            notifyDateChanged(reportViewModel.date)
+        }
     }
 
     private fun notifyDateChanged(date: Date) {
         view?.notifyDayReportsChanged(calendar(date).dateOnly())
+    }
+
+    private fun showError(t: Throwable) {
+        view?.showErrorMessage(t.localizedMessage ?: "Error occurred!")
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]

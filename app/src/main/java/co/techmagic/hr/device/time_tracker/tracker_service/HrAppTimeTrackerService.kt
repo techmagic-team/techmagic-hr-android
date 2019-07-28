@@ -35,7 +35,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
-    private val publish: PublishSubject<UserReport> = PublishSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
 
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
@@ -89,7 +89,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                         val originalTime = trackingReportOrigin?.minutes ?: 0
                                         report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
                                         updateTaskNotification(secondsPassed)
-                                        publish.onNext(report)
+                                        publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
                                     }
                                 }
                             }
@@ -135,6 +135,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                         response.report?.also { updatedReport ->
                             trackingReportOrigin = updatedReport.copy()
                             trackingReport = updatedReport.copy()
+                            publish.onNext(TaskUpdate(updatedReport, TaskTimerState.STOPPED))
                         } ?: it
                     }
         } ?: Single.error(java.lang.IllegalStateException())

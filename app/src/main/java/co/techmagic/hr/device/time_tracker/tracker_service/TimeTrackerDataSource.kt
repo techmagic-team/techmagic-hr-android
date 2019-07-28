@@ -19,7 +19,7 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
     private var sConn: ServiceConnection? = null
     private var timeTracker: TimeTracker? = null
 
-    private val publish: PublishSubject<UserReport> = PublishSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
 
     override fun startTimer(userReport: UserReport): Single<TimerTasks> {
         return Single.create {
@@ -57,7 +57,7 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
     override fun isRunning(): Single<RunningTask> =
             timeTracker?.isRunning() ?: Single.just(RunningTask(null))
 
-    override fun subscribeOnTimeUpdates(): Observable<UserReport> = publish
+    override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish
 
     override fun close() = timeTracker?.close() ?: throwNoService()
 
