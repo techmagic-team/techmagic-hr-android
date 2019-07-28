@@ -12,6 +12,7 @@ import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -41,7 +42,7 @@ class HrAppTimeTrackerPresenter(
         view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
 
         subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
-                .throttleWithTimeout(1, TimeUnit.MINUTES) // There is no seconds on the UI, no need to update too often
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::updateReportViewModel, this::showError)
     }
 
@@ -171,21 +172,29 @@ class HrAppTimeTrackerPresenter(
 
     override fun onTaskTimerToggled(userReportViewModel: UserReportViewModel) {
         if (userReportViewModel.isCurrentlyTracking) {
-            timeTrackerInteractor.stopTimer().subscribe({
-                updateReportViewModel(TaskUpdate(it, TaskTimerState.STOPPED))
-            }, this::showError)
+            timeTrackerInteractor.stopTimer().subscribe({ updateReportViewModel(TaskUpdate(it, TaskTimerState.RUNNING)) }, this::showError)
 
         } else {
             val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
             timeTrackerInteractor.startTimer(userReport)
-                    .subscribe({
-                        it.previous?.let { updateReportViewModel(TaskUpdate(it, TaskTimerState.STOPPED)) }
-                        updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING))
-                    }, this::showError)
+                    .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
         }
     }
 
+    private var runningReport: UserReport? = null
+
     private fun updateReportViewModel(taskUpdate: TaskUpdate) {
+        if (runningReport?.id.equals(taskUpdate.report.id)) {
+            when (taskUpdate.state) {
+                TaskTimerState.RUNNING -> return
+                TaskTimerState.STOPPED -> runningReport = null
+            }
+        }
+
+        if (taskUpdate.state == TaskTimerState.RUNNING) {
+            runningReport = taskUpdate.report
+        }
+
         findReport(taskUpdate.report)?.let { reportViewModel ->
             reportViewModel.minutes = taskUpdate.report.minutes
             reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
