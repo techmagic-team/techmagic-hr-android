@@ -8,7 +8,9 @@ import rx.Single
 interface IHrAppTimeTracker {
     fun startTimer(userReport: UserReport): Completable
 
-    fun stopTimer(reportId : String): Single<UserReport>
+    fun pauseTimer(): Single<UserReport>
+
+    fun stopTimer(): Single<UserReport>
 
     fun isRunning(reportId : String): Single<Boolean>
 

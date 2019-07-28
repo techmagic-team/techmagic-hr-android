@@ -8,9 +8,13 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import co.techmagic.hr.R
+import co.techmagic.hr.RepositoriesProvider
+import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
 import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
-import co.techmagic.hr.presentation.util.TimeFormatUtil
+import co.techmagic.hr.presentation.util.*
 import rx.Completable
 import rx.Observable
 import rx.Single
@@ -28,14 +32,24 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
+    private val userId
+    get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
+
+    private lateinit var reportRepository: TimeReportRepository
+
+    override fun onCreate() {
+        super.onCreate()
+        reportRepository = (application as RepositoriesProvider).provideTimeReportRepository()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel(TIME_TRACKER_CHANNEL_ID)
 
         when (intent?.action) {
             null -> showForeground()
             Action.ACTION_START.value -> trackingReport?.let { startTimer(it) }
-            Action.ACTION_PAUSE.value ->  trackingReport?.let { stopTimer(it.id) } //todo: pause timer
-            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer(it.id) }
+            Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe() }
+            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe() }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -49,10 +63,10 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     override fun startTimer(userReport: UserReport): Completable {
         return isRunning(userReport.id)
                 .flatMap { isRunning ->
-                    if (isRunning) {
+                    if (isRunning || trackingReport == null) {
                         return@flatMap Single.just(userReport)
                     } else {
-                        return@flatMap stopTimer(userReport.id)
+                        return@flatMap stopTimer()
                     }
                 }.flatMapCompletable {
                     Completable.create { subscriber ->
@@ -80,11 +94,16 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                 }
     }
 
-    override fun stopTimer(reportId: String): Single<UserReport> {
-        // todo: no need for reportId as we already have instance of running report
-        timerSubscription?.unsubscribe()
-        updateTaskNotification()
-        return Single.just(trackingReport)
+    override fun pauseTimer(): Single<UserReport> {
+        return Completable.create {
+            timerSubscription?.unsubscribe()
+            updateTaskNotification()
+            it.onCompleted()
+        }.andThen(updateReport())
+    }
+
+    override fun stopTimer(): Single<UserReport> {
+        return pauseTimer().doAfterTerminate { close() }
     }
 
     override fun isRunning(reportId: String): Single<Boolean> {
@@ -118,8 +137,36 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     }
 
     override fun close() {
-        //TODO impl
+        stopForeground(true)
     }
+
+    private fun updateReport(): Single<UserReport> {
+        return trackingReport?.let {
+            val reportDate = it.date.toCalendar()
+            return@let reportRepository.updateTask(it.weekReportId, it.id,
+                    createUpdateTaskRequestBody(
+                            reportDate.formatDate(ISO_WITH_TIME_ZONE_DATE_FORMAT),
+                            reportDate.firstDayOfWeekDate().formatDate(), it.minutes, it.note,
+                            null,
+                            null,
+                            userId
+                    ))
+                    .map { response ->
+                        response.report?.also {
+                            trackingReportOrigin = it.copy()
+                            trackingReport = it.copy()
+                        } ?: it
+                    }
+        } ?: Single.error(java.lang.IllegalStateException())
+    }
+
+    private fun createUpdateTaskRequestBody(date: String,
+                                            firstDayOfWeek: String,
+                                            hours: Int,
+                                            note: String,
+                                            projectId: String?,
+                                            taskId: String?,
+                                            userId: String) = UpdateTaskRequestBody(date, firstDayOfWeek, hours, note, HrAppBaseTimeReportDetailPresenter.RATE, projectId, taskId, userId)
 
     private fun createNotificationChannel(channelId: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -174,8 +221,8 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
                 .also {
                     if (actions.contains(Action.ACTION_START)) it.addAction(android.R.drawable.ic_media_play, "Start", startIntent())
-                    if (actions.contains(Action.ACTION_PAUSE)) it.addAction(android.R.drawable.ic_media_pause, "Pause", stopIntent())
-                    if (actions.contains(Action.ACTION_STOP)) it.addAction(R.drawable.ic_tracking_stop, "Stop", pauseIntent())
+                    if (actions.contains(Action.ACTION_PAUSE)) it.addAction(android.R.drawable.ic_media_pause, "Pause", pauseIntent())
+                    if (actions.contains(Action.ACTION_STOP)) it.addAction(R.drawable.ic_tracking_stop, "Stop", stopIntent())
                 }
                 .setContentIntent(pendingIntent)
                 .build()
@@ -187,10 +234,10 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
             0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_START.value }, 0)
 
     private fun stopIntent() = PendingIntent.getService(this,
-            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_PAUSE.value }, 0)
+            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_STOP.value }, 0)
 
     private fun pauseIntent() = PendingIntent.getService(this,
-            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_STOP.value }, 0)
+            0, Intent(this, HrAppTimeTrackerService::class.java).also { it.action = Action.ACTION_PAUSE.value }, 0)
 
     companion object {
         const val TIME_TRACKER_CHANNEL_ID = "TIME_TRACKER_CHANNEL"

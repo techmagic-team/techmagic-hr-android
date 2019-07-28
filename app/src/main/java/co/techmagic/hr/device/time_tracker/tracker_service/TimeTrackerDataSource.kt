@@ -46,7 +46,7 @@ class TimeTrackerDataSource(val applicationContext: Context) : ITimeTrackerDataS
     override fun stopTimer(reportId: String): Single<UserReport> {
         timeTracker ?: throw IllegalStateException("No currently connected services")
         applicationContext.unbindService(sConn!!)
-        return timeTracker!!.stopTimer(reportId)
+        return timeTracker!!.stopTimer()
     }
 
     override fun subscribeOnTimeUpdates(userReport: UserReport): Observable<UserReport> {
