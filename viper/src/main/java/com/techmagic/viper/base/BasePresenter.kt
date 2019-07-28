@@ -79,6 +79,10 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
         }
     }
 
+    protected fun showError(t: Throwable) {
+        view?.showErrorMessage(t.localizedMessage ?: "Error occurred!")
+    }
+
     companion object {
         fun <R : Router, P : BasePresenter<V, R>, V : View> bind(view: V, presenter: P, router: R) {
             presenter.view = view

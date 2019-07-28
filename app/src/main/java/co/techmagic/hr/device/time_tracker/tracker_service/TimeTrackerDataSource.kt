@@ -11,7 +11,7 @@ import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.repository.time_tracker.ITimeTrackerDataSource
 import rx.Observable
 import rx.Single
-import rx.subjects.PublishSubject
+import rx.subjects.BehaviorSubject
 
 
 @Suppress("UnstableApiUsage")
@@ -19,7 +19,7 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
     private var sConn: ServiceConnection? = null
     private var timeTracker: TimeTracker? = null
 
-    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
+    private val publish: BehaviorSubject<TaskUpdate> = BehaviorSubject.create()
 
     override fun startTimer(userReport: UserReport): Single<TimerTasks> {
         return Single.create {

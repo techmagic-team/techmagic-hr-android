@@ -14,7 +14,6 @@ import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -204,10 +203,6 @@ class HrAppTimeTrackerPresenter(
 
     private fun notifyDateChanged(date: Date) {
         view?.notifyDayReportsChanged(calendar(date).dateOnly())
-    }
-
-    private fun showError(t: Throwable) {
-        view?.showErrorMessage(t.localizedMessage ?: "Error occurred!")
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]

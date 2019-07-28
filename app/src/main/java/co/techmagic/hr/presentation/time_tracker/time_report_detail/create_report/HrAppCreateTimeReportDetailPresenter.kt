@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report
 
 import co.techmagic.hr.data.entity.time_report.ReportTaskRequestBody
+import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
@@ -9,6 +10,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
+import rx.Observable
 
 class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepository,
                                            val timeTrackerInteractor: TimeTrackerInteractor,
@@ -23,7 +25,14 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
     }
 
     override fun makeSaveRequest() {
+        createReport().subscribe(this::onReportCreated, this::showError)
+    }
+
+    override fun startTimerClicked() {
         createReport()
+                .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
+                .map { it.current }
+                .subscribe(this::onReportCreated, this::showError)
     }
 
     private fun loadLastSelectedProjectWithTask() {
@@ -36,8 +45,8 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 .subscribe({}, {})
     }
 
-    private fun createReport() {
-        reportRepository
+    private fun createReport(): Observable<UserReport> {
+        return reportRepository
                 .reportTask(createReportTaskRequestBody(
                         reportDate.formatDate(),
                         reportDate.firstDayOfWeekDate().formatDate(),
@@ -50,16 +59,12 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                         userId
                 ))
                 .doOnSubscribe { view?.showProgress(true) }
-                .subscribe(
-                        {
-                            it.report?.let { report -> router?.onReportAdded(userReportViewModelMapper.transform(report)) }
-                            view?.showProgress(false)
-                        },
-                        {
-                            view?.showProgress(false)
-                            it.message?.let { view?.showErrorMessage(it) }
-                        }
-                )
+                .doAfterTerminate { view?.showProgress(false) }
+                .map { it.report }
+    }
+
+    private fun onReportCreated(report: UserReport) {
+        router?.onReportAdded(userReportViewModelMapper.transform(report))
     }
 
     private fun createReportTaskRequestBody(date: String,
