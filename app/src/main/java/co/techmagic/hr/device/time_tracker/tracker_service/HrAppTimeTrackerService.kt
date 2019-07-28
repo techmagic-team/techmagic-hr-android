@@ -182,7 +182,7 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     }
 
     private fun showForeground() {
-        startForeground(FOREGROUND_NOTIFICATION_ID, createNotification("", emptyArray()))
+        startForeground(FOREGROUND_NOTIFICATION_ID, createNotification())
     }
 
     private fun getActionsForCurrentState(): Array<Action> {
@@ -203,20 +203,24 @@ class HrAppTimeTrackerService : Service(), IHrAppTimeTracker {
     var ss = 0
 
     private fun createTaskNotification(report: UserReport, actions: Array<Action>): Notification {
+        val title = report.project
         val text = String.format("%s %s",
                 report.task.name,
                 TimeFormatUtil.formatMinutesToHours(report.minutes)
                         + String.format(":%02d", ss++ % 60)) //todo: remove when is not needed anymore
-        return createNotification(text, actions)
+        return createNotification(title, text, actions)
     }
 
-    private fun createNotification(text: CharSequence, actions: Array<Action>): Notification {
+    private fun createNotification(title: CharSequence = getString(R.string.app_name),
+                                   text: CharSequence = "",
+                                   actions: Array<Action> = emptyArray()): Notification {
+
         val notificationIntent = Intent(this, HomeActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0)
 
         val notification = NotificationCompat.Builder(this, TIME_TRACKER_CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_name))
+                .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
                 .also {
