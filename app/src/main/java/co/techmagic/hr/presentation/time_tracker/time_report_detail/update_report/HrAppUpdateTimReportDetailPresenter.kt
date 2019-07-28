@@ -54,7 +54,9 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         userReportForEdit?.let { report ->
             timeTrackerInteractor
                     .startTimer(userReportViewModelMapper.retransform(report))
-                    .doOnCompleted {
+                    .subscribe {
+                        Log.d("TEST_TIMER", "OnComplete from start timer")
+
                         timeTrackerInteractor.subscribeOnTimeUpdates()
                                 .subscribe({
                                     Log.d("TEST_TIMER", "Update in presenter $it")
@@ -63,10 +65,6 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                                 }, {
                                     Log.d("TEST_TIMER", "Update in presenter complete")
                                 })
-                    }
-                    .subscribe {
-                        Log.d("TEST_TIMER", "OnComplete from start timer")
-
                     }
         }
     }

@@ -10,6 +10,8 @@ import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
 import co.techmagic.hr.data.store.client.ApiClient
+import co.techmagic.hr.device.time_tracker.tracker_service.TimeTrackerDataSource
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.ui.manager.AccountManager
 import co.techmagic.hr.presentation.util.LocaleUtil
@@ -49,9 +51,13 @@ class TechMagicHrApplication : Application(), RepositoriesProvider {
         val timeTrackerApi = retrofit.create(TimeTrackerApi::class.java)
         return TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager(), AccountManager(applicationContext))
     }
+
+    override fun provideTimeTrackerInteractor(): TimeTrackerInteractor =
+            TimeTrackerInteractor(TimeTrackerDataSource(applicationContext))
 }
 
 //TODO: setup DI framework
 interface RepositoriesProvider {
     fun provideTimeReportRepository(): TimeReportRepository
+    fun provideTimeTrackerInteractor(): TimeTrackerInteractor
 }

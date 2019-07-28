@@ -52,9 +52,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
         when (intent?.action) {
             null -> showForeground()
-            Action.ACTION_START.value -> trackingReport?.let { startTimer(it) }
-            Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe() }
-            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe() }
+            Action.ACTION_START.value -> trackingReport?.let { startTimer(it).subscribe({}, {}) }
+            Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe({}, {}) }
+            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe({}, {}) } //todo: handle possible errors?
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -65,38 +65,34 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         return HrAppTimeTrackerBinder(this)
     }
 
-    override fun startTimer(userReport: UserReport): Completable {
-        return isRunning(userReport.id)
-                .flatMap { isRunning ->
-                    if (isRunning || trackingReport == null) {
-                        return@flatMap Single.just(userReport)
+    override fun startTimer(userReport: UserReport): Single<TimerTasks> {
+        val report = userReport.copy()
+        return isRunning()
+                .flatMap { runningTask ->
+                    if (runningTask.report == null || runningTask.report.id == report.id) {
+                        return@flatMap Single.just(TimerTasks(null, report))
                     } else {
-                        return@flatMap pauseTimer()
+                        return@flatMap pauseTimer().map { TimerTasks(it, report) }
                     }
-                }.flatMapCompletable {
-                    Completable.create { subscriber ->
-                        trackingReportOrigin = userReport.copy()
-                        trackingReport = userReport.copy()
+                }.doOnEach {
+                    trackingReportOrigin = report.copy()
+                    trackingReport = report.copy()
 
-                        timer = Observable
-                                .interval(1, 1, TimeUnit.SECONDS)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .publish().also {
-                                    timerSubscription = it.connect()
+                    timer = Observable
+                            .interval(1, 1, TimeUnit.SECONDS)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .publish().also {
+                                timerSubscription = it.connect()
 
-                                    it.subscribe { secondsPassed ->
-                                        trackingReport?.let { report ->
-                                            val originalTime = trackingReportOrigin?.minutes ?: 0
-                                            report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
-                                            updateTaskNotification(secondsPassed)
-                                            publish.onNext(report)
-                                        }
-                                        subscriber.onCompleted()
+                                it.subscribe { secondsPassed ->
+                                    trackingReport?.let { report ->
+                                        val originalTime = trackingReportOrigin?.minutes ?: 0
+                                        report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
+                                        updateTaskNotification(secondsPassed)
+                                        publish.onNext(report)
                                     }
                                 }
-                    }
-                }.also {
-                    it.subscribe()
+                            }
                 }
     }
 
@@ -112,8 +108,8 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         return pauseTimer().doAfterTerminate { close() }
     }
 
-    override fun isRunning(reportId: String): Single<Boolean> {
-        return Single.just(trackingReport?.id == reportId)
+    override fun isRunning(): Single<RunningTask> {
+        return Single.just(RunningTask(trackingReport?.copy()))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
     }

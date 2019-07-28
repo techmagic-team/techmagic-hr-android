@@ -12,7 +12,7 @@ data class UserReportViewModel(
         val task: ReportNameViewModel,
         val note: String,
         var minutes: Int,
-        val isCurrentlyTracking: Boolean,
+        var isCurrentlyTracking: Boolean,
         val isLocked: Boolean,
         val weekReportId: String,
         val status: String,

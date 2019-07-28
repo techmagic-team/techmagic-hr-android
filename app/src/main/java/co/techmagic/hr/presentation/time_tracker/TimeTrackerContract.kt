@@ -45,5 +45,5 @@ interface TimeTrackerPresenter : Presenter {
     fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?)
     fun onTaskDeleted(userReportViewModel: UserReportViewModel?)
 
-    fun onTaskTimerToggled(position: Int)
+    fun onTaskTimerToggled(userReportViewModel: UserReportViewModel)
 }

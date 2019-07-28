@@ -9,9 +9,9 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.repository.time_tracker.ITimeTrackerDataSource
-import rx.Completable
 import rx.Observable
 import rx.Single
+import rx.subjects.PublishSubject
 
 
 @Suppress("UnstableApiUsage")
@@ -19,8 +19,10 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
     private var sConn: ServiceConnection? = null
     private var timeTracker: TimeTracker? = null
 
-    override fun startTimer(userReport: UserReport): Completable {
-        return Completable.create { subscriber ->
+    private val publish: PublishSubject<UserReport> = PublishSubject.create()
+
+    override fun startTimer(userReport: UserReport): Single<TimerTasks> {
+        return Single.create {
             val intent = Intent(applicationContext, HrAppTimeTrackerService::class.java)
             sConn = object : ServiceConnection {
 
@@ -28,8 +30,12 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
                     val tracker = service as TimeTracker
                     timeTracker = tracker
                     Log.d("TEST_TIMER", "onServiceConnected")
-                    tracker.startTimer(userReport).doOnCompleted {
-                        subscriber.onCompleted()
+                    tracker.startTimer(userReport).subscribe { tasks ->
+                        it.onSuccess(tasks)
+                    }
+
+                    tracker.subscribeOnTimeUpdates().subscribe {
+                        publish.onNext(it)
                     }
                 }
 
@@ -48,11 +54,10 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
 
     override fun stopTimer(): Single<UserReport> = timeTracker?.stopTimer() ?: throwNoService()
 
-    override fun isRunning(reportId: String): Single<Boolean> =
-            timeTracker?.isRunning(reportId) ?: throwNoService()
+    override fun isRunning(): Single<RunningTask> =
+            timeTracker?.isRunning() ?: Single.just(RunningTask(null))
 
-    override fun subscribeOnTimeUpdates(): Observable<UserReport> =
-            timeTracker?.subscribeOnTimeUpdates() ?: throwNoService()
+    override fun subscribeOnTimeUpdates(): Observable<UserReport> = publish
 
     override fun close() = timeTracker?.close() ?: throwNoService()
 
