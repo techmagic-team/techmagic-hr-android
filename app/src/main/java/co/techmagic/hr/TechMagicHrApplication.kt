@@ -2,10 +2,6 @@ package co.techmagic.hr
 
 import android.app.Application
 import android.content.Context
-
-import com.crashlytics.android.Crashlytics
-import com.google.firebase.FirebaseApp
-
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
@@ -16,6 +12,8 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.ui.manager.AccountManager
 import co.techmagic.hr.presentation.util.LocaleUtil
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil
+import com.crashlytics.android.Crashlytics
+import com.google.firebase.FirebaseApp
 import io.fabric.sdk.android.Fabric
 import io.github.eterverda.sntp.SNTP
 import io.github.eterverda.sntp.android.AndroidSNTPCacheFactory
@@ -23,6 +21,10 @@ import io.github.eterverda.sntp.android.AndroidSNTPClientFactory
 
 
 class TechMagicHrApplication : Application(), RepositoriesProvider {
+
+    private val timeTrackerDataSource: TimeTrackerDataSource by lazy {
+        TimeTrackerDataSource(applicationContext)
+    }
 
     override fun attachBaseContext(base: Context) {
         // Always English language for the app
@@ -53,7 +55,7 @@ class TechMagicHrApplication : Application(), RepositoriesProvider {
     }
 
     override fun provideTimeTrackerInteractor(): TimeTrackerInteractor =
-            TimeTrackerInteractor(TimeTrackerDataSource(applicationContext))
+            TimeTrackerInteractor(timeTrackerDataSource)
 }
 
 //TODO: setup DI framework

@@ -41,7 +41,6 @@ class HrAppTimeTrackerPresenter(
         view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
 
         subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::updateReportViewModel, this::showError)
     }
 

@@ -114,7 +114,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun subscribeOnTimeUpdates() = publish
+    override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
 
     override fun close() {
         stopForeground(true)
