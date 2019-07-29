@@ -75,10 +75,9 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
     }
 
     override fun startTimer() {
-        userReportForEdit?.let { report ->
+        userReportForEdit?.let {
             updateReport().flatMap {
-                timeTrackerInteractor.startTimer(userReportViewModelMapper.retransform(report))
-                        .map { it.current }
+                timeTrackerInteractor.startTimer(it).map { it.current }
             }.subscribe(this::onReportUpdated, this::showError)
         }
     }
