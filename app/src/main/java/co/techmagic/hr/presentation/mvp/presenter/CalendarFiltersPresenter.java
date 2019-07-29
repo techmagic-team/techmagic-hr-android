@@ -67,6 +67,7 @@ public class CalendarFiltersPresenter extends BasePresenter<CalendarFiltersView>
     }
 
 
+    //fixme: change to delivery?
     public void onDepartmentFilterClick() {
         if (departments == null || departments.isEmpty()) {
             performGetDepartmentFiltersRequest();
