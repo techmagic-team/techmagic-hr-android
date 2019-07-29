@@ -1,8 +1,9 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report
 
-import android.util.Log
 import co.techmagic.hr.data.entity.time_report.DeleteTaskRequestBody
 import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
+import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
 import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
@@ -13,6 +14,7 @@ import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
 import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
+import rx.Single
 
 class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                           userReportViewModelMapper: UserReportViewModelMapper,
@@ -22,50 +24,62 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
 
     var userReportForEdit: UserReportViewModel? = null
 
+    private var isTracking: Boolean = false
+        set(value) {
+            if (field != value) {
+                view?.setEditable(isTracking)
+            }
+            field = value
+        }
+
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         loadProjectAndTask()
         view?.setDeleteReportButtonVisible(true)
+
+        subscription = timeTrackerInteractor.subscribeOnTimeUpdates().subscribe({ taskUpdate ->
+            if (userReportForEdit?.id.equals(taskUpdate.report.id)) {
+                isTracking = taskUpdate.state == TaskTimerState.RUNNING
+                view?.showTime(TimeFormatUtil.formatMinutesToHours(taskUpdate.report.minutes))
+            }
+        }, this::showError)
     }
 
     override fun makeSaveRequest() {
-        updateReport()
+        updateReport().subscribe(this::onReportUpdated, this::showError)
     }
 
     override fun deleteClicked() {
         userReportForEdit?.let { report ->
-            reportRepository
-                    .deleteTask(
-                            report.weekReportId,
-                            report.id,
-                            createDeleteReportRequestBody(report))
-                    .doOnSubscribe { view?.showProgress(true) }
-                    .doOnTerminate { view?.showProgress(false) }
-                    .subscribe({
-                        //                        timeTrackerInteractor.discardTimer() //todo: discard timer if needed
+            timeTrackerInteractor.isRunning()
+                    .map { it.report?.id == report.id }
+                    .flatMap { running ->
+                        if (running) {
+                            timeTrackerInteractor.stopTimer()
+                        } else {
+                            Single.just(userReportViewModelMapper.retransform(report))
+                        }
+                    }.flatMap {
+                        reportRepository
+                                .deleteTask(
+                                        it.weekReportId,
+                                        it.id,
+                                        createDeleteReportRequestBody(userReportViewModelMapper.transform(it)))
+                                .doOnSubscribe { view?.showProgress(true) }
+                                .doOnTerminate { view?.showProgress(false) }
+                                .toSingle()
+                    }.subscribe({
                         router?.projectDeleted(userReportForEdit)
-                    }, { error ->
-                        error?.message?.let { view?.showErrorMessage(it) }
-                    })
+                    }, this::showError)
         }
     }
 
     override fun startTimerClicked() {
         userReportForEdit?.let { report ->
-            timeTrackerInteractor
-                    .startTimer(userReportViewModelMapper.retransform(report))
-                    .subscribe {
-                        Log.d("TEST_TIMER", "OnComplete from start timer")
-
-                        timeTrackerInteractor.subscribeOnTimeUpdates()
-                                .subscribe({
-                                    Log.d("TEST_TIMER", "Update in presenter $it")
-                                }, {
-                                    Log.d("TEST_TIMER", "Update in presenter error")
-                                }, {
-                                    Log.d("TEST_TIMER", "Update in presenter complete")
-                                })
-                    }
+            updateReport().flatMap {
+                timeTrackerInteractor.startTimer(userReportViewModelMapper.retransform(report))
+                        .map { it.current }
+            }.subscribe(this::onReportUpdated, this::showError)
         }
     }
 
@@ -103,25 +117,20 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         view?.showTime(TimeFormatUtil.formatMinutesToHours(timeInMinutes))
     }
 
-    private fun updateReport() {
-        reportRepository
+    private fun updateReport(): Single<UserReport> {
+        return reportRepository
                 .updateTask(userReportForEdit!!.weekReportId, userReportForEdit!!.id, createUpdateTaskRequestBody(
                         reportDate.formatDate(ISO_WITH_TIME_ZONE_DATE_FORMAT), reportDate
                         .firstDayOfWeekDate().formatDate(), timeInMinutes, description, projectViewModel?.id,
                         projectTaskViewModel?.task?.id, userId
                 ))
                 .doOnSubscribe { view?.showProgress(true) }
-                .subscribe(
-                        {
-                            view?.showProgress(false)
-                            it.report?.let { report -> router?.onReportUpdated(userReportViewModelMapper.transform(report), userReportForEdit?.id) }
-                        },
-                        {
-                            view?.showProgress(false)
-                            it.message?.let { view?.showErrorMessage(it) }
-                            it?.printStackTrace()
-                        }
-                )
+                .doAfterTerminate { view?.showProgress(false) }
+                .map { it.report }
+    }
+
+    private fun onReportUpdated(report: UserReport) {
+        router?.onReportUpdated(userReportViewModelMapper.transform(report), userReportForEdit?.id)
     }
 
     private fun createUpdateTaskRequestBody(date: String,

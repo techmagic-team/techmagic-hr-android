@@ -231,6 +231,7 @@
     <string name="tm_hr_time_report_detail_default_time_one_hour">1 hour</string>
     <string name="tm_hr_time_report_detail_default_time_eight_hours">8 hours</string>
     <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
+    <string name="tm_hr_time_report_detail_stop_timer">Stop timer</string>
     <string name="tm_hr_time_report_detail_save">Save</string>
     <string name="tm_hr_time_report_detail_delete">Delete</string>
 

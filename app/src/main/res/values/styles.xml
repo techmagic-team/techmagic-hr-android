@@ -285,7 +285,7 @@
     </style>
 
     <style name="TimeReportDetailSecondaryButtonStyle" parent="TimeReportDetailActionButtonStyle">
-        <item name="android:textColor">@color/turquoise</item>
+        <item name="android:textColor">@color/turquoise</item> <!--todo: color selector for start/stop-->
         <item name="android:background">@drawable/bg_secondary_button</item>
     </style>
 

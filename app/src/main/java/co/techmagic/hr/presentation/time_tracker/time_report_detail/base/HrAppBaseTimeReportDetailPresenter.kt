@@ -1,6 +1,9 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import co.techmagic.hr.R
+import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
 import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
@@ -10,6 +13,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeValue
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
+import rx.Subscription
 import java.util.*
 
 abstract class HrAppBaseTimeReportDetailPresenter
@@ -42,6 +46,8 @@ abstract class HrAppBaseTimeReportDetailPresenter
             showProjectTask()
         }
 
+    protected var subscription: Subscription? = null
+
     open var companyId: String = SharedPreferencesUtil.readUser().company.id
     open var userId: String = SharedPreferencesUtil.readUser().id
     open var timeInMinutes = 0
@@ -50,6 +56,12 @@ abstract class HrAppBaseTimeReportDetailPresenter
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         view?.showDate(getFormattedDate())
+    }
+
+    override fun onViewDestroyed() {
+        subscription?.unsubscribe()
+        subscription = null
+        super.onViewDestroyed()
     }
 
     override fun onVisibleToUser() {
@@ -102,6 +114,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
     }
 
     override fun startTimerClicked() {
+
     }
 
     override fun saveClicked() {

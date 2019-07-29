@@ -27,4 +27,30 @@ class UpdateTimeReportFragment : BaseTimeReportDetailFragment<UpdateTimeReportPr
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun setEditable(isEditable: Boolean) {
+        arrayOf(
+                flTimeReportDetailContainer,
+                tvSelectedProject,
+                tvTimeReportDetailProjectError,
+                tvSelectedProjectTask,
+                tvTimeReportDetailTaskError,
+                edDescription,
+                tvDescriptionError,
+                btnFifteenMinutes,
+                btnThirtyMinutes,
+                btnOneHour,
+                btnEightHours,
+                edTime,
+                btnIncreaseTime,
+                btnReduceTime,
+//                btnStartTimer,
+                btnSave
+        ).forEach { it.isEnabled = isEditable }
+
+        btnStartTimer.setText(
+                if (isEditable) R.string.tm_hr_time_report_detail_start_timer
+                else R.string.tm_hr_time_report_detail_stop_timer
+        )
+    }
 }
