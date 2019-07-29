@@ -97,7 +97,9 @@ class UserProfile : Parcelable {
 
     @Deprecated("Quick fix due to unexpectedly changed UserProfile model on the backend. User Delivery instead.")
     var department: Department
-        get() = Department(delivery!!.id, String.format("%s (%s %s)", delivery!!.name, delivery!!.manager.firstName, delivery!!.manager.lastName))
+        //FIXME: GET v1/users some employees has null delivery
+        get() = Department(delivery?.id ?: "", String.format("%s (%s %s)", delivery?.name
+                ?: "", delivery?.manager?.firstName ?: "", delivery?.manager?.lastName ?: ""))
         set(department) {
             //FIXME: update Department feature is broken. Should be changed to Delivery
             this.departmentId = department.id
