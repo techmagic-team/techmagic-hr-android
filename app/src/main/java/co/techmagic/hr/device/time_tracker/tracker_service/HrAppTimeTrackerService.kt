@@ -118,6 +118,8 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun close() {
         stopForeground(true)
+        trackingReportOrigin = null
+        trackingReport = null
     }
 
     private fun updateReport(): Single<UserReport> {
