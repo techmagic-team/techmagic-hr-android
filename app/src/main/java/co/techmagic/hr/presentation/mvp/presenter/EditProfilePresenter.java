@@ -497,7 +497,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (data.getDepartment() == null) {
             dep.setId(newDep.getId());
             dep.setName(newDep.getName());
-            data.setDepartment(dep);
+            data.setDepartment(dep); //fixme: change to delivery?
             hasChanges = true;
             return;
         }
@@ -512,7 +512,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         dep.setName(newDep.getName());
-        data.setDepartment(dep);
+        data.setDepartment(dep); //fixme: change to delivery?
     }
 
 
