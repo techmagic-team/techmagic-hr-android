@@ -113,11 +113,13 @@ abstract class HrAppBaseTimeReportDetailPresenter
         timeInMinutes = TimeFormatUtil.textToMinutes(time)
     }
 
-    override fun startTimerClicked() {
-
+    final override fun startTimerClicked() {
+        if (validateInfo()) {
+            startTimer()
+        }
     }
 
-    override fun saveClicked() {
+    final override fun saveClicked() {
         if (validateInfo()) {
             makeSaveRequest()
         }
@@ -142,7 +144,9 @@ abstract class HrAppBaseTimeReportDetailPresenter
         return true
     }
 
-    abstract fun makeSaveRequest()
+    protected abstract fun makeSaveRequest()
+
+    protected abstract fun startTimer()
 
     private fun showProject() {
         view?.showProject(projectViewModel?.title ?: null)

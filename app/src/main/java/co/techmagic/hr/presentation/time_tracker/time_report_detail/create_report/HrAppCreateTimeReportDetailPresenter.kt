@@ -28,7 +28,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
         createReport().subscribe(this::onReportCreated, this::showError)
     }
 
-    override fun startTimerClicked() {
+    override fun startTimer() {
         createReport()
                 .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
                 .map { it.current }
