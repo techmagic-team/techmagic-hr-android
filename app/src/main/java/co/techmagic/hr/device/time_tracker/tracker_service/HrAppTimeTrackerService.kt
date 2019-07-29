@@ -183,14 +183,16 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     private fun createTaskNotification(report: UserReport, seconds: Long, actions: Array<Action>): Notification {
         val title = report.project
-        val text = String.format("%s %s:%02d",
+        val text = String.format("%s %s:%02d   \n%s",
                 report.task.name,
-                TimeFormatUtil.formatMinutesToHours(report.minutes), seconds % 60)
-        return createNotification(title, text, actions)
+                TimeFormatUtil.formatMinutesToHours(report.minutes), seconds % 60,
+                report.note)
+        return createNotification(title, text, text, actions)
     }
 
     private fun createNotification(title: CharSequence = getString(R.string.app_name),
                                    text: CharSequence = "",
+                                   bigText: CharSequence = "",
                                    actions: Array<Action> = emptyArray()): Notification {
 
         val notificationIntent = Intent(this, HomeActivity::class.java)
@@ -201,6 +203,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
                 .also {
                     if (actions.contains(Action.ACTION_START)) it.addAction(android.R.drawable.ic_media_play, "Start", startIntent())
                     if (actions.contains(Action.ACTION_PAUSE)) it.addAction(android.R.drawable.ic_media_pause, "Pause", pauseIntent())
