@@ -81,6 +81,10 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
         _presenter = null
     }
 
+    override fun showErrorMessage(messageRes: Int) {
+        showErrorMessage(getString(messageRes))
+    }
+
     override fun showErrorMessage(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }

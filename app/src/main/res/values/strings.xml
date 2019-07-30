@@ -3,6 +3,7 @@
     <string name="mixpanel_hr_app_project_token">127239b5e54a51aacf7fac2aaff646e4</string>
 
     <!-- Messages -->
+    <string name="message_error_unknown">Unknown error</string>
     <!--LoginActivity-->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
@@ -20,6 +21,7 @@
     <string name="message_text_no">NO</string>
     <string name="message_text_cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="message_text_ok">OK</string>
+    <string name="message_error_user_does_not_exist">Error! This user does not exist</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
