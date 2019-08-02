@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import co.techmagic.hr.R
+import co.techmagic.hr.RepositoriesProvider
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
 import co.techmagic.hr.data.repository.TimeReportNetworkRepository
 import co.techmagic.hr.data.store.TimeTrackerApi
@@ -173,7 +174,13 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     }
 
     private fun provideCreateReportPresenter(): HrAppCreateTimeReportDetailPresenter {
-        val presenter = HrAppCreateTimeReportDetailPresenter(provideTimeReportRepository(), UserReportViewModelMapper(), ProjectViewModelMapper(), ProjectTaskViewModelMapper())
+        val presenter = HrAppCreateTimeReportDetailPresenter(
+                provideTimeReportRepository(),
+                (application as RepositoriesProvider).run { provideTimeTrackerInteractor() },
+                UserReportViewModelMapper(),
+                ProjectViewModelMapper(),
+                ProjectTaskViewModelMapper()
+        )
 
         presenter.reportDate = getTimeReportDate()
 
@@ -184,6 +191,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         val presenter = HrAppUpdateTimReportDetailPresenter(
                 provideTimeReportRepository(),
                 UserReportViewModelMapper(),
+                (application as RepositoriesProvider).run { provideTimeTrackerInteractor() },
                 ProjectViewModelMapper()
         )
 

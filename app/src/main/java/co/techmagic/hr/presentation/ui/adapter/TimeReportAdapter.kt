@@ -50,7 +50,7 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
         }
 
         holder.llTimeReportContainer.setOnClickListener { timeReportsClickListener.onItemClicked(timeReportItem) }
-        holder.ivTimeReportTrackTime.setOnClickListener { timeReportsClickListener.onTrackTimeClicked(position) }
+        holder.ivTimeReportTrackTime.setOnClickListener { timeReportsClickListener.onTrackTimeClicked(data[position]) }
     }
 
     override fun getItemCount() = data.size
@@ -78,7 +78,7 @@ class TimeReportAdapter(private val context: Context, private val timeReportsCli
 }
 
 interface TimeReportsClickListener {
-    fun onTrackTimeClicked(position: Int)
+    fun onTrackTimeClicked(userReportViewModel: UserReportViewModel)
 
     fun onItemClicked(reportViewModel: UserReportViewModel)
 }

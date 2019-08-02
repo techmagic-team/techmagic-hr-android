@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".TechMagicHrApplication"
@@ -60,6 +61,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
+
+        <service android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
+            android:exported="false"/>
 
         <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
             <intent-filter>

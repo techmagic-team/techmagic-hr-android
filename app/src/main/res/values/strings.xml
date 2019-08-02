@@ -59,10 +59,10 @@
     <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
 
     <!-- HomeActivity -->
-    <string name="tm_hr_home_activity_bottom_navigation_item_0">Time Tracker</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_0">Time</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_1">Team</string>
     <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_searchview_text_search">Search…</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
@@ -233,6 +233,7 @@
     <string name="tm_hr_time_report_detail_default_time_one_hour">1 hour</string>
     <string name="tm_hr_time_report_detail_default_time_eight_hours">8 hours</string>
     <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
+    <string name="tm_hr_time_report_detail_stop_timer">Stop timer</string>
     <string name="tm_hr_time_report_detail_save">Save</string>
     <string name="tm_hr_time_report_detail_delete">Delete</string>
 

@@ -31,7 +31,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/tm_hr_search_activity_text_filter_by" />
 
+                <!--fixme: Change to Delivery and then make visible again-->
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rlFilterByDepartment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

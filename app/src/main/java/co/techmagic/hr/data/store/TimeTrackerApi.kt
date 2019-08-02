@@ -1,6 +1,6 @@
 package co.techmagic.hr.data.store
 
-import co.techmagic.hr.data.entity.time_tracker.*
+import co.techmagic.hr.data.entity.time_report.*
 import retrofit2.http.*
 import rx.Observable
 

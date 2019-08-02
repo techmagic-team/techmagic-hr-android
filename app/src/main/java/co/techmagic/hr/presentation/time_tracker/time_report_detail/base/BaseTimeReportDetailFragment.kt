@@ -23,22 +23,22 @@ import org.jetbrains.anko.find
 open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrAppBaseViewFragment<T>(),
         BaseTimeReportDetailView {
 
-    private lateinit var flTimeReportDetailContainer: FrameLayout
-    private lateinit var tvSelectedProject: TextView
-    private lateinit var tvTimeReportDetailProjectError: TextView
-    private lateinit var tvSelectedProjectTask: TextView
-    private lateinit var tvTimeReportDetailTaskError: TextView
-    private lateinit var edDescription: EditText
-    private lateinit var tvDescriptionError: TextView
-    private lateinit var btnFifteenMinutes: TextView
-    private lateinit var btnThirtyMinutes: TextView
-    private lateinit var btnOneHour: TextView
-    private lateinit var btnEightHours: TextView
-    private lateinit var edTime: EditText
-    private lateinit var btnIncreaseTime: ImageView
-    private lateinit var btnReduceTime: ImageView
-    private lateinit var btnStartTimer: TextView
-    private lateinit var btnSave: TextView
+    protected lateinit var flTimeReportDetailContainer: FrameLayout
+    protected lateinit var tvSelectedProject: TextView
+    protected lateinit var tvTimeReportDetailProjectError: TextView
+    protected lateinit var tvSelectedProjectTask: TextView
+    protected lateinit var tvTimeReportDetailTaskError: TextView
+    protected lateinit var edDescription: EditText
+    protected lateinit var tvDescriptionError: TextView
+    protected lateinit var btnFifteenMinutes: TextView
+    protected lateinit var btnThirtyMinutes: TextView
+    protected lateinit var btnOneHour: TextView
+    protected lateinit var btnEightHours: TextView
+    protected lateinit var edTime: EditText
+    protected lateinit var btnIncreaseTime: ImageView
+    protected lateinit var btnReduceTime: ImageView
+    protected lateinit var btnStartTimer: TextView
+    protected lateinit var btnSave: TextView
 
     private lateinit var toolbarChangeListener: ActionBarChangeListener
 

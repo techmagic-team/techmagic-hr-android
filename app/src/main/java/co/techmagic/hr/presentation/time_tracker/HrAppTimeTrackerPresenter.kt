@@ -1,6 +1,10 @@
 package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.data.entity.HolidayDate
+import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
@@ -8,6 +12,7 @@ import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -16,6 +21,7 @@ import kotlin.collections.HashMap
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
+        private val timeTrackerInteractor: TimeTrackerInteractor,
         private val quotesManager: QuotesManager,
         private val userReportViewMadelMapper: UserReportViewModelMapper
 ) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
@@ -33,6 +39,9 @@ class HrAppTimeTrackerPresenter(
         selectedDate = currentDate.copy()
         view?.init(currentDate)
         view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
+
+        subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
+                .subscribe(this::updateReportViewModel, this::showError)
     }
 
     override fun onViewDestroyed() {
@@ -154,9 +163,45 @@ class HrAppTimeTrackerPresenter(
                     ?.find { it.id == userReportViewModel.id }
                     ?.let {
                         this.remove(it)
-                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                        notifyDateChanged(userReportViewModel.date)
                     }
         }
+    }
+
+    override fun onTaskTimerToggled(userReportViewModel: UserReportViewModel) {
+        if (userReportViewModel.isCurrentlyTracking) {
+            timeTrackerInteractor.stopTimer().subscribe({ updateReportViewModel(TaskUpdate(it, TaskTimerState.RUNNING)) }, this::showError)
+
+        } else {
+            val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
+            timeTrackerInteractor.startTimer(userReport)
+                    .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+        }
+    }
+
+    private var runningReport: UserReport? = null
+
+    private fun updateReportViewModel(taskUpdate: TaskUpdate) {
+        if (runningReport?.id.equals(taskUpdate.report.id)) {
+            when (taskUpdate.state) {
+                TaskTimerState.RUNNING -> return
+                TaskTimerState.STOPPED -> runningReport = null
+            }
+        }
+
+        if (taskUpdate.state == TaskTimerState.RUNNING) {
+            runningReport = taskUpdate.report
+        }
+
+        findReport(taskUpdate.report)?.let { reportViewModel ->
+            reportViewModel.minutes = taskUpdate.report.minutes
+            reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
+            notifyDateChanged(reportViewModel.date)
+        }
+    }
+
+    private fun notifyDateChanged(date: Date) {
+        view?.notifyDayReportsChanged(calendar(date).dateOnly())
     }
 
     private fun getCachedReports(date: Calendar) = cache[key(date)]
@@ -198,4 +243,8 @@ class HrAppTimeTrackerPresenter(
     }
 
     private fun getDayReports(reportsDate: Date) = cache[key(calendar(reportsDate))]
+
+    private fun findReport(report: UserReport) = findReport(report.id, report.date)
+
+    private fun findReport(id: String, date: Date) = getDayReports(date)?.first { it.id == id }
 }

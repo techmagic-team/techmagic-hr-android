@@ -9,10 +9,12 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeValue
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
+import rx.Subscription
 import java.util.*
 
-abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(protected val reportRepository: TimeReportRepository,
-                                                                                protected val userReportViewModelMapper: UserReportViewModelMapper)
+abstract class HrAppBaseTimeReportDetailPresenter
+<T : BaseTimeReportDetailView>(protected val reportRepository: TimeReportRepository,
+                               protected val userReportViewModelMapper: UserReportViewModelMapper)
     : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
@@ -40,6 +42,8 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
             showProjectTask()
         }
 
+    protected var subscription: Subscription? = null
+
     open var companyId: String = SharedPreferencesUtil.readUser().company.id
     open var userId: String = SharedPreferencesUtil.readUser().id
     open var timeInMinutes = 0
@@ -48,6 +52,12 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         view?.showDate(getFormattedDate())
+    }
+
+    override fun onViewDestroyed() {
+        subscription?.unsubscribe()
+        subscription = null
+        super.onViewDestroyed()
     }
 
     override fun onVisibleToUser() {
@@ -99,10 +109,13 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         timeInMinutes = TimeFormatUtil.textToMinutes(time)
     }
 
-    override fun startTimerClicked() {
+    final override fun startTimerClicked() {
+        if (validateInfo()) {
+            startTimer()
+        }
     }
 
-    override fun saveClicked() {
+    final override fun saveClicked() {
         if (validateInfo()) {
             makeSaveRequest()
         }
@@ -127,7 +140,9 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
         return true
     }
 
-    abstract fun makeSaveRequest()
+    protected abstract fun makeSaveRequest()
+
+    protected abstract fun startTimer()
 
     private fun showProject() {
         view?.showProject(projectViewModel?.title ?: null)
@@ -165,6 +180,6 @@ abstract class HrAppBaseTimeReportDetailPresenter<T : BaseTimeReportDetailView>(
     protected fun isProjectValid() = projectViewModel != null
     protected fun isProjectTaskValid() = projectTaskViewModel != null
 
-    protected fun isDescriptionEmpty() = description.isEmpty()
+    protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH
 }

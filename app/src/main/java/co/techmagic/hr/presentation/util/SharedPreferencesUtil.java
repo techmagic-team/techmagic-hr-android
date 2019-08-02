@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
-import co.techmagic.hr.data.entity.time_tracker.ProjectResponse;
-import co.techmagic.hr.data.entity.time_tracker.TaskResponse;
+import co.techmagic.hr.data.entity.time_report.ProjectResponse;
+import co.techmagic.hr.data.entity.time_report.TaskResponse;
 
 // Use AccountManager or move needed logic to it
 @Deprecated

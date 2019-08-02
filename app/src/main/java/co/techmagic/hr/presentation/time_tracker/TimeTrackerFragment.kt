@@ -246,10 +246,9 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         presenter?.onEditTimeReportClicked(reportViewModel)
     }
 
-    override fun onTrackTimeClicked(position: Int) {
-        showErrorMessage("not implemented")
+    override fun onTrackTimeClicked(userReportViewModel: UserReportViewModel) {
+        presenter?.onTaskTimerToggled(userReportViewModel)
     }
-
 
     fun showDatePicker(date: Calendar) {
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->

@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorWhite"
-        android:orientation="horizontal"
         android:elevation="8dp"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <co.techmagic.hr.presentation.ui.view.NestedScrollCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -38,7 +38,6 @@
             android:background="?selectableItemBackground"
             app:cardCornerRadius="0dp"
             app:cardElevation="@dimen/fragment_time_tracker_add_button_elevation"
-            app:layout_behavior="co.techmagic.hr.presentation.ui.view.BottomNavigationFabBehavior"
             tools:ignore="RtlHardcoded">
 
             <ImageView
