@@ -207,9 +207,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                 .setSmallIcon(R.drawable.ic_techmagic_notification)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
                 .also {
-                    if (actions.contains(Action.ACTION_START)) it.addAction(android.R.drawable.ic_media_play, "Start", startIntent())
-                    if (actions.contains(Action.ACTION_PAUSE)) it.addAction(android.R.drawable.ic_media_pause, "Pause", pauseIntent())
-                    if (actions.contains(Action.ACTION_STOP)) it.addAction(R.drawable.ic_tracking_stop, "Stop", stopIntent())
+                    if (actions.contains(Action.ACTION_START)) it.addAction(R.drawable.ic_notification_play_24px, "Start", startIntent())
+                    if (actions.contains(Action.ACTION_PAUSE)) it.addAction(R.drawable.ic_notification_pause_24px, "Pause", pauseIntent())
+                    if (actions.contains(Action.ACTION_STOP)) it.addAction(R.drawable.ic_notification_stop_24px, "Stop", stopIntent())
                 }
                 .setContentIntent(pendingIntent)
                 .build()
