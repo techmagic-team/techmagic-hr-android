@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@color/color_bottom_nav_bg"
+        android:orientation="horizontal"
+        tools:background="@android:color/holo_blue_light">
+
+        <LinearLayout
+            android:id="@+id/bottomNavTime"
+            style="@style/BottomNavContainer">
+
+            <ImageView
+                style="@style/BottomNavIcon"
+                android:src="@drawable/ic_time_disabled" />
+
+            <TextView
+                style="@style/BottomNavLabel"
+                android:text="@string/tm_hr_home_activity_bottom_navigation_item_0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomNavTeam"
+            style="@style/BottomNavContainer">
+
+            <ImageView
+                style="@style/BottomNavIcon"
+                android:src="@drawable/ic_team_disabled" />
+
+            <TextView
+                style="@style/BottomNavLabel"
+                android:text="@string/tm_hr_home_activity_bottom_navigation_item_1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomNavCalendar"
+            style="@style/BottomNavContainer">
+
+            <ImageView
+                style="@style/BottomNavIcon"
+                android:src="@drawable/ic_calendar_disabled" />
+
+            <TextView
+                style="@style/BottomNavLabel"
+                android:text="@string/tm_hr_home_activity_bottom_navigation_item_2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomNavProfile"
+            style="@style/BottomNavContainer">
+
+            <ImageView
+                style="@style/BottomNavIcon"
+                android:src="@drawable/ic_profile_disabled" />
+
+            <TextView
+                style="@style/BottomNavLabel"
+                android:text="@string/tm_hr_home_activity_bottom_navigation_item_3" />
+        </LinearLayout>
+    </LinearLayout>
+</merge>

@@ -87,7 +87,7 @@
 
     <dimen name="fragment_time_tracker_add_button_heigth">60dp</dimen>
     <dimen name="fragment_time_tracker_add_button_margin">16dp</dimen>
-    <dimen name="fragment_time_tracker_add_button_margin_bottom">72dp</dimen>
+    <dimen name="fragment_time_tracker_add_button_margin_bottom">16dp</dimen>
     <dimen name="fragment_time_tracker_add_button_elevation">8dp</dimen>
     <dimen name="fragment_time_tracker_reports_list_bottom_padding">100dp</dimen> <!--depends on 'Add new report' button-->
     <dimen name="fragment_time_tracker_empty_view_text_top_margin">10dp</dimen>

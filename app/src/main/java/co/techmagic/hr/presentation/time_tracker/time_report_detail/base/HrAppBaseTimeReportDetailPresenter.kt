@@ -1,10 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import co.techmagic.hr.R
-import co.techmagic.hr.data.entity.time_report.UserReport
-import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
-import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
-import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
@@ -184,6 +180,6 @@ abstract class HrAppBaseTimeReportDetailPresenter
     protected fun isProjectValid() = projectViewModel != null
     protected fun isProjectTaskValid() = projectTaskViewModel != null
 
-    protected fun isDescriptionEmpty() = description.isEmpty()
+    protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH
 }

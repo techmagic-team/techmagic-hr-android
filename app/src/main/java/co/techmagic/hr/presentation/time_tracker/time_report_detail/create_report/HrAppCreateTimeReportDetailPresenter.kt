@@ -8,6 +8,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBa
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
+import co.techmagic.hr.presentation.util.TimeFormatUtil
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import co.techmagic.hr.presentation.util.formatDate
 import rx.Observable
@@ -22,6 +23,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
         loadLastSelectedProjectWithTask()
+        view?.showTime(TimeFormatUtil.formatMinutesToHours(0))
     }
 
     override fun makeSaveRequest() {
