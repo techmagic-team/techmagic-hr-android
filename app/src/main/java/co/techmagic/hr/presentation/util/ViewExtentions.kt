@@ -16,19 +16,14 @@ fun ImageView.setImageDrawableRes(@DrawableRes color: Int) {
 
 
 fun View.changeShapeStrokeColor(@DimenRes strokeWidth: Int, @ColorRes colorRes: Int) {
-    val drawable: GradientDrawable
-
-    drawable = if (background is GradientDrawable) {
-        background as GradientDrawable
-    } else if (background is RippleDrawable) {
-        (background as RippleDrawable).getDrawable(0) as GradientDrawable
-    } else {
-        throw IllegalArgumentException()
+    val drawable: GradientDrawable = when (background) {
+        is GradientDrawable -> background.mutate() as GradientDrawable
+        is RippleDrawable -> (background.mutate() as RippleDrawable).getDrawable(0) as GradientDrawable
+        else -> throw IllegalArgumentException()
     }
 
-    val newDrawable = drawable.mutate() as GradientDrawable
-    newDrawable.setStroke(
+    drawable.setStroke(
             resources.getDimensionPixelOffset(strokeWidth),
-            ContextCompat.getColor(context, colorRes))
-    background = drawable
+            ContextCompat.getColor(context, colorRes)
+    )
 }
