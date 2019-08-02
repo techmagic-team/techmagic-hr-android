@@ -21,7 +21,7 @@
     <string name="message_text_no">NO</string>
     <string name="message_text_cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="message_text_ok">OK</string>
-    <string name="message_error_user_does_not_exist">Error! This user does not exist</string>
+    <string name="message_error_user_does_not_exist">Your email address is not registered</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
