@@ -43,8 +43,8 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: B
         AlertDialog.Builder(activity)
                 .setTitle(activity.getString(titleRes))
                 .setMessage(activity.getString(messageRes))
-                .setPositiveButton(R.string.message_cancel) { dialog, which -> onConfirm() }
-                .setNegativeButton(R.string.message_delete) { dialog, which ->
+                .setPositiveButton(R.string.message_delete) { dialog, which -> onConfirm() }
+                .setNegativeButton(R.string.message_cancel) { dialog, which ->
                     run {
                         dialog.dismiss()
                         onCancel()
