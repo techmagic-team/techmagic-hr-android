@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.mvp.base
 import android.os.Bundle
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog
+import co.techmagic.hr.presentation.util.UiUtil
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.base.BaseViewFragment
 
@@ -19,6 +20,30 @@ open class HrAppBaseViewFragment<PRESENTER : Presenter> : BaseViewFragment<PRESE
             animatedProgressDialog.show()
         } else {
             animatedProgressDialog.hide()
+        }
+    }
+
+    protected open fun hideKeyboardOnTouchOutside() {
+        UiUtil.setupHideKeyboardOnTouchRecursively(activity?.window?.decorView)
+    }
+
+    protected open fun onKeyboardOpened() {
+
+    }
+
+    protected open fun onKeyboardClosed() {
+
+    }
+
+    private fun subscribeOnKeyboardVisibilityChanges() {
+        view?.viewTreeObserver?.addOnGlobalLayoutListener {
+            view ?: return@addOnGlobalLayoutListener
+            val heightDiff = view!!.rootView.height - view!!.height
+            if (heightDiff > 200) {
+                onKeyboardOpened()
+            } else {
+                onKeyboardClosed()
+            }
         }
     }
 }
