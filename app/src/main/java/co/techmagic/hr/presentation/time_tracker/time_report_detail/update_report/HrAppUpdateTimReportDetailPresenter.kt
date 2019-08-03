@@ -24,6 +24,8 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
 
     var userReportForEdit: UserReportViewModel? = null
 
+    private var wasProjectChanged = false
+
     private var isTracking: Boolean = false
         set(value) {
             if (field != value) {
@@ -82,6 +84,19 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
         }
     }
 
+    override fun onProjectTaskChanged() {
+        super.onProjectTaskChanged()
+        wasProjectChanged = true
+    }
+
+    override fun isProjectTaskValid(): Boolean {
+        return if (wasProjectChanged) {
+            super.isProjectTaskValid()
+        } else {
+            true
+        }
+    }
+
     private fun loadProjectAndTask() {
         userReportForEdit?.let {
             reportRepository
@@ -96,6 +111,7 @@ class HrAppUpdateTimReportDetailPresenter(timeReportRepository: TimeReportReposi
                                 //just display task, in PATCH request null task should be skipped
                                 view?.showTask(userReportForEdit?.task!!.name)
                                 view?.setTaskValid(true)
+                                wasProjectChanged = false
                             },
                             {
                                 it.message?.let { view?.showErrorMessage(it) }

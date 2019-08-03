@@ -36,10 +36,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
-            if (value != null) {
-                validateProjectTask()
-            }
-            showProjectTask()
+            onProjectTaskChanged()
         }
 
     protected var subscription: Subscription? = null
@@ -121,6 +118,13 @@ abstract class HrAppBaseTimeReportDetailPresenter
         }
     }
 
+    protected open fun onProjectTaskChanged() {
+        if (projectTaskViewModel != null) {
+            validateProjectTask()
+        }
+        showProjectTask()
+    }
+
     private fun validateInfo(): Boolean {
         if (!isProjectValid()) {
             validateProject()
@@ -178,7 +182,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
-    protected fun isProjectTaskValid() = projectTaskViewModel != null
+    protected open fun isProjectTaskValid() = projectTaskViewModel != null
 
     protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH
