@@ -150,6 +150,10 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         edTime.setText(formattedTime)
     }
 
+    public fun onBackPressed() {
+        presenter?.onBackPressed()
+    }
+
     private fun setBackgroundByValid(view: View, isValid: Boolean) {
         view.changeShapeStrokeColor(
                 R.dimen.activity_time_report_detail_small_border_width,

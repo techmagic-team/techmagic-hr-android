@@ -37,6 +37,14 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 .subscribe(this::onReportCreated, this::showError)
     }
 
+    override fun onBackPressed() {
+        if (!description.isEmpty() || timeInMinutes != 0) {
+            askToConfirmCloseWithoutSaving()
+        } else {
+            router?.close()
+        }
+    }
+
     private fun loadLastSelectedProjectWithTask() {
         reportRepository
                 .getLastSelectedProject()

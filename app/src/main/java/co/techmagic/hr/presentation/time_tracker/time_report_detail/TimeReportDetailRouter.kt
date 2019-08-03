@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail
 
 import android.app.Activity
 import android.content.Intent
+import android.support.v7.app.AlertDialog
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment
@@ -35,6 +36,25 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: B
 
     override fun onReportAdded(userReport: UserReportViewModel?) {
         activity.setResult(Activity.RESULT_OK, buildCloseIntent(userReport))
+        activity.finish()
+    }
+
+    override fun showYesNoDialog(titleRes: Int, messageRes: Int, onConfirm: () -> Unit, onCancel: () -> Unit) {
+        AlertDialog.Builder(activity)
+                .setTitle(activity.getString(titleRes))
+                .setMessage(activity.getString(messageRes))
+                .setPositiveButton(R.string.message_cancel) { dialog, which -> onConfirm() }
+                .setNegativeButton(R.string.message_delete) { dialog, which ->
+                    run {
+                        dialog.dismiss()
+                        onCancel()
+                    }
+                }
+                .setCancelable(false)
+                .show()
+    }
+
+    override fun close() {
         activity.finish()
     }
 
