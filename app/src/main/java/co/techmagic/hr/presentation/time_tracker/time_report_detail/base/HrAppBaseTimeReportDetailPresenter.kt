@@ -122,7 +122,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
         showProjectTask()
     }
 
-    protected open fun askToConfirmCloseWithoutSaving(){
+    protected open fun askToConfirmCloseWithoutSaving() {
         router?.showYesNoDialog(
                 R.string.message_warning,
                 R.string.tm_hr_time_report_detail_warning_close_without_saving,

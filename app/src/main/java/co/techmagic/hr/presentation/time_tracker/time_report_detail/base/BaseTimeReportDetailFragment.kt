@@ -16,6 +16,7 @@ import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
 import co.techmagic.hr.presentation.util.TimeInputTextWatcher
+import co.techmagic.hr.presentation.util.UiUtil
 import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
@@ -49,6 +50,7 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
+        UiUtil.setupHideKeyboardOnTouchRecursively(activity?.window?.decorView)
     }
 
 
