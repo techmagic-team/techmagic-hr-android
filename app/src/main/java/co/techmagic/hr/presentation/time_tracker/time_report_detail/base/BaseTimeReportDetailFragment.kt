@@ -7,15 +7,13 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
 import co.techmagic.hr.presentation.util.SimpleTextWatcher
 import co.techmagic.hr.presentation.util.TimeInputTextWatcher
+import co.techmagic.hr.presentation.util.UiUtil
 import co.techmagic.hr.presentation.util.changeShapeStrokeColor
 import org.jetbrains.anko.find
 
@@ -23,7 +21,8 @@ import org.jetbrains.anko.find
 open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrAppBaseViewFragment<T>(),
         BaseTimeReportDetailView {
 
-    protected lateinit var flTimeReportDetailContainer: FrameLayout
+    protected lateinit var flTimeReportDetailContainer: RelativeLayout
+    protected lateinit var svTimeReportDetail: ScrollView
     protected lateinit var tvSelectedProject: TextView
     protected lateinit var tvTimeReportDetailProjectError: TextView
     protected lateinit var tvSelectedProjectTask: TextView
@@ -49,6 +48,7 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
+        hideKeyboardOnTouchOutside()
     }
 
 
@@ -66,6 +66,7 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
         view ?: return
 
         flTimeReportDetailContainer = view!!.find(R.id.flTimeReportDetailContainer)
+        svTimeReportDetail = view!!.find(R.id.svTimeReportDetail)
         tvSelectedProject = view!!.find(R.id.tvTimeReportDetailSelectedProject)
         tvTimeReportDetailProjectError = view!!.find(R.id.tvTimeReportDetailProjectError)
         tvSelectedProjectTask = view!!.find(R.id.tvTimeReportDetailSelectedTask)
@@ -148,6 +149,30 @@ open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrA
 
     override fun showTime(formattedTime: String) {
         edTime.setText(formattedTime)
+    }
+
+    override fun onKeyboardOpened() {
+        svTimeReportDetail.post {
+            val focusLocation = IntArray(2)
+            val scrollLocation = IntArray(2)
+
+            val currentFocus = activity?.currentFocus
+            currentFocus ?: return@post
+
+            currentFocus.getLocationInWindow(focusLocation)
+            svTimeReportDetail.getLocationInWindow(scrollLocation)
+
+            val focusBottomY = focusLocation[1] + currentFocus.height
+            val scrollBottomY = scrollLocation[1] + svTimeReportDetail.height
+
+            if (focusBottomY > scrollBottomY) {
+                svTimeReportDetail.smoothScrollTo(0, svTimeReportDetail.scrollY - (scrollBottomY - focusBottomY) + UiUtil.dp2Px(16F))
+            }
+        }
+    }
+
+    public fun onBackPressed() {
+        presenter?.onBackPressed()
     }
 
     private fun setBackgroundByValid(view: View, isValid: Boolean) {

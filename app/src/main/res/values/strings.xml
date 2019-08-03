@@ -4,6 +4,9 @@
 
     <!-- Messages -->
     <string name="message_error_unknown">Unknown error</string>
+    <string name="message_warning">Warning</string>
+    <string name="message_cancel">CANCEL</string>
+    <string name="message_delete">DELETE</string>
     <!--LoginActivity-->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
@@ -236,6 +239,9 @@
     <string name="tm_hr_time_report_detail_stop_timer">Stop timer</string>
     <string name="tm_hr_time_report_detail_save">Save</string>
     <string name="tm_hr_time_report_detail_delete">Delete</string>
+    <string name="tm_hr_time_report_detail_delete_task">Delete task</string>
+    <string name="tm_hr_time_report_detail_delete_task_message">Are you sure you want to delete this task?</string>
+    <string name="tm_hr_time_report_detail_warning_close_without_saving">Are you sure you don\'t want to save this task?</string>
 
     <!-- Report Properties-->
     <string name="tm_hr_report_select_project">Select Project</string>

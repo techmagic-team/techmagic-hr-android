@@ -30,8 +30,9 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment.Companion.ARG_USER_ID
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectTaskViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.TaskDetailViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppUpdateTimReportDetailPresenter
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.HrAppUpdateTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.update_report.UpdateTimeReportFragment
 import co.techmagic.hr.presentation.ui.manager.AccountManager
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener
@@ -136,6 +137,12 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         }
     }
 
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        (currentFragment as? BaseTimeReportDetailFragment<*>)?.onBackPressed()
+                ?: super.onBackPressed()
+    }
+
     override fun setActionBarTitle(title: String) {
         supportActionBar?.title = title
     }
@@ -170,7 +177,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     private fun inject(fragment: UpdateTimeReportFragment) {
         timeReportDetailPresenter = provideUpdateReportPresenter()
-        BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimReportDetailPresenter, provideTimeReportRouter(fragment))
+        BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimeReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 
     private fun provideCreateReportPresenter(): HrAppCreateTimeReportDetailPresenter {
@@ -187,12 +194,14 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         return presenter
     }
 
-    private fun provideUpdateReportPresenter(): HrAppUpdateTimReportDetailPresenter {
-        val presenter = HrAppUpdateTimReportDetailPresenter(
+    private fun provideUpdateReportPresenter(): HrAppUpdateTimeReportDetailPresenter {
+        val projectViewModelMapper = ProjectViewModelMapper()
+        val presenter = HrAppUpdateTimeReportDetailPresenter(
                 provideTimeReportRepository(),
                 UserReportViewModelMapper(),
                 (application as RepositoriesProvider).run { provideTimeTrackerInteractor() },
-                ProjectViewModelMapper()
+                projectViewModelMapper,
+                TaskDetailViewModelMapper(projectViewModelMapper)
         )
 
         presenter.userReportForEdit = getUserReportForEdit()

@@ -31,4 +31,5 @@ interface BaseTimeReportDetailPresenter : Presenter {
     fun timeChanged(time : String);
     fun startTimerClicked()
     fun saveClicked()
+    fun onBackPressed()
 }

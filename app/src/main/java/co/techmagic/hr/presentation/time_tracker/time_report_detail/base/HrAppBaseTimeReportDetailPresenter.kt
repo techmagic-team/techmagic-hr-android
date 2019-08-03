@@ -23,7 +23,6 @@ abstract class HrAppBaseTimeReportDetailPresenter
         const val MAX_DESCRIPTION_LENGTH = 600
     }
 
-
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
         set(value) {
@@ -36,10 +35,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
-            if (value != null) {
-                validateProjectTask()
-            }
-            showProjectTask()
+            onProjectTaskChanged()
         }
 
     protected var subscription: Subscription? = null
@@ -116,9 +112,22 @@ abstract class HrAppBaseTimeReportDetailPresenter
     }
 
     final override fun saveClicked() {
-        if (validateInfo()) {
-            makeSaveRequest()
+        saveReport()
+    }
+
+    protected open fun onProjectTaskChanged() {
+        if (projectTaskViewModel != null) {
+            validateProjectTask()
         }
+        showProjectTask()
+    }
+
+    protected open fun askToConfirmCloseWithoutSaving() {
+        router?.showYesNoDialog(
+                R.string.message_warning,
+                R.string.tm_hr_time_report_detail_warning_close_without_saving,
+                { router?.close() }
+        )
     }
 
     private fun validateInfo(): Boolean {
@@ -138,6 +147,12 @@ abstract class HrAppBaseTimeReportDetailPresenter
         }
 
         return true
+    }
+
+    private fun saveReport() {
+        if (validateInfo()) {
+            makeSaveRequest()
+        }
     }
 
     protected abstract fun makeSaveRequest()
@@ -178,7 +193,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
-    protected fun isProjectTaskValid() = projectTaskViewModel != null
+    protected open fun isProjectTaskValid() = projectTaskViewModel != null
 
     protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH
