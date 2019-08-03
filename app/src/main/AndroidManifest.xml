@@ -60,7 +60,7 @@
             android:name=".presentation.time_tracker.time_report_detail.TimeReportDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
             android:exported="false"/>

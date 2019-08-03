@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.mvp.base
 
 import android.os.Bundle
+import android.view.View
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog
 import co.techmagic.hr.presentation.util.UiUtil
@@ -13,6 +14,11 @@ open class HrAppBaseViewFragment<PRESENTER : Presenter> : BaseViewFragment<PRESE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         animatedProgressDialog = AnimatedProgressDialog(context, R.style.DialogThemeDimmed)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        subscribeOnKeyboardVisibilityChanges()
     }
 
     override fun showProgress(show: Boolean) {
@@ -39,7 +45,7 @@ open class HrAppBaseViewFragment<PRESENTER : Presenter> : BaseViewFragment<PRESE
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             view ?: return@addOnGlobalLayoutListener
             val heightDiff = view!!.rootView.height - view!!.height
-            if (heightDiff > 200) {
+            if (heightDiff > UiUtil.dp2Px(200F)) {
                 onKeyboardOpened()
             } else {
                 onKeyboardClosed()
