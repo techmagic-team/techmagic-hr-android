@@ -147,12 +147,13 @@ class HrAppTimeTrackerPresenter(
     override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
         userReportViewModel ?: return
 
+        //todo please implement better solution using findReport(id, date) method
         with(getDayReports(userReportViewModel.date)) {
             this
                     ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
                     ?.forEachIndexed { index, viewModel ->
-                        this[index] = userReportViewModel
-                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                        this[this.indexOf(viewModel)] = userReportViewModel
+                        notifyDateChanged(userReportViewModel.date)
                     }
         }
     }
