@@ -12,7 +12,6 @@ import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -179,18 +178,21 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    private var runningReport: UserReport? = null
+    private var runningReport: UserReportViewModel? = null
 
     private fun updateReportViewModel(taskUpdate: TaskUpdate) {
         if (runningReport?.id.equals(taskUpdate.report.id)) {
             when (taskUpdate.state) {
-                TaskTimerState.RUNNING -> return
+                TaskTimerState.RUNNING -> {
+                    updateRunnigReportTime(taskUpdate.report.minutes)
+                    return
+                }
                 TaskTimerState.STOPPED -> runningReport = null
             }
         }
 
         if (taskUpdate.state == TaskTimerState.RUNNING) {
-            runningReport = taskUpdate.report
+            runningReport = userReportViewMadelMapper.transform(taskUpdate.report)
         }
 
         findReport(taskUpdate.report)?.let { reportViewModel ->
