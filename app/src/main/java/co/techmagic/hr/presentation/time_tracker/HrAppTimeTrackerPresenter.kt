@@ -106,7 +106,7 @@ class HrAppTimeTrackerPresenter(
                         initWeekCache(date)
                         for (report in weekReports) {
                             cache[key(report.date.toCalendar())]?.add(report)
-                            view?.notifyDayReportsChanged(report.date.toCalendar())
+                            view?.notifyDayReportsChanged(date)
                         }
                         view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
