@@ -8,7 +8,7 @@ data class UserReport constructor(
         @SerializedName("_task") val task: ReportName,
         @SerializedName("hours") var minutes: Int,
         val date: Date,
-        val lockDate: Boolean, //todo: find out what it actually means
+        val lockDate: Boolean, //'true' in vacation reports
         val note: String,
         val status: String,
         val client: String,

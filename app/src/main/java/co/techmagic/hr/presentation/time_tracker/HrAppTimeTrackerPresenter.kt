@@ -12,7 +12,6 @@ import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -107,6 +106,9 @@ class HrAppTimeTrackerPresenter(
                         for (report in weekReports) {
                             cache[key(report.date.toCalendar())]?.add(report)
                             view?.notifyDayReportsChanged(date)
+                            if (runningReport?.id?.equals(report.id) == true) {
+                                checkLoadedReportForTracking(report)
+                            }
                         }
                         view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
@@ -145,12 +147,13 @@ class HrAppTimeTrackerPresenter(
     override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
         userReportViewModel ?: return
 
+        //todo please implement better solution using findReport(id, date) method
         with(getDayReports(userReportViewModel.date)) {
             this
                     ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
                     ?.forEachIndexed { index, viewModel ->
-                        this[index] = userReportViewModel
-                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                        this[this.indexOf(viewModel)] = userReportViewModel
+                        notifyDateChanged(userReportViewModel.date)
                     }
         }
     }
@@ -179,24 +182,52 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    private var runningReport: UserReport? = null
+    private var runningReport: UserReportViewModel? = null
 
     private fun updateReportViewModel(taskUpdate: TaskUpdate) {
         if (runningReport?.id.equals(taskUpdate.report.id)) {
             when (taskUpdate.state) {
-                TaskTimerState.RUNNING -> return
+                TaskTimerState.RUNNING -> {
+                    updateRunnigReportTime(taskUpdate.report.minutes)
+                    return
+                }
                 TaskTimerState.STOPPED -> runningReport = null
             }
         }
 
         if (taskUpdate.state == TaskTimerState.RUNNING) {
-            runningReport = taskUpdate.report
+            runningReport = userReportViewMadelMapper.transform(taskUpdate.report)
         }
 
         findReport(taskUpdate.report)?.let { reportViewModel ->
             reportViewModel.minutes = taskUpdate.report.minutes
             reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
             notifyDateChanged(reportViewModel.date)
+        }
+    }
+
+    /**
+     * For case when user reopens screen, and one of loaded reports has been tracking
+     * if currently loaded report is the same with currently running report
+     * - changes new report time and tracking status.
+     * Because we do not have tracking support on backend
+     */
+    private fun checkLoadedReportForTracking(loadedReport: UserReportViewModel) {
+        runningReport?.let {
+            if (it.id.equals(loadedReport.id)) {
+                loadedReport.minutes = it.minutes
+                loadedReport.isCurrentlyTracking = true
+            }
+        }
+    }
+
+    private fun updateRunnigReportTime(newTimeMinutes: Int) {
+        runningReport?.let {
+            if (it.minutes != newTimeMinutes) {
+                it.minutes = newTimeMinutes
+                findReport(it.id, it.date)?.minutes = newTimeMinutes
+                notifyDateChanged(it.date)
+            }
         }
     }
 

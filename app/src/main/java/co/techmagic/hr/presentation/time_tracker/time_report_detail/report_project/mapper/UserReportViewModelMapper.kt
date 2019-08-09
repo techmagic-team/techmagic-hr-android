@@ -15,7 +15,7 @@ class UserReportViewModelMapper {
             report.note,
             report.minutes,
             false,
-            report.isApproved,
+            report.isApproved || report.lockDate,
             report.weekReportId,
             report.status,
             report.date
