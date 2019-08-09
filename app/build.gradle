@@ -49,7 +49,7 @@ android {
     flavorDimensions "default"
     productFlavors {
         dev {
-            buildConfigField 'String', 'HOST_URL', '"https://timeapi-dev.techmagic.co"'
+            buildConfigField 'String', 'HOST_URL', '"https://apidev.techmagic.co/hr-api/v1"'
             versionName = android.defaultConfig.versionName + "(Dev)"
         }
 
