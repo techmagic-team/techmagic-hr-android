@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
+import android.support.annotation.StringRes
 import co.techmagic.hr.R
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
@@ -8,6 +9,7 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proje
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.util.formatDate
 import com.techmagic.viper.base.BasePresenter
+import retrofit2.HttpException
 import java.util.*
 
 class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportRepository,
@@ -75,8 +77,7 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
                             view?.showProgress(false)
                         },
                         {
-                            it?.message?.let { view?.showErrorMessage(it) }
-                            view?.showProgress(false)
+                            handleLoadError(it)
                         }
                 )
     }
@@ -92,9 +93,25 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
                             view?.showProgress(false)
                         },
                         {
-                            it?.message?.let { view?.showErrorMessage(it) }
-                            view?.showProgress(false)
+                           handleLoadError(it)
                         }
                 )
+    }
+
+    private fun handleLoadError(error: Throwable?) {
+        view?.showProgress(false)
+
+        if (error is HttpException && error.code() == 404) {
+            view?.showEmptyList(getTypeemptyErrorStringRes())
+        } else {
+            error?.message?.let { view?.showErrorMessage(it) }
+        }
+    }
+
+    @StringRes
+    private fun getTypeemptyErrorStringRes() = when(type){
+        PROJECT -> R.string.tm_hr_report_projects
+        TASK -> R.string.tm_hr_report_tasks
+        else -> R.string.tm_hr_report_projects
     }
 }

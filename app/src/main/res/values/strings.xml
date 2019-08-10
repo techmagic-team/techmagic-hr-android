@@ -249,5 +249,8 @@
     <!-- Report Properties-->
     <string name="tm_hr_report_select_project">Select Project</string>
     <string name="tm_hr_report_select_task">Select Task</string>
+    <string name="tm_hr_report_projects">projects</string>
+    <string name="tm_hr_report_tasks">tasks</string>
+    <string name="tm_hr_report_you_have_no_data">You have no %s assigned to your account.\nPlease contact your team leader.</string>
 
 </resources>
