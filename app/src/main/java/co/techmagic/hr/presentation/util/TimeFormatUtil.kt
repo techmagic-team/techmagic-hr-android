@@ -37,9 +37,8 @@ class TimeFormatUtil {
         fun matchesTime(text: String) = createMatcher(text, TIME_PATTERN).matches()
 
         fun isTimeValid(hours: Int, minutes: Int) =
-                hours <= HOURS_IN_DAY
-                        && minutes <= MINUTES_IN_ONE_HOUR
-                        && (hours * MINUTES_IN_ONE_HOUR + minutes <= MINUTES_IN_DAY)
+                hours < HOURS_IN_DAY
+                        && minutes < MINUTES_IN_ONE_HOUR
 
         private fun createMatcher(text: String, pattern: String) = Pattern
                 .compile(pattern)

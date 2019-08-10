@@ -8,7 +8,7 @@ open class TimeInputTextWatcher constructor(val editText: EditText) : SimpleText
     private var isInnerChange = false
 
     companion object {
-        const val MAX_HOURS = TimeFormatUtil.HOURS_IN_DAY
+        const val MAX_HOURS = 23
         const val MAX_MINUTES = 59
         const val MIN_MINUTES = 0
 
@@ -37,9 +37,9 @@ open class TimeInputTextWatcher constructor(val editText: EditText) : SimpleText
                 editText.setSelection(s.indexOf(TIME_SEPARATOR))
             } else if (!isTextValid(text, hours, minutes)) {
 
-                if (hours >= MAX_HOURS) {
+                if (hours > MAX_HOURS) {
                     hours = MAX_HOURS
-                    minutes = MIN_MINUTES
+                    minutes = MAX_MINUTES
                 } else if (minutes > MAX_MINUTES) {
                     minutes = MAX_MINUTES
                 }

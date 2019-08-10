@@ -1,6 +1,5 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project
 
-import android.support.annotation.IntDef
 import co.techmagic.hr.R
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
@@ -25,7 +24,6 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
     var firstDayOfWeek: Calendar? = null
 
     companion object {
-        @IntDef()
         @Retention(AnnotationRetention.SOURCE)
         annotation class ReportProjectType
 
