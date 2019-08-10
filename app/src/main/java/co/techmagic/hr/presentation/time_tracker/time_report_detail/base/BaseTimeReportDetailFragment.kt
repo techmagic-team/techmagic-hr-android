@@ -21,6 +21,16 @@ import org.jetbrains.anko.find
 open class BaseTimeReportDetailFragment<T : BaseTimeReportDetailPresenter> : HrAppBaseViewFragment<T>(),
         BaseTimeReportDetailView {
 
+    companion object {
+        const val ARG_MINUTES_IN_DAY_EXCLUDE_THIS = "arg_minutes_in_day_exclude_this"
+
+        fun createBaseBundle(alreadyReportedMinutesInDayWithoutCurrentMinutes: Int): Bundle {
+            val args = Bundle()
+            args.putInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS, alreadyReportedMinutesInDayWithoutCurrentMinutes)
+            return args
+        }
+    }
+
     protected lateinit var flTimeReportDetailContainer: RelativeLayout
     protected lateinit var svTimeReportDetail: ScrollView
     protected lateinit var tvSelectedProject: TextView

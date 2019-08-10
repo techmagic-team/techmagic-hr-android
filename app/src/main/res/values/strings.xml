@@ -4,6 +4,7 @@
 
     <!-- Messages -->
     <string name="message_error_unknown">Unknown error</string>
+    <string name="message_error_simple">Error</string>
     <string name="message_warning">Warning</string>
     <string name="message_cancel">CANCEL</string>
     <string name="message_delete">DELETE</string>
@@ -243,7 +244,7 @@
     <string name="tm_hr_time_report_detail_delete_task">Delete task</string>
     <string name="tm_hr_time_report_detail_delete_task_message">Are you sure you want to delete this task?</string>
     <string name="tm_hr_time_report_detail_warning_close_without_saving">Are you sure you don\'t want to save this task?</string>
-    <string name="tm_hr_time_report_detail_error_cannot_save_more_than_24_h">Can\'t submit more than 24h in a day!</string>
+    <string name="tm_hr_time_report_detail_error_cannot_save_more_than_24_h">You can’t report more then %1$s on this day</string>
 
     <!-- Report Properties-->
     <string name="tm_hr_report_select_project">Select Project</string>

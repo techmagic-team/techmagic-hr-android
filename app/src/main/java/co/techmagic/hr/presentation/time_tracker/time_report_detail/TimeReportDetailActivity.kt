@@ -15,6 +15,7 @@ import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailFragment
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailFragment.Companion.ARG_MINUTES_IN_DAY_EXCLUDE_THIS
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report.CreateTimeReportFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.create_report.HrAppCreateTimeReportDetailPresenter
@@ -46,12 +47,18 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         const val EXTRA_USER_REPORT = "extra_time_report"
         const val EXTRA_REPORT_DATE = "extra_report_date"
         const val EXTRA_OLD_ID = "EXTRA_OLD_ID"
+        const val EXTRA_MINUTES_IN_DAY_EXCLUDE_THIS = "arg_minutes_in_day_exclude_this"
 
-        fun start(fragment: Fragment, userReportForEdit: UserReportViewModel?, reportDate: Calendar, requestCode: Int) {
+        fun start(fragment: Fragment,
+                  userReportForEdit: UserReportViewModel?,
+                  reportDate: Calendar,
+                  requestCode: Int,
+                  minutesInDayExcludedThis: Int) {
             val intent = Intent(fragment.activity, TimeReportDetailActivity::class.java)
 
             intent.putExtra(EXTRA_USER_REPORT, userReportForEdit)
             intent.putExtra(EXTRA_REPORT_DATE, reportDate)
+            intent.putExtra(EXTRA_MINUTES_IN_DAY_EXCLUDE_THIS, minutesInDayExcludedThis)
 
             fragment.startActivityForResult(intent, requestCode)
         }
@@ -68,7 +75,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     private fun init() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        replaceTimeReportDetailFragment()
+        replaceTimeReportDetailFragment(intent.getIntExtra(EXTRA_MINUTES_IN_DAY_EXCLUDE_THIS, 0))
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
@@ -151,8 +158,12 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun replaceTimeReportDetailFragment() {
-        val fragment = if (isCreateReport()) CreateTimeReportFragment.newInstance() else UpdateTimeReportFragment.newInstance()
+    private fun replaceTimeReportDetailFragment(alreadyReportedMinutesInDayWithoutCurrentMinutes: Int) {
+        val fragment = if (isCreateReport()) {
+            CreateTimeReportFragment.newInstance(alreadyReportedMinutesInDayWithoutCurrentMinutes)
+        } else {
+            UpdateTimeReportFragment.newInstance(alreadyReportedMinutesInDayWithoutCurrentMinutes)
+        }
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
@@ -172,11 +183,13 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     private fun inject(fragment: CreateTimeReportFragment) {
         timeReportDetailPresenter = provideCreateReportPresenter()
+        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS)
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppCreateTimeReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 
     private fun inject(fragment: UpdateTimeReportFragment) {
         timeReportDetailPresenter = provideUpdateReportPresenter()
+        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS)
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimeReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 

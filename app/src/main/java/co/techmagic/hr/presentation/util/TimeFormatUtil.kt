@@ -10,6 +10,7 @@ class TimeFormatUtil {
         const val MINUTES_IN_ONE_HOUR = 60
         const val HOURS_IN_DAY = 24
         const val MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_ONE_HOUR
+        const val MAX_INPUT_MINUTES_IN_DAY = MINUTES_IN_DAY - 1
 
         fun formatMinutesToHours(minutes: Int) = String.format("%d:%02d", minutes / 60, minutes % 60)
 

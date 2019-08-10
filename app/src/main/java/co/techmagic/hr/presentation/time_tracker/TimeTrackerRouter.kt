@@ -14,12 +14,12 @@ class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragmen
         fragment.showDatePicker(currentDate)
     }
 
-    override fun openCreateTimeReport(selectedDate : Calendar) {
-        TimeReportDetailActivity.start(fragment, null, selectedDate, TimeTrackerFragment.REQUEST_CREATE_NEW_TASK)
+    override fun openCreateTimeReport(selectedDate: Calendar, minutesInDayExcludedThis: Int) {
+        TimeReportDetailActivity.start(fragment, null, selectedDate, TimeTrackerFragment.REQUEST_CREATE_NEW_TASK, minutesInDayExcludedThis)
     }
 
-    override fun openEditTimeReport(userReport: UserReportViewModel, reportDate: Calendar) {
-        TimeReportDetailActivity.start(fragment, userReport, reportDate, TimeTrackerFragment.REQUEST_UPDATE_TASK )
+    override fun openEditTimeReport(userReport: UserReportViewModel, reportDate: Calendar, minutesInDayExcludedThis: Int) {
+        TimeReportDetailActivity.start(fragment, userReport, reportDate, TimeTrackerFragment.REQUEST_UPDATE_TASK, minutesInDayExcludedThis)
     }
 
 }

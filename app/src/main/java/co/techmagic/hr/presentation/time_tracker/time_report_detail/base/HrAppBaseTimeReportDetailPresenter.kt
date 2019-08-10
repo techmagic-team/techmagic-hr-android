@@ -18,6 +18,8 @@ abstract class HrAppBaseTimeReportDetailPresenter
     : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
+    var alreadyReportedMinutesInDayWithoutCurrentMinutes: Int? = 0
+
     companion object {
         const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why we should send it in the request, but it is OK for now
         const val MAX_DESCRIPTION_LENGTH = 600
@@ -146,6 +148,11 @@ abstract class HrAppBaseTimeReportDetailPresenter
             return false
         }
 
+        if (!isTimeValid()) {
+            showToManyHoursError()
+            return false
+        }
+
         return true
     }
 
@@ -190,10 +197,16 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected fun validateProject() = view?.setProjectValid(isProjectValid())
     protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
+    protected fun showToManyHoursError() = router?.showTooManyHoursErrorDialog(
+            TimeFormatUtil.formatMinutesToHours(
+                    TimeFormatUtil.MAX_INPUT_MINUTES_IN_DAY - (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0)
+            )
+    )
 
     protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
     protected open fun isProjectTaskValid() = projectTaskViewModel != null
+    protected fun isTimeValid() = (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0) + timeInMinutes < TimeFormatUtil.MINUTES_IN_DAY
 
     protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH

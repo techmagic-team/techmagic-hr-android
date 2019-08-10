@@ -129,11 +129,16 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-        router?.openCreateTimeReport(selectedDate)
+        router?.openCreateTimeReport(selectedDate, totalDayMinutesExcludeCurrent(selectedDate))
     }
 
     override fun onEditTimeReportClicked(reportViewModel: UserReportViewModel) {
-        router?.openEditTimeReport(reportViewModel, reportViewModel.date.toCalendar())
+        val reportDateCalendar = reportViewModel.date.toCalendar()
+        router?.openEditTimeReport(
+                reportViewModel,
+                reportDateCalendar,
+                totalDayMinutesExcludeCurrent(reportDateCalendar, reportViewModel.minutes)
+        )
     }
 
     override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
@@ -246,6 +251,10 @@ class HrAppTimeTrackerPresenter(
             d.add(Calendar.DAY_OF_WEEK, i)
             callback(d)
         }
+    }
+
+    private fun totalDayMinutesExcludeCurrent(selectedDate: Calendar, currentMinutes: Int = 0): Int {
+        return totalDayMinutes(key(selectedDate)) - currentMinutes
     }
 
     private fun totalDayMinutes(key: String): Int {
