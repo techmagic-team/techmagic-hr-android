@@ -66,9 +66,15 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
 
     override fun startTimer() {
         userReportForEdit?.let {
-            updateReport().flatMap {
-                timeTrackerInteractor.startTimer(it).map { it.current }
-            }.subscribe(this::onReportUpdated, this::showError)
+            updateReport()
+                    .flatMap {
+                        if (isTracking) {
+                            timeTrackerInteractor.stopTimer()
+                        } else {
+                            timeTrackerInteractor.startTimer(it).map { it.current }
+                        }
+                    }
+                    .subscribe(this::onReportUpdated, this::showError)
         }
     }
 
@@ -86,7 +92,7 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
         ) {
             router?.close()
         } else {
-           askToConfirmCloseWithoutSaving()
+            askToConfirmCloseWithoutSaving()
         }
     }
 
