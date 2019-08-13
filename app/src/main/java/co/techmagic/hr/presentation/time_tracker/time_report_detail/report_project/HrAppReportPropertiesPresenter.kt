@@ -67,35 +67,35 @@ class HrAppReportPropertiesPresenter(val timeReportRepository: TimeReportReposit
     }
 
     private fun loadProjects() {
-        timeReportRepository
-                .getProjects(userId!!, firstDayOfWeek!!.formatDate())
-                .doOnSubscribe { view?.showProgress(true) }
-                .map { projectsViewModelMapper.transform(it) }
-                .subscribe(
-                        {
-                            view?.showProperties(it)
-                            view?.showProgress(false)
-                        },
-                        {
-                            handleLoadError(it)
-                        }
-                )
+        call(
+                timeReportRepository
+                        .getProjects(userId!!, firstDayOfWeek!!.formatDate())
+                        .doOnSubscribe { view?.showProgress(true) }
+                        .map { projectsViewModelMapper.transform(it) },
+                {
+                    view?.showProperties(it)
+                    view?.showProgress(false)
+                },
+                {
+                    handleLoadError(it)
+                }
+        )
     }
 
     private fun loadTasks() {
-        timeReportRepository
-                .getProjectTasks(projectId!!)
-                .doOnSubscribe { view?.showProgress(true) }
-                .map { projectTaskViewModelMapper.transform(it) }
-                .subscribe(
-                        {
-                            view?.showTasks(it)
-                            view?.showProgress(false)
-                        },
-                        {
-                           handleLoadError(it)
-                        }
-                )
+        call(
+                timeReportRepository
+                        .getProjectTasks(projectId!!)
+                        .doOnSubscribe { view?.showProgress(true) }
+                        .map { projectTaskViewModelMapper.transform(it) },
+                {
+                    view?.showTasks(it)
+                    view?.showProgress(false)
+                },
+                {
+                    handleLoadError(it)
+                }
+        )
     }
 
     private fun handleLoadError(error: Throwable?) {

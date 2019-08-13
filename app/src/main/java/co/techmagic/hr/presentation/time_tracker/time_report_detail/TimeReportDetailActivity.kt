@@ -208,13 +208,11 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
     }
 
     private fun provideUpdateReportPresenter(): HrAppUpdateTimeReportDetailPresenter {
-        val projectViewModelMapper = ProjectViewModelMapper()
         val presenter = HrAppUpdateTimeReportDetailPresenter(
                 provideTimeReportRepository(),
                 UserReportViewModelMapper(),
                 (application as RepositoriesProvider).run { provideTimeTrackerInteractor() },
-                projectViewModelMapper,
-                TaskDetailViewModelMapper(projectViewModelMapper)
+                TaskDetailViewModelMapper(ProjectViewModelMapper())
         )
 
         presenter.userReportForEdit = getUserReportForEdit()

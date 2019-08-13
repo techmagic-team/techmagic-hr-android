@@ -39,8 +39,9 @@ class HrAppTimeTrackerPresenter(
         view?.init(currentDate)
         view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
 
-        subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
-                .subscribe(this::updateReportViewModel, this::showError)
+        subscriptions["timer"] = call(timeTrackerInteractor.subscribeOnTimeUpdates(),
+                this::updateReportViewModel,
+                this::showError)
     }
 
     override fun onViewDestroyed() {
@@ -98,8 +99,9 @@ class HrAppTimeTrackerPresenter(
             val firstDayOfWeek = date.firstDayOfWeekDate()
             val weekReportsKey = key(firstDayOfWeek)
             subscriptions[weekReportsKey]?.unsubscribe()
-            subscriptions[weekReportsKey] = timeReportRepository.getDayReports(user.id, firstDayOfWeek)
-                    .subscribe { response ->
+            subscriptions[weekReportsKey] = call(
+                    timeReportRepository.getDayReports(user.id, firstDayOfWeek),
+                    { response ->
                         cacheHolidays(response.holidays)
                         val weekReports = response.reports.map { userReportViewMadelMapper.transform(it) }
                         initWeekCache(date)
@@ -112,6 +114,7 @@ class HrAppTimeTrackerPresenter(
                         }
                         view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
+            )
         }
     }
 
