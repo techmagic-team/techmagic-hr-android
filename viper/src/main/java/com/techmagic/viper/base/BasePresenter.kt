@@ -23,6 +23,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
 
     protected var initial: Boolean = false
 
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
     private val compositeSubscription = CompositeSubscription()
 
     @CallSuper
@@ -70,6 +71,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
         checkField("view", view)
     }
 
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
     protected fun <T> call(
             observable: Observable<T>,
             onSuccess: (value: T) -> Unit,
@@ -84,6 +86,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
         return subscription
     }
 
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
     protected fun <T> call(
             single: Single<T>,
             onSuccess: (value: T) -> Unit,

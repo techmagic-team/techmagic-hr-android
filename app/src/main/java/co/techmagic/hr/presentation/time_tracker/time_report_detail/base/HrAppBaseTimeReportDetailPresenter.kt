@@ -149,7 +149,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
         }
 
         if (!isTimeValid()) {
-            showToManyHoursError()
+            showTooManyHoursError()
             return false
         }
 
@@ -197,7 +197,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected fun validateProject() = view?.setProjectValid(isProjectValid())
     protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
-    protected fun showToManyHoursError() = router?.showTooManyHoursErrorDialog(
+    protected fun showTooManyHoursError() = router?.showTooManyHoursErrorDialog(
             TimeFormatUtil.formatMinutesToHours(
                     TimeFormatUtil.MAX_INPUT_MINUTES_IN_DAY - (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0)
             )
