@@ -118,6 +118,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun close() {
         stopForeground(true)
+        stopSelf()
         trackingReportOrigin = null
         trackingReport = null
     }
