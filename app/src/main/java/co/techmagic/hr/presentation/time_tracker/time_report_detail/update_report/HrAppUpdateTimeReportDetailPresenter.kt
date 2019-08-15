@@ -10,7 +10,6 @@ import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.TaskDetailViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
-import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.ProjectViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.TaskDetailViewModelMapper
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.util.ISO_WITH_TIME_ZONE_DATE_FORMAT
@@ -22,7 +21,6 @@ import rx.Single
 class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepository,
                                            userReportViewModelMapper: UserReportViewModelMapper,
                                            val timeTrackerInteractor: TimeTrackerInteractor,
-                                           val projectsViewModelMapper: ProjectViewModelMapper,
                                            val taskDetailViewModelMapper: TaskDetailViewModelMapper)
     : HrAppBaseTimeReportDetailPresenter<UpdateTimeReportView>(timeReportRepository, userReportViewModelMapper), UpdateTimeReportPresenter {
 
@@ -44,12 +42,16 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
         loadProjectAndTask()
         view?.setDeleteReportButtonVisible(true)
 
-        subscription = timeTrackerInteractor.subscribeOnTimeUpdates().subscribe({ taskUpdate ->
-            if (userReportForEdit?.id.equals(taskUpdate.report.id)) {
-                isTracking = taskUpdate.state == TaskTimerState.RUNNING
-                view?.showTime(TimeFormatUtil.formatMinutesToHours(taskUpdate.report.minutes))
-            }
-        }, this::showError)
+        subscription = call(
+                timeTrackerInteractor.subscribeOnTimeUpdates(),
+                { taskUpdate ->
+                    if (userReportForEdit?.id.equals(taskUpdate.report.id)) {
+                        isTracking = taskUpdate.state == TaskTimerState.RUNNING
+                        view?.showTime(TimeFormatUtil.formatMinutesToHours(taskUpdate.report.minutes))
+                    }
+                },
+                this::showError
+        )
     }
 
     override fun makeSaveRequest() {
@@ -66,9 +68,15 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
 
     override fun startTimer() {
         userReportForEdit?.let {
-            updateReport().flatMap {
-                timeTrackerInteractor.startTimer(it).map { it.current }
-            }.subscribe(this::onReportUpdated, this::showError)
+            updateReport()
+                    .flatMap {
+                        if (isTracking) {
+                            timeTrackerInteractor.stopTimer()
+                        } else {
+                            timeTrackerInteractor.startTimer(it).map { it.current }
+                        }
+                    }
+                    .subscribe(this::onReportUpdated, this::showError)
         }
     }
 
@@ -86,7 +94,7 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
         ) {
             router?.close()
         } else {
-           askToConfirmCloseWithoutSaving()
+            askToConfirmCloseWithoutSaving()
         }
     }
 
@@ -148,7 +156,7 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
 
     private fun deleteReport() {
         userReportForEdit?.let { report ->
-            timeTrackerInteractor.isRunning()
+            call(timeTrackerInteractor.isRunning()
                     .map { it.report?.id == report.id }
                     .flatMap { running ->
                         if (running) {
@@ -165,9 +173,10 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
                                 .doOnSubscribe { view?.showProgress(true) }
                                 .doOnTerminate { view?.showProgress(false) }
                                 .toSingle()
-                    }.subscribe({
-                        router?.projectDeleted(userReportForEdit)
-                    }, this::showError)
+                    },
+                    { router?.projectDeleted(userReportForEdit) },
+                    this::showError
+            )
         }
     }
 

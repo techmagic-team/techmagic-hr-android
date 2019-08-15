@@ -4,6 +4,10 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTim
 
 class CreateTimeReportFragment : BaseTimeReportDetailFragment<CreateTimeReportPresenter>(), CreateTimeReportView {
     companion object {
-        fun newInstance() = CreateTimeReportFragment()
+        fun newInstance(alreadyReportedMinutesInDayWithoutCurrentMinutes: Int): CreateTimeReportFragment {
+            val fragment = CreateTimeReportFragment()
+            fragment.arguments = createBaseBundle(alreadyReportedMinutesInDayWithoutCurrentMinutes)
+            return fragment
+        }
     }
 }

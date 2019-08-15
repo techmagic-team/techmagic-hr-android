@@ -11,6 +11,7 @@ interface ReportPropertiesView : View, ProgressableView {
     fun showTitle(@StringRes titleRes : Int)
     fun showProperties(props: List<ProjectViewModel>)
     fun showTasks(props: List<ProjectTaskViewModel>)
+    fun showEmptyList(@StringRes type : Int)
 }
 
 interface ReportPropertiesPresenter : Presenter {

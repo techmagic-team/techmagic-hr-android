@@ -54,6 +54,15 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: B
                 .show()
     }
 
+    override fun showTooManyHoursErrorDialog(timeLeft: String) {
+        AlertDialog.Builder(activity)
+                .setTitle(activity.getString(R.string.message_error_simple))
+                .setMessage(activity.getString(R.string.tm_hr_time_report_detail_error_cannot_save_more_than_24_h, timeLeft))
+                .setPositiveButton(R.string.message_text_ok) { dialog, which -> dialog.dismiss() }
+                .setCancelable(false)
+                .show()
+    }
+
     override fun close() {
         activity.finish()
     }

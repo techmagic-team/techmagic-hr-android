@@ -12,5 +12,6 @@ interface ITimeReportDetailRouter : Router {
     fun onReportUpdated(userReport: UserReportViewModel?, oldReportId: String? = null)
     fun projectDeleted(deletedReport: UserReportViewModel?)
     fun showYesNoDialog(@StringRes titleRes: Int, @StringRes messageRes: Int, onConfirm: () -> Unit, onCancel: () -> Unit = {})
+    fun showTooManyHoursErrorDialog(timeLeft : String)
     fun close()
 }

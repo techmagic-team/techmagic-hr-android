@@ -9,7 +9,12 @@ import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTim
 class UpdateTimeReportFragment : BaseTimeReportDetailFragment<UpdateTimeReportPresenter>(), UpdateTimeReportView {
 
     companion object {
-        fun newInstance() = UpdateTimeReportFragment()
+
+        fun newInstance(alreadyReportedMinutesInDayWithoutCurrentMinutes: Int): UpdateTimeReportFragment {
+            val fragment = UpdateTimeReportFragment()
+            fragment.arguments = createBaseBundle(alreadyReportedMinutesInDayWithoutCurrentMinutes)
+            return fragment
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

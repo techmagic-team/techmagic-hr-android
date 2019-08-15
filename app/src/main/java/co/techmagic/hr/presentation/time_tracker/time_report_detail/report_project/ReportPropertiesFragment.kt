@@ -2,10 +2,12 @@ package co.techmagic.hr.presentation.time_tracker.time_report_detail.report_proj
 
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.mvp.base.HrAppBaseViewFragment
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
@@ -22,6 +24,7 @@ import java.util.*
 class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter>(), ReportPropertiesView {
 
     private lateinit var rvReportProperties: RecyclerView
+    private lateinit var tvEmptyError: TextView
 
     private var projectsAdapter: ReportProjectsAdapter? = null
     private var tasksAdapter: TasksAdapter? = null
@@ -105,8 +108,15 @@ class ReportPropertiesFragment : HrAppBaseViewFragment<ReportPropertiesPresenter
         tasksAdapter?.setData(props)
     }
 
+    override fun showEmptyList(@StringRes type: Int) {
+        val typeString = getString(type)
+        tvEmptyError.visibility = View.VISIBLE
+        tvEmptyError.text = getString(R.string.tm_hr_report_you_have_no_data, typeString)
+    }
+
     private fun findViews(view: View) {
         rvReportProperties = view.findViewById(R.id.rvReportProperties)
+        tvEmptyError = view.findViewById(R.id.tvEmptyError)
 
         initRecycler()
     }

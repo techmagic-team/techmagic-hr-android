@@ -64,5 +64,6 @@ class DayReportViewHolder(val timeReportsClickListener: TimeReportsClickListener
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_time_reports)!!)
 
         rvReports.addItemDecoration(dividerItemDecoration)
+        rvReports.itemAnimator = null
     }
 }
