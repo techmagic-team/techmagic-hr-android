@@ -54,7 +54,7 @@ android {
         }
 
         prod {
-            buildConfigField 'String', 'HOST_URL', '"https://hrapi.techmagic.co/v1/"'
+            buildConfigField 'String', 'HOST_URL', '"https://api.techmagic.co/hr-api/v1/"'
         }
     }
 
