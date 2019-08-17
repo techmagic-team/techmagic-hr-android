@@ -1,13 +1,15 @@
 package co.techmagic.hr.presentation.time_tracker
 
+import android.support.v7.app.AlertDialog
+import co.techmagic.hr.R
+import co.techmagic.hr.presentation.base.HrTmBaseRouter
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
-import com.techmagic.viper.base.BaseRouter
 import java.util.*
 
 class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragment) :
-        BaseRouter<HomeActivity>(activity),
+        HrTmBaseRouter<HomeActivity>(activity),
         ITimeTrackerRouter {
 
     override fun openDatePicker(currentDate: Calendar) {
