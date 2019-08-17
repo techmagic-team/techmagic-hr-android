@@ -270,7 +270,7 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
         DetailsFragment fragment = DetailsFragment.newInstance();
         fragment.setArguments(bundle);
-        replaceFragment(fragment, tag);
+        replaceFragment(fragment, tag + user.getId());
 
         if (profileType == ProfileTypes.MY_PROFILE) {
             mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_MY_PROFILE_TAG);
