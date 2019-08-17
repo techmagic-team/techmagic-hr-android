@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.techmagic.viper.Presentable
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.ViewState
@@ -78,6 +79,14 @@ abstract class BaseViewFragment<PRESENTER : Presenter> : Fragment(), com.techmag
     override fun detachViewOutput() {
         presenter?.onViewDetached()
         _presenter = null
+    }
+
+    override fun showErrorMessage(messageRes: Int) {
+        showErrorMessage(getString(messageRes))
+    }
+
+    override fun showErrorMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

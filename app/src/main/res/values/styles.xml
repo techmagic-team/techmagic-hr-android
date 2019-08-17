@@ -8,8 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 
@@ -29,8 +28,10 @@
     </style>
 
 
-    <style name="NoActionBarTheme" parent="Theme.AppCompat.NoActionBar" />
-
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
 
     <style name="AppTheme.Primary.Button" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/colorPrimary</item>
@@ -200,6 +201,164 @@
         <item name="android:textSize">@dimen/fragment_time_tracker_time_text_size</item>
     </style>
 
+    <style name="TimeReportHeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">
+            @dimen/activity_time_report_detail_header_bottom_offset
+        </item>
+        <item name="android:textColor">@color/color_time_report_detail_task_header_color</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_header_text_size</item>
+    </style>
+
+    <style name="TimeReportPickerTextStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/color_time_report_detail_picker_text_color</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_picker_text_size</item>
+        <item name="android:background">@drawable/bg_time_report_small_input_border</item>
+        <item name="android:drawableRight">@drawable/ic_time_report_detail_picker_arrow</item>
+        <item name="android:paddingLeft">@dimen/activity_time_report_detail_picker_left_padding
+        </item>
+        <item name="android:paddingTop">@dimen/activity_time_report_detail_picker_top_padding</item>
+        <item name="android:paddingRight">@dimen/activity_time_report_detail_picker_right_padding
+        </item>
+        <item name="android:paddingBottom">
+            @dimen/activity_time_report_detail_picker_bottom_padding
+        </item>
+    </style>
+
+    <style name="TimeReportDetailDescriptionInputStyle">
+        <item name="android:background">@drawable/bg_time_report_description_border</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_description_text_size
+        </item>
+        <item name="android:textColor">
+            @color/color_time_report_detail_picker_description_text_color
+        </item>
+        <item name="android:padding">@dimen/activity_time_report_detail_description_padding</item>
+        <item name="android:minHeight">@dimen/activity_time_report_detail_description_min_height
+        </item>
+        <item name="android:textColorHint">
+            @color/color_time_report_detail_picker_description_hint_color
+        </item>
+    </style>
+
+    <style name="ErrorFieldTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:visibility">invisible</item>
+        <item name="android:textSize">
+            @dimen/activity_time_report_detail_description_error_text_size
+        </item>
+        <item name="android:textColor">
+            @color/color_time_report_detail_picker_description_error_color
+        </item>
+        <item name="android:layout_marginTop">
+            @dimen/activity_time_report_detail_description_error_vertical_offset
+        </item>
+        <item name="android:layout_marginBottom">
+            @dimen/activity_time_report_detail_description_error_vertical_offset
+        </item>
+    </style>
+
+    <style name="TimeReportDetailDefaultTimeButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_default_time_text_size
+        </item>
+        <item name="android:padding">@dimen/activity_time_report_detail_default_time_inner_offset
+        </item>
+        <item name="android:drawablePadding">
+            @dimen/activity_time_report_detail_default_time_inner_offset
+        </item>
+        <item name="android:drawableLeft">@drawable/ic_time_report_default_time_plus</item>
+        <item name="android:background">@drawable/bg_time_report_large_input_border</item>
+    </style>
+
+    <style name="TimeReportDetailTimeInputStyle">
+        <item name="android:background">@drawable/bg_time_report_small_input_border</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/activity_time_report_detail_time_input_height
+        </item>
+        <item name="android:layout_marginRight">
+            @dimen/activity_time_report_detail_change_time_buttons_size
+        </item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:paddingRight">
+            @dimen/activity_time_report_detail_time_input_right_padding
+        </item>
+        <item name="android:textColor">@color/color_time_report_detail_time_text_color</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_time_text_size</item>
+        <item name="android:inputType">number</item>
+        <item name="android:digits">0123456789:</item>
+    </style>
+
+    <style name="TimeReportDetailChangeTimeValueButtonStyle">
+        <item name="android:scaleType">center</item>
+        <item name="android:layout_width">
+            @dimen/activity_time_report_detail_change_time_buttons_size
+        </item>
+        <item name="android:layout_height">
+            @dimen/activity_time_report_detail_change_time_buttons_size
+        </item>
+        <item name="android:background">@drawable/bg_increase_reduce_ripple_primary</item>
+    </style>
+
+    <style name="TimeReportDetailActionButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/activity_time_report_detail_action_button_height
+        </item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/activity_time_report_detail_action_button_text_size
+        </item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="TimeReportDetailSecondaryButtonStyle" parent="TimeReportDetailActionButtonStyle">
+        <item name="android:textColor">@color/turquoise
+        </item> <!--todo: color selector for start/stop-->
+        <item name="android:background">@drawable/bg_secondary_button</item>
+    </style>
+
+    <style name="TimeReportDetailPrimaryButtonStyle" parent="TimeReportDetailActionButtonStyle">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/turquoise</item>
+    </style>
+
+    <style name="ReportPropertyHeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_header_text_size</item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_header_top_offset</item>
+        <item name="android:paddingBottom">@dimen/fragment_report_properties_header_bottom_offset
+        </item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_inner_offset</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/color_report_properties_property_header_text_color
+        </item>
+    </style>
+
+    <style name="ReportPropertyTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/fragment_report_properties_property_text_size</item>
+        <item name="android:background">@drawable/bg_ripple_accent</item>
+        <item name="android:textColor">@color/color_report_properties_property_text_color</item>
+        <item name="android:paddingLeft">@dimen/fragment_report_properties_property_left_margin
+        </item>
+        <item name="android:paddingTop">@dimen/fragment_report_properties_property_vertical_offset
+        </item>
+        <item name="android:paddingBottom">
+            @dimen/fragment_report_properties_property_vertical_offset
+        </item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -218,5 +377,34 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="BottomNavLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/color_time_report_disabled_text</item>
+    </style>
+
+    <style name="BottomNavContainer">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center|bottom</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="BottomNavIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
 
 </resources>

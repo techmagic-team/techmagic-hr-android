@@ -1,13 +1,10 @@
 package com.techmagic.viper.base
 
 import android.support.annotation.CallSuper
-
-import com.techmagic.viper.Presentable
-import com.techmagic.viper.Presenter
-import com.techmagic.viper.Router
-import com.techmagic.viper.View
-import com.techmagic.viper.ViewState
-
+import com.techmagic.viper.*
+import rx.Observable
+import rx.Single
+import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
 abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
@@ -26,6 +23,7 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
 
     protected var initial: Boolean = false
 
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
     private val compositeSubscription = CompositeSubscription()
 
     @CallSuper
@@ -73,10 +71,44 @@ abstract class BasePresenter<VIEW : View, ROUTER : Router> : Presenter {
         checkField("view", view)
     }
 
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
+    protected fun <T> call(
+            observable: Observable<T>,
+            onSuccess: (value: T) -> Unit,
+            onError: (throwable: Throwable) -> Unit = {
+                it.message?.let {
+                    view?.showErrorMessage(it)
+                }
+            }
+    ): Subscription {
+        val subscription = observable.subscribe({ onSuccess(it) }, { onError(it) })
+        compositeSubscription.add(subscription)
+        return subscription
+    }
+
+    @Deprecated("Move logic with composite subscriptions to app specific BasePresenter")
+    protected fun <T> call(
+            single: Single<T>,
+            onSuccess: (value: T) -> Unit,
+            onError: (throwable: Throwable) -> Unit = {
+                it.message?.let {
+                    view?.showErrorMessage(it)
+                }
+            }
+    ): Subscription {
+        val subscription = single.subscribe({ onSuccess(it) }, { onError(it) })
+        compositeSubscription.add(subscription)
+        return subscription
+    }
+
     protected fun checkField(fieldName: String, field: Any?) {
         if (field == null) {
             throw IllegalStateException(String.format("%s should not be null!", fieldName))
         }
+    }
+
+    protected fun showError(t: Throwable) {
+        view?.showErrorMessage(t.localizedMessage ?: "Error occurred!")
     }
 
     companion object {

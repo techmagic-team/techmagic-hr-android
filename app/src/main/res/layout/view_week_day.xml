@@ -25,6 +25,7 @@
         android:gravity="center"
         android:lines="1"
         android:textAllCaps="true"
+        android:textColor="@color/color_state_time_report_day_view"
         android:textSize="12sp"
         tools:text="MON" />
 

@@ -3,6 +3,12 @@
     <string name="mixpanel_hr_app_project_token">127239b5e54a51aacf7fac2aaff646e4</string>
 
     <!-- Messages -->
+    <string name="message_error_unknown">Unknown error</string>
+    <string name="message_error_simple">Error</string>
+    <string name="message_warning">Warning</string>
+    <string name="message_cancel">CANCEL</string>
+    <string name="message_delete">DELETE</string>
+    <string name="message_unknown_exception">Unknown exception</string>
     <!--LoginActivity-->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
@@ -20,6 +26,7 @@
     <string name="message_text_no">NO</string>
     <string name="message_text_cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="message_text_ok">OK</string>
+    <string name="message_error_user_does_not_exist">Your email address is not registered</string>
     <!--EmployeeDetailsFragment-->
     <string name="message_no_installed_application">No installed application to perform this action</string>
     <string name="message_image_download_error">Image can not be downloaded</string>
@@ -39,6 +46,12 @@
     <string name="message_short_password">Password must contain at least 6 characters</string>
 
 
+    <string name="login_techmagic">Techmagic</string>
+    <string name="login_time_hr">TIME/HR</string>
+    <string name="login_hint">Authorize with your\n@techmagic.co email</string>
+    <string name="login_google_sign_in">SIGN IN WITH GOOGLE</string>
+    <string name="login_copyright">© TechMagic 2016 - %d</string>
+
     <!-- LoginActivity -->
     <string name="tm_hr_login_activity_text_hr">HR</string>
     <string name="tm_hr_login_activity_text_log_in">Log In</string>
@@ -51,10 +64,10 @@
     <string name="tm_hr_login_activity_text_please_check_your_email">Please check your email to reset password</string>
 
     <!-- HomeActivity -->
-    <string name="tm_hr_home_activity_bottom_navigation_item_0">Time Tracker</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_1">Ninjas</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_0">Time</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_1">Team</string>
     <string name="tm_hr_home_activity_bottom_navigation_item_2">Calendar</string>
-    <string name="tm_hr_home_activity_bottom_navigation_item_3">My Profile</string>
+    <string name="tm_hr_home_activity_bottom_navigation_item_3">Profile</string>
     <string name="tm_hr_home_activity_text_search">Search</string>
     <string name="tm_hr_home_activity_searchview_text_search">Search…</string>
     <string name="tm_hr_home_activity_text_logout">LogOut</string>
@@ -206,8 +219,38 @@
         <item>Time is the longest distance between two places. - Tennessee Williams</item>
         <item>"Time is a created thing. To say 'I don't have time,' is like saying, 'I don't want to. - Lao Tzu"</item>
         <item>Time is money. - Benjamin Franklin</item>
-        <item>"When a man sits with a pretty girl for an hour it seems like a minute.\n      But let him sit on a hot stove for a minute - and it's longer than any hour. That's relativity - Albert Einstein"</item>
+        <item>"When a man sits with a pretty girl for an hour it seems like a minute. \nBut let him sit on a hot stove for a minute - and it's longer than any hour. That's relativity - Albert Einstein"</item>
         <item>"There's never enough time to do all the nothing you want. - Bill Watterson"</item>
         <item>You may delay, but the time will not. - Benjamin Franklin</item>
     </string-array>
+
+    <!-- Time Report Detail -->
+    <string name="tm_hr_time_report_detail_project_header">Project</string>
+    <string name="tm_hr_time_report_detail_task_header">Task</string>
+    <string name="tm_hr_time_report_detail_description_hint">Task description</string>
+    <string name="tm_hr_time_report_detail_description_empty_error">Description is required!</string>
+    <string name="tm_hr_time_report_detail_description_tool_long_error">Max size - 600!</string>
+    <string name="tm_hr_time_report_detail_project_empty_error">Please select a project</string>
+    <string name="tm_hr_time_report_detail_task_empty_error">Please select a task</string>
+    <string name="tm_hr_time_report_detail_time_spent_header">Time spent</string>
+    <string name="tm_hr_time_report_detail_default_time_fifteen_minutes">15 min</string>
+    <string name="tm_hr_time_report_detail_default_time_thirty_minutes">30 min</string>
+    <string name="tm_hr_time_report_detail_default_time_one_hour">1 hour</string>
+    <string name="tm_hr_time_report_detail_default_time_eight_hours">8 hours</string>
+    <string name="tm_hr_time_report_detail_start_timer">Start timer</string>
+    <string name="tm_hr_time_report_detail_stop_timer">Stop timer</string>
+    <string name="tm_hr_time_report_detail_save">Save</string>
+    <string name="tm_hr_time_report_detail_delete">Delete</string>
+    <string name="tm_hr_time_report_detail_delete_task">Delete task</string>
+    <string name="tm_hr_time_report_detail_delete_task_message">Are you sure you want to delete this task?</string>
+    <string name="tm_hr_time_report_detail_warning_close_without_saving">Are you sure you don\'t want to save this task?</string>
+    <string name="tm_hr_time_report_detail_error_cannot_save_more_than_24_h">You can’t report more then %1$s on this day</string>
+
+    <!-- Report Properties-->
+    <string name="tm_hr_report_select_project">Select Project</string>
+    <string name="tm_hr_report_select_task">Select Task</string>
+    <string name="tm_hr_report_projects">projects</string>
+    <string name="tm_hr_report_tasks">tasks</string>
+    <string name="tm_hr_report_you_have_no_data">You have no %s assigned to your account.\nPlease contact your team leader.</string>
+
 </resources>

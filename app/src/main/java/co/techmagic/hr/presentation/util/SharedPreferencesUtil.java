@@ -3,16 +3,23 @@ package co.techmagic.hr.presentation.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.data.entity.time_report.ProjectResponse;
+import co.techmagic.hr.data.entity.time_report.TaskResponse;
 
+// Use AccountManager or move needed logic to it
+@Deprecated
 public class SharedPreferencesUtil {
 
     private static SharedPreferences prefs;
+    private static Gson gson = new Gson();
 
-    private SharedPreferencesUtil() {}
+    private SharedPreferencesUtil() {
+    }
 
 
     public static void init(@NonNull Context appContext) {
@@ -36,7 +43,7 @@ public class SharedPreferencesUtil {
 
 
     public static void saveUser(final User user) {
-        String u = new Gson().toJson(user);
+        String u = gson.toJson(user);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(SharedPreferencesKeys.LOGGED_ID_USER_KEY, u);
         editor.apply();
@@ -45,7 +52,7 @@ public class SharedPreferencesUtil {
 
     public static User readUser() {
         final String u = prefs.getString(SharedPreferencesKeys.LOGGED_ID_USER_KEY, null);
-        return new Gson().fromJson(u, User.class);
+        return gson.fromJson(u, User.class);
     }
 
 
@@ -98,6 +105,8 @@ public class SharedPreferencesUtil {
         editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY);
         editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY);
         editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY);
+        editor.remove(SharedPreferencesKeys.LAST_SELECTED_PROJECT);
+        editor.remove(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK);
         editor.apply();
     }
 
@@ -173,6 +182,28 @@ public class SharedPreferencesUtil {
         return prefs.getInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, 0);
     }
 
+    public static void saveLastSelectedProject(ProjectResponse projectResponse) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.LAST_SELECTED_PROJECT, gson.toJson(projectResponse));
+        editor.apply();
+    }
+
+    @Nullable
+    public static ProjectResponse getLastSelectedProject() {
+        return gson.fromJson(prefs.getString(SharedPreferencesKeys.LAST_SELECTED_PROJECT, ""), ProjectResponse.class);
+    }
+
+    public static void saveLastSelectedTask(TaskResponse taskResponse) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK, gson.toJson(taskResponse));
+        editor.apply();
+    }
+
+    @Nullable
+    public static TaskResponse getLastSelectedTask() {
+        return gson.fromJson(prefs.getString(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK, ""), TaskResponse.class);
+    }
+
 
     interface SharedPreferencesKeys {
         String SHARED_PREFS_NAME = "appPrefs";
@@ -187,5 +218,7 @@ public class SharedPreferencesUtil {
         String CALENDAR_FILTERS_SELECTED_TO_KEY = "calendar_filters_selected_to_key";
         String CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY = "calendar_filters_selected_department_id_key";
         String CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY = "calendar_filters_selected_project_id_key";
+        String LAST_SELECTED_PROJECT = "time_reports_last_selected_project";
+        String LAST_SELECTED_PROJECT_TASK = "time_reports_last_selected_project_task";
     }
 }

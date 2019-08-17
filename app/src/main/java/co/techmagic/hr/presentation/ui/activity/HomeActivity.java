@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,40 +17,41 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techmagic.viper.base.BasePresenter;
-import com.techmagic.viper.base.BaseRouter;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.techmagic.hr.R;
+import co.techmagic.hr.RepositoriesProvider;
 import co.techmagic.hr.data.entity.UserProfile;
-import co.techmagic.hr.data.manager.impl.NetworkManagerImpl;
-import co.techmagic.hr.data.repository.TimeReportNetworkRepository;
-import co.techmagic.hr.data.store.TimeTrackerApi;
-import co.techmagic.hr.data.store.client.ApiClient;
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor;
+import co.techmagic.hr.domain.repository.TimeReportRepository;
 import co.techmagic.hr.presentation.mvp.presenter.HomePresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.HomeViewImpl;
 import co.techmagic.hr.presentation.time_tracker.DateTimeProvider;
 import co.techmagic.hr.presentation.time_tracker.HrAppTimeTrackerPresenter;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment;
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerRouter;
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.adapter.EmployeeAdapter;
+import co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup;
 import co.techmagic.hr.presentation.ui.fragment.CalendarFragment;
 import co.techmagic.hr.presentation.ui.fragment.DetailsFragment;
 import co.techmagic.hr.presentation.ui.fragment.FragmentCallback;
-import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.manager.quotes.AndroidResQuotesManager;
+import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
+import co.techmagic.hr.presentation.util.HrAppDateTimeProvider;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
+
+import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.NAV_INDEX_CALENDAR;
+import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.NAV_INDEX_PROFILE;
+import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.NAV_INDEX_TEAM;
+import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.NAV_INDEX_TIME;
 
 
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
@@ -77,8 +77,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @BindView(R.id.flFilters)
     View flFilters;
-    @BindView(R.id.bottomNavigation)
-    BottomNavigationView bottomNavigation;
     @BindView(R.id.rvEmployees)
     RecyclerView rvEmployees;
     @BindView(R.id.tvNoResults)
@@ -103,12 +101,10 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         initUi();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         presenter.setupFiltersView(selDepId, selLeadId, selProjectId, searchQuery);
-
         if (!isOnActivityResultCalled) {
             isOnActivityResultCalled = false;
             loadMoreEmployees(null, selDepId, selLeadId, selProjectId, 0, 0, false);
@@ -194,7 +190,6 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setTitle(getString(R.string.app_name));
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         return true;
@@ -302,21 +297,21 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         super.onAttachFragment(fragment);
         if (fragment instanceof TimeTrackerFragment) {
             // TODO: 1/20/19 inject dependencies
-            OkHttpClient okHttpClientClient = ApiClient.buildOkHttpClientClient();
-            Retrofit retrofit = ApiClient.getRetrofit(okHttpClientClient);
-            TimeTrackerApi timeTrackerApi = retrofit.create(TimeTrackerApi.class);
-            TimeReportNetworkRepository timeReportRepository = new TimeReportNetworkRepository(timeTrackerApi, NetworkManagerImpl.getNetworkManager());
             QuotesManager quotesManager = new AndroidResQuotesManager(getApplicationContext());
-            DateTimeProvider dateTimeProvider = () -> {
-                Calendar now = Calendar.getInstance();
-                now.setFirstDayOfWeek(Calendar.MONDAY);
-                return now;
-            };
-            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(dateTimeProvider, timeReportRepository, quotesManager);
+            DateTimeProvider dateTimeProvider = new HrAppDateTimeProvider();
+
+            RepositoriesProvider provider = (RepositoriesProvider) getApplication();
+            TimeReportRepository timeReportRepository = provider.provideTimeReportRepository();
+            TimeTrackerInteractor timeTrackerInteractor = provider.provideTimeTrackerInteractor();
+
+            HrAppTimeTrackerPresenter timeTrackerPresenter = new HrAppTimeTrackerPresenter(
+                    dateTimeProvider, timeReportRepository, timeTrackerInteractor,
+                    quotesManager, new UserReportViewModelMapper());
             TimeTrackerFragment view = (TimeTrackerFragment) fragment;
             BasePresenter.Companion.bind(view, timeTrackerPresenter, new TimeTrackerRouter(this, view));
         }
     }
+
 
     @OnClick(R.id.btnClearFilters)
     public void onClearFiltersClick() {
@@ -347,33 +342,36 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void setupBottomNavigation() {
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_tracker: {
-                    addTimeTrackerFragment();
-                    break;
-                }
 
-                case R.id.action_ninjas:
-                    if (allowChangeTab) {
-                        clearFragmentsBackStack(this);
-                        mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
-                    }
-                    break;
-
-                case R.id.action_calendar:
-                    addCalendarFragment();
-                    break;
-
-                case R.id.action_my_profile:
-                    presenter.handleMyProfileClick();
-                    break;
-            }
-            return true;
-        });
+        final BottomNavigationSetup bottomNavigationSetup = new BottomNavigationSetup(findViewById(R.id.bottomNavigation), this::navigateTab);
 
         // TODO: 1/19/19 refactor screen structure as ninjas list is not a fragment and always is the first visible view
-        bottomNavigation.setSelectedItemId(R.id.action_tracker);
+        bottomNavigationSetup.selectTab(NAV_INDEX_TIME);
+    }
+
+    private void navigateTab(int tabIndex) {
+        switch (tabIndex) {
+            case NAV_INDEX_TIME: {
+                addTimeTrackerFragment();
+                break;
+            }
+
+            case NAV_INDEX_TEAM:
+                if (allowChangeTab) {
+                    actionBar.setTitle(getString(R.string.app_name));
+                    clearFragmentsBackStack(this);
+                    mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
+                }
+                break;
+
+            case NAV_INDEX_CALENDAR:
+                addCalendarFragment();
+                break;
+
+            case NAV_INDEX_PROFILE:
+                presenter.handleMyProfileClick();
+                break;
+        }
     }
 
 

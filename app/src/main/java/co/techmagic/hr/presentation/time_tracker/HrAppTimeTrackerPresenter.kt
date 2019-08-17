@@ -1,10 +1,13 @@
 package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.data.entity.HolidayDate
-import co.techmagic.hr.data.entity.time_tracker.UserReport
+import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
+import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.pojo.ReportNameViewModel
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.mapper.UserReportViewModelMapper
 import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
@@ -17,11 +20,10 @@ import kotlin.collections.HashMap
 class HrAppTimeTrackerPresenter(
         private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository,
-        private val quotesManager: QuotesManager) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
-
-    companion object {
-        const val TOOLBAR_DATE_FORMAT = "EEEE, dd 'of' MMM"
-    }
+        private val timeTrackerInteractor: TimeTrackerInteractor,
+        private val quotesManager: QuotesManager,
+        private val userReportViewMadelMapper: UserReportViewModelMapper
+) : BasePresenter<TimeTrackerView, ITimeTrackerRouter>(), TimeTrackerPresenter {
 
     private val cache: HashMap<String, MutableList<UserReportViewModel>> = HashMap(7)
     private val holidays: HashMap<String, Holiday> = HashMap()
@@ -32,7 +34,14 @@ class HrAppTimeTrackerPresenter(
 
     override fun onViewCreated(isInitial: Boolean) {
         super.onViewCreated(isInitial)
-        view?.init(selectedDate)
+        currentDate = dateTimeProvider.now().dateOnly()
+        selectedDate = currentDate.copy()
+        view?.init(currentDate)
+        view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
+
+        subscriptions["timer"] = call(timeTrackerInteractor.subscribeOnTimeUpdates(),
+                this::updateReportViewModel,
+                this::showError)
     }
 
     override fun onViewDestroyed() {
@@ -90,17 +99,22 @@ class HrAppTimeTrackerPresenter(
             val firstDayOfWeek = date.firstDayOfWeekDate()
             val weekReportsKey = key(firstDayOfWeek)
             subscriptions[weekReportsKey]?.unsubscribe()
-            subscriptions[weekReportsKey] = timeReportRepository.getDayReports(user.id, firstDayOfWeek)
-                    .subscribe { response ->
+            subscriptions[weekReportsKey] = call(
+                    timeReportRepository.getDayReports(user.id, firstDayOfWeek),
+                    { response ->
                         cacheHolidays(response.holidays)
-                        val weekReports = response.reports.map { reportToViewModel(it) }
+                        val weekReports = response.reports.map { userReportViewMadelMapper.transform(it) }
                         initWeekCache(date)
                         for (report in weekReports) {
                             cache[key(report.date.toCalendar())]?.add(report)
                             view?.notifyDayReportsChanged(date)
+                            if (runningReport?.id?.equals(report.id) == true) {
+                                checkLoadedReportForTracking(report)
+                            }
                         }
                         view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
+            )
         }
     }
 
@@ -117,6 +131,118 @@ class HrAppTimeTrackerPresenter(
         router?.openDatePicker(currentDate)
     }
 
+    override fun onNewTimeReportClicked() {
+        router?.openCreateTimeReport(selectedDate, totalDayMinutesExcludeCurrent(selectedDate))
+    }
+
+    override fun onEditTimeReportClicked(reportViewModel: UserReportViewModel) {
+        val reportDateCalendar = reportViewModel.date.toCalendar()
+        router?.openEditTimeReport(
+                reportViewModel,
+                reportDateCalendar,
+                totalDayMinutesExcludeCurrent(reportDateCalendar, reportViewModel.minutes)
+        )
+    }
+
+    override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        val reports = getDayReports(userReportViewModel.date)
+        reports?.add(userReportViewModel)
+        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+    }
+
+    override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        //todo please implement better solution using findReport(id, date) method
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
+                    ?.forEachIndexed { index, viewModel ->
+                        this[this.indexOf(viewModel)] = userReportViewModel
+                        notifyDateChanged(userReportViewModel.date)
+                    }
+        }
+    }
+
+    override fun onTaskDeleted(userReportViewModel: UserReportViewModel?) {
+        userReportViewModel ?: return
+
+        with(getDayReports(userReportViewModel.date)) {
+            this
+                    ?.find { it.id == userReportViewModel.id }
+                    ?.let {
+                        this.remove(it)
+                        notifyDateChanged(userReportViewModel.date)
+                    }
+        }
+    }
+
+    override fun onTaskTimerToggled(userReportViewModel: UserReportViewModel) {
+        if (userReportViewModel.isCurrentlyTracking) {
+            timeTrackerInteractor.stopTimer().subscribe({ updateReportViewModel(TaskUpdate(it, TaskTimerState.RUNNING)) }, this::showError)
+
+        } else {
+            val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
+            timeTrackerInteractor.startTimer(userReport)
+                    .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+        }
+    }
+
+    private var runningReport: UserReportViewModel? = null
+
+    private fun updateReportViewModel(taskUpdate: TaskUpdate) {
+        if (runningReport?.id.equals(taskUpdate.report.id)) {
+            when (taskUpdate.state) {
+                TaskTimerState.RUNNING -> {
+                    updateRunnigReportTime(taskUpdate.report.minutes)
+                    return
+                }
+                TaskTimerState.STOPPED -> runningReport = null
+            }
+        }
+
+        if (taskUpdate.state == TaskTimerState.RUNNING) {
+            runningReport = userReportViewMadelMapper.transform(taskUpdate.report)
+        }
+
+        findReport(taskUpdate.report)?.let { reportViewModel ->
+            reportViewModel.minutes = taskUpdate.report.minutes
+            reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
+            notifyDateChanged(reportViewModel.date)
+        }
+    }
+
+    /**
+     * For case when user reopens screen, and one of loaded reports has been tracking
+     * if currently loaded report is the same with currently running report
+     * - changes new report time and tracking status.
+     * Because we do not have tracking support on backend
+     */
+    private fun checkLoadedReportForTracking(loadedReport: UserReportViewModel) {
+        runningReport?.let {
+            if (it.id.equals(loadedReport.id)) {
+                loadedReport.minutes = it.minutes
+                loadedReport.isCurrentlyTracking = true
+            }
+        }
+    }
+
+    private fun updateRunnigReportTime(newTimeMinutes: Int) {
+        runningReport?.let {
+            if (it.minutes != newTimeMinutes) {
+                it.minutes = newTimeMinutes
+                findReport(it.id, it.date)?.minutes = newTimeMinutes
+                notifyDateChanged(it.date)
+            }
+        }
+    }
+
+    private fun notifyDateChanged(date: Date) {
+        view?.notifyDayReportsChanged(calendar(date).dateOnly())
+    }
+
     private fun getCachedReports(date: Calendar) = cache[key(date)]
 
     private fun key(date: Calendar) = date.formatDate()
@@ -128,6 +254,10 @@ class HrAppTimeTrackerPresenter(
             d.add(Calendar.DAY_OF_WEEK, i)
             callback(d)
         }
+    }
+
+    private fun totalDayMinutesExcludeCurrent(selectedDate: Calendar, currentMinutes: Int = 0): Int {
+        return totalDayMinutes(key(selectedDate)) - currentMinutes
     }
 
     private fun totalDayMinutes(key: String): Int {
@@ -155,19 +285,9 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    private fun reportToViewModel(report: UserReport): UserReportViewModel {
-        return UserReportViewModel(
-                report.id,
-                report.client,
-                report.project,
-                ReportNameViewModel(report.task.name),
-                report.note,
-                report.minutes,
-                false,
-                report.isApproved,
-                report.weekReportId,
-                report.status,
-                report.date
-        )
-    }
+    private fun getDayReports(reportsDate: Date) = cache[key(calendar(reportsDate))]
+
+    private fun findReport(report: UserReport) = findReport(report.id, report.date)
+
+    private fun findReport(id: String, date: Date) = getDayReports(date)?.first { it.id == id }
 }

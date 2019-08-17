@@ -8,6 +8,7 @@ import android.os.Handler;
 import butterknife.ButterKnife;
 import co.techmagic.hr.R;
 import co.techmagic.hr.data.entity.User;
+import co.techmagic.hr.presentation.login.LoginActivity;
 import co.techmagic.hr.presentation.mvp.presenter.SplashPresenter;
 import co.techmagic.hr.presentation.mvp.view.SplashView;
 import co.techmagic.hr.presentation.mvp.view.impl.SplashViewImpl;

@@ -11,12 +11,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
 
 import co.techmagic.hr.R;
+import co.techmagic.hr.RepositoriesProvider;
+import co.techmagic.hr.domain.interactor.TimeTrackerInteractor;
+import co.techmagic.hr.presentation.login.LoginActivity;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
-import co.techmagic.hr.presentation.ui.activity.LoginActivity;
 import co.techmagic.hr.presentation.ui.view.AnimatedProgressDialog;
 import co.techmagic.hr.presentation.ui.view.ProgressDialogHelper;
 import co.techmagic.hr.presentation.util.SharedPreferencesUtil;
+import rx.Single;
+import rx.functions.Func1;
 
 @Deprecated
 public abstract class ViewImpl implements View {
@@ -122,8 +126,16 @@ public abstract class ViewImpl implements View {
 
     @Override
     public void logOut() {
-        SharedPreferencesUtil.clearPreferences();
-        startLoginScreen();
+        TimeTrackerInteractor timeTrackerInteractor = provider().provideTimeTrackerInteractor();
+        timeTrackerInteractor.isRunning()
+                .map((runningTask -> runningTask.getReport() != null))
+                .flatMap((Func1<Boolean, Single<?>>) isRunning ->
+                        isRunning ? timeTrackerInteractor.stopTimer().map(r -> true)
+                                : Single.just(true))
+                .subscribe((success) -> {
+                    SharedPreferencesUtil.clearPreferences();
+                    startLoginScreen();
+                }, Throwable::printStackTrace);
     }
 
 
@@ -151,5 +163,13 @@ public abstract class ViewImpl implements View {
         }
 
         return null;
+    }
+
+    private RepositoriesProvider provider() {
+        if (activity != null) {
+            return (RepositoriesProvider) activity.getApplication();
+        } else {
+            return (RepositoriesProvider) fragment.getActivity().getApplication();
+        }
     }
 }

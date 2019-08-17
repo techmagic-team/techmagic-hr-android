@@ -5,6 +5,7 @@ import co.techmagic.hr.data.entity.User
 import co.techmagic.hr.data.entity.UserProfile
 import co.techmagic.hr.data.manager.NetworkManager
 import co.techmagic.hr.data.manager.impl.NetworkManagerImpl
+import co.techmagic.hr.data.repository.base.BaseNetworkRepository
 import co.techmagic.hr.data.request.EditProfileRequest
 import co.techmagic.hr.data.request.ForgotPasswordRequest
 import co.techmagic.hr.data.request.GetMyProfileRequest
@@ -27,6 +28,10 @@ class UserRepositoryImpl(
     constructor() : this(NetworkManagerImpl.getNetworkManager(),
             ApiClient.getApiClient().userApiClient,
             ApiClient.getApiClient().serializableNullsUserClient)
+
+    override fun googleLogin(googleAuthToken: String): Observable<User> {
+        return setup(userApiClient.googleLogin(googleAuthToken))
+    }
 
     override fun login(loginRequest: LoginRequest): Observable<User> {
         return setup(userApiClient.login(loginRequest))

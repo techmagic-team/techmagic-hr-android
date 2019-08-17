@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".TechMagicHrApplication"
@@ -25,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.ui.activity.LoginActivity"
+            android:name=".presentation.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBarTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -55,6 +56,15 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".presentation.time_tracker.time_report_detail.TimeReportDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <service android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
+            android:exported="false"/>
+
         <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />
@@ -65,6 +75,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="01eedfc003ebb8ee5d931547b6ae783e5e1eb080" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 
