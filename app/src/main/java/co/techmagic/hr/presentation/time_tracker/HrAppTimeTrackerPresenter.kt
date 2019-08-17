@@ -123,8 +123,7 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onInfoClicked() {
-        //TODO: implement
-        view?.showMessage("Not implemented")
+        router?.openMonthInfo(selectedDate)
     }
 
     override fun onCalendarClicked() {

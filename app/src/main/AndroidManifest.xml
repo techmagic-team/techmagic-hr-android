@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="co.techmagic.hr">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +15,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".presentation.ui.activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -32,38 +35,35 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.ui.activity.HomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".presentation.ui.activity.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.ui.activity.CalendarFiltersActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.ui.activity.EditProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".presentation.ui.activity.RequestTimeOffActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".presentation.time_tracker.time_report_detail.TimeReportDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".presentation.time_tracker.info.TimeInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
-            android:exported="false"/>
+        <service
+            android:name=".device.time_tracker.tracker_service.HrAppTimeTrackerService"
+            android:exported="false" />
 
         <receiver android:name="io.github.eterverda.sntp.android.SNTPResetCacheReceiver">
             <intent-filter>
@@ -71,14 +71,12 @@
             </intent-filter>
         </receiver>
 
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="01eedfc003ebb8ee5d931547b6ae783e5e1eb080" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.info.TimeInfoActivity
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
 import com.techmagic.viper.base.BaseRouter
@@ -22,4 +23,7 @@ class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragmen
         TimeReportDetailActivity.start(fragment, userReport, reportDate, TimeTrackerFragment.REQUEST_UPDATE_TASK, minutesInDayExcludedThis)
     }
 
+    override fun openMonthInfo(selectedDate: Calendar) {
+        TimeInfoActivity.start(activity, selectedDate)
+    }
 }
