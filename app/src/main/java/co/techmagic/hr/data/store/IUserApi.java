@@ -24,25 +24,25 @@ import rx.Observable;
  */
 public interface IUserApi {
 
-    @GET("v1/google-auth")
+    @GET("google-auth")
     Observable<User> googleLogin(@Query("code") String googleAuthToken);
 
-    @POST("v1/auth")
+    @POST("auth")
     Observable<User> login(@Body LoginRequest loginRequest);
 
-    @POST("v1/auth/forgot-password")
+    @POST("auth/forgot-password")
     Observable<Void> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
 
-    @GET("/v1/users/{id}")
+    @GET("users/{id}")
     Observable<UserProfile> getMyProfile(@Path("id") String userId);
 
-    @GET("/v1/companies")
+    @GET("companies")
     Observable<List<Company>> getCompanies();
 
-    @PATCH("/v1/users/{id}")
+    @PATCH("users/{id}")
     Observable<UserProfile> saveEditedProfile(@Path("id") String userId, @Body EditProfileRequest editProfileRequest);
 
     @Multipart
-    @POST("/v1/users/{id}/photo")
+    @POST("users/{id}/photo")
     Observable<Void> uploadPhoto(@Path("id") String userId, @Part MultipartBody.Part image);
 }

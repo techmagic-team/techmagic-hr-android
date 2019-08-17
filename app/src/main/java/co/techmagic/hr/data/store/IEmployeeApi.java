@@ -21,91 +21,91 @@ import rx.Observable;
 
 public interface IEmployeeApi {
 
-    @GET("v1/users")
+    @GET("users")
     Observable<Employee> getEmployees(@Query("q") String searchQuery, @Query("project") String projectId, @Query("_department") String departmentId,
                                       @Query("lastWorkingDay") boolean lastWorkingDay, @Query("lead") String leadId, @Query("offset") int offset, @Query("limit") int limit);
 
-    @GET("v1/departments")
+    @GET("departments")
     Observable<List<Filter>> getFilterDepartments();
 
-    @GET("v1/endpoints/leads-with-employees")
+    @GET("endpoints/leads-with-employees")
     Observable<List<FilterLead>> getFilterLeadsWithEmployees();
 
-    @GET("v1/user-group/project")
+    @GET("user-group/project")
     Observable<List<Filter>> getFilterProjects();
 
     /* Used for employee details */
 
-    @GET("/v1/time-off/vacation/user/{userId}")
+    @GET("time-off/vacation/user/{userId}")
     Observable<List<RequestedTimeOff>> getUserVacations(@Path("userId") String userId, @Query("isPaid") boolean isPaid, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacation/user/{userId}")
+    @GET("time-off/vacation/user/{userId}")
     Observable<List<RequestedTimeOff>> getUserDayOffs(@Path("userId") String userId, @Query("isPaid") boolean isPaid, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/illness/user/{userId}")
+    @GET("time-off/illness/user/{userId}")
     Observable<List<RequestedTimeOff>> getUserIllnesses(@Path("userId") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/rooms")
+    @GET("rooms")
     Observable<List<Filter>> getFilterRooms();
 
-    @GET("/v1/leads")
+    @GET("leads")
     Observable<List<FilterLead>> getLeads();
 
-    @GET("/v1/reasons")
+    @GET("reasons")
     Observable<List<Filter>> getFilterReasons();
 
     /* Used for calendar */
 
-    @GET("/v1/time-off/vacation?isPaid=true")
+    @GET("time-off/vacation?isPaid=true")
     Observable<List<RequestedTimeOff>> getAllVacations(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacation?isPaid=false")
+    @GET("time-off/vacation?isPaid=false")
     Observable<List<RequestedTimeOff>> getAllDayOffs(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/illness")
+    @GET("time-off/illness")
     Observable<List<RequestedTimeOff>> getAllIllnesses(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/users")
+    @GET("users")
     Observable<Employee> getAllEmployeesByDepartment(@Query("project") String projectId, @Query("_department") String departmentId, @Query("my-team") boolean isMyTeam);
 
-    @GET("/v1/endpoints/calendar")
+    @GET("endpoints/calendar")
     Observable<List<CalendarInfo>> getCalendar(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacation/user/{user_id}?isPaid=true")
+    @GET("time-off/vacation/user/{user_id}?isPaid=true")
     Observable<List<RequestedTimeOff>> getUsedVacationsByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacation/user/{user_id}?isPaid=false")
+    @GET("time-off/vacation/user/{user_id}?isPaid=false")
     Observable<List<RequestedTimeOff>> getUsedDayOffsByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/illness/user/{user_id}")
+    @GET("time-off/illness/user/{user_id}")
     Observable<List<RequestedTimeOff>> getUsedIllnessesByUser(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
     /* Used for request time off */
 
-    @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=true")
+    @GET("time-off/vacation/user/{user_id}/totaldays?isPaid=true")
     Observable<TimeOffAmount> getTotalVacation(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/vacation/user/{user_id}/totaldays?isPaid=false")
+    @GET("time-off/vacation/user/{user_id}/totaldays?isPaid=false")
     Observable<TimeOffAmount> getTotalDayOff(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/illness/user/{user_id}/totaldays?isPaid=true")
+    @GET("time-off/illness/user/{user_id}/totaldays?isPaid=true")
     Observable<TimeOffAmount> getTotalIllness(@Path("user_id") String userId, @Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/holidays")
+    @GET("holidays")
     Observable<List<HolidayDate>> getHolidays(@Query("dateFrom") long dateFrom, @Query("dateTo") long dateTo);
 
-    @GET("/v1/time-off/dates/{user_id}")
+    @GET("time-off/dates/{user_id}")
     Observable<List<DatePeriod>> getUserPeriod(@Path("user_id") String userId);
 
-    @POST("/v1/time-off/vacation")
+    @POST("time-off/vacation")
     Observable<RequestedTimeOff> requestVacation(@Body RequestTimeOff requestTimeOff);
 
-    @POST("/v1/time-off/illness")
+    @POST("time-off/illness")
     Observable<RequestedTimeOff> requestIllness(@Body RequestTimeOff requestTimeOff);
 
-    @DELETE("/v1/time-off/vacation/{timeOff_id}")
+    @DELETE("time-off/vacation/{timeOff_id}")
     Observable<Void> deleteTimeOff(@Path("timeOff_id") String timeOffId);
 
-    @DELETE("/v1/time-off/illness/{timeOff_id}")
+    @DELETE("time-off/illness/{timeOff_id}")
     Observable<Void> deleteIllness(@Path("timeOff_id") String timeOffId);
 }
