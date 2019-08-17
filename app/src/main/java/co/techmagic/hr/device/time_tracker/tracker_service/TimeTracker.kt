@@ -19,7 +19,7 @@ enum class TaskTimerState {
 const val MAX_TRACKING_TIME_MINUTES = 16 * TimeFormatUtil.MINUTES_IN_ONE_HOUR
 
 interface TimeTracker {
-    fun startTimer(userReport: UserReport): Single<TimerTasks>
+    fun startTimer(userReport: UserReport, totalDayMinutes: Int): Single<TimerTasks>
 
     fun pauseTimer(): Single<UserReport>
 

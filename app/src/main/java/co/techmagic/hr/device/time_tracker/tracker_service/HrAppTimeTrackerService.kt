@@ -41,6 +41,8 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
 
+    private val totalDayMinutes = 0
+
     private lateinit var reportRepository: TimeReportRepository
 
     override fun onCreate() {
@@ -53,7 +55,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         createNotificationChannel(TOO_MUCH_TIME_CHANNELE_ID)
         when (intent?.action) {
             null -> showForeground()
-            Action.ACTION_START.value -> trackingReport?.let { startTimer(it).subscribe({}, {}) }
+            Action.ACTION_START.value -> trackingReport?.let { startTimer(it, totalDayMinutes).subscribe({}, {}) }
             Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe({}, {}) }
             Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe({}, {}) } //todo: handle possible errors?
         }
@@ -66,7 +68,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         return HrAppTimeTrackerBinder(this)
     }
 
-    override fun startTimer(userReport: UserReport): Single<TimerTasks> {
+    override fun startTimer(userReport: UserReport, totalDayMinutes: Int): Single<TimerTasks> {
         val report = userReport.copy()
         return isRunning()
                 .flatMap { runningTask ->
@@ -90,13 +92,13 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                         val originalTime = trackingReportOrigin?.minutes ?: 0
                                         val newTime = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
                                         report.minutes = newTime
-                                        if (newTime < MAX_TRACKING_TIME_MINUTES) {
+                                        if (newTime + totalDayMinutes < MAX_TRACKING_TIME_MINUTES) {
                                             updateTaskNotification(secondsPassed)
                                             publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
                                         } else {
                                             stopTimer().subscribe {
                                                 showNotification(String.format("%s : %s", report.project, report.task.name),
-                                                       getString( R.string.tm_hr_time_tracker_fragment_too_much_time_description),
+                                                        getString(R.string.tm_hr_time_tracker_fragment_too_much_time_description),
                                                         TOO_MUCH_TIME_CHANNELE_ID
                                                 )
                                             }
@@ -196,7 +198,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         }
     }
 
-    private fun showNotification(title : CharSequence, message: CharSequence, channel: String) {
+    private fun showNotification(title: CharSequence, message: CharSequence, channel: String) {
         NotificationManagerCompat.from(this).also {
             val notificationManaпer = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManaпer.notify(

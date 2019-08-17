@@ -186,7 +186,7 @@ class HrAppTimeTrackerPresenter(
         } else {
             if (canStartReportTracking(userReportViewModel)) {
                 val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
-                timeTrackerInteractor.startTimer(userReport)
+                timeTrackerInteractor.startTimer(userReport, totalDayMinutesExcludeCurrent(userReport.date.toCalendar(), userReport.minutes))
                         .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
             } else {
                 router?.showTooMuchTimeErrorDialog(userReportViewModel.project, userReportViewModel.task.name)

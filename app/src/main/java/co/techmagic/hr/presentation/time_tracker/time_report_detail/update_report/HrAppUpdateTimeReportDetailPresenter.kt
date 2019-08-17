@@ -73,7 +73,7 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
                         if (isTracking) {
                             timeTrackerInteractor.stopTimer()
                         } else {
-                            timeTrackerInteractor.startTimer(it).map { it.current }
+                            timeTrackerInteractor.startTimer(it, alreadyReportedMinutesInDayWithoutCurrentMinutes).map { it.current }
                         }
                     }
                     .subscribe(this::onReportUpdated, this::showError)

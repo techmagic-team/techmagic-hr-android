@@ -33,7 +33,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
     override fun startTimer() {
         call(
                 createReport()
-                        .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
+                        .flatMap { timeTrackerInteractor.startTimer(it, alreadyReportedMinutesInDayWithoutCurrentMinutes).toObservable() }
                         .map { it.current },
                 this::onReportCreated, this::showError)
     }
