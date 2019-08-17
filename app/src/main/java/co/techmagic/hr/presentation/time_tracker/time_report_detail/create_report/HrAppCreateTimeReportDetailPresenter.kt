@@ -38,6 +38,10 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 this::onReportCreated, this::showError)
     }
 
+    override fun getProjectTitle() = projectViewModel?.title
+
+    override fun getProjectTaskTitle() = projectTaskViewModel?.task?.name
+
     override fun onBackPressed() {
         if (!description.isEmpty() || timeInMinutes != 0) {
             askToConfirmCloseWithoutSaving()

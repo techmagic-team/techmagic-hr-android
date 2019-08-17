@@ -1,6 +1,7 @@
 package co.techmagic.hr.device.time_tracker.tracker_service
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -49,7 +50,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel(TIME_TRACKER_CHANNEL_ID)
-
+        createNotificationChannel(TOO_MUCH_TIME_CHANNELE_ID)
         when (intent?.action) {
             null -> showForeground()
             Action.ACTION_START.value -> trackingReport?.let { startTimer(it).subscribe({}, {}) }
@@ -87,9 +88,19 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                 it.subscribe { secondsPassed ->
                                     trackingReport?.let { report ->
                                         val originalTime = trackingReportOrigin?.minutes ?: 0
-                                        report.minutes = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
-                                        updateTaskNotification(secondsPassed)
-                                        publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
+                                        val newTime = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
+                                        report.minutes = newTime
+                                        if (newTime < MAX_TRACKING_TIME_MINUTES) {
+                                            updateTaskNotification(secondsPassed)
+                                            publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
+                                        } else {
+                                            stopTimer().subscribe {
+                                                showNotification(String.format("%s : %s", report.project, report.task.name),
+                                                       getString( R.string.tm_hr_time_tracker_fragment_too_much_time_description),
+                                                        TOO_MUCH_TIME_CHANNELE_ID
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -185,6 +196,21 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         }
     }
 
+    private fun showNotification(title : CharSequence, message: CharSequence, channel: String) {
+        NotificationManagerCompat.from(this).also {
+            val notificationManaпer = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManaпer.notify(
+                    TOO_MUCH_TIME_NOTIFICATION_ID,
+                    createDefaultNotificationBuilder(
+                            title,
+                            message,
+                            channel,
+                            getDefaultNotificationPendingIntent()
+                    ).build()
+            )
+        }
+    }
+
     private fun createTaskNotification(report: UserReport, seconds: Long, actions: Array<Action>): Notification {
         val title = report.project
         val text = String.format("%s %s:%02d   \n%s",
@@ -199,23 +225,35 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                    bigText: CharSequence = "",
                                    actions: Array<Action> = emptyArray()): Notification {
 
-        val notificationIntent = Intent(this, HomeActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0)
 
-        return NotificationCompat.Builder(this, TIME_TRACKER_CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_techmagic_notification)
+        return createDefaultNotificationBuilder(title, text, TIME_TRACKER_CHANNEL_ID, getDefaultNotificationPendingIntent())
                 .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
                 .also {
                     if (actions.contains(Action.ACTION_START)) it.addAction(R.drawable.ic_notification_play_24px, "Start", startIntent())
                     if (actions.contains(Action.ACTION_PAUSE)) it.addAction(R.drawable.ic_notification_pause_24px, "Pause", pauseIntent())
                     if (actions.contains(Action.ACTION_STOP)) it.addAction(R.drawable.ic_notification_stop_24px, "Stop", stopIntent())
                 }
-                .setContentIntent(pendingIntent)
                 .build()
     }
+
+    private fun createDefaultNotificationBuilder(title: CharSequence,
+                                                 message: CharSequence,
+                                                 channelId: String,
+                                                 pendingIntent: PendingIntent): NotificationCompat.Builder {
+
+        return NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_techmagic_notification)
+                .setContentIntent(pendingIntent)
+    }
+
+    private fun getDefaultNotificationPendingIntent(): PendingIntent {
+        val notificationIntent = Intent(this, HomeActivity::class.java)
+        return PendingIntent.getActivity(this,
+                0, notificationIntent, 0)
+    }
+
 
     private fun startIntent() = PendingIntent.getService(this,
             0,
@@ -238,6 +276,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     companion object {
         const val TIME_TRACKER_CHANNEL_ID = "TIME_TRACKER_CHANNEL"
         const val FOREGROUND_NOTIFICATION_ID = 1
+
+        const val TOO_MUCH_TIME_NOTIFICATION_ID = 2
+        const val TOO_MUCH_TIME_CHANNELE_ID = "TOO_MUCH_TIME_CHANNELE"
     }
 
     enum class Action(val value: String) {

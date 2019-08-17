@@ -80,6 +80,10 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
         }
     }
 
+    override fun getProjectTitle() = projectViewModel?.title ?: userReportForEdit?.project
+
+    override fun getProjectTaskTitle() = projectTaskViewModel?.task?.name ?: userReportForEdit?.task?.name
+
     override fun onProjectTaskChanged() {
         super.onProjectTaskChanged()
         wasProjectChanged = true

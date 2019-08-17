@@ -63,6 +63,13 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: B
                 .show()
     }
 
+    override fun showTooManyHoursForTrackingErrorDialog(project : String?, task : String?) {
+        showInfoDialog(
+                activity.getString(R.string.tm_hr_time_tracker_fragment_too_much_time_title, project, task),
+                R.string.tm_hr_time_tracker_fragment_too_much_time_description
+        )
+    }
+
     override fun close() {
         activity.finish()
     }

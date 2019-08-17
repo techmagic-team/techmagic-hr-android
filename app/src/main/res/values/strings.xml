@@ -208,6 +208,8 @@
     <string name="tm_hr_time_tracker_fragment_current_day">Today</string>
     <string name="tm_hr_time_tracker_fragment_info">Info</string>
     <string name="tm_hr_time_tracker_fragment_calendar">Calendar</string>
+    <string name="tm_hr_time_tracker_fragment_too_much_time_title">%s : %s</string>
+    <string name="tm_hr_time_tracker_fragment_too_much_time_description">More than 16 hours? Now you go home and get some sleep</string>
 
     <string-array name="quotes">
         <item>Time expands, then contracts, all in tune with the stirrings of the heart. - Haruki Murakam</item>

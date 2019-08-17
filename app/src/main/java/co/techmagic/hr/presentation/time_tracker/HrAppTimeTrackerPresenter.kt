@@ -2,6 +2,7 @@ package co.techmagic.hr.presentation.time_tracker
 
 import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_report.UserReport
+import co.techmagic.hr.device.time_tracker.tracker_service.MAX_TRACKING_TIME_MINUTES
 import co.techmagic.hr.device.time_tracker.tracker_service.TaskTimerState
 import co.techmagic.hr.device.time_tracker.tracker_service.TaskUpdate
 import co.techmagic.hr.domain.interactor.TimeTrackerInteractor
@@ -182,13 +183,18 @@ class HrAppTimeTrackerPresenter(
     override fun onTaskTimerToggled(userReportViewModel: UserReportViewModel) {
         if (userReportViewModel.isCurrentlyTracking) {
             timeTrackerInteractor.stopTimer().subscribe({ updateReportViewModel(TaskUpdate(it, TaskTimerState.RUNNING)) }, this::showError)
-
         } else {
-            val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
-            timeTrackerInteractor.startTimer(userReport)
-                    .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+            if (canStartReportTracking(userReportViewModel)) {
+                val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
+                timeTrackerInteractor.startTimer(userReport)
+                        .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+            } else {
+                router?.showTooMuchTimeErrorDialog(userReportViewModel.project, userReportViewModel.task.name)
+            }
         }
     }
+
+    private fun canStartReportTracking(report: UserReportViewModel) = totalDayMinutes(report.date.toCalendar()) < MAX_TRACKING_TIME_MINUTES
 
     private var runningReport: UserReportViewModel? = null
 
@@ -257,8 +263,10 @@ class HrAppTimeTrackerPresenter(
     }
 
     private fun totalDayMinutesExcludeCurrent(selectedDate: Calendar, currentMinutes: Int = 0): Int {
-        return totalDayMinutes(key(selectedDate)) - currentMinutes
+        return totalDayMinutes(selectedDate) - currentMinutes
     }
+
+    private fun totalDayMinutes(selectedDate: Calendar) = totalDayMinutes(key(selectedDate))
 
     private fun totalDayMinutes(key: String): Int {
         val list = cache[key]

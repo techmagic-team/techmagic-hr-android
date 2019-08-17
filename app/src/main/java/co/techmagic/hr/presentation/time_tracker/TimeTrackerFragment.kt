@@ -23,7 +23,6 @@ import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import com.techmagic.viper.base.BaseViewFragment
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import kotlinx.android.synthetic.main.fragment_time_tracker.*
 import org.jetbrains.anko.find
 import java.util.*
 
