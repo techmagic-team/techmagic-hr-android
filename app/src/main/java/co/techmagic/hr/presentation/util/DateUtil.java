@@ -81,7 +81,7 @@ public class DateUtil {
         return formattedDate;
     }
 
-
+    @Nullable
     public static Date parseStringDate(@Nullable String inputData) {
         Date parsedDate = null;
 

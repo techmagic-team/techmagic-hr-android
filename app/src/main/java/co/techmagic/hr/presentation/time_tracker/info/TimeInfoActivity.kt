@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import co.techmagic.hr.R
 import co.techmagic.hr.RepositoriesProvider
 import co.techmagic.hr.presentation.util.HrAppDateTimeProvider
+import co.techmagic.hr.presentation.util.SharedPreferencesUtil
 import com.techmagic.viper.base.BasePresenter
 import java.util.*
 
@@ -28,7 +29,6 @@ class TimeInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            val selectedDate: Calendar = intent.getSerializableExtra(EXTRA_SELECTED_DATE) as Calendar
             supportFragmentManager.beginTransaction()
                     .add(R.id.content, TimeInfoFragment.newInstance(selectedDate))
                     .commitAllowingStateLoss()
@@ -40,9 +40,13 @@ class TimeInfoActivity : AppCompatActivity() {
         when (fragment) {
             is TimeInfoFragment -> {
                 val repository = (application as RepositoriesProvider).provideTimeReportRepository()
-                val presenter = HrAppTimeInfoPresenter(HrAppDateTimeProvider(), repository)
+                val userId = SharedPreferencesUtil.readUser().id  // TODO: refactor - inject account manager instead!!!
+                val presenter = HrAppTimeInfoPresenter(selectedDate, userId, HrAppDateTimeProvider(), repository)
                 BasePresenter.bind(fragment, presenter, object : TimeInfoRouter {})
             }
         }
     }
+
+    private val selectedDate: Calendar
+        get() = intent.getSerializableExtra(EXTRA_SELECTED_DATE) as Calendar
 }
