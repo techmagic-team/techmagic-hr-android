@@ -118,6 +118,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun close() {
         stopForeground(true)
+        stopSelf()
         trackingReportOrigin = null
         trackingReport = null
     }
@@ -158,6 +159,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                     "Foreground Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             )
+            serviceChannel.setSound(null, null)
 
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(serviceChannel)

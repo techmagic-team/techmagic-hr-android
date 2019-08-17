@@ -12,7 +12,6 @@ import co.techmagic.hr.presentation.ui.manager.quotes.QuotesManager
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -40,8 +39,9 @@ class HrAppTimeTrackerPresenter(
         view?.init(currentDate)
         view?.showToolbarTitle(currentDate.formatDate(TOOLBAR_DATE_FORMAT))
 
-        subscriptions["timer"] = timeTrackerInteractor.subscribeOnTimeUpdates()
-                .subscribe(this::updateReportViewModel, this::showError)
+        subscriptions["timer"] = call(timeTrackerInteractor.subscribeOnTimeUpdates(),
+                this::updateReportViewModel,
+                this::showError)
     }
 
     override fun onViewDestroyed() {
@@ -99,17 +99,22 @@ class HrAppTimeTrackerPresenter(
             val firstDayOfWeek = date.firstDayOfWeekDate()
             val weekReportsKey = key(firstDayOfWeek)
             subscriptions[weekReportsKey]?.unsubscribe()
-            subscriptions[weekReportsKey] = timeReportRepository.getDayReports(user.id, firstDayOfWeek)
-                    .subscribe { response ->
+            subscriptions[weekReportsKey] = call(
+                    timeReportRepository.getDayReports(user.id, firstDayOfWeek),
+                    { response ->
                         cacheHolidays(response.holidays)
                         val weekReports = response.reports.map { userReportViewMadelMapper.transform(it) }
                         initWeekCache(date)
                         for (report in weekReports) {
                             cache[key(report.date.toCalendar())]?.add(report)
                             view?.notifyDayReportsChanged(date)
+                            if (runningReport?.id?.equals(report.id) == true) {
+                                checkLoadedReportForTracking(report)
+                            }
                         }
                         view?.notifyWeekDataChanged(firstDayOfWeek)
                     }
+            )
         }
     }
 
@@ -127,11 +132,16 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onNewTimeReportClicked() {
-        router?.openCreateTimeReport(selectedDate)
+        router?.openCreateTimeReport(selectedDate, totalDayMinutesExcludeCurrent(selectedDate))
     }
 
     override fun onEditTimeReportClicked(reportViewModel: UserReportViewModel) {
-        router?.openEditTimeReport(reportViewModel, reportViewModel.date.toCalendar())
+        val reportDateCalendar = reportViewModel.date.toCalendar()
+        router?.openEditTimeReport(
+                reportViewModel,
+                reportDateCalendar,
+                totalDayMinutesExcludeCurrent(reportDateCalendar, reportViewModel.minutes)
+        )
     }
 
     override fun onTaskCreated(userReportViewModel: UserReportViewModel?) {
@@ -145,12 +155,13 @@ class HrAppTimeTrackerPresenter(
     override fun onTaskUpdated(oldReportId: String?, userReportViewModel: UserReportViewModel?) {
         userReportViewModel ?: return
 
+        //todo please implement better solution using findReport(id, date) method
         with(getDayReports(userReportViewModel.date)) {
             this
                     ?.filter { it.id == userReportViewModel.id || it.id == oldReportId }
                     ?.forEachIndexed { index, viewModel ->
-                        this[index] = userReportViewModel
-                        view?.notifyDayReportsChanged(calendar(userReportViewModel.date).dateOnly())
+                        this[this.indexOf(viewModel)] = userReportViewModel
+                        notifyDateChanged(userReportViewModel.date)
                     }
         }
     }
@@ -179,24 +190,52 @@ class HrAppTimeTrackerPresenter(
         }
     }
 
-    private var runningReport: UserReport? = null
+    private var runningReport: UserReportViewModel? = null
 
     private fun updateReportViewModel(taskUpdate: TaskUpdate) {
         if (runningReport?.id.equals(taskUpdate.report.id)) {
             when (taskUpdate.state) {
-                TaskTimerState.RUNNING -> return
+                TaskTimerState.RUNNING -> {
+                    updateRunnigReportTime(taskUpdate.report.minutes)
+                    return
+                }
                 TaskTimerState.STOPPED -> runningReport = null
             }
         }
 
         if (taskUpdate.state == TaskTimerState.RUNNING) {
-            runningReport = taskUpdate.report
+            runningReport = userReportViewMadelMapper.transform(taskUpdate.report)
         }
 
         findReport(taskUpdate.report)?.let { reportViewModel ->
             reportViewModel.minutes = taskUpdate.report.minutes
             reportViewModel.isCurrentlyTracking = taskUpdate.state == TaskTimerState.RUNNING
             notifyDateChanged(reportViewModel.date)
+        }
+    }
+
+    /**
+     * For case when user reopens screen, and one of loaded reports has been tracking
+     * if currently loaded report is the same with currently running report
+     * - changes new report time and tracking status.
+     * Because we do not have tracking support on backend
+     */
+    private fun checkLoadedReportForTracking(loadedReport: UserReportViewModel) {
+        runningReport?.let {
+            if (it.id.equals(loadedReport.id)) {
+                loadedReport.minutes = it.minutes
+                loadedReport.isCurrentlyTracking = true
+            }
+        }
+    }
+
+    private fun updateRunnigReportTime(newTimeMinutes: Int) {
+        runningReport?.let {
+            if (it.minutes != newTimeMinutes) {
+                it.minutes = newTimeMinutes
+                findReport(it.id, it.date)?.minutes = newTimeMinutes
+                notifyDateChanged(it.date)
+            }
         }
     }
 
@@ -215,6 +254,10 @@ class HrAppTimeTrackerPresenter(
             d.add(Calendar.DAY_OF_WEEK, i)
             callback(d)
         }
+    }
+
+    private fun totalDayMinutesExcludeCurrent(selectedDate: Calendar, currentMinutes: Int = 0): Int {
+        return totalDayMinutes(key(selectedDate)) - currentMinutes
     }
 
     private fun totalDayMinutes(key: String): Int {

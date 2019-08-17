@@ -23,6 +23,7 @@ import co.techmagic.hr.presentation.util.copy
 import co.techmagic.hr.presentation.util.firstDayOfWeekDate
 import com.techmagic.viper.base.BaseViewFragment
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import kotlinx.android.synthetic.main.fragment_time_tracker.*
 import org.jetbrains.anko.find
 import java.util.*
 
@@ -33,6 +34,8 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
         const val REQUEST_CREATE_NEW_TASK = 1001
         const val REQUEST_UPDATE_TASK = 1002
         const val RESULT_REPORT_DELETED = 2001
+
+        const val MAX_WEEKS_FOR_SMOOTH_SCROLL = 2
 
         fun newInstance(): TimeTrackerFragment = TimeTrackerFragment()
         private const val TIME_TRACKER_FRAGMENT = "TimeTrackerFragment"
@@ -68,7 +71,14 @@ class TimeTrackerFragment : BaseViewFragment<TimeTrackerPresenter>(), TimeTracke
     }
 
     override fun selectWeek(date: Calendar) {
-        weeks.smoothScrollToPosition(weeksAdapter.dateToPage(date))
+        val currentWeekPosition = (weeks.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        val newWeekPosition = weeksAdapter.dateToPage(date)
+
+        if (Math.abs(currentWeekPosition - newWeekPosition) <= MAX_WEEKS_FOR_SMOOTH_SCROLL) {
+            weeks.smoothScrollToPosition(newWeekPosition)
+        } else {
+            weeks.scrollToPosition(newWeekPosition)
+        }
     }
 
     override fun selectDay(date: Calendar) {

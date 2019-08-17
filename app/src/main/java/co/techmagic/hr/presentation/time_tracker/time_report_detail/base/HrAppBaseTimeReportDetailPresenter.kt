@@ -18,11 +18,12 @@ abstract class HrAppBaseTimeReportDetailPresenter
     : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
+    var alreadyReportedMinutesInDayWithoutCurrentMinutes: Int? = 0
+
     companion object {
         const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why we should send it in the request, but it is OK for now
         const val MAX_DESCRIPTION_LENGTH = 600
     }
-
 
     lateinit var reportDate: Calendar
     var projectViewModel: ProjectViewModel? = null
@@ -36,10 +37,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
     var projectTaskViewModel: ProjectTaskViewModel? = null
         set(value) {
             field = value
-            if (value != null) {
-                validateProjectTask()
-            }
-            showProjectTask()
+            onProjectTaskChanged()
         }
 
     protected var subscription: Subscription? = null
@@ -116,9 +114,22 @@ abstract class HrAppBaseTimeReportDetailPresenter
     }
 
     final override fun saveClicked() {
-        if (validateInfo()) {
-            makeSaveRequest()
+        saveReport()
+    }
+
+    protected open fun onProjectTaskChanged() {
+        if (projectTaskViewModel != null) {
+            validateProjectTask()
         }
+        showProjectTask()
+    }
+
+    protected open fun askToConfirmCloseWithoutSaving() {
+        router?.showYesNoDialog(
+                R.string.message_warning,
+                R.string.tm_hr_time_report_detail_warning_close_without_saving,
+                { router?.close() }
+        )
     }
 
     private fun validateInfo(): Boolean {
@@ -137,7 +148,18 @@ abstract class HrAppBaseTimeReportDetailPresenter
             return false
         }
 
+        if (!isTimeValid()) {
+            showTooManyHoursError()
+            return false
+        }
+
         return true
+    }
+
+    private fun saveReport() {
+        if (validateInfo()) {
+            makeSaveRequest()
+        }
     }
 
     protected abstract fun makeSaveRequest()
@@ -175,10 +197,16 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected fun validateProject() = view?.setProjectValid(isProjectValid())
     protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
+    protected fun showTooManyHoursError() = router?.showTooManyHoursErrorDialog(
+            TimeFormatUtil.formatMinutesToHours(
+                    TimeFormatUtil.MAX_INPUT_MINUTES_IN_DAY - (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0)
+            )
+    )
 
     protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
-    protected fun isProjectTaskValid() = projectTaskViewModel != null
+    protected open fun isProjectTaskValid() = projectTaskViewModel != null
+    protected fun isTimeValid() = (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0) + timeInMinutes < TimeFormatUtil.MINUTES_IN_DAY
 
     protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH

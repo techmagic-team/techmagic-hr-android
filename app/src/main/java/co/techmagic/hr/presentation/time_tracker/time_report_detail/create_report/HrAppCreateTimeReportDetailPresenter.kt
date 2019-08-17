@@ -27,24 +27,32 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
     }
 
     override fun makeSaveRequest() {
-        createReport().subscribe(this::onReportCreated, this::showError)
+        call(createReport(), this::onReportCreated, this::showError)
     }
 
     override fun startTimer() {
-        createReport()
-                .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
-                .map { it.current }
-                .subscribe(this::onReportCreated, this::showError)
+        call(
+                createReport()
+                        .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
+                        .map { it.current },
+                this::onReportCreated, this::showError)
+    }
+
+    override fun onBackPressed() {
+        if (!description.isEmpty() || timeInMinutes != 0) {
+            askToConfirmCloseWithoutSaving()
+        } else {
+            router?.close()
+        }
     }
 
     private fun loadLastSelectedProjectWithTask() {
-        reportRepository
+        call(reportRepository
                 .getLastSelectedProject()
                 .zipWith(reportRepository.getLastSelectedTask()) { project, task ->
                     this.projectViewModel = projectsViewModelMapper.transform(project)
                     this.projectTaskViewModel = projectTaskViewModelMapper.transform(task)
-                }
-                .subscribe({}, {})
+                }, {})
     }
 
     private fun createReport(): Observable<UserReport> {
