@@ -73,12 +73,16 @@ class HrAppUpdateTimeReportDetailPresenter(timeReportRepository: TimeReportRepos
                         if (isTracking) {
                             timeTrackerInteractor.stopTimer()
                         } else {
-                            timeTrackerInteractor.startTimer(it).map { it.current }
+                            timeTrackerInteractor.startTimer(it, alreadyReportedMinutesInDayWithoutCurrentMinutes).map { it.current }
                         }
                     }
                     .subscribe(this::onReportUpdated, this::showError)
         }
     }
+
+    override fun getProjectTitle() = projectViewModel?.title ?: userReportForEdit?.project
+
+    override fun getProjectTaskTitle() = projectTaskViewModel?.task?.name ?: userReportForEdit?.task?.name
 
     override fun onProjectTaskChanged() {
         super.onProjectTaskChanged()

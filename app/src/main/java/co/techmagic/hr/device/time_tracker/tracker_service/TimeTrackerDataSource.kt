@@ -21,7 +21,7 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
 
     private val publish: BehaviorSubject<TaskUpdate> = BehaviorSubject.create()
 
-    override fun startTimer(userReport: UserReport): Single<TimerTasks> {
+    override fun startTimer(userReport: UserReport, totalDayMinutes: Int): Single<TimerTasks> {
         return Single.create {
             val intent = Intent(applicationContext, HrAppTimeTrackerService::class.java)
             sConn = object : ServiceConnection {
@@ -30,7 +30,7 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
                     val tracker = service as TimeTracker
                     timeTracker = tracker
                     Log.d("TEST_TIMER", "onServiceConnected")
-                    tracker.startTimer(userReport).subscribe { tasks ->
+                    tracker.startTimer(userReport, totalDayMinutes).subscribe { tasks ->
                         it.onSuccess(tasks)
                     }
 

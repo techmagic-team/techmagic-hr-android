@@ -4,15 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AlertDialog
 import co.techmagic.hr.R
+import co.techmagic.hr.presentation.base.HrTmBaseRouter
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
 import co.techmagic.hr.presentation.time_tracker.TimeTrackerFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.BaseTimeReportDetailFragment
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.report_project.ReportPropertiesFragment
-import com.techmagic.viper.base.BaseRouter
 import java.util.*
 
 class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: BaseTimeReportDetailFragment<*>)
-    : BaseRouter<TimeReportDetailActivity>(activity), ITimeReportDetailRouter {
+    : HrTmBaseRouter<TimeReportDetailActivity>(activity), ITimeReportDetailRouter {
 
     override fun openSelectProject(userId: String, firstDayOfWeek: Calendar) {
         addFragment(R.id.fragment_container, ReportPropertiesFragment.newProjectsInstance(userId, firstDayOfWeek), true)
@@ -61,6 +61,13 @@ class TimeReportDetailRouter(activity: TimeReportDetailActivity, val fragment: B
                 .setPositiveButton(R.string.message_text_ok) { dialog, which -> dialog.dismiss() }
                 .setCancelable(false)
                 .show()
+    }
+
+    override fun showTooManyHoursForTrackingErrorDialog(project : String?, task : String?) {
+        showInfoDialog(
+                activity.getString(R.string.tm_hr_time_tracker_fragment_too_much_time_title, project, task),
+                R.string.tm_hr_time_tracker_fragment_too_much_time_description
+        )
     }
 
     override fun close() {
