@@ -41,7 +41,7 @@ class TimeInfoActivity : AppCompatActivity() {
             is TimeInfoFragment -> {
                 val repository = (application as RepositoriesProvider).provideTimeReportRepository()
                 val userId = SharedPreferencesUtil.readUser().id  // TODO: refactor - inject account manager instead!!!
-                val presenter = HrAppTimeInfoPresenter(selectedDate, userId, HrAppDateTimeProvider(), repository)
+                val presenter = HrAppTimeInfoPresenter(selectedDate, userId, repository)
                 BasePresenter.bind(fragment, presenter, object : TimeInfoRouter {})
             }
         }

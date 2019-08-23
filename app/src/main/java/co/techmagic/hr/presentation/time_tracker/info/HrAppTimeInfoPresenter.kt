@@ -4,7 +4,6 @@ import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.entity.time_report.UserReportsResponse
 import co.techmagic.hr.domain.repository.TimeReportRepository
-import co.techmagic.hr.presentation.time_tracker.DateTimeProvider
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Observable
@@ -20,7 +19,6 @@ private typealias Result = Pair<OrganizedReports, OrganizedHolidays>
 class HrAppTimeInfoPresenter(
         private val selectedDate: Calendar,
         private val userId: String,
-        private val dateTimeProvider: DateTimeProvider,
         private val timeReportRepository: TimeReportRepository) :
         BasePresenter<TimeInfoView, TimeInfoRouter>(), TimeInfoPresenter {
 
