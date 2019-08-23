@@ -29,6 +29,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".presentation.ui.activity.EmployeeDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".presentation.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBarTheme"
