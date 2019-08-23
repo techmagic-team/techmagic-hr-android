@@ -56,7 +56,7 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
                 .zipWith(reportRepository.getLastSelectedTask()) { project, task ->
                     this.projectViewModel = projectsViewModelMapper.transform(project)
                     this.projectTaskViewModel = projectTaskViewModelMapper.transform(task)
-                }, {})
+                }, {}, { /* It's ok if there is no last selected task or project, do not handle error */ })
     }
 
     private fun createReport(): Observable<UserReport> {
