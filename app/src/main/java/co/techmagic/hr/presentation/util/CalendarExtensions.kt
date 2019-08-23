@@ -113,10 +113,9 @@ fun Calendar.firstDayOfMonthDate(): Calendar {
 
 fun Calendar.lastDayOfMonthDate(): Calendar {
     return this.firstDayOfMonthDate()
-            .previousDay()
             .also {
                 it.add(Calendar.MONTH, 1)
-            }
+            }.previousDay()
 }
 
 @SuppressLint("SimpleDateFormat")
