@@ -105,10 +105,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             case R.id.action_calendar_filters:
                 startCalendarFiltersScreen();
                 return true;
-
-            case R.id.action_request_time_off:
-                startRequestTimeOffScreen();
-                return true;
+// TODO: fix request time off feature before showing button to the user
+//            case R.id.action_request_time_off:
+//                startRequestTimeOffScreen();
+//                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -256,7 +256,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE, animation);
         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
-
 
     private void startRequestTimeOffScreen() {
         Bundle animation = ActivityOptions.makeCustomAnimation(getContext(), R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();

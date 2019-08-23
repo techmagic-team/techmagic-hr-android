@@ -228,6 +228,7 @@ public class CalendarFiltersActivity extends BaseActivity<CalendarFiltersViewImp
     }
 
 
+    @Deprecated
     @OnClick(R.id.rlFilterByDepartment)
     public void onDepartmentClick() {
         presenter.onDepartmentFilterClick();
