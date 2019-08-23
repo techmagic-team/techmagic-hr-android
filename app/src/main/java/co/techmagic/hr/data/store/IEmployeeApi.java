@@ -25,6 +25,7 @@ public interface IEmployeeApi {
     Observable<Employee> getEmployees(@Query("q") String searchQuery, @Query("project") String projectId, @Query("_department") String departmentId,
                                       @Query("lastWorkingDay") boolean lastWorkingDay, @Query("lead") String leadId, @Query("offset") int offset, @Query("limit") int limit);
 
+    @Deprecated
     @GET("departments")
     Observable<List<Filter>> getFilterDepartments();
 

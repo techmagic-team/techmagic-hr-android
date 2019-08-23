@@ -24,17 +24,17 @@ public class GetAllFilters extends EmptyUseCase<EditProfileFiltersDto, IEmployee
     protected Observable<EditProfileFiltersDto> buildObservable() {
         EditProfileFiltersDto allFilters = new EditProfileFiltersDto();
 
-        Observable<EditProfileFiltersDto> departments = repository.getFilterDepartments()
-                .flatMap(new Func1<List<Filter>, Observable<EditProfileFiltersDto>>() {
-                    @Override
-                    public Observable<EditProfileFiltersDto> call(List<Filter> filters) {
-                        if (filters != null && !filters.isEmpty()) {
-                            allFilters.setDepartments(filters);
-                        }
-
-                        return Observable.just(allFilters);
-                    }
-                });
+//        Observable<EditProfileFiltersDto> departments = repository.getFilterDepartments()
+//                .flatMap(new Func1<List<Filter>, Observable<EditProfileFiltersDto>>() {
+//                    @Override
+//                    public Observable<EditProfileFiltersDto> call(List<Filter> filters) {
+//                        if (filters != null && !filters.isEmpty()) {
+//                            allFilters.setDepartments(filters);
+//                        }
+//
+//                        return Observable.just(allFilters);
+//                    }
+//                });
 
         Observable<EditProfileFiltersDto> rooms = repository.getRooms()
                 .flatMap(new Func1<List<Filter>, Observable<EditProfileFiltersDto>>() {
@@ -74,7 +74,7 @@ public class GetAllFilters extends EmptyUseCase<EditProfileFiltersDto, IEmployee
 
         List<Observable<EditProfileFiltersDto>> observables = new ArrayList<>();
 
-        observables.add(departments);
+//        observables.add(departments);
         observables.add(rooms);
         observables.add(leads);
         observables.add(reasons);
