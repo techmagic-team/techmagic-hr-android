@@ -57,8 +57,6 @@ import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.N
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String USER_ID_PARAM = "user_id_param";
-    public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
@@ -86,11 +84,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
 
+    private BottomNavigationSetup bottomNavigationSetup;
+
     private String selDepId;
     private String selLeadId;
     private String selProjectId;
     private String searchQuery = null;
-    private boolean allowChangeTab = true;
     private boolean isOnActivityResultCalled = false;
 
 
@@ -159,23 +158,23 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
             @Override
             public void showEmployeeDetails(@NonNull UserProfile data) {
-                allowChangeTab = true;
                 addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
             }
 
             @Override
             public void showMyProfile(@NonNull UserProfile data) {
+//                bottomNavigationSetup.selectTab(NAV_INDEX_PROFILE); //todo: highlight tab
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
             @Override
             public void allowChangeTabClick() {
-                allowChangeTab = true;
+//                allowChangeTab = true;
             }
 
             @Override
             public void disallowChangeTabClick() {
-                allowChangeTab = false;
+//                allowChangeTab = false;
             }
         };
     }
@@ -264,17 +263,11 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putString(USER_ID_PARAM, user.getId());
-
-        DetailsFragment fragment = DetailsFragment.newInstance();
-        fragment.setArguments(bundle);
-        replaceFragment(fragment, tag + user.getId());
-
         if (profileType == ProfileTypes.MY_PROFILE) {
+            replaceFragment(DetailsFragment.newInstance(user.getId(), profileType), tag + user.getId());
             mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_MY_PROFILE_TAG);
         } else if (profileType == ProfileTypes.EMPLOYEE) {
+            EmployeeDetailsActivity.Companion.start(HomeActivity.this, user.getId(), ProfileTypes.EMPLOYEE);
             mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_USER_DETAILS_TAG);
         }
     }
@@ -321,13 +314,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     public void allowBottomTabClick() {
-        allowChangeTab = true;
+//        allowChangeTab = true;
     }
 
 
     @Override
     public void disableBottomTabClick() {
-        allowChangeTab = false;
+//        allowChangeTab = false;
     }
 
 
@@ -342,10 +335,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     private void setupBottomNavigation() {
-
-        final BottomNavigationSetup bottomNavigationSetup = new BottomNavigationSetup(findViewById(R.id.bottomNavigation), this::navigateTab);
-
         // TODO: 1/19/19 refactor screen structure as ninjas list is not a fragment and always is the first visible view
+        bottomNavigationSetup = new BottomNavigationSetup(findViewById(R.id.bottomNavigation), this::navigateTab);
         bottomNavigationSetup.selectTab(NAV_INDEX_TIME);
     }
 
@@ -357,11 +348,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             case NAV_INDEX_TEAM:
-                if (allowChangeTab) {
-                    actionBar.setTitle(getString(R.string.app_name));
-                    clearFragmentsBackStack(this);
-                    mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
-                }
+                actionBar.setTitle(getString(R.string.app_name));
+                clearFragmentsBackStack(this);
+                mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
                 break;
 
             case NAV_INDEX_CALENDAR:
