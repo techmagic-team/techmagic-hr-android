@@ -1,6 +1,7 @@
 package co.techmagic.hr.presentation.time_tracker.time_report_detail.base
 
 import co.techmagic.hr.R
+import co.techmagic.hr.device.time_tracker.tracker_service.MAX_TRACKING_TIME_MINUTES
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.pojo.ProjectTaskViewModel
 import co.techmagic.hr.presentation.pojo.ProjectViewModel
@@ -18,7 +19,7 @@ abstract class HrAppBaseTimeReportDetailPresenter
     : BasePresenter<T, ITimeReportDetailRouter>(),
         BaseTimeReportDetailPresenter {
 
-    var alreadyReportedMinutesInDayWithoutCurrentMinutes: Int? = 0
+    var alreadyReportedMinutesInDayWithoutCurrentMinutes: Int = 0
 
     companion object {
         const val RATE = 12 //FYI 25 MAY 2019: this value is hardcoded; I don`t now why we should send it in the request, but it is OK for now
@@ -109,7 +110,11 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     final override fun startTimerClicked() {
         if (validateInfo()) {
-            startTimer()
+            if (isTimeForTrackingValid()) {
+                startTimer()
+            } else {
+                router?.showTooManyHoursForTrackingErrorDialog(getProjectTitle(), getProjectTaskTitle())
+            }
         }
     }
 
@@ -166,6 +171,10 @@ abstract class HrAppBaseTimeReportDetailPresenter
 
     protected abstract fun startTimer()
 
+    protected abstract fun getProjectTitle(): String?
+
+    protected abstract fun getProjectTaskTitle(): String?
+
     private fun showProject() {
         view?.showProject(projectViewModel?.title ?: null)
     }
@@ -199,14 +208,16 @@ abstract class HrAppBaseTimeReportDetailPresenter
     protected fun validateProjectTask() = view?.setTaskValid(isProjectTaskValid())
     protected fun showTooManyHoursError() = router?.showTooManyHoursErrorDialog(
             TimeFormatUtil.formatMinutesToHours(
-                    TimeFormatUtil.MAX_INPUT_MINUTES_IN_DAY - (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0)
+                    TimeFormatUtil.MAX_INPUT_MINUTES_IN_DAY - alreadyReportedMinutesInDayWithoutCurrentMinutes
             )
     )
 
     protected fun isDescriptionValid() = !isDescriptionEmpty() && !isDescriptionLengthLongerThanMax()
     protected fun isProjectValid() = projectViewModel != null
     protected open fun isProjectTaskValid() = projectTaskViewModel != null
-    protected fun isTimeValid() = (alreadyReportedMinutesInDayWithoutCurrentMinutes ?: 0) + timeInMinutes < TimeFormatUtil.MINUTES_IN_DAY
+    protected fun isTimeValid() = alreadyReportedMinutesInDayWithoutCurrentMinutes + timeInMinutes < TimeFormatUtil.MINUTES_IN_DAY
+
+    protected fun isTimeForTrackingValid() = alreadyReportedMinutesInDayWithoutCurrentMinutes + timeInMinutes < MAX_TRACKING_TIME_MINUTES
 
     protected fun isDescriptionEmpty() = description.trim().isEmpty()
     protected fun isDescriptionLengthLongerThanMax() = description.length > MAX_DESCRIPTION_LENGTH

@@ -183,13 +183,13 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     private fun inject(fragment: CreateTimeReportFragment) {
         timeReportDetailPresenter = provideCreateReportPresenter()
-        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS)
+        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS) ?: 0
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppCreateTimeReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 
     private fun inject(fragment: UpdateTimeReportFragment) {
         timeReportDetailPresenter = provideUpdateReportPresenter()
-        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS)
+        timeReportDetailPresenter.alreadyReportedMinutesInDayWithoutCurrentMinutes = fragment.arguments?.getInt(ARG_MINUTES_IN_DAY_EXCLUDE_THIS) ?: 0
         BasePresenter.bind(fragment, timeReportDetailPresenter as HrAppUpdateTimeReportDetailPresenter, provideTimeReportRouter(fragment))
     }
 

@@ -6,7 +6,8 @@ import java.util.*
 
 interface ITimeTrackerRouter : Router {
     fun openDatePicker(currentDate: Calendar)
-    fun openCreateTimeReport(selectedDate : Calendar, minutesInDayExcludedThis: Int)
-    fun openEditTimeReport(userReport: UserReportViewModel, reportDate: Calendar, minutesInDayExcludedThis: Int)
+    fun openCreateTimeReport(selectedDate: Calendar, hoursInDayExcludedThis: Int)
+    fun openEditTimeReport(userReport: UserReportViewModel, reportDate: Calendar, hoursInDayExcludedThis: Int)
     fun openMonthInfo(selectedDate : Calendar)
+    fun showTooMuchTimeErrorDialog(project : String?, task : String?)
 }

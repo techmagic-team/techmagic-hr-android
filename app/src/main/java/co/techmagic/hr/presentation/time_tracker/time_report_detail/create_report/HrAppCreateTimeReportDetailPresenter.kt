@@ -33,10 +33,14 @@ class HrAppCreateTimeReportDetailPresenter(reportRepository: TimeReportRepositor
     override fun startTimer() {
         call(
                 createReport()
-                        .flatMap { timeTrackerInteractor.startTimer(it).toObservable() }
+                        .flatMap { timeTrackerInteractor.startTimer(it, alreadyReportedMinutesInDayWithoutCurrentMinutes).toObservable() }
                         .map { it.current },
                 this::onReportCreated, this::showError)
     }
+
+    override fun getProjectTitle() = projectViewModel?.title
+
+    override fun getProjectTaskTitle() = projectTaskViewModel?.task?.name
 
     override fun onBackPressed() {
         if (!description.isEmpty() || timeInMinutes != 0) {
