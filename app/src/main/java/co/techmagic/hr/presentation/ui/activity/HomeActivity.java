@@ -163,7 +163,8 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
             @Override
             public void showMyProfile(@NonNull UserProfile data) {
-//                bottomNavigationSetup.selectTab(NAV_INDEX_PROFILE); //todo: highlight tab
+                // Quick fix of issue when actual tab is not selected
+                bottomNavigationSetup.selectTabUi(NAV_INDEX_PROFILE);
                 addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
             }
 
