@@ -65,7 +65,7 @@ class TimeInfoFragment : BaseViewFragment<TimeInfoPresenter>(), TimeInfoView {
         rvInfo.visibility = View.VISIBLE
     }
 
-    override fun showReports(reports: List<TimeReportViewModel>) {
+    override fun showReports(reports: List<WorkingTimeInfoViewModel>) {
         rvInfo.adapter = TimeInfoAdapter(reports)
     }
 }

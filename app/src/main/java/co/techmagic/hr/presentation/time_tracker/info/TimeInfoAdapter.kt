@@ -15,7 +15,7 @@ class TimeReportViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val tvActual: TextView = itemView.find(R.id.tvActual)
     private val tvExpected: TextView = itemView.find(R.id.tvExpected)
 
-    fun bind(model: TimeReportViewModel) {
+    fun bind(model: WorkingTimeInfoViewModel) {
         tvReportName.text = model.title
         tvActual.text = TimeFormatUtil.formatMinutesToHours(model.actualMinutes)
         tvExpected.text = TimeFormatUtil.formatMinutesToHours(model.expectedMinutes)
@@ -24,7 +24,7 @@ class TimeReportViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 }
 
-class TimeInfoAdapter(private val reports: List<TimeReportViewModel>) : RecyclerView.Adapter<TimeReportViewHolder>() {
+class TimeInfoAdapter(private val reports: List<WorkingTimeInfoViewModel>) : RecyclerView.Adapter<TimeReportViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): TimeReportViewHolder {
         val view = LayoutInflater.from(parent.context)

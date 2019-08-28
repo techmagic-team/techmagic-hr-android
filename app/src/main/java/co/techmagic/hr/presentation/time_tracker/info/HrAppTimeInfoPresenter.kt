@@ -33,7 +33,7 @@ class HrAppTimeInfoPresenter(
         })
     }
 
-    private fun loadReports(): Observable<List<TimeReportViewModel>> {
+    private fun loadReports(): Observable<List<WorkingTimeInfoViewModel>> {
         val firstDayOfMonth = selectedDate.firstDayOfMonthDate()
         val lastDayOfMonth = selectedDate.lastDayOfMonthDate()
         val firstDayOfPreviousMonth = firstDayOfMonth.previousDay().firstDayOfMonthDate()
@@ -97,7 +97,7 @@ class HrAppTimeInfoPresenter(
         }
     }
 
-    private fun convert(result: Result): List<TimeReportViewModel> {
+    private fun convert(result: Result): List<WorkingTimeInfoViewModel> {
         val today = selectedDate
         val yesterday = today.previousDay()
 
@@ -121,7 +121,7 @@ class HrAppTimeInfoPresenter(
 
     private fun key(date: Calendar) = date.formatDate()
 
-    private fun formReport(name: String, start: Calendar, end: Calendar, result: Result): TimeReportViewModel {
+    private fun formReport(name: String, start: Calendar, end: Calendar, result: Result): WorkingTimeInfoViewModel {
         var workingDaysCount = 0
         var totalMinutes = 0
 
@@ -144,6 +144,6 @@ class HrAppTimeInfoPresenter(
                 }
             }
         }
-        return TimeReportViewModel(name, totalMinutes, workingDaysCount * EXPECTED_MINUTES_PER_DAY)
+        return WorkingTimeInfoViewModel(name, totalMinutes, workingDaysCount * EXPECTED_MINUTES_PER_DAY)
     }
 }
