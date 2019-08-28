@@ -1,9 +1,12 @@
 package co.techmagic.hr.presentation.time_tracker.info
 
+import android.support.annotation.StringRes
+import co.techmagic.hr.R
 import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.entity.time_report.UserReportsResponse
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.time_tracker.Constants.EXPECTED_MINUTES_PER_DAY
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Observable
@@ -32,7 +35,7 @@ class HrAppTimeInfoPresenter(
         })
     }
 
-    private fun loadReports(): Observable<List<TimeReportViewModel>> {
+    private fun loadReports(): Observable<List<WorkingTimeInfoViewModel>> {
         val firstDayOfMonth = selectedDate.firstDayOfMonthDate()
         val lastDayOfMonth = selectedDate.lastDayOfMonthDate()
         val firstDayOfPreviousMonth = firstDayOfMonth.previousDay().firstDayOfMonthDate()
@@ -96,7 +99,7 @@ class HrAppTimeInfoPresenter(
         }
     }
 
-    private fun convert(result: Result): List<TimeReportViewModel> {
+    private fun convert(result: Result): List<WorkingTimeInfoViewModel> {
         val today = selectedDate
         val yesterday = today.previousDay()
 
@@ -107,22 +110,20 @@ class HrAppTimeInfoPresenter(
         val previousMonth = thisMonth.previousDay().firstDayOfMonthDate()
 
         return listOf(
-                formReport("hours today", today, today, result),
-                formReport("hours yesterday", yesterday, yesterday, result),
+                formReport(R.string.time_info_hours_today_title, today, today, result),
+                formReport(R.string.time_info_hours_yesterday_title, yesterday, yesterday, result),
 
-                formReport("this week", thisWeek, thisWeek.addDays(6), result),
-                formReport("previous week", previousWeek, previousWeek.addDays(6), result),
+                formReport(R.string.time_info_hours_this_week_title, thisWeek, thisWeek.addDays(6), result),
+                formReport(R.string.time_info_hours_previous_week_title, previousWeek, previousWeek.addDays(6), result),
 
-                formReport("this month", thisMonth, thisMonth.lastDayOfMonthDate(), result),
-                formReport("previous month", previousMonth, previousMonth.lastDayOfMonthDate(), result)
+                formReport(R.string.time_info_hours_this_month_title, thisMonth, thisMonth.lastDayOfMonthDate(), result),
+                formReport(R.string.time_info_hours_previous_month_title, previousMonth, previousMonth.lastDayOfMonthDate(), result)
         )
     }
 
     private fun key(date: Calendar) = date.formatDate()
 
-    private fun formReport(name: String, start: Calendar, end: Calendar, result: Result): TimeReportViewModel {
-        val expectedMinutesPerDay = 8 * 60
-
+    private fun formReport(@StringRes name: Int, start: Calendar, end: Calendar, result: Result): WorkingTimeInfoViewModel {
         var workingDaysCount = 0
         var totalMinutes = 0
 
@@ -145,6 +146,6 @@ class HrAppTimeInfoPresenter(
                 }
             }
         }
-        return TimeReportViewModel(name, totalMinutes, workingDaysCount * expectedMinutesPerDay)
+        return WorkingTimeInfoViewModel(name, totalMinutes, workingDaysCount * EXPECTED_MINUTES_PER_DAY)
     }
 }

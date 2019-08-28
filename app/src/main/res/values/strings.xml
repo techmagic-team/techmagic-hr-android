@@ -257,5 +257,11 @@
 
     <!-- Time Info -->
     <string name="time_summary_title">Time Summary</string>
+    <string name="time_info_hours_today_title">hours today</string>
+    <string name="time_info_hours_yesterday_title">hours yesterday</string>
+    <string name="time_info_hours_this_week_title">this week</string>
+    <string name="time_info_hours_previous_week_title">previous week</string>
+    <string name="time_info_hours_this_month_title">this month</string>
+    <string name="time_info_hours_previous_month_title">previous month</string>
 
 </resources>
