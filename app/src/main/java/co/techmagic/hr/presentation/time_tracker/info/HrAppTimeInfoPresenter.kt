@@ -4,6 +4,7 @@ import co.techmagic.hr.data.entity.HolidayDate
 import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.entity.time_report.UserReportsResponse
 import co.techmagic.hr.domain.repository.TimeReportRepository
+import co.techmagic.hr.presentation.time_tracker.Constants.EXPECTED_MINUTES_PER_DAY
 import co.techmagic.hr.presentation.util.*
 import com.techmagic.viper.base.BasePresenter
 import rx.Observable
@@ -121,8 +122,6 @@ class HrAppTimeInfoPresenter(
     private fun key(date: Calendar) = date.formatDate()
 
     private fun formReport(name: String, start: Calendar, end: Calendar, result: Result): TimeReportViewModel {
-        val expectedMinutesPerDay = 8 * 60
-
         var workingDaysCount = 0
         var totalMinutes = 0
 
@@ -145,6 +144,6 @@ class HrAppTimeInfoPresenter(
                 }
             }
         }
-        return TimeReportViewModel(name, totalMinutes, workingDaysCount * expectedMinutesPerDay)
+        return TimeReportViewModel(name, totalMinutes, workingDaysCount * EXPECTED_MINUTES_PER_DAY)
     }
 }
