@@ -792,7 +792,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     private void showFullDetailsIfAvailable() {
-        view.allowPickUpPhoto();
+        // This feature no longer works for admins, so button is temporarily hidden
+        // TODO: uncomment when fixed or remove completely if not needed
+        // view.allowPickUpPhoto();
+
         view.allowClickOnBirthDateView();
         view.showGenderView();
         view.enableEmail();
