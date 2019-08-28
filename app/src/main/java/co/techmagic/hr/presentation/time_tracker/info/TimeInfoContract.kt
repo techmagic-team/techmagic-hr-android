@@ -1,5 +1,6 @@
 package co.techmagic.hr.presentation.time_tracker.info
 
+import android.support.annotation.StringRes
 import com.techmagic.viper.Presenter
 import com.techmagic.viper.Router
 import com.techmagic.viper.View
@@ -19,7 +20,8 @@ interface TimeInfoRouter : Router {
 }
 
 data class WorkingTimeInfoViewModel(
-        val title: String,
+        @StringRes
+        val title: Int,
         val actualMinutes: Int,
         val expectedMinutes: Int
 )

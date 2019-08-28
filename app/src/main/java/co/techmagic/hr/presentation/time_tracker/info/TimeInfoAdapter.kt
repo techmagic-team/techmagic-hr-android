@@ -16,7 +16,7 @@ class TimeReportViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val tvExpected: TextView = itemView.find(R.id.tvExpected)
 
     fun bind(model: WorkingTimeInfoViewModel) {
-        tvReportName.text = model.title
+        tvReportName.text = itemView.context.getString(model.title)
         tvActual.text = TimeFormatUtil.formatMinutesToHours(model.actualMinutes)
         tvExpected.text = TimeFormatUtil.formatMinutesToHours(model.expectedMinutes)
 
