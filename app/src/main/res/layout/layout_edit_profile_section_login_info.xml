@@ -46,7 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/tm_hr_login_activity_hint_password"
-            android:textColorHint="@color/colorAccent">
+            android:textColorHint="@color/colorAccent"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/etChangePassword"
