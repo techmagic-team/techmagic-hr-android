@@ -201,15 +201,14 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private fun showNotification(title: CharSequence, message: CharSequence, channel: String) {
         NotificationManagerCompat.from(this).also {
             val notificationManaпer = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManaпer.notify(
-                    TOO_MUCH_TIME_NOTIFICATION_ID,
-                    createDefaultNotificationBuilder(
-                            title,
-                            message,
-                            channel,
-                            getDefaultNotificationPendingIntent()
-                    ).build()
-            )
+            val notification = createDefaultNotificationBuilder(
+                    title,
+                    message,
+                    channel,
+                    getDefaultNotificationPendingIntent()
+            ).build()
+            notification.flags = Notification.FLAG_AUTO_CANCEL
+            notificationManaпer.notify(TOO_MUCH_TIME_NOTIFICATION_ID, notification)
         }
     }
 
