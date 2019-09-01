@@ -3,6 +3,7 @@ package co.techmagic.hr.presentation.time_tracker
 import co.techmagic.hr.R
 import co.techmagic.hr.presentation.base.HrTmBaseRouter
 import co.techmagic.hr.presentation.pojo.UserReportViewModel
+import co.techmagic.hr.presentation.time_tracker.info.TimeInfoActivity
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.TimeReportDetailActivity
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
 import java.util.*
@@ -23,11 +24,14 @@ class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragmen
         TimeReportDetailActivity.start(fragment, userReport, reportDate, TimeTrackerFragment.REQUEST_UPDATE_TASK, minutesInDayExcludedThis)
     }
 
+    override fun openMonthInfo(selectedDate: Calendar) {
+        TimeInfoActivity.start(activity, selectedDate)
+    }
+
     override fun showTooMuchTimeErrorDialog(project : String?, task : String?) {
         showInfoDialog(
                 activity.getString(R.string.tm_hr_time_tracker_fragment_too_much_time_title, project, task),
                 R.string.tm_hr_time_tracker_fragment_too_much_time_description
         )
     }
-
 }

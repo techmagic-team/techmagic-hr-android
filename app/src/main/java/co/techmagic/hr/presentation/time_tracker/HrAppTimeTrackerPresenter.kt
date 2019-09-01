@@ -124,8 +124,7 @@ class HrAppTimeTrackerPresenter(
     }
 
     override fun onInfoClicked() {
-        //TODO: implement
-        view?.showMessage("Not implemented")
+        router?.openMonthInfo(selectedDate)
     }
 
     override fun onCalendarClicked() {
@@ -287,7 +286,7 @@ class HrAppTimeTrackerPresenter(
 
     private fun cacheHolidays(holidays: List<HolidayDate>) {
         for (holiday in holidays) {
-            val date = DateUtil.parseStringDate(holiday.date).toCalendar()
+            val date = DateUtil.parseStringDate(holiday.date)?.toCalendar() ?: continue
             this.holidays[key(date)] = Holiday.fromString(holiday.name)
             view?.notifyWeekDataChanged(date)
         }

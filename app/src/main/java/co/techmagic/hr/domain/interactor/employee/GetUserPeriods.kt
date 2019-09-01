@@ -92,11 +92,13 @@ class GetUserPeriods(iEmployeeRepository: IEmployeeRepository) : DataUseCase<Str
         val holidays: MutableList<Calendar> = mutableListOf()
 
         calendarInfoList.forEach {
-            val date: Date = DateUtil.parseStringDate(it.date)
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.timeInMillis = date.time
+            val date: Date? = DateUtil.parseStringDate(it.date)
+            date?.also {
+                val calendar: Calendar = Calendar.getInstance()
+                calendar.timeInMillis = date.time
 
-            holidays.add(calendar)
+                holidays.add(calendar)
+            }
         }
 
         return holidays

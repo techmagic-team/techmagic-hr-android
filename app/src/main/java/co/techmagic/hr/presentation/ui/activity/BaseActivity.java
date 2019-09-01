@@ -18,6 +18,7 @@ import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
 import co.techmagic.hr.presentation.ui.manager.MixpanelManager;
 
+@Deprecated
 public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePresenter> extends AppCompatActivity {
 
     protected VIEW view;

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.support.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 const val ISO_DATE_FORMAT = "yyyy-MM-dd"
 const val TOOLBAR_DATE_FORMAT = "EEE, dd 'of' MMM"
@@ -18,7 +19,27 @@ fun today(): Calendar {
     return now().dateOnly()
 }
 
-fun calendar(date: Date) : Calendar{
+fun daysBetween(date1: Calendar, date2: Calendar): Long {
+    return TimeUnit.DAYS.convert(date1.timeInMillis, TimeUnit.MILLISECONDS) - TimeUnit.DAYS.convert(date2.timeInMillis, TimeUnit.MILLISECONDS)
+}
+
+fun Calendar.addDays(n: Int): Calendar {
+    return this.copy().also {
+        it.add(Calendar.DAY_OF_MONTH, n)
+    }
+}
+
+fun Calendar.previousDay(): Calendar {
+    return this.addDays(-1)
+}
+
+fun Calendar.previousWeek(): Calendar {
+    return this.copy().also {
+        it.add(Calendar.WEEK_OF_MONTH, -1)
+    }
+}
+
+fun calendar(date: Date): Calendar {
     val calendarDate = Calendar.getInstance()
     calendarDate.time = date
     return calendarDate
@@ -75,6 +96,26 @@ fun Calendar.firstDayOfWeekDate(): Calendar {
         dayOfWeek = date.get(Calendar.DAY_OF_WEEK)
     }
     return date
+}
+
+fun Calendar.nextWeek(): Calendar {
+    return this.firstDayOfWeekDate().also {
+        it.add(Calendar.WEEK_OF_MONTH, 1)
+    }
+}
+
+fun Calendar.firstDayOfMonthDate(): Calendar {
+    return this.copy().also {
+        val day = it.get(Calendar.DAY_OF_MONTH)
+        it.add(Calendar.DAY_OF_MONTH, -day + 1)
+    }
+}
+
+fun Calendar.lastDayOfMonthDate(): Calendar {
+    return this.firstDayOfMonthDate()
+            .also {
+                it.add(Calendar.MONTH, 1)
+            }.previousDay()
 }
 
 @SuppressLint("SimpleDateFormat")
