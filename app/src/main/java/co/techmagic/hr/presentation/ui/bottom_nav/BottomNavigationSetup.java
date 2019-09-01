@@ -51,7 +51,7 @@ public class BottomNavigationSetup {
         selectCallback.onTabSelected(index);
     }
 
-    private void selectTabUi(int tabIndex) {
+    public void selectTabUi(int tabIndex) {
         setBottomNavItemTint(bottomNavTime, tabIndex == NAV_INDEX_TIME ? selectedColor : unSelectedColor);
         setBottomNavItemTint(bottomNavTeam, tabIndex == NAV_INDEX_TEAM ? selectedColor : unSelectedColor);
         setBottomNavItemTint(bottomNavCalendar, tabIndex == NAV_INDEX_CALENDAR ? selectedColor : unSelectedColor);

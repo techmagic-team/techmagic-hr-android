@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,11 +58,8 @@ import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.N
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
-    public static final String USER_ID_PARAM = "user_id_param";
-    public static final String PROFILE_TYPE_PARAM = "profile_type_param";
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
-    public static final String FRAGMENT_MY_PROFILE_TAG = "fragment_my_profile_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
     private static final String FRAGMENT_TIME_TRACKER_TAG = "fragment_time_tracker_tag";
 
@@ -86,11 +84,12 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private LinearLayoutManager linearLayoutManager;
     private EmployeeAdapter adapter;
 
+    private BottomNavigationSetup bottomNavigationSetup;
+
     private String selDepId;
     private String selLeadId;
     private String selProjectId;
     private String searchQuery = null;
-    private boolean allowChangeTab = true;
     private boolean isOnActivityResultCalled = false;
 
 
@@ -159,23 +158,22 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
             @Override
             public void showEmployeeDetails(@NonNull UserProfile data) {
-                allowChangeTab = true;
-                addDetailsFragment(data, ProfileTypes.EMPLOYEE, FRAGMENT_DETAILS_TAG);
+                addDetailsFragment(data);
             }
 
             @Override
             public void showMyProfile(@NonNull UserProfile data) {
-                addDetailsFragment(data, ProfileTypes.MY_PROFILE, FRAGMENT_MY_PROFILE_TAG);
+                addDetailsFragment(data);
             }
 
             @Override
             public void allowChangeTabClick() {
-                allowChangeTab = true;
+//                allowChangeTab = true;
             }
 
             @Override
             public void disallowChangeTabClick() {
-                allowChangeTab = false;
+//                allowChangeTab = false;
             }
         };
     }
@@ -263,18 +261,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
 
     @Override
-    public void addDetailsFragment(@NonNull UserProfile user, @NonNull ProfileTypes profileType, @Nullable String tag) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PROFILE_TYPE_PARAM, profileType);
-        bundle.putString(USER_ID_PARAM, user.getId());
-
-        DetailsFragment fragment = DetailsFragment.newInstance();
-        fragment.setArguments(bundle);
-        replaceFragment(fragment, tag + user.getId());
-
-        if (profileType == ProfileTypes.MY_PROFILE) {
+    public void addDetailsFragment(@NonNull UserProfile user) {
+        final String userId = SharedPreferencesUtil.readUser().getId();
+        if (userId.equals(user.getId())) {
+            replaceFragment(DetailsFragment.newInstance(user.getId(), ProfileTypes.MY_PROFILE), FRAGMENT_DETAILS_TAG + user.getId());
             mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_MY_PROFILE_TAG);
-        } else if (profileType == ProfileTypes.EMPLOYEE) {
+        } else {
+            EmployeeDetailsActivity.Companion.start(HomeActivity.this, user.getId(), ProfileTypes.EMPLOYEE);
             mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_USER_DETAILS_TAG);
         }
     }
@@ -321,13 +314,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
 
     @Override
     public void allowBottomTabClick() {
-        allowChangeTab = true;
+//        allowChangeTab = true;
     }
 
 
     @Override
     public void disableBottomTabClick() {
-        allowChangeTab = false;
+//        allowChangeTab = false;
     }
 
 
@@ -338,14 +331,46 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
         selDepId = SharedPreferencesUtil.getSelectedDepartmentId();
         selLeadId = SharedPreferencesUtil.getSelectedLeadId();
         selProjectId = SharedPreferencesUtil.getSelectedProjectId();
+
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            Fragment topFragment = fragmentManager.findFragmentById(R.id.rlFragmentsContainer);
+            if (topFragment instanceof TimeTrackerFragment) {
+                bottomNavigationSetup.selectTabUi(NAV_INDEX_TIME);
+            } else if (topFragment instanceof CalendarFragment) {
+                bottomNavigationSetup.selectTabUi(NAV_INDEX_CALENDAR);
+            } else if (topFragment instanceof DetailsFragment) {
+                bottomNavigationSetup.selectTabUi(NAV_INDEX_PROFILE);
+            } else {
+                bottomNavigationSetup.selectTabUi(NAV_INDEX_TEAM);
+            }
+        });
     }
 
+    @Override
+    public void onBackPressed() {
+        Fragment topFragment = getSupportFragmentManager().findFragmentById(R.id.rlFragmentsContainer);
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+
+        // The stack root is not a fragment but the view embedded into the Activity
+        // so tabs order cannot be changed easily.
+        // Team tab is the actual root of the stack but it is on the 2nd place on the UI.
+        // As a workaround the following steps are done:
+        // 1. Fragment animations disabled
+        // 2. When back stack is empty time tracker fragment is added
+        // 3. When the 1st tab is selected and it's the only fragment in stack - activity finishes
+        if (backStackEntryCount == 0) {
+            addTimeTrackerFragment();
+        } else if (topFragment instanceof TimeTrackerFragment && backStackEntryCount == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     private void setupBottomNavigation() {
-
-        final BottomNavigationSetup bottomNavigationSetup = new BottomNavigationSetup(findViewById(R.id.bottomNavigation), this::navigateTab);
-
         // TODO: 1/19/19 refactor screen structure as ninjas list is not a fragment and always is the first visible view
+        bottomNavigationSetup = new BottomNavigationSetup(findViewById(R.id.bottomNavigation), this::navigateTab);
         bottomNavigationSetup.selectTab(NAV_INDEX_TIME);
     }
 
@@ -357,11 +382,9 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
             }
 
             case NAV_INDEX_TEAM:
-                if (allowChangeTab) {
-                    actionBar.setTitle(getString(R.string.app_name));
-                    clearFragmentsBackStack(this);
-                    mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
-                }
+                actionBar.setTitle(getString(R.string.app_name));
+                clearFragmentsBackStack(this);
+                mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_HOME_TAG);
                 break;
 
             case NAV_INDEX_CALENDAR:
