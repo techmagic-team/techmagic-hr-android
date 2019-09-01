@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.data.repository.time_tracker.ITimeTrackerDataSource
 import rx.Observable
@@ -21,7 +20,9 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
     private var sConn: ServiceConnection? = null
     private var timeTracker: TimeTracker? = null
 
-    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create<TaskUpdate>().also {
+        it.onBackpressureDrop()
+    }
     private var subscription: Subscription? = null
 
     override fun startTimer(userReport: UserReport, totalDayMinutes: Int): Single<TimerTasks> {
@@ -36,8 +37,12 @@ class TimeTrackerDataSource(private val applicationContext: Context) : ITimeTrac
 
     override fun pauseTimer(): Single<UserReport> = timeTracker?.pauseTimer() ?: throwNoService()
 
-    override fun stopTimer(): Single<UserReport> = timeTracker?.stopTimer()?.doAfterTerminate {
-        sConn?.let { applicationContext.unbindService(it) }
+    override fun stopTimer(): Single<UserReport> = timeTracker?.stopTimer()?.map {
+        // map is used as a workaround as doOnSuccess, doOnError, doAfterTerminate methods are not called
+        sConn?.let { connection -> applicationContext.unbindService(connection) }
+        sConn = null
+        timeTracker = null
+        return@map it
     } ?: throwNoService()
 
     override fun isRunning(): Single<RunningTask> =

@@ -36,7 +36,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
-    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create<TaskUpdate>().also {
+        it.onBackpressureDrop()
+    }
 
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
@@ -53,18 +55,36 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel(TIME_TRACKER_CHANNEL_ID)
         createNotificationChannel(TOO_MUCH_TIME_CHANNELE_ID)
-        when (intent?.action) {
-            null -> showForeground()
-            Action.ACTION_START.value -> trackingReport?.let { startTimer(it, totalDayMinutes).subscribe({}, {}) }
-            Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe({}, {}) }
-            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe({}, {}) } //todo: handle possible errors?
+
+        if (intent?.action == null) {
+            showForeground()
+        } else {
+            trackingReport?.let { report ->
+                when (intent.action) {
+                    Action.ACTION_START.value -> startTimer(report, totalDayMinutes)
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    Action.ACTION_PAUSE.value -> pauseTimer()
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    Action.ACTION_STOP.value -> stopTimer()
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    else -> null
+                }
+            } ?: close()
         }
 
         return super.onStartCommand(intent, flags, startId)
     }
 
+    private fun <T> onCommandSuccess(result: T) {
+        /* no-op */
+    }
+
+    private fun onCommandError(error: Throwable) {
+        error.printStackTrace()
+        close()
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
-        Log.d("TEST_TIMER", "onBind")
         return HrAppTimeTrackerBinder(this)
     }
 
