@@ -111,6 +111,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun pauseTimer(): Single<UserReport> {
         return Completable.create {
+            timer = null
             timerSubscription?.unsubscribe()
             updateTaskNotification(0)
             it.onCompleted()
@@ -129,7 +130,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
 
-    override fun close() {
+    private fun close() {
         stopForeground(true)
         stopSelf()
         trackingReportOrigin = null

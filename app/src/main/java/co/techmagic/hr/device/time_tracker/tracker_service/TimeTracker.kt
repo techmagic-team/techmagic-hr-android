@@ -28,6 +28,4 @@ interface TimeTracker {
     fun isRunning(): Single<RunningTask>
 
     fun subscribeOnTimeUpdates(): Observable<TaskUpdate>
-
-    fun close()
 }
