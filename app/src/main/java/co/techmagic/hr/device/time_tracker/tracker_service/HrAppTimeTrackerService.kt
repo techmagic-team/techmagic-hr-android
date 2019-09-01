@@ -93,7 +93,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                         val newTime = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
                                         report.minutes = newTime
                                         if (newTime + totalDayMinutes < MAX_TRACKING_TIME_MINUTES) {
-                                            updateTaskNotification(secondsPassed)
+                                            updateTaskNotification(timerSubscription, secondsPassed)
                                             publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
                                         } else {
                                             stopTimer().subscribe {
@@ -113,7 +113,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         return Completable.create {
             timer = null
             timerSubscription?.unsubscribe()
-            updateTaskNotification(0)
+            updateTaskNotification(timerSubscription, 0)
             it.onCompleted()
         }.andThen(updateReport())
     }
@@ -131,6 +131,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
 
     private fun close() {
+        timerSubscription = null
+        updateTaskNotification(timerSubscription, 0)
+
         stopForeground(true)
         stopSelf()
         trackingReportOrigin = null
@@ -184,19 +187,19 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         startForeground(FOREGROUND_NOTIFICATION_ID, createNotification())
     }
 
-    private fun getActionsForCurrentState(): Array<Action> {
-        return timerSubscription?.let {
-            if (!it.isUnsubscribed) arrayOf(Action.ACTION_PAUSE, Action.ACTION_STOP)
-            else arrayOf(Action.ACTION_START)
-        } ?: emptyArray()
+    private fun getActionsForCurrentState(subscription: Subscription): Array<Action> {
+        return if (!subscription.isUnsubscribed) arrayOf(Action.ACTION_PAUSE, Action.ACTION_STOP)
+        else arrayOf(Action.ACTION_START)
     }
 
-    private fun updateTaskNotification(seconds: Long) {
+    private fun updateTaskNotification(subscription: Subscription?, seconds: Long) {
+        val notificationManager = NotificationManagerCompat.from(this)
         trackingReport?.let { report ->
-            NotificationManagerCompat.from(this).also {
-                it.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, seconds, getActionsForCurrentState()))
+            subscription?.let {
+                val actions = getActionsForCurrentState(it)
+                notificationManager.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, seconds, actions))
             }
-        }
+        } ?: notificationManager.cancel(FOREGROUND_NOTIFICATION_ID)
     }
 
     private fun showNotification(title: CharSequence, message: CharSequence, channel: String) {
