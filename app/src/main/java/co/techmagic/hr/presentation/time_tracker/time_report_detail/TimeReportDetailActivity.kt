@@ -75,6 +75,7 @@ class TimeReportDetailActivity : AppCompatActivity(), ActionBarChangeListener {
 
     private fun init() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back);
         replaceTimeReportDetailFragment(intent.getIntExtra(EXTRA_MINUTES_IN_DAY_EXCLUDE_THIS, 0))
     }
 
