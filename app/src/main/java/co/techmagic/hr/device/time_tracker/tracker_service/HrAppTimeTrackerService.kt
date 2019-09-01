@@ -21,7 +21,7 @@ import rx.Observable
 import rx.Single
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 typealias Seconds = Long
@@ -36,7 +36,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
-    private val publish: BehaviorSubject<TaskUpdate> = BehaviorSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
 
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
