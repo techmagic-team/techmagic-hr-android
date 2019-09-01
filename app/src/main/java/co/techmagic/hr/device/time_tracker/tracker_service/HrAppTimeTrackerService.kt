@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import android.util.Log
 import co.techmagic.hr.R
 import co.techmagic.hr.RepositoriesProvider
 import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
@@ -75,15 +74,6 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun <T> onCommandSuccess(result: T) {
-        /* no-op */
-    }
-
-    private fun onCommandError(error: Throwable) {
-        error.printStackTrace()
-        close()
-    }
-
     override fun onBind(intent: Intent?): IBinder? {
         return HrAppTimeTrackerBinder(this)
     }
@@ -149,6 +139,15 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     }
 
     override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
+
+    private fun <T> onCommandSuccess(result: T) {
+        /* no-op */
+    }
+
+    private fun onCommandError(error: Throwable) {
+        error.printStackTrace()
+        close()
+    }
 
     private fun close() {
         timerSubscription = null
