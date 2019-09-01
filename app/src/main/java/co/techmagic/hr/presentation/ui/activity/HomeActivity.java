@@ -58,6 +58,8 @@ import static co.techmagic.hr.presentation.ui.bottom_nav.BottomNavigationSetup.N
 public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> implements ActionBarChangeListener, FragmentCallback,
         EmployeeAdapter.OnEmployeeItemClickListener, ChangeBottomTabListener {
 
+    public static final String EXTRA_OPEN_TIME_TRACKER = "EXTRA_OPEN_TIME_TRACKER";
+
     public static final String SEARCH_QUERY_EXTRAS = "search_query_extras";
     public static final String FRAGMENT_DETAILS_TAG = "fragment_details_tag";
     private static final String FRAGMENT_CALENDAR_TAG = "fragment_calendar_tag";
@@ -92,6 +94,13 @@ public class HomeActivity extends BaseActivity<HomeViewImpl, HomePresenter> impl
     private String searchQuery = null;
     private boolean isOnActivityResultCalled = false;
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getBooleanExtra(EXTRA_OPEN_TIME_TRACKER, false)) {
+            navigateTab(NAV_INDEX_TIME);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

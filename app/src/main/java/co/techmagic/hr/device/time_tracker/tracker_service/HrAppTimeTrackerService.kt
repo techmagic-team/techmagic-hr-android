@@ -3,6 +3,7 @@ package co.techmagic.hr.device.time_tracker.tracker_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
@@ -14,6 +15,7 @@ import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
+import co.techmagic.hr.presentation.ui.activity.HomeActivity.EXTRA_OPEN_TIME_TRACKER
 import co.techmagic.hr.presentation.util.*
 import rx.Completable
 import rx.Observable
@@ -274,8 +276,10 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     private fun getDefaultNotificationPendingIntent(): PendingIntent {
         val notificationIntent = Intent(this, HomeActivity::class.java)
+        notificationIntent.putExtra(EXTRA_OPEN_TIME_TRACKER, true)
+        notificationIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
         return PendingIntent.getActivity(this,
-                0, notificationIntent, 0)
+                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
 
