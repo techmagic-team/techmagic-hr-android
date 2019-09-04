@@ -45,6 +45,16 @@ class HrAppTimeTrackerPresenter(
                 this::showError)
     }
 
+    override fun onViewResumed() {
+        super.onViewResumed()
+
+        call(timeTrackerInteractor.isRunning(), {
+            it.report?.date?.toCalendar()?.let { date ->
+                onDateSelected(date)
+            }
+        })
+    }
+
     override fun onViewDestroyed() {
         super.onViewDestroyed()
         for (s in subscriptions.values) {

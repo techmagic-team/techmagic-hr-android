@@ -38,6 +38,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.ui.activity.HomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".presentation.ui.activity.SearchActivity"

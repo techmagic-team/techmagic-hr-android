@@ -3,11 +3,11 @@ package co.techmagic.hr.device.time_tracker.tracker_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import android.util.Log
 import co.techmagic.hr.R
 import co.techmagic.hr.RepositoriesProvider
 import co.techmagic.hr.data.entity.time_report.UpdateTaskRequestBody
@@ -15,13 +15,14 @@ import co.techmagic.hr.data.entity.time_report.UserReport
 import co.techmagic.hr.domain.repository.TimeReportRepository
 import co.techmagic.hr.presentation.time_tracker.time_report_detail.base.HrAppBaseTimeReportDetailPresenter
 import co.techmagic.hr.presentation.ui.activity.HomeActivity
+import co.techmagic.hr.presentation.ui.activity.HomeActivity.EXTRA_OPEN_TIME_TRACKER
 import co.techmagic.hr.presentation.util.*
 import rx.Completable
 import rx.Observable
 import rx.Single
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 typealias Seconds = Long
@@ -36,7 +37,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
-    private val publish: BehaviorSubject<TaskUpdate> = BehaviorSubject.create()
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create<TaskUpdate>().also {
+        it.onBackpressureDrop()
+    }
 
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
@@ -53,18 +56,27 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotificationChannel(TIME_TRACKER_CHANNEL_ID)
         createNotificationChannel(TOO_MUCH_TIME_CHANNELE_ID)
-        when (intent?.action) {
-            null -> showForeground()
-            Action.ACTION_START.value -> trackingReport?.let { startTimer(it, totalDayMinutes).subscribe({}, {}) }
-            Action.ACTION_PAUSE.value -> trackingReport?.let { pauseTimer().subscribe({}, {}) }
-            Action.ACTION_STOP.value -> trackingReport?.let { stopTimer().subscribe({}, {}) } //todo: handle possible errors?
+
+        if (intent?.action == null) {
+            showForeground()
+        } else {
+            trackingReport?.let { report ->
+                when (intent.action) {
+                    Action.ACTION_START.value -> startTimer(report, totalDayMinutes)
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    Action.ACTION_PAUSE.value -> pauseTimer()
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    Action.ACTION_STOP.value -> stopTimer()
+                            .subscribe(this::onCommandSuccess, this::onCommandError)
+                    else -> null
+                }
+            } ?: close()
         }
 
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        Log.d("TEST_TIMER", "onBind")
         return HrAppTimeTrackerBinder(this)
     }
 
@@ -93,7 +105,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                                         val newTime = originalTime + TimeUnit.SECONDS.toMinutes(secondsPassed).toInt()
                                         report.minutes = newTime
                                         if (newTime + totalDayMinutes < MAX_TRACKING_TIME_MINUTES) {
-                                            updateTaskNotification(secondsPassed)
+                                            updateTaskNotification(timerSubscription, secondsPassed)
                                             publish.onNext(TaskUpdate(report, TaskTimerState.RUNNING))
                                         } else {
                                             stopTimer().subscribe {
@@ -111,8 +123,9 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun pauseTimer(): Single<UserReport> {
         return Completable.create {
+            timer = null
             timerSubscription?.unsubscribe()
-            updateTaskNotification(0)
+            updateTaskNotification(timerSubscription, 0)
             it.onCompleted()
         }.andThen(updateReport())
     }
@@ -129,7 +142,19 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
 
-    override fun close() {
+    private fun <T> onCommandSuccess(result: T) {
+        /* no-op */
+    }
+
+    private fun onCommandError(error: Throwable) {
+        error.printStackTrace()
+        close()
+    }
+
+    private fun close() {
+        timerSubscription = null
+        updateTaskNotification(timerSubscription, 0)
+
         stopForeground(true)
         stopSelf()
         trackingReportOrigin = null
@@ -183,19 +208,19 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         startForeground(FOREGROUND_NOTIFICATION_ID, createNotification())
     }
 
-    private fun getActionsForCurrentState(): Array<Action> {
-        return timerSubscription?.let {
-            if (!it.isUnsubscribed) arrayOf(Action.ACTION_PAUSE, Action.ACTION_STOP)
-            else arrayOf(Action.ACTION_START)
-        } ?: emptyArray()
+    private fun getActionsForCurrentState(subscription: Subscription): Array<Action> {
+        return if (!subscription.isUnsubscribed) arrayOf(Action.ACTION_PAUSE, Action.ACTION_STOP)
+        else arrayOf(Action.ACTION_START)
     }
 
-    private fun updateTaskNotification(seconds: Long) {
+    private fun updateTaskNotification(subscription: Subscription?, seconds: Long) {
+        val notificationManager = NotificationManagerCompat.from(this)
         trackingReport?.let { report ->
-            NotificationManagerCompat.from(this).also {
-                it.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, seconds, getActionsForCurrentState()))
+            subscription?.let {
+                val actions = getActionsForCurrentState(it)
+                notificationManager.notify(FOREGROUND_NOTIFICATION_ID, createTaskNotification(report, seconds, actions))
             }
-        }
+        } ?: notificationManager.cancel(FOREGROUND_NOTIFICATION_ID)
     }
 
     private fun showNotification(title: CharSequence, message: CharSequence, channel: String) {
@@ -251,8 +276,10 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     private fun getDefaultNotificationPendingIntent(): PendingIntent {
         val notificationIntent = Intent(this, HomeActivity::class.java)
+        notificationIntent.putExtra(EXTRA_OPEN_TIME_TRACKER, true)
+        notificationIntent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
         return PendingIntent.getActivity(this,
-                0, notificationIntent, 0)
+                0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
 
