@@ -195,7 +195,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
             val serviceChannel = NotificationChannel(
                     channelId,
                     "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_LOW
             )
             serviceChannel.setSound(null, null)
 
