@@ -1,11 +1,13 @@
 package co.techmagic.hr.device.time_tracker.tracker_service
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import co.techmagic.hr.R
@@ -37,6 +39,8 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     private var timer: Observable<Seconds>? = null
     private var timerSubscription: Subscription? = null
 
+    private lateinit var wakeLock: PowerManager.WakeLock
+
     private val publish: PublishSubject<TaskUpdate> = PublishSubject.create<TaskUpdate>().also {
         it.onBackpressureDrop()
     }
@@ -51,6 +55,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
     override fun onCreate() {
         super.onCreate()
         reportRepository = (application as RepositoriesProvider).provideTimeReportRepository()
+        turnOnWakeLock()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -155,6 +160,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
         timerSubscription = null
         updateTaskNotification(timerSubscription, 0)
 
+        turnOffWakeLock()
         stopForeground(true)
         stopSelf()
         trackingReportOrigin = null
@@ -301,12 +307,24 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                     .also { it.action = Action.ACTION_PAUSE.value },
             0)
 
+    @SuppressLint("WakelockTimeout")
+    private fun turnOnWakeLock() {
+        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
+        wakeLock.acquire()
+    }
+
+    private fun turnOffWakeLock() {
+        wakeLock.release()
+    }
+
     companion object {
         const val TIME_TRACKER_CHANNEL_ID = "TIME_TRACKER_CHANNEL"
         const val FOREGROUND_NOTIFICATION_ID = 1
 
         const val TOO_MUCH_TIME_NOTIFICATION_ID = 2
         const val TOO_MUCH_TIME_CHANNELE_ID = "TOO_MUCH_TIME_CHANNELE"
+
+        const val WAKE_LOCK_TAG = "WakeLock::lock"
     }
 
     enum class Action(val value: String) {

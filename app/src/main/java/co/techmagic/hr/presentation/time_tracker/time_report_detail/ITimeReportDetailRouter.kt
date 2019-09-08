@@ -14,5 +14,7 @@ interface ITimeReportDetailRouter : Router {
     fun showYesNoDialog(@StringRes titleRes: Int, @StringRes messageRes: Int, onConfirm: () -> Unit, onCancel: () -> Unit = {})
     fun showTooManyHoursErrorDialog(timeLeft : String)
     fun showTooManyHoursForTrackingErrorDialog(project : String?, task : String?)
+    fun isBatteryOptimizationTurnedOn() : Boolean
+    fun requestTurnOffBatteryOptimization()
     fun close()
 }

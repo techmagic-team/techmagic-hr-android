@@ -111,7 +111,13 @@ abstract class HrAppBaseTimeReportDetailPresenter
     final override fun startTimerClicked() {
         if (validateInfo()) {
             if (isTimeForTrackingValid()) {
-                startTimer()
+                router?.let {
+                    if (!it.isBatteryOptimizationTurnedOn()) {
+                        it.requestTurnOffBatteryOptimization()
+                    } else {
+                        startTimer()
+                    }
+                }
             } else {
                 router?.showTooManyHoursForTrackingErrorDialog(getProjectTitle(), getProjectTaskTitle())
             }
