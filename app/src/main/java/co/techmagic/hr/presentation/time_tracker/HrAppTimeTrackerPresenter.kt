@@ -194,9 +194,16 @@ class HrAppTimeTrackerPresenter(
             timeTrackerInteractor.stopTimer().subscribe({ updateReportViewModel(TaskUpdate(it, TaskTimerState.RUNNING)) }, this::showError)
         } else {
             if (canStartReportTracking(userReportViewModel)) {
-                val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
-                timeTrackerInteractor.startTimer(userReport, totalDayMinutesExcludeCurrent(userReport.date.toCalendar(), userReport.minutes))
-                        .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+                router?.let {
+                    if (!it.isBatteryOptimizationTurnedOn()) {
+                        it.requestTurnOffBatteryOptimization()
+                    } else {
+                        val userReport = userReportViewMadelMapper.retransform(userReportViewModel)
+                        timeTrackerInteractor.startTimer(userReport, totalDayMinutesExcludeCurrent(userReport.date.toCalendar(), userReport.minutes))
+                                .subscribe({ updateReportViewModel(TaskUpdate(it.current, TaskTimerState.RUNNING)) }, this::showError)
+                    }
+                }
+
             } else {
                 router?.showTooMuchTimeErrorDialog(userReportViewModel.project, userReportViewModel.task.name)
             }

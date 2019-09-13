@@ -5,6 +5,8 @@ import com.techmagic.viper.Router
 
 interface HrTmRouter : Router {
     fun showInfoDialog(@StringRes title: Int, @StringRes description: Int)
+    fun showInfoDialog(@StringRes title: Int, @StringRes description: Int, confirmAction: (() -> Unit)?)
     fun showInfoDialog(title: String, @StringRes description: Int)
-    fun showInfoDialog(title: String, description: String)
+    fun showInfoDialog(title: String, @StringRes description: Int, confirmAction: (() -> Unit)?)
+    fun showInfoDialog(title: String, description: String, confirmAction: (() -> Unit)?)
 }

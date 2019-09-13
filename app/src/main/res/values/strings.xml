@@ -9,6 +9,10 @@
     <string name="message_cancel">CANCEL</string>
     <string name="message_delete">DELETE</string>
     <string name="message_unknown_exception">Unknown exception</string>
+
+    <!--Battery Optimization-->
+    <string name="battery_optimization_turn_off_message">Do you agree to disable battery optimization for correct work of timer?</string>
+
     <!--LoginActivity-->
     <string name="message_loading">Loading</string>
     <string name="message_connection_error">Please check your internet connection</string>
