@@ -42,6 +42,8 @@ class TimeTrackerRouter(activity: HomeActivity, val fragment: TimeTrackerFragmen
     }
 
     override fun requestTurnOffBatteryOptimization() {
+        //TODO 13/09/2019 please throw an exception in the TimeTrackerRepository and handle
+        // it in the base router instead of displaying dialog in each case
         showInfoDialog(R.string.message_warning, R.string.battery_optimization_turn_off_message) {
             turnOffBatteryOptimization(activity)
         }
