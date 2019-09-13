@@ -11,7 +11,7 @@
     <string name="message_unknown_exception">Unknown exception</string>
 
     <!--Battery Optimization-->
-    <string name="battery_optimization_turn_off_message">We have to turn off battery optimization for correct work</string>
+    <string name="battery_optimization_turn_off_message">Do you agree to disable battery optimization for correct work of timer?</string>
 
     <!--LoginActivity-->
     <string name="message_loading">Loading</string>
