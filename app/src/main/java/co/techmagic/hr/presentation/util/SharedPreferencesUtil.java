@@ -11,9 +11,13 @@ import co.techmagic.hr.data.entity.User;
 import co.techmagic.hr.data.entity.time_report.ProjectResponse;
 import co.techmagic.hr.data.entity.time_report.TaskResponse;
 
+import static co.techmagic.hr.presentation.util.SharedPreferencesUtil.SharedPreferencesKeys.SHARED_PREFS_KEY_VERSION;
+
 // Use AccountManager or move needed logic to it
 @Deprecated
 public class SharedPreferencesUtil {
+
+    private static final int SHARED_PREFERENCES_VERSION = 1;
 
     private static SharedPreferences prefs;
     private static Gson gson = new Gson();
@@ -25,6 +29,7 @@ public class SharedPreferencesUtil {
     public static void init(@NonNull Context appContext) {
         if (prefs == null) {
             prefs = appContext.getSharedPreferences(SharedPreferencesKeys.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+            migrate();
         }
     }
 
@@ -93,21 +98,7 @@ public class SharedPreferencesUtil {
 
 
     public static void clearPreferences() {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
-        editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
-        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH);
-        editor.remove(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY);
-        editor.remove(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.LAST_SELECTED_PROJECT);
-        editor.remove(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK);
-        editor.apply();
+        prefs.edit().clear().apply();
     }
 
 
@@ -204,9 +195,37 @@ public class SharedPreferencesUtil {
         return gson.fromJson(prefs.getString(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK, ""), TaskResponse.class);
     }
 
+    private static int getSharedPreferencesVersion() {
+        return prefs.getInt(SHARED_PREFS_KEY_VERSION, 0);
+    }
+
+    private static void setSharedPrefsVersion(int version) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(SHARED_PREFS_KEY_VERSION, version);
+        editor.apply();
+    }
+
+    private static void migrate() {
+        int previousVersion = getSharedPreferencesVersion();
+
+        if (previousVersion == SHARED_PREFERENCES_VERSION) {
+            return;
+        }
+
+        if (previousVersion == 0) {
+            clearPreferences();
+            previousVersion++;
+        }
+
+        //put your migration changes here
+
+        setSharedPrefsVersion(SHARED_PREFERENCES_VERSION);
+    }
+
 
     interface SharedPreferencesKeys {
         String SHARED_PREFS_NAME = "appPrefs";
+        String SHARED_PREFS_KEY_VERSION = "share_prefs_key_version";
         String ACCESS_TOKEN_KEY = "access_token_key";
         String ACCESS_TOKEN_KEY_LENGTH = "access_token_key_length";
         String LOGGED_ID_USER_KEY = "logged_in_user_key";
