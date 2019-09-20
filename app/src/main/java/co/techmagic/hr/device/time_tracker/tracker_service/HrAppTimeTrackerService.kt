@@ -41,9 +41,7 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
 
     private lateinit var wakeLock: PowerManager.WakeLock
 
-    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create<TaskUpdate>().also {
-        it.onBackpressureDrop()
-    }
+    private val publish: PublishSubject<TaskUpdate> = PublishSubject.create()
 
     private val userId
         get() = SharedPreferencesUtil.readUser().id // TODO: inject as a manager instance
@@ -101,6 +99,8 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                     timer = Observable
                             .interval(1, 1, TimeUnit.SECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
+                            .onBackpressureLatest()
+                            .onErrorReturn { TimeUnit.MINUTES.toSeconds(report.minutes.toLong()) }
                             .publish().also {
                                 timerSubscription = it.connect()
 
@@ -145,7 +145,10 @@ class HrAppTimeTrackerService : Service(), TimeTracker {
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish.observeOn(AndroidSchedulers.mainThread())
+    override fun subscribeOnTimeUpdates(): Observable<TaskUpdate> = publish
+            .observeOn(AndroidSchedulers.mainThread())
+            .onErrorReturn { TaskUpdate(trackingReport!!, TaskTimerState.RUNNING) }
+            .onBackpressureLatest()
 
     private fun <T> onCommandSuccess(result: T) {
         /* no-op */
