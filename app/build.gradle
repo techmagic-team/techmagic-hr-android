@@ -27,7 +27,7 @@ android {
         applicationId "co.techmagic.hr"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5
+        versionCode 6
         versionName "2.1"
         multiDexEnabled true
     }
