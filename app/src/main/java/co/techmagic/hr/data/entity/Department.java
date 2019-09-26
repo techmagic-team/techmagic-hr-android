@@ -2,6 +2,7 @@ package co.techmagic.hr.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class Department {
 
     @SerializedName("_id")
@@ -10,7 +11,8 @@ public class Department {
     @SerializedName("name")
     private String name;
 
-    public Department() {}
+    public Department() {
+    }
 
     public Department(String id, String name) {
         this.id = id;

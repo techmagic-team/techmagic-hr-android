@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -15,9 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.BasePresenter;
 import co.techmagic.hr.presentation.mvp.view.View;
-import co.techmagic.hr.presentation.ui.fragment.BaseFragment;
 import co.techmagic.hr.presentation.ui.manager.MixpanelManager;
 
+@Deprecated
 public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePresenter> extends AppCompatActivity {
 
     protected VIEW view;
@@ -74,7 +75,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
     }
 
 
-    protected void replaceFragment(BaseFragment fragment, String tag) {
+    protected void replaceFragment(Fragment fragment, String tag) {
         if (tag == null) {
             tag = fragment.getClass().getName();
         }
@@ -83,7 +84,7 @@ public abstract class BaseActivity<VIEW extends View, PRESENTER extends BasePres
 
         if (!fragmentPopped && fm.findFragmentByTag(tag) == null) {
             getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_not_move, R.anim.anim_not_move, R.anim.anim_slide_out)
+//                    .setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_not_move, R.anim.anim_not_move, R.anim.anim_slide_out)
                     .replace(R.id.rlFragmentsContainer, fragment, tag)
                     .addToBackStack(tag)
                     .commit();

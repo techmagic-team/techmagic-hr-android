@@ -27,7 +27,6 @@ import co.techmagic.hr.R;
 import co.techmagic.hr.presentation.mvp.presenter.DetailsPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.DetailsViewImpl;
 import co.techmagic.hr.presentation.ui.ProfileTypes;
-import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
 import co.techmagic.hr.presentation.ui.view.ChangeBottomTabListener;
 import co.techmagic.hr.presentation.ui.view.FullPhotoActionListener;
@@ -35,6 +34,9 @@ import co.techmagic.hr.presentation.ui.view.FullSizeImageDialog;
 import co.techmagic.hr.presentation.ui.view.RequestPermissionListener;
 
 public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresenter> implements RequestPermissionListener, FullPhotoActionListener {
+
+    private static final String USER_ID_PARAM = "user_id_param";
+    private static final String PROFILE_TYPE_PARAM = "profile_type_param";
 
     @BindView(R.id.ivPhoto)
     ImageView ivPhoto;
@@ -124,7 +126,7 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     TextView tvEmergContact;
 
     private String userId;
-    private String employeeName;
+    private String employeeName = "";
     private String photoUrl;
     private ProfileTypes profileTypes = ProfileTypes.NONE;
     private ActionBarChangeListener toolbarChangeListener;
@@ -132,8 +134,13 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private FullSizeImageDialog fullSizeImageDialog;
 
 
-    public static DetailsFragment newInstance() {
-        return new DetailsFragment();
+    public static DetailsFragment newInstance(String userId, ProfileTypes profileType) {
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle args = new Bundle();
+        args.putString(USER_ID_PARAM, userId);
+        args.putSerializable(PROFILE_TYPE_PARAM, profileType);
+        detailsFragment.setArguments(args);
+        return detailsFragment;
     }
 
 
@@ -608,8 +615,8 @@ public class DetailsFragment extends BaseFragment<DetailsViewImpl, DetailsPresen
     private void getData() {
         Bundle b = getArguments();
         if (b != null) {
-            userId = b.getString(HomeActivity.USER_ID_PARAM);
-            profileTypes = (ProfileTypes) b.getSerializable(HomeActivity.PROFILE_TYPE_PARAM);
+            userId = b.getString(USER_ID_PARAM);
+            profileTypes = (ProfileTypes) b.getSerializable(PROFILE_TYPE_PARAM);
         }
     }
 

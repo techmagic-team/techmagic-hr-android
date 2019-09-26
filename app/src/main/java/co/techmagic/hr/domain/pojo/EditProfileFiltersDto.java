@@ -14,10 +14,12 @@ public class EditProfileFiltersDto {
     private List<Filter> rooms = new ArrayList<>();
     private List<Filter> reasons = new ArrayList<>();
 
+    @Deprecated
     public List<Filter> getDepartments() {
         return departments;
     }
 
+    @Deprecated
     public void setDepartments(List<Filter> departments) {
         this.departments = departments;
     }

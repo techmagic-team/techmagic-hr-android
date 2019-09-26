@@ -1,9 +1,16 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 .DS_Store
 /build
 /captures
 .externalNativeBuild
+
+
+# get this files from Techmagic Private Keys repository
+/app/keys
+/app/fabric.properties
+/app/google-services.json
+release.properties
+google_sign_in.properties

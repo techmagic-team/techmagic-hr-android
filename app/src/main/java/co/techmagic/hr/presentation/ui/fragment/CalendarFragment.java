@@ -26,9 +26,7 @@ import co.techmagic.hr.domain.pojo.CalendarInfoDto;
 import co.techmagic.hr.presentation.mvp.presenter.CalendarPresenter;
 import co.techmagic.hr.presentation.mvp.view.impl.CalendarViewImpl;
 import co.techmagic.hr.presentation.pojo.UserAllTimeOffsMap;
-import co.techmagic.hr.presentation.ui.ProfileTypes;
 import co.techmagic.hr.presentation.ui.activity.CalendarFiltersActivity;
-import co.techmagic.hr.presentation.ui.activity.HomeActivity;
 import co.techmagic.hr.presentation.ui.activity.RequestTimeOffActivity;
 import co.techmagic.hr.presentation.ui.adapter.calendar.GridEmployeeItemAdapter;
 import co.techmagic.hr.presentation.ui.view.ActionBarChangeListener;
@@ -88,7 +86,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        actionBarChangeListener.showBackButton();
         actionBarChangeListener.setActionBarTitle(getString(R.string.tm_hr_calendar_fragment_title));
         inflater.inflate(R.menu.menu_calendar, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -105,10 +102,10 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
             case R.id.action_calendar_filters:
                 startCalendarFiltersScreen();
                 return true;
-
-            case R.id.action_request_time_off:
-                startRequestTimeOffScreen();
-                return true;
+// TODO: fix request time off feature before showing button to the user
+//            case R.id.action_request_time_off:
+//                startRequestTimeOffScreen();
+//                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -175,7 +172,7 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
 
             @Override
             public void addDetailsFragment(@NonNull UserProfile userProfile) {
-                fragmentCallback.addDetailsFragment(userProfile, ProfileTypes.EMPLOYEE, HomeActivity.FRAGMENT_DETAILS_TAG);
+                fragmentCallback.addDetailsFragment(userProfile);
             }
         };
     }
@@ -256,7 +253,6 @@ public class CalendarFragment extends BaseFragment<CalendarViewImpl, CalendarPre
         startActivityForResult(intent, CalendarFiltersActivity.CALENDAR_FILTERS_ACTIVITY_REQUEST_CODE, animation);
         mixpanelManager.trackArrivedAtScreenEventIfUserExists(MIXPANEL_CALENDAR_FILTERS_TAG);
     }
-
 
     private void startRequestTimeOffScreen() {
         Bundle animation = ActivityOptions.makeCustomAnimation(getContext(), R.anim.anim_slide_in, R.anim.anim_not_move).toBundle();

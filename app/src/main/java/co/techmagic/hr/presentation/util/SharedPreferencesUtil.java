@@ -3,24 +3,33 @@ package co.techmagic.hr.presentation.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 
 import co.techmagic.hr.data.entity.User;
-import co.techmagic.hr.data.manager.impl.HrCryptoManager;
+import co.techmagic.hr.data.entity.time_report.ProjectResponse;
+import co.techmagic.hr.data.entity.time_report.TaskResponse;
 
+import static co.techmagic.hr.presentation.util.SharedPreferencesUtil.SharedPreferencesKeys.SHARED_PREFS_KEY_VERSION;
+
+// Use AccountManager or move needed logic to it
+@Deprecated
 public class SharedPreferencesUtil {
 
-    private static SharedPreferences prefs;
-    private static HrCryptoManager hrCryptoManager;
+    private static final int SHARED_PREFERENCES_VERSION = 1;
 
-    private SharedPreferencesUtil() {}
+    private static SharedPreferences prefs;
+    private static Gson gson = new Gson();
+
+    private SharedPreferencesUtil() {
+    }
 
 
     public static void init(@NonNull Context appContext) {
-        if (prefs == null && hrCryptoManager == null) {
+        if (prefs == null) {
             prefs = appContext.getSharedPreferences(SharedPreferencesKeys.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-            hrCryptoManager = new HrCryptoManager();
+            migrate();
         }
     }
 
@@ -28,19 +37,18 @@ public class SharedPreferencesUtil {
     public static void saveAccessToken(String token) {
         saveAccessTokenLength(token.length());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, hrCryptoManager.encrypt(token));
+        editor.putString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, token);
         editor.apply();
     }
 
 
     public static String getAccessToken() {
-        String encodedAuthToken = prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
-        return encodedAuthToken == null ? null : hrCryptoManager.decrypt(encodedAuthToken, getAccessTokenLength());
+        return prefs.getString(SharedPreferencesKeys.ACCESS_TOKEN_KEY, null);
     }
 
 
     public static void saveUser(final User user) {
-        String u = new Gson().toJson(user);
+        String u = gson.toJson(user);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(SharedPreferencesKeys.LOGGED_ID_USER_KEY, u);
         editor.apply();
@@ -49,7 +57,7 @@ public class SharedPreferencesUtil {
 
     public static User readUser() {
         final String u = prefs.getString(SharedPreferencesKeys.LOGGED_ID_USER_KEY, null);
-        return new Gson().fromJson(u, User.class);
+        return gson.fromJson(u, User.class);
     }
 
 
@@ -90,19 +98,7 @@ public class SharedPreferencesUtil {
 
 
     public static void clearPreferences() {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY);
-        editor.remove(SharedPreferencesKeys.LOGGED_ID_USER_KEY);
-        editor.remove(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH);
-        editor.remove(SharedPreferencesKeys.SELECTED_DEPARTMENT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.SELECTED_LEAD_ID_KEY);
-        editor.remove(SharedPreferencesKeys.SELECTED_PROJECT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_MY_TEAM_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_FROM_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_TO_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY);
-        editor.remove(SharedPreferencesKeys.CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY);
-        editor.apply();
+        prefs.edit().clear().apply();
     }
 
 
@@ -177,9 +173,59 @@ public class SharedPreferencesUtil {
         return prefs.getInt(SharedPreferencesKeys.ACCESS_TOKEN_KEY_LENGTH, 0);
     }
 
+    public static void saveLastSelectedProject(ProjectResponse projectResponse) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.LAST_SELECTED_PROJECT, gson.toJson(projectResponse));
+        editor.apply();
+    }
+
+    @Nullable
+    public static ProjectResponse getLastSelectedProject() {
+        return gson.fromJson(prefs.getString(SharedPreferencesKeys.LAST_SELECTED_PROJECT, ""), ProjectResponse.class);
+    }
+
+    public static void saveLastSelectedTask(TaskResponse taskResponse) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK, gson.toJson(taskResponse));
+        editor.apply();
+    }
+
+    @Nullable
+    public static TaskResponse getLastSelectedTask() {
+        return gson.fromJson(prefs.getString(SharedPreferencesKeys.LAST_SELECTED_PROJECT_TASK, ""), TaskResponse.class);
+    }
+
+    private static int getSharedPreferencesVersion() {
+        return prefs.getInt(SHARED_PREFS_KEY_VERSION, 0);
+    }
+
+    private static void setSharedPrefsVersion(int version) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(SHARED_PREFS_KEY_VERSION, version);
+        editor.apply();
+    }
+
+    private static void migrate() {
+        int previousVersion = getSharedPreferencesVersion();
+
+        if (previousVersion == SHARED_PREFERENCES_VERSION) {
+            return;
+        }
+
+        if (previousVersion == 0) {
+            clearPreferences();
+            previousVersion++;
+        }
+
+        //put your migration changes here
+
+        setSharedPrefsVersion(SHARED_PREFERENCES_VERSION);
+    }
+
 
     interface SharedPreferencesKeys {
         String SHARED_PREFS_NAME = "appPrefs";
+        String SHARED_PREFS_KEY_VERSION = "share_prefs_key_version";
         String ACCESS_TOKEN_KEY = "access_token_key";
         String ACCESS_TOKEN_KEY_LENGTH = "access_token_key_length";
         String LOGGED_ID_USER_KEY = "logged_in_user_key";
@@ -191,5 +237,7 @@ public class SharedPreferencesUtil {
         String CALENDAR_FILTERS_SELECTED_TO_KEY = "calendar_filters_selected_to_key";
         String CALENDAR_FILTERS_SELECTED_DEPARTMENT_ID_KEY = "calendar_filters_selected_department_id_key";
         String CALENDAR_FILTERS_SELECTED_PROJECT_ID_KEY = "calendar_filters_selected_project_id_key";
+        String LAST_SELECTED_PROJECT = "time_reports_last_selected_project";
+        String LAST_SELECTED_PROJECT_TASK = "time_reports_last_selected_project_task";
     }
 }

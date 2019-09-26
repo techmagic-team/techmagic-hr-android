@@ -8,7 +8,8 @@
     <color name="colorBlack">#000000</color>
     <color name="colorGreenButton">#5cb85c</color>
     <color name="colorCardViewBgGrey">#f5f5f5</color>
-    <color name="transparent">#80FFFFFF</color>
+
+    <color name="color_bottom_nav_bg">#e6fafafa</color>
 
     <!-- Layout colors -->
     <color name="colorWeekday">#efefef</color>
@@ -20,5 +21,40 @@
     <color name="colorButtonDelete">#cb4646</color>
     <color name="error_border">#cb4646</color>
     <color name="error_background">#55cb4646</color>
+
+    <color name="color_time_report_list_item_disabled_background">#fafafa</color>
+    <color name="color_time_report_client_text_color">@color/pine_green</color>
+    <color name="color_time_report_project_text_color">@color/dark_gray</color>
+    <color name="color_time_report_task_text_color">@color/oil</color>
+    <color name="color_time_report_note_text_color">@color/oil</color>
+    <color name="color_time_report_time_text_color">@color/oil</color>
+    <color name="color_time_report_disabled_text">#8e9998</color>
+    <color name="color_time_report_list_item_divider">#d8d8d8</color>
+    <color name="color_time_report_add_report_background">#00b8b2</color>
+    <color name="color_time_report_selected_date">@color/oil</color>
+    <color name="color_time_report_un_selected_date">@color/dark_gray</color>
+
+    <color name="oil">#373a36</color>
+    <color name="dark_gray">#aaaaaa</color>
+
+    <color name="color_time_report_detail_task_header_color">#77807f</color>
+    <color name="color_time_report_detail_picker_text_color">#373a36</color>
+    <color name="color_time_report_detail_input_border_color">#d5e6e4</color>
+    <color name="color_time_report_detail_picker_description_text_color">#333333</color>
+    <color name="color_time_report_detail_picker_description_error_color">#d0021b</color>
+    <color name="color_time_report_detail_picker_description_hint_color">#d8d8d8</color>
+    <color name="color_time_report_detail_time_text_color">#4a4a4a</color>
+
+    <color name="color_report_properties_property_header_text_color">#aaaaaa</color>
+    <color name="color_report_properties_property_text_color">#373a36</color>
+
+
+    <color name="sickly_yellow">#cddc39</color>
+    <color name="dull_pink">#df73a2</color>
+    <color name="macaroni_and_cheese">#f3bb29</color>
+    <color name="turquoise">#00b2a9</color>
+    <color name="pine_green">#007672</color>
+    <color name="ruby">#e0004d</color>
+    <color name="black_pearl">#101820</color>
 
 </resources>

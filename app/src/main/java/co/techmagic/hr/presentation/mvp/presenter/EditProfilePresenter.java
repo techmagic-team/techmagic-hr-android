@@ -497,7 +497,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         if (data.getDepartment() == null) {
             dep.setId(newDep.getId());
             dep.setName(newDep.getName());
-            data.setDepartment(dep);
+            data.setDepartment(dep); //fixme: change to delivery?
             hasChanges = true;
             return;
         }
@@ -512,7 +512,7 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
         }
 
         dep.setName(newDep.getName());
-        data.setDepartment(dep);
+        data.setDepartment(dep); //fixme: change to delivery?
     }
 
 
@@ -792,7 +792,10 @@ public class EditProfilePresenter extends BasePresenter<EditProfileViewImpl> {
 
 
     private void showFullDetailsIfAvailable() {
-        view.allowPickUpPhoto();
+        // This feature no longer works for admins, so button is temporarily hidden
+        // TODO: uncomment when fixed or remove completely if not needed
+        // view.allowPickUpPhoto();
+
         view.allowClickOnBirthDateView();
         view.showGenderView();
         view.enableEmail();

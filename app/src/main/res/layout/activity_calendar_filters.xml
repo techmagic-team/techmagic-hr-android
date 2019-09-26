@@ -155,7 +155,9 @@
 
                 </RelativeLayout>
 
+                <!--fixme: Change to Delivery and then make visible again-->
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rlFilterByDepartment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

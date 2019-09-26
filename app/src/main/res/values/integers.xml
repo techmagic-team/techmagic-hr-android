@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="time_report_detail_default_times_grid_raws_count">2</integer>
+</resources>

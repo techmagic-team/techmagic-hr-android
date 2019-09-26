@@ -323,7 +323,7 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             notifyDataSetChanged()
         }
 
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val requestedTimeOff: RequestedTimeOffDto = items[position]
             val dateFrom: String = DateUtil.getFormattedFullDateInUTC(requestedTimeOff.dateFrom)
             val dateTo: String = DateUtil.getFormattedFullDateInUTC(requestedTimeOff.dateTo)
@@ -356,8 +356,8 @@ class RequestTimeOffActivity : BaseActivity<RequestTimeOffViewImpl, RequestTimeO
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-            val view: View = LayoutInflater.from(parent!!.context).inflate(R.layout.item_requested_time_off, parent, false)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_requested_time_off, parent, false)
             return ViewHolder(view)
         }
 
