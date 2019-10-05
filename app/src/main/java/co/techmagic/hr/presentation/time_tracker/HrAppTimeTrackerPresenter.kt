@@ -117,8 +117,9 @@ class HrAppTimeTrackerPresenter(
                         val weekReports = response.reports.map { userReportViewMadelMapper.transform(it) }
                         initWeekCache(date)
                         for (report in weekReports) {
-                            cache[key(report.date.toCalendar())]?.add(report)
-                            view?.notifyDayReportsChanged(date)
+                            val reportDate = report.date.toCalendar();
+                            cache[key(reportDate)]?.add(report)
+                            view?.notifyDayReportsChanged(reportDate)
                             if (runningReport?.id?.equals(report.id) == true) {
                                 checkLoadedReportForTracking(report)
                             }
