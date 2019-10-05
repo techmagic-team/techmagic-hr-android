@@ -50,7 +50,7 @@ class HrAppTimeTrackerPresenter(
 
         call(timeTrackerInteractor.isRunning(), {
             it.report?.date?.toCalendar()?.let { date ->
-                onDateSelected(date)
+                onDateSelected(date.dateOnly())
             }
         })
     }
